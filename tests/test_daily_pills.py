@@ -2,6 +2,9 @@ import json
 import subprocess
 import sys
 import unittest
+from contextlib import redirect_stdout
+from io import BytesIO,StringIO
+from unittest.mock import patch
 from datetime import datetime,timezone
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT))
@@ -47,5 +50,42 @@ const bad=structuredClone(p);bad.sources[0].url='javascript:alert(1)';assert.thr
  def test_missing_provider_configuration_stops_before_request(self):
   with self.assertRaises(ValueError):daily.generate({},'', 'accounts/example/models/example')
   with self.assertRaises(ValueError):daily.generate({},'test-fixture-not-a-key','')
+
+ def writer_fixture(self):
+  packet=json.loads((ROOT/'examples/2026-09-12-rag-en.json').read_text())
+  knowledge_ids=set(packet['knowledge']['source_ids'])
+  pack={**packet,'knowledge_sources':[s for s in packet['sources'] if s['id'] in knowledge_ids],
+    'news_sources':[s for s in packet['sources'] if s['id'] not in knowledge_ids]}
+  return pack,{k:packet[k] for k in ['knowledge','news']}
+
+ def test_writer_complete_structured_response_and_safe_logs(self):
+  pack,draft=self.writer_fixture();log=StringIO()
+  result={'choices':[{'finish_reason':'stop','message':{'content':json.dumps(draft),'reasoning_content':'PRIVATE_REASONING'}}],
+    'usage':{'completion_tokens':3500,'prompt_tokens':2000,'total_tokens':5500,'unexpected':'PRIVATE_METADATA'}}
+  with patch.object(daily.urllib.request,'urlopen',return_value=BytesIO(json.dumps(result).encode())) as request,redirect_stdout(log):
+   packet=daily.generate(pack,'PRIVATE_TEST_KEY','accounts/fireworks/models/glm-5p3-flash')
+  payload=json.loads(request.call_args.args[0].data)
+  self.assertEqual(packet['generation_method'],'fireworks')
+  self.assertEqual(packet['knowledge'],draft['knowledge'])
+  self.assertGreaterEqual(payload['max_tokens'],16000)
+  self.assertEqual(payload['response_format']['type'],'json_schema')
+  schema=payload['response_format']['json_schema']['schema']
+  self.assertEqual(schema['properties']['news']['properties']['items']['maxItems'],len(pack['news_sources']))
+  self.assertIn('3500',log.getvalue())
+  self.assertNotIn('PRIVATE_',log.getvalue())
+
+ def test_truncated_writer_response_is_rejected_without_retry(self):
+  pack,_=self.writer_fixture();log=StringIO()
+  result={'choices':[{'finish_reason':'length','message':{'content':'{"knowledge":','reasoning_content':'PRIVATE_REASONING'}}],
+    'usage':{'completion_tokens':16000}}
+  with patch.object(daily.urllib.request,'urlopen',return_value=BytesIO(json.dumps(result).encode())) as request,redirect_stdout(log):
+   with self.assertRaisesRegex(ValueError,'cut off for en.*no draft was accepted'):
+    daily.generate(pack,'PRIVATE_TEST_KEY','accounts/fireworks/models/glm-5p3-flash')
+  self.assertEqual(request.call_count,1)
+  self.assertNotIn('PRIVATE_',log.getvalue())
+
+ def test_no_news_schema_requires_empty_items(self):
+  items=daily.draft_schema({'news_sources':[]})['properties']['news']['properties']['items']
+  self.assertEqual((items['minItems'],items['maxItems']),(0,0))
 
 if __name__=='__main__':unittest.main()

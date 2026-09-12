@@ -65,3 +65,9 @@ To pause paid generation, set DAILY_PILLS_ENABLED to `false`. Manual Run workflo
 Source excerpts and partial checkpoints are kept in a seven-day workflow artifact for review; only generated drafts and source metadata enter the public edition JSON. Public repository artifacts may be downloadable by signed-in readers. Sources are public and no personal profile or key is included. The public app is not a private research vault.
 
 Generation runs off-device on GitHub Actions. Reading and recall progress remain local to each browser. There is no on-demand writing server or personal per-user scheduler in this version.
+
+### Response-length fix
+
+The first manual run reached Fireworks with `accounts/fireworks/models/glm-5p3-flash`, but its response reached the original 7,500-token limit. The writer now requests the exact JSON schema and allows up to 16,000 output tokens per language, with a five-minute request timeout. The limit is a ceiling, not a required output length. Story and news reading targets are unchanged. [Fireworks recommends increasing the token budget for truncated responses and supports schema-constrained output](https://docs.fireworks.ai/structured-responses/structured-response-formatting).
+
+The runner logs the language, finish reason and token counts without logging credentials or reasoning text. It still rejects truncated or invalid drafts and does not automatically retry paid requests. A failed workflow can be rerun after a fix: its checkout explicitly reads current `main`.

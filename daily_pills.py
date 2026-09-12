@@ -144,6 +144,19 @@ def make_pack(topic='RAG',language='en',timezone_name='America/New_York',recent_
 
 KNOWLEDGE_FIELDS=['title','summary','story','connection','explanation','application','exercise','question','answer','limits']
 NEWS_FIELDS=['headline','what_happened','why_it_matters','takeaway']
+WRITER_MAX_TOKENS=16000
+
+def draft_schema(pack):
+    """Constrain the response shape; factual and word-count checks still run locally."""
+    text={'type':'string','minLength':1,'maxLength':12000}
+    ids={'type':'array','items':{'type':'string'},'minItems':1}
+    def obj(properties):
+        return {'type':'object','properties':properties,'required':list(properties),'additionalProperties':False}
+    knowledge=obj({**{k:text for k in KNOWLEDGE_FIELDS},'source_ids':ids})
+    item=obj({**{k:text for k in NEWS_FIELDS},'source_ids':ids})
+    news=obj({**{k:text for k in ['title','overview','exercise','question','answer']},
+        'items':{'type':'array','items':item,'minItems':len(pack['news_sources']),'maxItems':len(pack['news_sources'])}})
+    return obj({'knowledge':knowledge,'news':news})
 
 def validate_draft(draft,pack):
     if not isinstance(draft,dict):raise ValueError('Writer must return a JSON object.')
@@ -198,17 +211,27 @@ def generate(pack,api_key,model):
       'Avoid promises about memory gains, model quality, or language correctness. The output is a draft for human review.'
     )
     payload={'model':model,'messages':[{'role':'system','content':system},{'role':'user','content':json.dumps({'source_pack':pack,'output_shape':shape},ensure_ascii=False)}],
-        'temperature':0.3,'max_tokens':7500,'response_format':{'type':'json_object'}}
+        'temperature':0.3,'max_tokens':WRITER_MAX_TOKENS,
+        'response_format':{'type':'json_schema','json_schema':{'name':'daily_pills','schema':draft_schema(pack)}}}
     request=urllib.request.Request('https://api.fireworks.ai/inference/v1/chat/completions',data=json.dumps(payload).encode(),
         headers={'Authorization':'Bearer '+api_key.strip(),'Content-Type':'application/json'},method='POST')
     try:
-        with urllib.request.urlopen(request,timeout=180) as response:result=json.loads(response.read(1_000_000))
+        with urllib.request.urlopen(request,timeout=300) as response:result=json.loads(response.read(1_000_000))
     except urllib.error.HTTPError as error:
         raise RuntimeError(f'Fireworks returned HTTP {error.code}. Check your key, model availability and account credits. No draft was accepted.') from None
     except urllib.error.URLError:
         raise RuntimeError('Fireworks could not be reached. No draft was accepted.') from None
     choice=result['choices'][0]
-    if choice.get('finish_reason')=='length':raise ValueError('Writer response was cut off; no draft was accepted.')
+    # Log only bounded metadata, never credentials, source text or provider reasoning.
+    usage=result.get('usage') or {}
+    diagnostic={k:usage[k] for k in ['prompt_tokens','completion_tokens','total_tokens']
+        if isinstance(usage.get(k),int) and not isinstance(usage[k],bool)}
+    finish=choice.get('finish_reason')
+    print('Writer result:',json.dumps({'language':pack['language'],
+        'finish_reason':finish if finish in ['stop','length','content_filter','tool_calls'] else 'other',
+        'max_tokens':WRITER_MAX_TOKENS,**diagnostic}),flush=True)
+    if finish=='length':
+        raise ValueError(f"Writer response was cut off for {pack['language']} at the {WRITER_MAX_TOKENS}-token budget; no draft was accepted. Review token usage before retrying.")
     draft=validate_draft(json.loads(choice['message']['content']),pack)
     packet={k:pack[k] for k in ['date','timezone','created_at','topic','language','concept','news_window','source_warnings','router_engine']}
     packet.update(schema_version=1,task='daily_pills',status='draft',writer_model=model,
