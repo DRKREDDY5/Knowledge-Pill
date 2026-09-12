@@ -17,7 +17,7 @@ The hosted app is currently owner-private. Reviewers can inspect this public rep
 - First real English and Telugu generation verified in [workflow attempt 3](https://github.com/DRKREDDY5/Knowledge-Pill/actions/runs/34724909759/attempts/3). Both languages produced a knowledge pill and a news pill, passed validation and were saved automatically.
 - Dated English/Telugu demonstration editions with explicit provenance. These were authored for the demo and are **not evidence of a successful Fireworks run**.
 
-**Remaining:** review the generated drafts and Telugu wording, then enable the schedule with `DAILY_PILLS_ENABLED=true` if it is not already set. A manual run is verified; a scheduled run has not been verified. An executed training notebook, adapter download confirmation and the Loom recording remain outstanding. See [setup](docs/DAILY_SETUP.md), [content review](docs/CONTENT_REVIEW.md) and [status](docs/BUILD_STATUS.json). The repository notebook is reproducible source, not a reconstructed executed notebook.
+**Remaining:** enable the optional daily schedule with `DAILY_PILLS_ENABLED=true` if desired. The first manual run is verified, and known English/Telugu wording issues are corrected; a scheduled run has not been verified. An executed training notebook, adapter download confirmation and the Loom recording remain outstanding. See [setup](docs/DAILY_SETUP.md), [content review](docs/CONTENT_REVIEW.md) and [status](docs/BUILD_STATUS.json). The repository notebook is reproducible source, not a reconstructed executed notebook.
 
 ## Week 5: one small classification decision
 

@@ -40,6 +40,10 @@ The writer returns drafts, not certified facts. Automated validation checks stru
 
 ## 5. Enable the schedule
 
+In plain language, this variable is the **on/off switch for automatic daily generation**. It is optional for the Week 5 submission. The generator already works manually, and the known wording issues in its first saved edition have been corrected.
+
+Open [repository Actions variables](https://github.com/DRKREDDY5/Knowledge-Pill/settings/variables/actions), click **New repository variable**, enter the name and value below, then click **Add variable**. If it already exists, edit its value. This is a variable, separate from the API-key secret.
+
 After the manual run succeeds, add repository variable:
 
 - Name: `DAILY_PILLS_ENABLED`

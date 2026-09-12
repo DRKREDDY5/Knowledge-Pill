@@ -22,7 +22,7 @@
   "webmcp_execution": "not_run",
   "daily_scheduling": "workflow_implemented_activation_variable_not_inspected_scheduled_run_not_verified",
   "lesson_generation": "first_real_EN_TE_run_succeeded_2026-09-12_attempt_3",
-  "telugu_fluent_review": "assistant_review_completed_findings_recorded_independent_human_review_pending",
+  "telugu_fluent_review": "known_wording_issues_corrected_by_assistant_independent_human_review_optional_and_not_claimed",
   "github_submission": "published_DRKREDDY5/Knowledge-Pill",
   "loom_recording": "script_ready_recording_pending",
   "fireworks_key": "configured_in_GitHub_Actions_verified_by_successful_request_not_available_to_app",
@@ -42,5 +42,6 @@
   "csv": "500_exact_run_rows_with_original_split_column",
   "daily_schedule_reuse_and_failure_checks": "passed_mocked_provider_checks_and_first_real_EN_TE_generation",
   "daily_writer_truncation_regression": "passed_complete_cutoff_and_language_budget_tests",
-  "daily_generation_run": "https://github.com/DRKREDDY5/Knowledge-Pill/actions/runs/34724909759/attempts/3"
+  "daily_generation_run": "https://github.com/DRKREDDY5/Knowledge-Pill/actions/runs/34724909759/attempts/3",
+  "editorial_corrections": "applied_to_saved_EN_TE_editions_original_preserved_in_git"
 }

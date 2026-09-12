@@ -90,7 +90,7 @@ I used a fixed workflow because the steps are known. I did not need several auto
 - Before the first real run: “The generation and scheduling code is included. Fireworks configuration and the first live run are still pending.”
 - After a verified real manual run: “This workflow run generated the edition shown here. I reviewed its sources and language. The daily schedule is enabled only after setting the activation variable.”
 
-**Current verified status:** the real manual run succeeded and saved both languages. Until you have finished your own content review, say: “This successful run generated both English and Telugu drafts. Automated checks passed. I am reviewing the content and Telugu wording before enabling daily generation.”
+**Current verified status:** the real manual run succeeded and saved both languages. Until you have finished your own content review, say: “This successful run generated both English and Telugu drafts. Automated checks passed, and known wording issues were corrected and documented. Automatic daily generation can be enabled with one repository setting.”
 
 If explaining the failure and fix: “The first response ran out of tokens. I added structured output, separate English and Telugu budgets, and a lower reasoning setting. I kept the validation checks and verified the fix with an actual successful run.”
 
