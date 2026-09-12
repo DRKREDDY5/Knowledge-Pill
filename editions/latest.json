@@ -1,59 +1,81 @@
 {
   "schema_version": 1,
   "task": "daily_pills_collection",
-  "updated_at": "2026-09-12T22:09:15.533264+00:00",
+  "updated_at": "2026-09-12T23:32:57.255712+00:00",
   "packets": [
     {
       "date": "2026-09-12",
       "timezone": "America/New_York",
-      "created_at": "2026-09-12T22:09:15.533264+00:00",
+      "created_at": "2026-09-12T23:31:01.725601+00:00",
       "topic": "RAG",
       "language": "en",
-      "concept": "Why retrieve before answering?",
+      "concept": "Knowing when evidence is missing",
       "news_window": "recent",
       "source_warnings": [],
       "router_engine": "TF-IDF + logistic regression",
       "schema_version": 1,
       "task": "daily_pills",
       "status": "draft",
-      "writer_model": "Assistant-authored dated demonstration",
-      "generation_method": "authored_demo",
-      "duration_note": "5–10 minutes per pill including reading and practice; actual time varies.",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
       "knowledge": {
-        "title": "The librarian who checks the book before answering",
-        "summary": "Understand retrieval-augmented generation, or RAG, through a fictional library visit. Read the story, connect it to software, and try a small evidence-checking exercise.",
-        "story": "Imagine that you volunteer at a neighborhood library. A visitor asks when the weekend reading club meets. You remember helping with the club last year, but you do not know whether its timetable has changed. A confident guess would be easy. Instead, you find the current club notice, read the relevant paragraph, and explain the schedule while pointing to the notice.\nNow imagine the search returns an old announcement and a current notice about a different club. You have found documents, but you have not found the answer. In this fictional situation, a useful response would explain what is missing and ask the organizer for the current timetable. Finding something and finding supporting evidence are different steps.",
-        "connection": "In this analogy, the visitor asks a question, the document search acts as retrieval, and your explanation plays the role of generation. The library notice represents external information supplied with the question. The story is an invented teaching example; neither linked paper reports this library scenario.",
-        "explanation": "The RAG paper describes combining a language model with retrieved external passages. Its system uses a dense index of Wikipedia to supply information for generation. REALM also explores a learned document retriever alongside a language model. Both papers help explain why external documents are useful when knowledge is otherwise stored inside model parameters. This pill introduces that shared idea; it does not claim that the two research systems have identical training or inference designs.",
-        "application": "For a small project, imagine a fictional student-club FAQ. Start with two short, clearly labelled notices. Let a user ask about a meeting, retrieve the notice that appears relevant, and show which sentence supports the proposed answer. As a design exercise, include one question that neither notice answers. Decide what your application should do in that case before adding more documents or a larger model.",
-        "exercise": "Spend two minutes making a tiny example on paper. Write a question, a relevant notice, and an unrelated notice. Underline the words that actually answer the question. Then remove that sentence. Explain to yourself why the same confident answer would no longer be justified. This is practice at judging support, not a measured test of a model.",
-        "question": "What does retrieval add, and why is finding a document not enough?",
-        "answer": "Retrieval adds external material for the model to use. The material must still contain information that supports the answer. A document can be related to the subject without answering the particular question.",
-        "limits": "The librarian is a person who understands the situation; a language model produces text and can still make mistakes. The analogy is a way to remember the workflow, not proof that RAG guarantees correct, current, or fully cited answers.",
+        "title": "Knowing When Evidence Is Missing: The Librarian Who Says 'I Don't Have That Book'",
+        "summary": "Retrieval-augmented generation (RAG) grounds a language model in external documents, but a critical and often overlooked skill is detecting when the retrieved evidence simply does not answer the question. This pill teaches why 'no evidence found' is a valid and valuable output, using a fictional everyday story, and maps it to the design of RAG systems described in the foundational papers.",
+        "story": "Meera works the reference desk at a small public library. A visitor asks, 'What was the exact rainfall in the town of Kavali on March 3rd, 1998?' Meera walks to the weather archive shelf. She finds rainfall records for the district, but they only begin in 2004. She could guess, she could extrapolate from nearby years, or she could confidently invent a plausible-sounding number. Instead, she returns and says: 'Our records don't go back that far, so I can't answer that from what we have. You'd need the national meteorological office.' The visitor is mildly disappointed but trusts the library more, not less, because Meera was honest about the gap. The next visitor asks about rainfall in 2010, and Meera finds the exact page and reads the number aloud, pointing to the source. Two very different interactions, one librarian.",
+        "connection": "Meera's archive shelf is the non-parametric memory: an explicit, external knowledge store the system can consult. In the RAG paper, this is a dense vector index of Wikipedia accessed through a pre-trained neural retriever, combined with a pre-trained seq2seq model that serves as parametric memory. REALM takes a related view, adding a latent knowledge retriever to language model pre-training so the model retrieves and attends over documents from a large corpus during pre-training, fine-tuning, and inference. Both papers motivate this design the same way: knowledge stored only in network parameters is hard to update, hard to trace, and limited in precision. Meera pointing to the exact archive page is provenance; her ability to say 'our records start in 2004' is the system knowing the boundary of its evidence.",
+        "explanation": "The core lesson is that a RAG system has two honest modes, not one. Mode one: evidence exists and is relevant, so the generator conditions on the retrieved passages and produces an answer traceable to them. Mode two: the retriever returns passages that are topically nearby but do not actually contain the answer, and the system should say so. The RAG paper notes that parametric-only models struggle to access and precisely manipulate knowledge, and that provenance and knowledge updating remain open problems, which is exactly why the external memory matters. But retrieval is similarity-based, not truth-based. A dense retriever will happily return documents that share vocabulary with the question without answering it. A well-designed pipeline therefore needs an explicit evidence-sufficiency check between retrieval and generation: does any retrieved passage actually support an answer, or is the model about to fill a gap from parametric memory, which is precisely the failure mode RAG was designed to avoid?",
+        "application": "In practice, add a verification step to your RAG pipeline. After retrieval, have the generator (or a separate judge pass) check each candidate passage for whether it entails an answer to the specific question, not merely whether it mentions the topic. If no passage passes, return a structured 'insufficient evidence' response that names what was searched and what was missing, the way Meera names the national meteorological office as the right next step. Log these events: a high rate of 'no evidence' on a topic is a signal to expand your corpus, not to loosen the check.",
+        "exercise": "Take any RAG demo you have access to and ask it three questions: one it can answer, one about something just outside your corpus, and one that uses words from your corpus but asks something the corpus never states. For the third, watch whether the system confuses topical similarity with actual evidence. Two minutes, no code required.",
+        "question": "Why is a dense vector retriever returning documents a poor guarantee that those documents contain the answer?",
+        "answer": "Because retrieval optimizes for similarity between the query and document embeddings, not for entailment. Documents can share vocabulary or topic with the question while lacking the specific fact requested, so an explicit evidence-sufficiency check is needed before generation.",
+        "limits": "The library analogy breaks down in one important way: Meera knows the shelf is empty because she can see the whole archive. A retriever has no such global view; it only knows what similarity search surfaced. 'No relevant passage found' in a RAG system means 'nothing retrieved was relevant', which is weaker than 'the corpus contains nothing relevant'. The analogy also hides the fact that the generator in RAG still has parametric memory and can blend it with retrieved text, so the boundary between 'answered from evidence' and 'answered from parameters' is blurrier than shelf versus empty shelf.",
         "source_ids": [
           "paper-2005.11401",
           "paper-2002.08909"
         ]
       },
       "news": {
-        "title": "Recent AI reading: start with a working tool sequence",
-        "overview": "This September 12 edition includes one selected update published on September 10. It is a recent reading roundup, not a claim that the announcement happened today. Use the short explanation below, then spend a few minutes checking the linked source and thinking about your own project.",
+        "title": "Recent Developments: AI-Assisted Antimicrobial Discovery and Answer-First Tool-Use Data Generation",
+        "overview": "Two recent items from research labs illustrate different sides of applied AI: one uses coding assistants and chat models to accelerate scientific search, the other rethinks how training data for tool-using agents is produced. Both are publisher-reported; treat the details as claims from the organizations involved.",
         "items": [
           {
-            "headline": "Google Research describes ToolGrad’s answer-first approach",
-            "what_happened": "Google Research describes ToolGrad as creating a tool-use sequence before writing its matching user request. The framework uses execution feedback to extend those sequences. The authors report better data-generation efficiency and improvements in their evaluated tool-use tasks. These are the authors’ reported findings; this project has not reproduced their experiments.",
-            "why_it_matters": "Our interpretation: when you build a small training dataset, ask what evidence makes an example a good one. A plausible sentence and a demonstrated result are different kinds of evidence. For your own project, write down what you would inspect before accepting a generated example. The appropriate check will depend on the task.",
-            "takeaway": "Try one modest thought experiment: imagine teaching a helper to look up a room number and then book that room. What would you need to observe to call the example successful? Keep the fictional example separate from claims about ToolGrad. The point is to practice defining success before scaling a dataset.",
+            "headline": "Researchers use Codex and ChatGPT to hunt for antimicrobial molecules",
+            "what_happened": "OpenAI published a piece on September 10, 2026 describing how César de la Fuente's lab uses Codex and ChatGPT to search living and extinct genomes for antimicrobial candidates aimed at drug-resistant infections. Note this is a feed excerpt, so this summary reflects the publisher's description rather than a full reading of the article.",
+            "why_it_matters": "Drug-resistant infections are a major health challenge, and genome-scale search is exactly the kind of knowledge-intensive task where external evidence and model assistance can widen the search space for researchers.",
+            "takeaway": "LLMs as research assistants can accelerate hypothesis generation in biology, but publisher claims about discovery workflows should be checked against the underlying scientific publications.",
+            "source_ids": [
+              "news-39842fa0b34b"
+            ]
+          },
+          {
+            "headline": "Google Research introduces ToolGrad, an answer-first method for generating tool-use training data",
+            "what_happened": "A Google Research blog post dated September 10, 2026 describes ToolGrad, presented at ACL 2026. Instead of generating a user query first and searching for a tool-use solution, ToolGrad first constructs a verified tool-use chain and then annotates the corresponding user prompt, iterating with textual 'gradients' (LLM critic feedback) across four modules: proposer, executors, selector, and updater. The post reports a high pass rate (99.8% in one comparison), lower generation cost than a query-first DFS baseline on ToolBench's 16k+ APIs, and that Gemma-3 models fine-tuned on the resulting ToolGrad-500 dataset improved on the Berkeley Function Calling Leaderboard, with the 12B variant scoring 83.1, close to the reported proprietary figures.",
+            "why_it_matters": "Tool-using agents need large, verified training datasets, and the traditional query-first search approach is expensive and low-yield. Reversing the order so the answer exists before the question is a simple structural idea with significant efficiency implications for anyone building agent training pipelines.",
+            "takeaway": "My interpretation, separate from the publisher's claims: the benchmark comparisons come from Google's own evaluation, and the fine-tuned model nearly matching proprietary frontier models on one benchmark is encouraging but narrow evidence. The durable lesson is the paradigm, answer-first data generation yielding verified trajectories by construction, which is worth testing in your own agent data workflows rather than taking the leaderboard numbers at face value.",
             "source_ids": [
               "news-aa8533b1c5b4"
             ]
           }
         ],
-        "exercise": "Open the source and check its publication date. Find the paragraph that explains the order in which the tool sequence and user request are produced. Next, identify one reported result and ask which dataset or benchmark it refers to. Finally, write two short notes: one statement directly supported by the source and one possible application that is only your interpretation. Do not present the second note as a tested result.",
-        "question": "When you repeat an AI research claim, what should stay attached to it?",
-        "answer": "Keep the original source, the date, and the conditions of the reported evaluation. Describe your own application idea as an interpretation until you have tested it. A useful news summary helps a reader inspect the evidence rather than treating a headline as a general guarantee."
+        "exercise": "Spend two minutes locating the primary sources: for the OpenAI item, check whether the page links to peer-reviewed publications about the antimicrobial work; for ToolGrad, find the ACL 2026 paper link on the Google Research blog and skim its abstract. Note one claim in each that is the publisher's own characterization versus one backed by an external artifact.",
+        "question": "What is the key structural difference between ToolGrad and prior query-first tool-use dataset generation methods?",
+        "answer": "ToolGrad generates a verified tool-use chain first and then annotates the user query, whereas prior methods like ToolBench's DFS generate a query first and search for a solution, distilling trajectories from exploratory search with a lower pass rate and higher cost."
       },
-      "usage": {},
+      "usage": {
+        "prompt_tokens": 3530,
+        "total_tokens": 5404,
+        "completion_tokens": 1874,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
       "sources": [
         {
           "id": "paper-2005.11401",
@@ -70,6 +92,15 @@
           "publisher": "arXiv",
           "published_at": null,
           "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-39842fa0b34b",
+          "title": "How a researcher uses Codex and ChatGPT to search for new antimicrobial molecules",
+          "url": "https://openai.com/index/using-codex-chatgpt-to-search-for-new-antimicrobials",
+          "publisher": "OpenAI",
+          "published_at": "2026-09-10T16:00:00+00:00",
+          "evidence_type": "feed_excerpt",
+          "topic": "RAG"
         },
         {
           "id": "news-aa8533b1c5b4",
@@ -86,54 +117,76 @@
     {
       "date": "2026-09-12",
       "timezone": "America/New_York",
-      "created_at": "2026-09-12T22:09:15.533264+00:00",
+      "created_at": "2026-09-12T23:31:01.725601+00:00",
       "topic": "RAG",
       "language": "te",
-      "concept": "Why retrieve before answering?",
+      "concept": "Knowing when evidence is missing",
       "news_window": "recent",
       "source_warnings": [],
       "router_engine": "TF-IDF + logistic regression",
       "schema_version": 1,
       "task": "daily_pills",
       "status": "draft",
-      "writer_model": "Assistant-authored dated demonstration",
-      "generation_method": "authored_demo",
-      "duration_note": "5–10 minutes per pill including reading and practice; actual time varies.",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
       "knowledge": {
-        "title": "జవాబు చెప్పే ముందు పుస్తకం చూసే లైబ్రేరియన్",
-        "summary": "RAG అనే భావనను ఒక ఊహించిన లైబ్రరీ కథతో తెలుసుకుందాం. కథను చదివి, దానిని సాఫ్ట్‌వేర్ పనితీరుతో పోల్చి, ఒక చిన్న ఆధారాల పరిశీలన చేద్దాం. చదవడం, ఆలోచించడం, సాధన కలిపి ఐదు నుంచి పది నిమిషాలు కేటాయించండి.",
-        "story": "మీరు ఒక చిన్న లైబ్రరీలో సహాయం చేస్తున్నారని ఊహించుకోండి. ఒక వ్యక్తి వచ్చి, ఈ వారాంతంలో రీడింగ్ క్లబ్ సమావేశం ఎప్పుడు జరుగుతుందని అడిగారు. గత ఏడాది ఆ క్లబ్‌కు మీరు సహాయం చేశారు. అప్పటి సమయం మీకు గుర్తుంది. కానీ ఈ ఏడాది కూడా అదే సమయమో కాదో మీకు తెలియదు. వెంటనే ఒక సమయం చెప్పేయడం సులభమే. అయినా మీరు అలా చేయలేదు. ప్రస్తుత నోటీసును వెతికి, అందులో సంబంధించిన వాక్యాన్ని చదివి, ఆ నోటీసును చూపిస్తూ సమాధానం చెప్పారు.\nమరోసారి వెతికినప్పుడు పాత నోటీసు, వేరే క్లబ్‌కు సంబంధించిన కొత్త నోటీసు మాత్రమే కనిపించాయనుకోండి. మీకు కొన్ని పత్రాలు దొరికాయి. కానీ అడిగిన ప్రశ్నకు ఆధారం దొరకలేదు. ఈ ఊహించిన సందర్భంలో, ఏ సమాచారం తెలియదో చెప్పి, నిర్వాహకుడి దగ్గర ప్రస్తుత సమయాన్ని నిర్ధారించుకోవడం మంచిది. ఏదో ఒక పత్రం దొరకడం వేరు. సమాధానాన్ని సమర్థించే సమాచారం దొరకడం వేరు.",
-        "connection": "ఈ కథలో వచ్చిన వ్యక్తి అడిగింది ప్రశ్న. మీరు నోటీసును వెతకడం retrieval. దానిని చదివి సమాధానం చెప్పడం generation. ప్రశ్నతో పాటు అందించే బయటి సమాచారం ఆ నోటీసు. ఇది భావనను వివరించడానికి రాసిన కల్పిత కథ మాత్రమే. క్రింద ఉన్న పరిశోధనా పత్రాల్లో ఈ లైబ్రరీ సంఘటన జరిగినట్లు చెప్పడం లేదు.",
-        "explanation": "RAG పరిశోధనా పత్రం, language model‌ను బయట నుంచి తెచ్చిన passages‌తో కలిపి ఉపయోగించే విధానాన్ని వివరిస్తుంది. అందులో Wikipedia సమాచారానికి dense index ఉపయోగించారు. REALM పత్రం కూడా language model‌తో పాటు documents‌ను వెతికే retriever‌ను పరిశీలిస్తుంది. మోడల్ parameters‌లో నిల్వ ఉన్న సమాచారంతో పాటు బయటి పత్రాలను ఎందుకు ఉపయోగించవచ్చో ఈ రెండు పత్రాలు పరిచయం చేస్తాయి. అయితే వాటి training విధానాలు, పని చేసే నిర్మాణాలు పూర్తిగా ఒకటే అని అనుకోకూడదు.",
-        "application": "సాధన కోసం ఒక ఊహించిన విద్యార్థుల క్లబ్‌కు FAQ తయారు చేస్తున్నట్లు భావించండి. ముందుగా రెండు చిన్న నోటీసులు రాయండి. ఒక సమావేశం గురించి ప్రశ్న అడగండి. దానికి సంబంధించిన నోటీసు ఏదో ఎంచుకుని, సమాధానానికి ఆధారం అయిన వాక్యాన్ని చూపించండి. ఆ రెండు నోటీసుల్లో లేని సమాచారాన్ని అడిగే మరో ప్రశ్న కూడా రాయండి. పత్రాలు పెంచే ముందు, అలాంటి ప్రశ్నకు మీ యాప్ ఎలా స్పందించాలో నిర్ణయించండి.",
-        "exercise": "రెండు నిమిషాలు కాగితంపై సాధన చేయండి. ఒక ప్రశ్న, దానికి సంబంధించిన నోటీసు, సంబంధం లేని మరో నోటీసు రాయండి. సమాధానానికి నిజంగా ఆధారం ఇచ్చే పదాల కింద గీత గీయండి. ఇప్పుడు ఆ వాక్యాన్ని తీసేయండి. ముందు చెప్పిన సమాధానాన్ని అలాగే ఎందుకు చెప్పలేమో మీ మాటల్లో వివరించండి. ఇది ఆధారాన్ని గుర్తించే సాధన మాత్రమే; మోడల్ సామర్థ్యాన్ని కొలిచే పరీక్ష కాదు. వీలైతే మీ ఉదాహరణను మరొకరికి చూపించి, వారు కూడా అదే వాక్యాన్ని ఆధారంగా ఎంచుకున్నారా అని చూడండి. ఇద్దరి సమాధానాలు వేరుగా ఉంటే, ప్రశ్న స్పష్టంగా ఉందో లేదో మళ్లీ చదవండి.",
-        "question": "Retrieval ఏమి అందిస్తుంది? ఒక పత్రం దొరికితే మాత్రమే ఎందుకు సరిపోదు?",
-        "answer": "Retrieval మోడల్ ఉపయోగించడానికి బయటి సమాచారాన్ని అందిస్తుంది. ఆ సమాచారంలో అడిగిన ప్రశ్నకు సమాధానాన్ని సమర్థించే ఆధారం ఉండాలి. విషయం ఒకటే అయినా, పత్రం నిర్దిష్ట ప్రశ్నకు సమాధానం ఇవ్వకపోవచ్చు.",
-        "limits": "లైబ్రేరియన్ పరిస్థితిని అర్థం చేసుకునే మనిషి. Language model మాత్రం తప్పులు చేయవచ్చు. ఈ కథ పని జరిగే క్రమాన్ని గుర్తుంచుకోవడానికి ఉపయోగపడుతుంది. RAG వాడితే ప్రతి సమాధానం సరైనదే, తాజాదే, పూర్తి ఆధారాలతో ఉన్నదే అని ఇది హామీ ఇవ్వదు.",
+        "title": "RAGలో సాక్ష్యం లేనప్పుడు గుర్తించడం",
+        "summary": "Retrieval-Augmented Generation (RAG) సిస్టమ్‌లు మోడల్ పారామీటర్లలో నిల్చున్న జ్ఞానానికి బదులుగా బాహ్య కార్పస్ నుంచి డాక్యుమెంట్లను వెతికి ప్రాసెస్ చేస్తాయి. కానీ అసలు సమాధానం కార్పస్‌లో లేకపోతే ఏం చేయాలి? ఈ పాఠంలో 'సాక్ష్యం లేదు' అని చెప్పడం ఒక ఫీచర్ అని, దాన్ని ఎలా డిజైన్ చేయాలో నేర్చుకుంటాం.",
+        "story": "ఊహించండి: మీరు ఒక పెద్ద లైబ్రరీలో పనిచేసే సహాయకుడి వద్ద ఉన్న ఇంటర్న్. ఒక రోజు ఒక పాఠకుడు వచ్చి '1962లో చిన్న పట్టణమైన కోవెల్ట్‌లో జన్మించిన కవి ఎవరు?' అని అడిగారు. మీరు క్యాటలాగ్‌లో 'కోవెల్ట్' అని వెతికారు — ఒక పాత పంచాంగం ఒక్కటి దొరికింది, అందులో ఆ పట్టణం పేరు ఉంది కానీ ఎలాంటి కవి పేరు లేదు. ఇప్పుడు రెండు మార్గాలున్నాయి: (1) పంచాంగం చూసినందుకు సంతోషించి, మీ అంచనాతో 'అది రామేశ్ అయి ఉండొచ్చు' అని చెప్పడం, లేదా (2) 'ఈ లైబ్రరీలో ఆ సమాచారం లేదు — నేను చెప్పగలిగింది ఏమిటంటే, కోవెల్ట్ అనే పట్టణం గురించి ఈ పంచాంగంలో ప్రస్తావించారు, కానీ కవుల గురించి ఏమీ లేదు' అని నిజాయితీగా చెప్పడం. మొదటి మార్గం వేగంగా అనిపించినా, పాఠకుడు ఆ పేరును నిజంగా నమ్మే ప్రమాదం ఉంది. రెండో మార్గంలో మీరు రెట్రీవల్ ఫలితాన్ని ('ఏదో దొరికింది') తో 'సమాధానం దొరికింది' ('అన్సర్ ఉంది') అనే దానిని వేరు చేసి చూస్తున్నారు. ఈ వ్యత్యాసమే ఈ పాఠం మొత్తం.",
+        "connection": "ఈ కథలోని భాగాలు RAG భాగాలకు సరిపోతాయి: లైబ్రరీ = డాక్యుమెంట్ ఇండెక్స్ (non-parametric memory); మీ వెతుకులాట = neural retriever; పాఠకుడి ప్రశ్న = user query; మీ తుది జవాబు = generated answer; 'దొరికిన పంచాంగం' = retrieved passage; 'పంచాంగంలో అన్సర్ లేదు' = missing evidence. మీ మెదడులో ఉన్న సాధారణ జ్ఞానం = parametric memory — అది ఉపయోగకరమే, కానీ ప్రశ్నకు సంబంధించిన నిర్దిష్ట వాస్తవం అక్కడ లేకపోవచ్చు.",
+        "explanation": "RAG అనే ఆలోచన మూలం: పెద్ద pre-trained మోడల్స్ వాస్తవాలను పారామీటర్లలో నిల్వ చేస్తాయి, కానీ ఆ జ్ఞానాన్ని ఖచ్చితంగా యాక్సెస్ చేయడం, provenance (ఏ మూలం నుంచి వచ్చిందో చూపడం), మరియు కొత్త జ్ఞానాన్ని అప్‌డేట్ చేయడం కష్టం. Lewis et al. ప్రతిపాదించిన RAG మోడల్స్ pre-trained seq2seq మోడల్‌ను (parametric memory) Wikipedia యొక్క dense vector index (non-parametric memory) తో కలిపి, pre-trained neural retriever ద్వారా యాక్సెస్ చేస్తాయి. ఇది knowledge-intensive tasks లో మెరుగైన ఫలితాలు, మరియు ఎక్కువ factual అవుట్‌పుట్‌ను చూపింది. అదేవిధంగా REALM, language model pre-training సమయంలోనే latent knowledge retriever ను చేర్చి, మిలియన్ల డాక్యుమెంట్లలో retrieval step ద్వారా backpropagate చేసే పద్ధతిని నేర్పింది; ఇది interpretability మరియు modularity వంటి ప్రయోజనాలను ఇస్తుంది. ఇప్పుడు ముఖ్యమైన పాయింట్: ఈ ఆర్కిటెక్చర్లు 'సంబంధిత డాక్యుమెంట్ దొరికింది' అని చెబుతాయి, 'డాక్యుమెంట్‌లో అన్సర్ ఉంది' అని కాదు. Retriever ఎప్పుడూ top-k passages ఇస్తుంది — అవి సంబంధం ఉన్నవి కావచ్చు, కానీ ఖచ్చితమైన వాస్తవం అందులో లేకపోవచ్చు. అందుకే 'సాక్ష్యం లేదు' అని గుర్తించడం ఒక ప్రత్యేక డిజైన్ నిర్ణయం: జనరేషన్ సమయంలో మోడల్‌కు 'తగినంత ఆధారం లేదు' అనే అవుట్‌పుట్ ఎంపిక ఉండాలి, retrieval స్కోర్లు లేదా passage-content తనిఖీ ద్వారా దాన్ని ట్రిగ్గర్ చేయాలి.",
+        "application": "ప్రాక్టికల్‌గా: మీరు ఒక కంపెనీ డాక్యుమెంటేషన్ చాట్‌బాట్ బిల్డ్ చేస్తున్నారనుకోండి. (1) Retriever తిరిగిచ్చే స్కోర్లకు threshold పెట్టండి — అన్ని top-k passages తక్కువ స్కోర్ ఉంటే 'సంబంధిత ఆధారం కనబడలేదు' అని జవాబివ్వండి. (2) జనరేషన్ ప్రాంప్ట్‌లో మోడల్‌కు 'ఇచ్చిన passages ఆధారంగా మాత్రమే సమాధానం చెప్పండి; ఆధారం లేకుంటే అలా అనండి' అని సూచించండి. (3) సాధ్యమైతే, జనరేటెడ్ అన్సర్‌లోని క్లెయిమ్‌లను retrieved passages తో తిరిగి క్రాస్-చెక్ చేసే చిన్న verification step చేర్చండి. (4) 'సాక్ష్యం లేదు' జవాబులను లాగ్ చేసి — అవి కంటెంట్ గ్యాప్‌లను సూచిస్తాయి, కొత్త డాక్యుమెంట్లు రాసే ప్రాధాన్యతగా వాడండి. ఇది provenance కూడా ఇస్తుంది: ప్రతి జవాబుతో ఏ passages ఆధారంగా చెప్పారో చూపించండి.",
+        "exercise": "రెండు నిమిషాల వ్యాయామం: మీ చుట్టూ ఉన్న ఏదైనా ఒక డాక్యుమెంట్ (ఒక README లేదా వార్తాకథనం) తీసుకోండి. దాని ఆధారంగా రెండు ప్రశ్నలు మీరే రాయండి — ఒకటి డాక్యుమెంట్‌లో అన్సర్ నిజంగా ఉన్నది, మరొకటి అన్సర్ లేనిది (కానీ టాపిక్‌కి సంబంధించినది). ఇప్పుడు రెండింటికీ డాక్యుమెంట్ మాత్రమే చూసి జవాబు రాయండి. రెండో ప్రశ్నకు మీ మెదడు ఏదో ఊహించి చెప్పడానికి ప్రయత్నిస్తుందని గమనించండి — ఆ టెంప్టేషన్‌నే మేము RAG సిస్టమ్‌లలో అరికట్టాలి.",
+        "question": "Retriever సంబంధితమైన passage ను తిరిగి ఇచ్చినా, అది 'సాక్ష్యం ఉంది' అని కాకుండా ఎందుకు చెప్పలేము? ఒక వాక్యంలో సమాధానం ఇవ్వండి.",
+        "answer": "Retriever ప్రశ్నకు సంబంధించిన (relevant) passages ను top-k గా ఇస్తుంది తప్ప అందులో ఖచ్చితమైన వాస్తవం (answer) ఉందో లేదో ధృవీకరించదు; కాబట్టి passage-content ని తనిఖీ చేసి, ఆధారం లేకపోతే 'సాక్ష్యం లేదు' అని స్పష్టంగా చెప్పే ప్రత్యేక మెకానిజం అవసరం.",
+        "limits": "ఈ ఉపమానం పరిమితులు: ఇంటర్న్‌కు 'అన్సర్ లేదు' అని గుర్తించడం సహజంగా వస్తుంది, కానీ LLM లలో అది స్వయంగా వాటిలో లేదు — ప్రాంప్టింగ్, థ్రెషోల్డింగ్, verification ద్వారా మనం బలవంతంగా కట్టిన నడవడి. అంతేకాదు, threshold పెద్దగా ఉంటే సిస్టమ్ ఎక్కువగా 'తెలియదు' అని చెబుతుంది (over-refusal); తక్కువగా ఉంటే తప్పు ధైర్యంతో జవాబిస్తుంది. అలాగే లైబ్రరీ ఉపమానంలో డాక్యుమెంట్‌లు స్థిరంగా ఉంటాయి, కానీ నిజమైన ఇండెక్స్‌లో కంటెంట్ మారుతూ ఉంటుంది — 'లేదు' అనే నిర్ణయం ఎప్పుడైనా పాతది కావచ్చు. చివరగా, సాక్ష్యం ఉన్నా అది తప్పు మూలం నుంచి వచ్చి ఉండొచ్చు; 'లేదు' గుర్తించడం 'ఉన్నది నిజం' అని ధృవీకరించడం కాదు.",
         "source_ids": [
           "paper-2005.11401",
           "paper-2002.08909"
         ]
       },
       "news": {
-        "title": "ఇటీవలి AI పరిణామం: ముందుగా పనిచేసే tool sequence",
-        "overview": "సెప్టెంబర్ 12 నాటి ఈ ఎడిషన్‌లో సెప్టెంబర్ 10న ప్రచురించిన ఒక పరిణామాన్ని ఎంచుకున్నాం. ఇది ఇటీవలి వార్తల పఠనం మాత్రమే. ఈ ప్రకటన ఈరోజే వచ్చిందని అర్థం కాదు. ముందుగా వివరణ చదవండి. తర్వాత అసలు మూలాన్ని చూసి, మీ ప్రాజెక్టుకు ఈ ఆలోచన ఎలా ఉపయోగపడవచ్చో ఆలోచించండి. వార్తను తెలుసుకోవడంతో పాటు ఆధారాన్ని పరిశీలించడం కూడా ఈ చిన్న సాధనలో భాగం.",
+        "title": "RAG మరియు ఏజెంట్ల చుట్టూ తాజా అభివృద్ధులు",
+        "overview": "ఈ వారం రెండు వార్తా అంశాలు: ఒకటి జీవసంబంధ పరిశోధనలో LLM సాధనాల వాడకం, రెండో టూల్-యూజ్ డేటాసెట్ జనరేషన్‌లో కొత్త పద్ధతి. రెండూ ఈ వారం కోర్స్ కాన్సెప్ట్‌తో — మోడల్ దగ్గర ఉన్న దానికీ, బాహ్య ఆధారాలకీ మధ్య ఉన్న వ్యత్యాసానికీ — సంబంధం కలిగి ఉంటాయి.",
         "items": [
           {
-            "headline": "ToolGrad: tool sequence నుంచి user request వైపు",
-            "what_happened": "Google Research వివరణ ప్రకారం, ToolGrad ముందుగా tools ఉపయోగించే క్రమాన్ని రూపొందించి, దానికి సరిపోయే user request‌ను రాస్తుంది. ఆ క్రమాన్ని విస్తరించడానికి execution feedback ఉపయోగిస్తుంది. తమ పరీక్షల్లో మెరుగుదలలు కనిపించాయని రచయితలు నివేదించారు. ఆ ప్రయోగాలను ఈ ప్రాజెక్టులో మేము తిరిగి నిర్వహించలేదు.",
-            "why_it_matters": "మన విశ్లేషణ: training example‌ను అంగీకరించే ముందు, అది మంచి ఉదాహరణ అని చెప్పడానికి ఏ ఆధారం కావాలో నిర్ణయించాలి. నమ్మదగినట్లు కనిపించే వాక్యం, పని చేసినట్లు చూపించే ఫలితం రెండూ ఒకటి కావు. మీ సమస్యకు ఏ పరిశీలన అవసరమో ముందుగా రాసుకోండి. ఈ ఆలోచన మీ పరిస్థితిలో పనిచేస్తుందో లేదో తెలుసుకోవడానికి చిన్న పరీక్ష అవసరం. ఇతరుల ఫలితాన్ని నేరుగా మీ ఫలితంగా చెప్పకండి.",
-            "takeaway": "ఒక సహాయకుడు గది నంబర్ వెతికి, ఆ గదిని బుక్ చేసే ఊహించిన ఉదాహరణ తీసుకోండి. పని విజయవంతమైందని చెప్పడానికి మీరు ఏమి చూడాలి? సరైన గది దొరకడమే సరిపోతుందా? బుకింగ్ నిర్ధారణ కూడా కావాలా? మీ జవాబు రాయండి. ఇది మన సాధన కోసం తీసుకున్న ఉదాహరణ. ToolGrad గురించి పరిశోధకులు చేసిన పరీక్షగా దీన్ని చూపించకండి. పెద్ద dataset తయారుచేసే ముందు విజయానికి అర్థం నిర్ణయించడమే ఈ సాధన ఉద్దేశం.",
+            "headline": "యాంటీమైక్రోబయల్ అభ్యర్థుల కోసం జీనోమ్‌లను వెతకడానికి Codex మరియు ChatGPT వాడకం",
+            "what_happened": "OpenAI ప్రచురించిన ఒక పోస్ట్ ప్రకారం, César de la Fuente ల్యాబ్ డ్రగ్-రెసిస్టెంట్ ఇన్ఫెక్షన్లపై పోరాటానికి యాంటీమైక్రోబయల్ అభ్యర్థులను వెతకడానికి Codex మరియు ChatGPT ను ఉపయోగిస్తోంది — ప్రస్తుతం జీవిస్తున్న, అంతరించిపోయిన జీవుల జీనోమ్‌లలో శోధిస్తోంది. ఈ సమాచారం feed excerpt ఆధారంగా ఉంది; మేము పూర్తి వ్యాసాన్ని చదవలేదు.",
+            "why_it_matters": "ఇది ఈ వారం కాన్సెప్ట్‌కు సరిగ్గా సరిపోతుంది: మోడల్ పారామీటర్లలో ఉన్న సాధారణ జ్ఞానం చాలదు — పరిశోధనకు అవసరమైన నిర్దిష్ట జీనోమ్ డేటా బాహ్య మూలాల్లో ఉంటుంది, దాన్ని వెతికి పనిముట్లతో ప్రాసెస్ చేయడమే విలువ. అదేవిధంగా, ఏ మూలం నుంచి అభ్యర్థి వచ్చిందో (provenance) తెలుసుకోవడం శాస్త్రీయ పరిశోధనలో కీలకం.",
+            "takeaway": "LLM సాధనాలు డొమైన్-స్పెసిఫిక్ డేటాను యాక్సెస్ చేయడంలో సహాయపడతాయి, కానీ ఫలితాల నాణ్యత ఆధారపడి ఉంటుంది మూల డేటా మరియు పరిశోధనా పద్ధతిపై — ప్రచురణ పూర్తి పద్ధతులను చూసిన తర్వాతే తీర్పు ఇవ్వాలి.",
+            "source_ids": [
+              "news-39842fa0b34b"
+            ]
+          },
+          {
+            "headline": "ToolGrad: టూల్-యూజ్ డేటాను 'answer-first' పద్ధతిలో జనరేట్ చేయడం",
+            "what_happened": "Google Research బ్లాగ్ ప్రకారం, ACL 2026లో సమర్పించిన ToolGrad అనే ఫ్రేమ్‌వర్క్ సాంప్రదాయ పద్ధతిని తలకిందులు చేస్తుంది: ముందు user query జనరేట్ చేసి దానికి టూల్-యూజ్ పరిష్కారం వెతకడం కాకుండా, ముందు ధృవీకరించిన (verified) టూల్-యూజ్ చైన్ జనరేట్ చేసి, ఆ తర్వాత దానికి సరిపోయే user prompt రాయిస్తుంది. ఇది TextGrad శైలిలో 'textual gradients' (ప్లెయిన్ టెక్స్ట్ ఫీడ్‌బ్యాక్) తో API వర్క్‌ఫ్లోలను ఇటరేటివ్‌గా నిర్మిస్తుంది — propose, execute, select, update అనే నాలుగు మాడ్యూల్స్‌తో. బ్లాగ్ ప్రకారం ఇది ఎక్కువ pass rate, తక్కువ ఖరీదుతో కాంప్లెక్స్ డేటా ఇచ్చింది; ToolGrad-500 డేటాతో fine-tune చేసిన Gemma-3 మోడల్స్ Berkeley Function Calling Leaderboard లో మెరుగైన స్కోర్లు చూపాయి, ToolGrad-12B 83.1 స్కోరుతో ప్రముఖ ప్రొప్రైటరీ మోడల్స్ స్కోర్లతో పోటీపడింది.",
+            "why_it_matters": "ఏజెంటిక్ వర్క్‌ఫ్లోలకు నాణ్యమైన ట్రైనింగ్ డేటా పెద్ద అడ్డంకి. ఈ పద్ధతిలో ముఖ్యమైన అంశం: జనరేటెడ్ డేటాలోని ప్రతి సాల్యూషన్ నిజంగా execute అయి ధృవీకరించబడుతుంది — అంటే 'సాక్ష్యం' (విజయవంతమైన execution report) ఆధారం లేకుండా క్లెయిమ్ చేయబడదు. ఇది మన కాన్సెప్ట్‌తో ప్రతిధ్వనిస్తుంది: ధృవీకరించని అవుట్‌పుట్‌ను గ్రౌండ్ ట్రూత్‌గా తీసుకోకూడదు.",
+            "takeaway": "డేటా జనరేషన్ పైప్‌లైన్‌లలో, అన్సర్‌ను ముందు ధృవీకరించి ప్రశ్నను తర్వాత రాయడం వంటి ఆర్డర్ మార్పులు నాణ్యతను పెంచగలవు — అయితే ఇవి ప్రచురణకర్త చెప్పిన ఫలితాలు; స్వతంత్ర పునఃపరిశీలన అవసరం.",
             "source_ids": [
               "news-aa8533b1c5b4"
             ]
           }
         ],
-        "exercise": "మూల వ్యాసాన్ని తెరిచి ప్రచురణ తేదీ చూడండి. Tool sequence, user request ఏ క్రమంలో తయారవుతాయో చెప్పే భాగాన్ని కనుగొనండి. తర్వాత ఒక ఫలితాన్ని ఎంచుకుని, అది ఏ dataset లేదా benchmark‌కు సంబంధించినదో గమనించండి. రెండు చిన్న నోట్స్ రాయండి. మొదటిది మూలంలో నేరుగా ఉన్న విషయం. రెండోది మీ ప్రాజెక్టులో ఉపయోగించవచ్చని మీరు ఊహించిన ఆలోచన. రెండో నోట్‌ను ఇప్పటికే నిరూపించిన ఫలితంలా చెప్పకండి. అవసరమైతే చదివిన భాగానికి తిరిగి వెళ్లండి. గుర్తులేకపోతే ఊహించి సంఖ్యలు రాయడం కంటే, తెలియదని గుర్తించడం మంచిది. మీరు రాసిన రెండు నోట్స్‌ను పక్కపక్కన చదివి, ఆధారం ఎక్కడ ముగిసింది, మీ ఆలోచన ఎక్కడ మొదలైంది అనేది గుర్తించండి. ఈ తేడాను మీ స్నేహితుడికి ఒక నిమిషంలో వివరించడానికి ప్రయత్నించండి. అప్పుడు వార్తలోని విషయాన్ని మీరు ఎంత స్పష్టంగా అర్థం చేసుకున్నారో మీకే తెలుస్తుంది.",
-        "question": "AI పరిశోధనలోని ఒక ఫలితాన్ని చెప్పేటప్పుడు దానితో పాటు ఏమి చెప్పాలి?",
-        "answer": "అసలు మూలం, తేదీ, పరీక్ష జరిగిన పరిస్థితులు కూడా చెప్పాలి. మీ ప్రాజెక్టులో దాన్ని ఉపయోగించే ఆలోచన ఉంటే, పరీక్షించే వరకు దాన్ని మీ విశ్లేషణగా చెప్పండి. శీర్షికను హామీగా తీసుకోవడం కంటే, ఆధారాన్ని చదివే అవకాశం ఇవ్వడం మంచి వార్తా వివరణ లక్షణం."
+        "exercise": "రెండు నిమిషాల సోర్స్-చెక్ వ్యాయామం: రెండు వార్తా అంశాలకూ ఒక్కొక్కటి చేయండి — (1) ఈ డ్రాఫ్ట్‌లో ఏ వాదనలు ప్రచురణకర్త (OpenAI / Google Research) చెప్పినవో, ఏవి మా వివరణో గుర్తించండి; (2) ToolGrad అంశంలో '83.1 స్కోరు' వంటి సంఖ్యలు ఏ benchmark లో, ఏ పరిస్థితుల్లో కొలిచారో ఒక వాక్యంలో రాయండి. మొదటి అంశానికి feed excerpt మాత్రమే ఆధారం కావడం గమనించండి — పూర్తి వ్యాసం చదివే ముందు మీరు ఏ నిర్ణయాలు తీసుకోలేరు?",
+        "question": "ToolGrad యొక్క 'answer-first' పద్ధతి మన కాన్సెప్ట్ (సాక్ష్యం లేని సందర్భాలను గుర్తించడం) తో ఎలా ముడిపడి ఉంది?",
+        "answer": "ToolGrad ముందు టూల్-యూజ్ చైన్‌ను నిజంగా execute చేసి ధృవీకరించిన తర్వాతే దానికి ప్రశ్నను జత చేస్తుంది — అంటే ప్రతి ట్రైనింగ్ ఉదాహరణ పాత్ర ధరించిన సాక్ష్యం (విజయవంతమైన execution) ఆధారంగా నిర్మించబడుతుంది; ధృవీకరణ లేని అవుట్‌పుట్‌ను గ్రౌండ్ ట్రూత్‌గా అంగీకరించకపోవడమే రెండింటికీ సాధారణ సూత్రం."
       },
-      "usage": {},
+      "usage": {
+        "prompt_tokens": 3530,
+        "total_tokens": 15671,
+        "completion_tokens": 12141,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 24
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 24
+        }
+      },
       "sources": [
         {
           "id": "paper-2005.11401",
@@ -150,6 +203,15 @@
           "publisher": "arXiv",
           "published_at": null,
           "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-39842fa0b34b",
+          "title": "How a researcher uses Codex and ChatGPT to search for new antimicrobial molecules",
+          "url": "https://openai.com/index/using-codex-chatgpt-to-search-for-new-antimicrobials",
+          "publisher": "OpenAI",
+          "published_at": "2026-09-10T16:00:00+00:00",
+          "evidence_type": "feed_excerpt",
+          "topic": "RAG"
         },
         {
           "id": "news-aa8533b1c5b4",
