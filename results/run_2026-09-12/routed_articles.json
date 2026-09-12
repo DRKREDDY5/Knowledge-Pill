@@ -1,0 +1,118 @@
+{
+  "schema_version": 2,
+  "task": "topic_router",
+  "engine": "Qwen3-1.7B + LoRA (merged)",
+  "source_mode": "recent_editorial_feed",
+  "created_at": "2026-09-12T21:34:12.847553+00:00",
+  "articles": [
+    {
+      "id": "075fed980e67",
+      "text": "Rebuilding AUTOMATIC1111 with Gradio Workflow.",
+      "title": "Rebuilding AUTOMATIC1111 with Gradio Workflow",
+      "source_url": "https://huggingface.co/blog/gradio-workflow-1111",
+      "published_at": "2026-09-10T00:00:00+00:00",
+      "source_kind": "editorial_feed",
+      "label": "Other"
+    },
+    {
+      "id": "a139f80b1592",
+      "text": "Fine-tuning a 350M Model for Better Structured Outputs in 100 GRPO Steps.",
+      "title": "Fine-tuning a 350M Model for Better Structured Outputs in 100 GRPO Steps",
+      "source_url": "https://huggingface.co/blog/grpo-with-trl-ifstruct",
+      "published_at": "2026-09-03T00:00:00+00:00",
+      "source_kind": "editorial_feed",
+      "label": "Fine-tuning"
+    },
+    {
+      "id": "cdd1118267ee",
+      "text": "Give Your Coding Agents a Memory You Own.",
+      "title": "Give Your Coding Agents a Memory You Own",
+      "source_url": "https://huggingface.co/blog/funes",
+      "published_at": "2026-09-03T00:00:00+00:00",
+      "source_kind": "editorial_feed",
+      "label": "Agents"
+    },
+    {
+      "id": "b5500bc65035",
+      "text": "Training a coding model to paint watercolours with TRL and OpenEnv.",
+      "title": "Training a coding model to paint watercolours with TRL and OpenEnv",
+      "source_url": "https://huggingface.co/blog/train-to-paint-with-code",
+      "published_at": "2026-09-03T00:00:00+00:00",
+      "source_kind": "editorial_feed",
+      "label": "Other"
+    },
+    {
+      "id": "91dad0068ec2",
+      "text": "Introducing @huggingface/kernels: 200+ WebGPU Kernels for Local AI.",
+      "title": "Introducing @huggingface/kernels: 200+ WebGPU Kernels for Local AI",
+      "source_url": "https://huggingface.co/blog/webgpu-kernels",
+      "published_at": "2026-09-01T00:00:00+00:00",
+      "source_kind": "editorial_feed",
+      "label": "Other"
+    },
+    {
+      "id": "4d3b17a749f4",
+      "text": "The Open ASR Leaderboard Adds Its First Global South Language.",
+      "title": "The Open ASR Leaderboard Adds Its First Global South Language",
+      "source_url": "https://huggingface.co/blog/open-asr-leaderboard-global-south",
+      "published_at": "2026-08-28T00:00:00+00:00",
+      "source_kind": "editorial_feed",
+      "label": "Other"
+    },
+    {
+      "id": "17177c100c91",
+      "text": "Training and Finetuning Multi-Vector Embedding Models with Sentence Transformers.",
+      "title": "Training and Finetuning Multi-Vector Embedding Models with Sentence Transformers",
+      "source_url": "https://huggingface.co/blog/train-multi-vector-encoder",
+      "published_at": "2026-08-26T00:00:00+00:00",
+      "source_kind": "editorial_feed",
+      "label": "Fine-tuning"
+    },
+    {
+      "id": "9b54a38fa1b1",
+      "text": "Wire It, Run It, Deploy It: AI Workflows in Gradio.",
+      "title": "Wire It, Run It, Deploy It: AI Workflows in Gradio",
+      "source_url": "https://huggingface.co/blog/gradio-workflow-guide",
+      "published_at": "2026-08-25T00:00:00+00:00",
+      "source_kind": "editorial_feed",
+      "label": "Agents"
+    },
+    {
+      "id": "966123ef613d",
+      "text": "How Hugging Face Inference Endpoints, Jobs, and Buckets Power Search on Papers with Code.",
+      "title": "How Hugging Face Inference Endpoints, Jobs, and Buckets Power Search on Papers with Code",
+      "source_url": "https://huggingface.co/blog/pwc-search",
+      "published_at": "2026-08-21T00:00:00+00:00",
+      "source_kind": "editorial_feed",
+      "label": "Other"
+    },
+    {
+      "id": "e3ddd7a65cd3",
+      "text": "Measuring benchmark optimization in speech recognition.",
+      "title": "Measuring benchmark optimization in speech recognition",
+      "source_url": "https://huggingface.co/blog/asr-benchmark-optimization",
+      "published_at": "2026-08-21T00:00:00+00:00",
+      "source_kind": "editorial_feed",
+      "label": "Fine-tuning"
+    },
+    {
+      "id": "d9524ab76177",
+      "text": "Multi-Vector (Late Interaction) Embedding Models with Sentence Transformers.",
+      "title": "Multi-Vector (Late Interaction) Embedding Models with Sentence Transformers",
+      "source_url": "https://huggingface.co/blog/multi-vector-encoder",
+      "published_at": "2026-08-18T00:00:00+00:00",
+      "source_kind": "editorial_feed",
+      "label": "Other"
+    },
+    {
+      "id": "bc290ba394fd",
+      "text": "State of Open Models: Summer 2026 Observations.",
+      "title": "State of Open Models: Summer 2026 Observations",
+      "source_url": "https://huggingface.co/blog/state-of-open-models-summer-2026",
+      "published_at": "2026-08-14T00:00:00+00:00",
+      "source_kind": "editorial_feed",
+      "label": "Other"
+    }
+  ],
+  "skipped": []
+}

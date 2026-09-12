@@ -1,0 +1,473 @@
+{
+  "schema_version": 2,
+  "task": "topic_router",
+  "status": "measured",
+  "same_evaluation_set": true,
+  "dataset_hash": "fc8f70f6c0a21c763fe590837a487aa27be0588f66a139bee34be8684e3b6d14",
+  "labels": [
+    "RAG",
+    "Agents",
+    "Fine-tuning",
+    "Other"
+  ],
+  "base_revision": "ea980cb0a6c2ae4b936e82123acc929f1cec04c1",
+  "baseline": {
+    "n": 100,
+    "accuracy": 0.25,
+    "macro_f1": 0.1,
+    "classification_report": {
+      "RAG": {
+        "precision": 0.25,
+        "recall": 1.0,
+        "f1-score": 0.4,
+        "support": 25.0
+      },
+      "Agents": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 25.0
+      },
+      "Fine-tuning": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 25.0
+      },
+      "Other": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 25.0
+      },
+      "accuracy": 0.25,
+      "macro avg": {
+        "precision": 0.0625,
+        "recall": 0.25,
+        "f1-score": 0.1,
+        "support": 100.0
+      },
+      "weighted avg": {
+        "precision": 0.0625,
+        "recall": 0.25,
+        "f1-score": 0.1,
+        "support": 100.0
+      }
+    },
+    "label_order": [
+      "RAG",
+      "Agents",
+      "Fine-tuning",
+      "Other"
+    ],
+    "confusion_matrix": [
+      [
+        25,
+        0,
+        0,
+        0
+      ],
+      [
+        25,
+        0,
+        0,
+        0
+      ],
+      [
+        25,
+        0,
+        0,
+        0
+      ],
+      [
+        25,
+        0,
+        0,
+        0
+      ]
+    ]
+  },
+  "finetuned": {
+    "n": 100,
+    "accuracy": 1.0,
+    "macro_f1": 1.0,
+    "classification_report": {
+      "RAG": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 25.0
+      },
+      "Agents": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 25.0
+      },
+      "Fine-tuning": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 25.0
+      },
+      "Other": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 25.0
+      },
+      "accuracy": 1.0,
+      "macro avg": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 100.0
+      },
+      "weighted avg": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 100.0
+      }
+    },
+    "label_order": [
+      "RAG",
+      "Agents",
+      "Fine-tuning",
+      "Other"
+    ],
+    "confusion_matrix": [
+      [
+        25,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        25,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        25,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        25
+      ]
+    ]
+  },
+  "lexical": {
+    "n": 100,
+    "accuracy": 1.0,
+    "macro_f1": 1.0,
+    "classification_report": {
+      "RAG": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 25.0
+      },
+      "Agents": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 25.0
+      },
+      "Fine-tuning": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 25.0
+      },
+      "Other": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 25.0
+      },
+      "accuracy": 1.0,
+      "macro avg": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 100.0
+      },
+      "weighted avg": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 100.0
+      }
+    },
+    "label_order": [
+      "RAG",
+      "Agents",
+      "Fine-tuning",
+      "Other"
+    ],
+    "confusion_matrix": [
+      [
+        25,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        25,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        25,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        25
+      ]
+    ]
+  },
+  "source_cases": {
+    "baseline": {
+      "n": 16,
+      "accuracy": 0.25,
+      "macro_f1": 0.1,
+      "classification_report": {
+        "RAG": {
+          "precision": 0.25,
+          "recall": 1.0,
+          "f1-score": 0.4,
+          "support": 4.0
+        },
+        "Agents": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 4.0
+        },
+        "Fine-tuning": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 4.0
+        },
+        "Other": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 4.0
+        },
+        "accuracy": 0.25,
+        "macro avg": {
+          "precision": 0.0625,
+          "recall": 0.25,
+          "f1-score": 0.1,
+          "support": 16.0
+        },
+        "weighted avg": {
+          "precision": 0.0625,
+          "recall": 0.25,
+          "f1-score": 0.1,
+          "support": 16.0
+        }
+      },
+      "label_order": [
+        "RAG",
+        "Agents",
+        "Fine-tuning",
+        "Other"
+      ],
+      "confusion_matrix": [
+        [
+          4,
+          0,
+          0,
+          0
+        ],
+        [
+          4,
+          0,
+          0,
+          0
+        ],
+        [
+          4,
+          0,
+          0,
+          0
+        ],
+        [
+          4,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    "finetuned": {
+      "n": 16,
+      "accuracy": 0.875,
+      "macro_f1": 0.8666666666666666,
+      "classification_report": {
+        "RAG": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1-score": 1.0,
+          "support": 4.0
+        },
+        "Agents": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1-score": 1.0,
+          "support": 4.0
+        },
+        "Fine-tuning": {
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1-score": 0.8,
+          "support": 4.0
+        },
+        "Other": {
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1-score": 0.6666666666666666,
+          "support": 4.0
+        },
+        "accuracy": 0.875,
+        "macro avg": {
+          "precision": 0.9166666666666666,
+          "recall": 0.875,
+          "f1-score": 0.8666666666666666,
+          "support": 16.0
+        },
+        "weighted avg": {
+          "precision": 0.9166666666666666,
+          "recall": 0.875,
+          "f1-score": 0.8666666666666666,
+          "support": 16.0
+        }
+      },
+      "label_order": [
+        "RAG",
+        "Agents",
+        "Fine-tuning",
+        "Other"
+      ],
+      "confusion_matrix": [
+        [
+          4,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          4,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          4,
+          0
+        ],
+        [
+          0,
+          0,
+          2,
+          2
+        ]
+      ]
+    },
+    "lexical": {
+      "n": 16,
+      "accuracy": 0.9375,
+      "macro_f1": 0.9365079365079365,
+      "classification_report": {
+        "RAG": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1-score": 1.0,
+          "support": 4.0
+        },
+        "Agents": {
+          "precision": 1.0,
+          "recall": 0.75,
+          "f1-score": 0.8571428571428571,
+          "support": 4.0
+        },
+        "Fine-tuning": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1-score": 1.0,
+          "support": 4.0
+        },
+        "Other": {
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1-score": 0.8888888888888888,
+          "support": 4.0
+        },
+        "accuracy": 0.9375,
+        "macro avg": {
+          "precision": 0.95,
+          "recall": 0.9375,
+          "f1-score": 0.9365079365079365,
+          "support": 16.0
+        },
+        "weighted avg": {
+          "precision": 0.95,
+          "recall": 0.9375,
+          "f1-score": 0.9365079365079365,
+          "support": 16.0
+        }
+      },
+      "label_order": [
+        "RAG",
+        "Agents",
+        "Fine-tuning",
+        "Other"
+      ],
+      "confusion_matrix": [
+        [
+          4,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          3,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          4,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          4
+        ]
+      ]
+    }
+  },
+  "limitations": "Authored development validation: 20 scenario groups. Source diagnostic: 16 author-labelled paper summaries."
+}

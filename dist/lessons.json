@@ -1,0 +1,107 @@
+[
+  {
+    "id": "rag-foundations",
+    "topic": "RAG",
+    "minutes": 5,
+    "kind": "Foundation",
+    "source_date": "2021-04-12",
+    "created_at": "2026-09-12",
+    "status": "starter_example",
+    "en": {
+      "title": "Give your model an open book",
+      "summary": "A useful way to understand retrieval-augmented generation: find relevant material, then give it to the model as context.",
+      "explain": "Imagine a teammate answering a question about an unfamiliar codebase. You first point them to the relevant files. A retrieval step plays a similar role: it finds passages that the generation step can use. The original RAG work combines a pretrained generator with retrieval from an external collection. This does not make every answer correct; a useful product still needs to check whether its sources support its claims.",
+      "analogy": "For a Java developer: picture a service that retrieves relevant records before constructing its response. Here, retrieved text becomes context for a language model. This is an analogy, not a description of the paper's implementation.",
+      "exercise": "Take a question about a project README. Identify the exact paragraph you would give a model before asking it to answer. Then ask: does that paragraph contain enough information?",
+      "recall": "What does retrieval add to a language model's answer process?",
+      "answer": "It supplies relevant material from an external collection as context. The model still has to use that material correctly."
+    },
+    "te": {
+      "title": "మీ model‌కు ఒక open book ఇవ్వండి",
+      "summary": "RAG‌ను అర్థం చేసుకోవడానికి: ముందుగా సంబంధిత సమాచారం వెతకండి; తరువాత దానిని model‌కు context‌గా ఇవ్వండి.",
+      "explain": "మీ codebase గురించి తెలియని సహోద్యోగి ఒక ప్రశ్నకు సమాధానం చెప్పాలి అనుకోండి. ముందుగా సంబంధిత files చూపిస్తారు కదా. Retrieval కూడా ఇలాగే అవసరమైన passages‌ను వెతుకుతుంది. Generation సమయంలో model వాటిని ఉపయోగించగలదు. అసలు RAG పరిశోధనలో pretrained generator‌తో పాటు బయట ఉన్న collection నుంచి retrieval‌ను ఉపయోగించారు. అయితే ప్రతి సమాధానం సరైనదేనని దీని అర్థం కాదు. Source నిజంగా claim‌కు ఆధారం ఇస్తుందో ఇంకా చూడాలి.",
+      "analogy": "Java developer‌గా ఆలోచిస్తే: response తయారు చేసే ముందు అవసరమైన records తీసుకొచ్చే service‌ను ఊహించండి. ఇక్కడ తీసుకొచ్చిన text, language model‌కు context అవుతుంది. ఇది అర్థం చేసుకోవడానికి ఇచ్చిన పోలిక మాత్రమే.",
+      "exercise": "ఒక project README గురించి ప్రశ్న ఎంచుకోండి. Model‌కు ఇచ్చే ముందు సరైన paragraph‌ను గుర్తించండి. ఆ paragraph‌లో సమాధానానికి సరిపడా సమాచారం ఉందా?",
+      "recall": "Language model సమాధానం తయారు చేసే ప్రక్రియకు retrieval ఏమి జోడిస్తుంది?",
+      "answer": "బయటి collection నుంచి సంబంధిత సమాచారాన్ని context‌గా ఇస్తుంది. ఆ సమాచారాన్ని model సరిగ్గా ఉపయోగించాలి."
+    },
+    "sources": [
+      {
+        "title": "Lewis et al. — Retrieval-Augmented Generation",
+        "url": "https://arxiv.org/abs/2005.11401",
+        "date": "2021-04-12"
+      }
+    ],
+    "evidence_note": "Authored foundation lesson based on the linked source. Telugu translation is a draft awaiting fluent-speaker review."
+  },
+  {
+    "id": "lora-foundations",
+    "topic": "Fine-tuning",
+    "minutes": 5,
+    "kind": "Foundation",
+    "source_date": "2021-10-16",
+    "created_at": "2026-09-12",
+    "status": "starter_example",
+    "en": {
+      "title": "Teach a small skill with LoRA",
+      "summary": "Keep the base weights frozen and learn a smaller set of changes for a specific task.",
+      "explain": "LoRA freezes a pretrained model’s weights and learns smaller low-rank adaptation matrices. In our project, the task is to assign an AI article description to RAG, Agents, Fine-tuning or Other. The experiment asks whether these learned changes improve topic classification. The LoRA paper does not establish that our particular router will outperform a simple text classifier; we have to measure that.",
+      "analogy": "Think of a focused adaptation layer for an existing service. The analogy helps explain the scope of a change; neural model weights are not ordinary application code.",
+      "exercise": "Write a two-sentence description of an article about training adapters. Then write one about an assistant using tools. Choose the main topic for each. Mentioning a model alone does not determine the category.",
+      "recall": "During LoRA training, what stays frozen and what is learned?",
+      "answer": "The pretrained base weights stay frozen; the smaller low-rank adaptation matrices are learned."
+    },
+    "te": {
+      "title": "LoRA‌తో ఒక చిన్న నైపుణ్యం నేర్పండి",
+      "summary": "Base weights‌ను మార్చకుండా, ఒక నిర్దిష్ట పని కోసం చిన్న మార్పుల సమూహాన్ని నేర్పించండి.",
+      "explain": "LoRAలో pretrained weights స్థిరంగా ఉంటాయి. కొత్త low-rank matrices మాత్రమే training ద్వారా నేర్చుకుంటాయి. మన project‌లో AI article వివరణను RAG, Agents, Fine-tuning లేదా Otherగా వర్గీకరిస్తాం. ఈ మార్పులు topic classificationను మెరుగుపరుస్తాయా అనేది మన experiment. మన router సాధారణ text classifier కంటే మెరుగ్గా పనిచేస్తుందో విడిగా కొలవాలి.",
+      "analogy": "ఇప్పటికే ఉన్న service‌కు ఒక నిర్దిష్ట పని కోసం adaptation layer జోడించినట్లు ఊహించండి. ఇది ఒక పోలిక మాత్రమే; neural weights సాధారణ application code కాదు.",
+      "exercise": "Adapters training గురించి ఒక చిన్న article వివరణ రాయండి. తరువాత tools వాడే assistant గురించి మరొక వివరణ రాయండి. ప్రతి దానికి ప్రధాన topic ఎంచుకోండి.",
+      "recall": "LoRA training‌లో ఏవి స్థిరంగా ఉంటాయి? ఏవి నేర్చుకుంటాయి?",
+      "answer": "Pretrained base weights స్థిరంగా ఉంటాయి. చిన్న low-rank adaptation matrices నేర్చుకుంటాయి."
+    },
+    "sources": [
+      {
+        "title": "Hu et al. — LoRA",
+        "url": "https://arxiv.org/abs/2106.09685",
+        "date": "2021-10-16"
+      }
+    ],
+    "evidence_note": "Authored foundation lesson based on the linked source. Telugu translation is a draft awaiting fluent-speaker review."
+  },
+  {
+    "id": "workflow-foundations",
+    "topic": "Agents",
+    "minutes": 5,
+    "kind": "Foundation",
+    "source_date": "2024-12-19",
+    "created_at": "2026-09-12",
+    "status": "starter_example",
+    "en": {
+      "title": "Start with a workflow you can explain",
+      "summary": "Make each step's responsibility clear before giving the model more freedom.",
+      "explain": "Anthropic distinguishes workflows, where code defines the paths, from agents, where a model directs its own process and tool use. Knowledge Pill uses a defined workflow: collect article descriptions, assign a topic, and match a foundation lesson to the learner’s interest. The model makes one classification decision. Code handles the sequence and language selection. This narrow task does not currently need an autonomous agent.",
+      "analogy": "A Java batch job often has explicit stages and failure handling. We can use the same discipline when a language model performs one stage.",
+      "exercise": "Draw your project's steps. For each one, write what happens when its input is missing or its output is invalid. Find one decision that should stay in ordinary code.",
+      "recall": "Who determines the next step in a predefined workflow?",
+      "answer": "The application code defines the path; a model may still carry out particular steps along that path."
+    },
+    "te": {
+      "title": "మీరు వివరించగల workflow‌తో మొదలుపెట్టండి",
+      "summary": "Model‌కు ఎక్కువ స్వేచ్ఛ ఇచ్చే ముందు ప్రతి దశ బాధ్యత స్పష్టంగా ఉండాలి.",
+      "explain": "Workflowలో దశల క్రమాన్ని code నిర్ణయిస్తుంది. Agentలో model తన ప్రక్రియను, tools వినియోగాన్ని నిర్ణయిస్తుంది. Knowledge Pillలో article వివరణ సేకరించడం, topic ఎంచుకోవడం, ఆసక్తికి సరిపోయే చిన్న పాఠం చూపించడం అనే క్రమం ఉంటుంది. Model topic మాత్రమే ఎంచుకుంటుంది. మిగతా క్రమం, భాష ఎంపిక code చూసుకుంటుంది.",
+      "analogy": "Java batch job‌లో stages, failure handling స్పష్టంగా ఉంటాయి. ఒక stage‌ను language model చేసినా అదే క్రమశిక్షణ ఉపయోగపడుతుంది.",
+      "exercise": "మీ project దశలను రాయండి. Input లేకపోతే లేదా output తప్పైతే ప్రతి దశలో ఏమవుతుందో గుర్తించండి. సాధారణ code‌లోనే ఉంచాల్సిన ఒక నిర్ణయాన్ని ఎంచుకోండి.",
+      "recall": "ముందుగా నిర్వచించిన workflow‌లో తరువాతి దశను ఎవరు నిర్ణయిస్తారు?",
+      "answer": "Application code మార్గాన్ని నిర్ణయిస్తుంది. ఆ మార్గంలోని కొన్ని పనులను model చేయవచ్చు."
+    },
+    "sources": [
+      {
+        "title": "Anthropic — Building effective agents",
+        "url": "https://www.anthropic.com/engineering/building-effective-agents",
+        "date": "2024-12-19"
+      }
+    ],
+    "evidence_note": "Authored foundation lesson based on the linked source. Telugu translation is a draft awaiting fluent-speaker review."
+  }
+]

@@ -1,0 +1,28 @@
+[
+  {
+    "set": "source_cases",
+    "id": "paper-2103.00020",
+    "expected": "Other",
+    "label": "Fine-tuning",
+    "latency_ms": 64.2377829999532,
+    "choice_scores": {
+      "RAG": 8.539895013370824e-09,
+      "Agents": 2.357940687147675e-08,
+      "Fine-tuning": 0.9996079802513123,
+      "Other": 0.0003920417802873999
+    }
+  },
+  {
+    "set": "source_cases",
+    "id": "paper-2212.04356",
+    "expected": "Other",
+    "label": "Fine-tuning",
+    "latency_ms": 66.3316099999065,
+    "choice_scores": {
+      "RAG": 2.366911644458014e-07,
+      "Agents": 2.916607222402945e-08,
+      "Fine-tuning": 0.9935114979743958,
+      "Other": 0.006488267797976732
+    }
+  }
+]

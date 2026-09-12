@@ -1,0 +1,162 @@
+[
+  {
+    "id": "paper-2005.11401",
+    "group_id": "paper-2005.11401",
+    "text": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks. Combines document retrieval with a pretrained generator so answers can use knowledge from an external collection.",
+    "label": "RAG",
+    "source_url": "https://arxiv.org/abs/2005.11401",
+    "provenance": "Source-grounded author-written summary; label assigned for this project",
+    "review_status": "not_independently_reviewed",
+    "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks"
+  },
+  {
+    "id": "paper-2002.08909",
+    "group_id": "paper-2002.08909",
+    "text": "REALM: Retrieval-Augmented Language Model Pre-Training. Introduces an external knowledge retriever used with a language model for open-domain question answering. The main focus is retrieval-augmented knowledge access.",
+    "label": "RAG",
+    "source_url": "https://arxiv.org/abs/2002.08909",
+    "provenance": "Source-grounded author-written summary; label assigned for this project",
+    "review_status": "not_independently_reviewed",
+    "title": "REALM: Retrieval-Augmented Language Model Pre-Training"
+  },
+  {
+    "id": "paper-2310.11511",
+    "group_id": "paper-2310.11511",
+    "text": "Self-RAG: Learning to Retrieve, Generate, and Critique through Self-Reflection. Uses learned reflection signals to decide when to retrieve and to assess generated responses against retrieved material.",
+    "label": "RAG",
+    "source_url": "https://arxiv.org/abs/2310.11511",
+    "provenance": "Source-grounded author-written summary; label assigned for this project",
+    "review_status": "not_independently_reviewed",
+    "title": "Self-RAG: Learning to Retrieve, Generate, and Critique through Self-Reflection"
+  },
+  {
+    "id": "paper-2212.10496",
+    "group_id": "paper-2212.10496",
+    "text": "Precise Zero-Shot Dense Retrieval without Relevance Labels. Uses a generated hypothetical document to obtain a useful query representation for dense passage retrieval.",
+    "label": "RAG",
+    "source_url": "https://arxiv.org/abs/2212.10496",
+    "provenance": "Source-grounded author-written summary; label assigned for this project",
+    "review_status": "not_independently_reviewed",
+    "title": "Precise Zero-Shot Dense Retrieval without Relevance Labels"
+  },
+  {
+    "id": "paper-2210.03629",
+    "group_id": "paper-2210.03629",
+    "text": "ReAct: Synergizing Reasoning and Acting in Language Models. Interleaves reasoning with environment actions so a model can gather information and adjust its next step.",
+    "label": "Agents",
+    "source_url": "https://arxiv.org/abs/2210.03629",
+    "provenance": "Source-grounded author-written summary; label assigned for this project",
+    "review_status": "not_independently_reviewed",
+    "title": "ReAct: Synergizing Reasoning and Acting in Language Models"
+  },
+  {
+    "id": "paper-2302.04761",
+    "group_id": "paper-2302.04761",
+    "text": "Toolformer: Language Models Can Teach Themselves to Use Tools. Studies models learning when and how to invoke external APIs and incorporate their results into language generation.",
+    "label": "Agents",
+    "source_url": "https://arxiv.org/abs/2302.04761",
+    "provenance": "Source-grounded author-written summary; label assigned for this project",
+    "review_status": "not_independently_reviewed",
+    "title": "Toolformer: Language Models Can Teach Themselves to Use Tools"
+  },
+  {
+    "id": "paper-2305.16291",
+    "group_id": "paper-2305.16291",
+    "text": "Voyager: An Open-Ended Embodied Agent with Large Language Models. An assistant explores a game environment, develops reusable skills, and uses feedback to improve its actions.",
+    "label": "Agents",
+    "source_url": "https://arxiv.org/abs/2305.16291",
+    "provenance": "Source-grounded author-written summary; label assigned for this project",
+    "review_status": "not_independently_reviewed",
+    "title": "Voyager: An Open-Ended Embodied Agent with Large Language Models"
+  },
+  {
+    "id": "paper-2405.15793",
+    "group_id": "paper-2405.15793",
+    "text": "SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering. Studies an interface that lets a language-model agent inspect files, edit code, and execute tools to resolve software issues.",
+    "label": "Agents",
+    "source_url": "https://arxiv.org/abs/2405.15793",
+    "provenance": "Source-grounded author-written summary; label assigned for this project",
+    "review_status": "not_independently_reviewed",
+    "title": "SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering"
+  },
+  {
+    "id": "paper-2106.09685",
+    "group_id": "paper-2106.09685",
+    "text": "LoRA: Low-Rank Adaptation of Large Language Models. Adapts pretrained models by freezing base weights and learning low-rank parameter changes.",
+    "label": "Fine-tuning",
+    "source_url": "https://arxiv.org/abs/2106.09685",
+    "provenance": "Source-grounded author-written summary; label assigned for this project",
+    "review_status": "not_independently_reviewed",
+    "title": "LoRA: Low-Rank Adaptation of Large Language Models"
+  },
+  {
+    "id": "paper-2305.14314",
+    "group_id": "paper-2305.14314",
+    "text": "QLoRA: Efficient Finetuning of Quantized LLMs. Combines a frozen quantized language model with trainable low-rank adapters to reduce adaptation memory requirements.",
+    "label": "Fine-tuning",
+    "source_url": "https://arxiv.org/abs/2305.14314",
+    "provenance": "Source-grounded author-written summary; label assigned for this project",
+    "review_status": "not_independently_reviewed",
+    "title": "QLoRA: Efficient Finetuning of Quantized LLMs"
+  },
+  {
+    "id": "paper-2305.18290",
+    "group_id": "paper-2305.18290",
+    "text": "Direct Preference Optimization: Your Language Model is Secretly a Reward Model. Adapts language-model behaviour directly from preference comparisons using a training objective.",
+    "label": "Fine-tuning",
+    "source_url": "https://arxiv.org/abs/2305.18290",
+    "provenance": "Source-grounded author-written summary; label assigned for this project",
+    "review_status": "not_independently_reviewed",
+    "title": "Direct Preference Optimization: Your Language Model is Secretly a Reward Model"
+  },
+  {
+    "id": "paper-2402.09353",
+    "group_id": "paper-2402.09353",
+    "text": "DoRA: Weight-Decomposed Low-Rank Adaptation. Develops a parameter-efficient adaptation method using a decomposition of weight magnitude and direction.",
+    "label": "Fine-tuning",
+    "source_url": "https://arxiv.org/abs/2402.09353",
+    "provenance": "Source-grounded author-written summary; label assigned for this project",
+    "review_status": "not_independently_reviewed",
+    "title": "DoRA: Weight-Decomposed Low-Rank Adaptation"
+  },
+  {
+    "id": "paper-2010.11929",
+    "group_id": "paper-2010.11929",
+    "text": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale. Studies a transformer architecture operating on image patches for visual classification.",
+    "label": "Other",
+    "source_url": "https://arxiv.org/abs/2010.11929",
+    "provenance": "Source-grounded author-written summary; label assigned for this project",
+    "review_status": "not_independently_reviewed",
+    "title": "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale"
+  },
+  {
+    "id": "paper-2103.00020",
+    "group_id": "paper-2103.00020",
+    "text": "Learning Transferable Visual Models From Natural Language Supervision. Learns visual representations from image-text pairs and evaluates their transfer to image recognition tasks.",
+    "label": "Other",
+    "source_url": "https://arxiv.org/abs/2103.00020",
+    "provenance": "Source-grounded author-written summary; label assigned for this project",
+    "review_status": "not_independently_reviewed",
+    "title": "Learning Transferable Visual Models From Natural Language Supervision"
+  },
+  {
+    "id": "paper-2212.04356",
+    "group_id": "paper-2212.04356",
+    "text": "Robust Speech Recognition via Large-Scale Weak Supervision. Studies speech recognition learned from a large collection of weakly supervised audio and text.",
+    "label": "Other",
+    "source_url": "https://arxiv.org/abs/2212.04356",
+    "provenance": "Source-grounded author-written summary; label assigned for this project",
+    "review_status": "not_independently_reviewed",
+    "title": "Robust Speech Recognition via Large-Scale Weak Supervision"
+  },
+  {
+    "id": "paper-2112.10752",
+    "group_id": "paper-2112.10752",
+    "text": "High-Resolution Image Synthesis with Latent Diffusion Models. Uses diffusion in a learned latent representation for image synthesis and related visual generation tasks.",
+    "label": "Other",
+    "source_url": "https://arxiv.org/abs/2112.10752",
+    "provenance": "Source-grounded author-written summary; label assigned for this project",
+    "review_status": "not_independently_reviewed",
+    "title": "High-Resolution Image Synthesis with Latent Diffusion Models"
+  }
+]

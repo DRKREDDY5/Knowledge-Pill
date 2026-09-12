@@ -1,0 +1,802 @@
+[
+  {
+    "id": "B-16-0",
+    "group_id": "B-16",
+    "text": "Auditing an assistant's actions. The article records which tools an agent called, their inputs, and the resulting state changes.",
+    "label": "Agents",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "C-18-2",
+    "group_id": "C-18",
+    "text": "A small pretrained model learns category labels from reviewed examples and is compared with its original version. The article is titled \"Training a compact label router\".",
+    "label": "Fine-tuning",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "B-12-0",
+    "group_id": "B-12",
+    "text": "Human escalation after repeated failure. An automated assistant stops retrying unsuccessful actions and asks a person to resolve the issue.",
+    "label": "Agents",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "B-12-2",
+    "group_id": "B-12",
+    "text": "An automated assistant stops retrying unsuccessful actions and asks a person to resolve the issue. The article is titled \"Human escalation after repeated failure\".",
+    "label": "Agents",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "A-09-0",
+    "group_id": "A-09",
+    "text": "Comparing retrieval recall. The experiment measures whether search returns the passages that contain the answer.",
+    "label": "RAG",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "A-16-4",
+    "group_id": "A-16",
+    "text": "Reading suggestion: Retrieving tables for answers. A system finds the relevant rows in financial reports and passes that context to a text generator. The intended reader is a software developer.",
+    "label": "RAG",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "C-09-1",
+    "group_id": "C-09",
+    "text": "Article: Masking the training loss. Description: The training code computes loss on the assistant's target answer instead of learning to repeat the input prompt.",
+    "label": "Fine-tuning",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "C-19-1",
+    "group_id": "C-19",
+    "text": "Article: Ablating adapter placement. Description: The experiment changes which transformer layers receive trainable adapters during task adaptation.",
+    "label": "Fine-tuning",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "C-16-2",
+    "group_id": "C-16",
+    "text": "Labelled task examples are converted into conversation-format records for supervised model training. The article is titled \"Preparing ShareGPT records\".",
+    "label": "Fine-tuning",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "D-16-2",
+    "group_id": "D-16",
+    "text": "A statistical model flags unusual transaction patterns using structured features. The article is titled \"Detecting anomalies in transactions\".",
+    "label": "Other",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "B-09-0",
+    "group_id": "B-09",
+    "text": "Functions exposed through MCP. A tool server exposes operations that an assistant can discover and invoke while performing a task.",
+    "label": "Agents",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "B-18-0",
+    "group_id": "B-18",
+    "text": "Recovering a paused workflow. An assistant resumes from a saved checkpoint after a person supplies a missing decision.",
+    "label": "Agents",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "B-09-1",
+    "group_id": "B-09",
+    "text": "Article: Functions exposed through MCP. Description: A tool server exposes operations that an assistant can discover and invoke while performing a task.",
+    "label": "Agents",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "B-18-2",
+    "group_id": "B-18",
+    "text": "An assistant resumes from a saved checkpoint after a person supplies a missing decision. The article is titled \"Recovering a paused workflow\".",
+    "label": "Agents",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "D-18-2",
+    "group_id": "D-18",
+    "text": "An existing translation API converts text between languages without additional training or autonomous actions. The article is titled \"Translation with a pretrained service\".",
+    "label": "Other",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "A-09-1",
+    "group_id": "A-09",
+    "text": "Article: Comparing retrieval recall. Description: The experiment measures whether search returns the passages that contain the answer.",
+    "label": "RAG",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "D-09-0",
+    "group_id": "D-09",
+    "text": "An AI hardware launch. A manufacturer announces an accelerator chip and describes its memory and compute specifications.",
+    "label": "Other",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "B-09-2",
+    "group_id": "B-09",
+    "text": "A tool server exposes operations that an assistant can discover and invoke while performing a task. The article is titled \"Functions exposed through MCP\".",
+    "label": "Agents",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "C-19-4",
+    "group_id": "C-19",
+    "text": "Reading suggestion: Ablating adapter placement. The experiment changes which transformer layers receive trainable adapters during task adaptation. The intended reader is a software developer.",
+    "label": "Fine-tuning",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "A-12-4",
+    "group_id": "A-12",
+    "text": "Reading suggestion: Parent documents and small chunks. Small text chunks locate a match, then their parent sections supply context for the generated answer. The intended reader is a software developer.",
+    "label": "RAG",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "B-12-1",
+    "group_id": "B-12",
+    "text": "Article: Human escalation after repeated failure. Description: An automated assistant stops retrying unsuccessful actions and asks a person to resolve the issue.",
+    "label": "Agents",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "C-09-2",
+    "group_id": "C-09",
+    "text": "The training code computes loss on the assistant's target answer instead of learning to repeat the input prompt. The article is titled \"Masking the training loss\".",
+    "label": "Fine-tuning",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "D-16-1",
+    "group_id": "D-16",
+    "text": "Article: Detecting anomalies in transactions. Description: A statistical model flags unusual transaction patterns using structured features.",
+    "label": "Other",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "C-19-2",
+    "group_id": "C-19",
+    "text": "The experiment changes which transformer layers receive trainable adapters during task adaptation. The article is titled \"Ablating adapter placement\".",
+    "label": "Fine-tuning",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "B-16-3",
+    "group_id": "B-16",
+    "text": "A developer learning note on auditing an assistant's actions. The article records which tools an agent called, their inputs, and the resulting state changes.",
+    "label": "Agents",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "D-12-2",
+    "group_id": "D-12",
+    "text": "A benchmark measures a model's reasoning ability using standalone questions without a retrieval or tool workflow. The article is titled \"A general language benchmark\".",
+    "label": "Other",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "C-18-3",
+    "group_id": "C-18",
+    "text": "A developer learning note on training a compact label router. A small pretrained model learns category labels from reviewed examples and is compared with its original version.",
+    "label": "Fine-tuning",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "C-12-2",
+    "group_id": "C-12",
+    "text": "A classifier training dataset is balanced before updating a pretrained model for ticket routing. The article is titled \"Balancing classes for adaptation\".",
+    "label": "Fine-tuning",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "C-18-4",
+    "group_id": "C-18",
+    "text": "Reading suggestion: Training a compact label router. A small pretrained model learns category labels from reviewed examples and is compared with its original version. The intended reader is a software developer.",
+    "label": "Fine-tuning",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "D-12-1",
+    "group_id": "D-12",
+    "text": "Article: A general language benchmark. Description: A benchmark measures a model's reasoning ability using standalone questions without a retrieval or tool workflow.",
+    "label": "Other",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "D-19-3",
+    "group_id": "D-19",
+    "text": "A developer learning note on classifying customer sentiment. An existing sentiment service labels text positive or negative; the article does not describe adapting its model.",
+    "label": "Other",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "B-18-4",
+    "group_id": "B-18",
+    "text": "Reading suggestion: Recovering a paused workflow. An assistant resumes from a saved checkpoint after a person supplies a missing decision. The intended reader is a software developer.",
+    "label": "Agents",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "D-12-0",
+    "group_id": "D-12",
+    "text": "A general language benchmark. A benchmark measures a model's reasoning ability using standalone questions without a retrieval or tool workflow.",
+    "label": "Other",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "A-12-0",
+    "group_id": "A-12",
+    "text": "Parent documents and small chunks. Small text chunks locate a match, then their parent sections supply context for the generated answer.",
+    "label": "RAG",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "A-12-3",
+    "group_id": "A-12",
+    "text": "A developer learning note on parent documents and small chunks. Small text chunks locate a match, then their parent sections supply context for the generated answer.",
+    "label": "RAG",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "C-09-4",
+    "group_id": "C-09",
+    "text": "Reading suggestion: Masking the training loss. The training code computes loss on the assistant's target answer instead of learning to repeat the input prompt. The intended reader is a software developer.",
+    "label": "Fine-tuning",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "B-09-3",
+    "group_id": "B-09",
+    "text": "A developer learning note on functions exposed through MCP. A tool server exposes operations that an assistant can discover and invoke while performing a task.",
+    "label": "Agents",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "D-09-3",
+    "group_id": "D-09",
+    "text": "A developer learning note on an AI hardware launch. A manufacturer announces an accelerator chip and describes its memory and compute specifications.",
+    "label": "Other",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "B-19-0",
+    "group_id": "B-19",
+    "text": "A simulated environment for decisions. A language model selects actions in an environment and adjusts its next move from observed feedback.",
+    "label": "Agents",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "A-19-1",
+    "group_id": "A-19",
+    "text": "Article: Passage compression. Description: A retrieval pipeline shortens selected source passages before placing them in the answer prompt.",
+    "label": "RAG",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "B-09-4",
+    "group_id": "B-09",
+    "text": "Reading suggestion: Functions exposed through MCP. A tool server exposes operations that an assistant can discover and invoke while performing a task. The intended reader is a software developer.",
+    "label": "Agents",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "C-18-1",
+    "group_id": "C-18",
+    "text": "Article: Training a compact label router. Description: A small pretrained model learns category labels from reviewed examples and is compared with its original version.",
+    "label": "Fine-tuning",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "D-12-3",
+    "group_id": "D-12",
+    "text": "A developer learning note on a general language benchmark. A benchmark measures a model's reasoning ability using standalone questions without a retrieval or tool workflow.",
+    "label": "Other",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "C-12-1",
+    "group_id": "C-12",
+    "text": "Article: Balancing classes for adaptation. Description: A classifier training dataset is balanced before updating a pretrained model for ticket routing.",
+    "label": "Fine-tuning",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "B-18-3",
+    "group_id": "B-18",
+    "text": "A developer learning note on recovering a paused workflow. An assistant resumes from a saved checkpoint after a person supplies a missing decision.",
+    "label": "Agents",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "B-19-1",
+    "group_id": "B-19",
+    "text": "Article: A simulated environment for decisions. Description: A language model selects actions in an environment and adjusts its next move from observed feedback.",
+    "label": "Agents",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "B-18-1",
+    "group_id": "B-18",
+    "text": "Article: Recovering a paused workflow. Description: An assistant resumes from a saved checkpoint after a person supplies a missing decision.",
+    "label": "Agents",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "D-19-0",
+    "group_id": "D-19",
+    "text": "Classifying customer sentiment. An existing sentiment service labels text positive or negative; the article does not describe adapting its model.",
+    "label": "Other",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "A-12-1",
+    "group_id": "A-12",
+    "text": "Article: Parent documents and small chunks. Description: Small text chunks locate a match, then their parent sections supply context for the generated answer.",
+    "label": "RAG",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "B-16-4",
+    "group_id": "B-16",
+    "text": "Reading suggestion: Auditing an assistant's actions. The article records which tools an agent called, their inputs, and the resulting state changes. The intended reader is a software developer.",
+    "label": "Agents",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "B-12-3",
+    "group_id": "B-12",
+    "text": "A developer learning note on human escalation after repeated failure. An automated assistant stops retrying unsuccessful actions and asks a person to resolve the issue.",
+    "label": "Agents",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "C-16-1",
+    "group_id": "C-16",
+    "text": "Article: Preparing ShareGPT records. Description: Labelled task examples are converted into conversation-format records for supervised model training.",
+    "label": "Fine-tuning",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "A-18-2",
+    "group_id": "A-18",
+    "text": "A help-center assistant embeds queries and retrieves similar support articles as answer context. The article is titled \"Dense retrieval for a help center\".",
+    "label": "RAG",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "D-19-1",
+    "group_id": "D-19",
+    "text": "Article: Classifying customer sentiment. Description: An existing sentiment service labels text positive or negative; the article does not describe adapting its model.",
+    "label": "Other",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "A-16-0",
+    "group_id": "A-16",
+    "text": "Retrieving tables for answers. A system finds the relevant rows in financial reports and passes that context to a text generator.",
+    "label": "RAG",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "C-09-3",
+    "group_id": "C-09",
+    "text": "A developer learning note on masking the training loss. The training code computes loss on the assistant's target answer instead of learning to repeat the input prompt.",
+    "label": "Fine-tuning",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "D-18-0",
+    "group_id": "D-18",
+    "text": "Translation with a pretrained service. An existing translation API converts text between languages without additional training or autonomous actions.",
+    "label": "Other",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "A-16-1",
+    "group_id": "A-16",
+    "text": "Article: Retrieving tables for answers. Description: A system finds the relevant rows in financial reports and passes that context to a text generator.",
+    "label": "RAG",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "C-16-0",
+    "group_id": "C-16",
+    "text": "Preparing ShareGPT records. Labelled task examples are converted into conversation-format records for supervised model training.",
+    "label": "Fine-tuning",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "B-16-2",
+    "group_id": "B-16",
+    "text": "The article records which tools an agent called, their inputs, and the resulting state changes. The article is titled \"Auditing an assistant's actions\".",
+    "label": "Agents",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "A-09-3",
+    "group_id": "A-09",
+    "text": "A developer learning note on comparing retrieval recall. The experiment measures whether search returns the passages that contain the answer.",
+    "label": "RAG",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "D-19-4",
+    "group_id": "D-19",
+    "text": "Reading suggestion: Classifying customer sentiment. An existing sentiment service labels text positive or negative; the article does not describe adapting its model. The intended reader is a software developer.",
+    "label": "Other",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "A-19-4",
+    "group_id": "A-19",
+    "text": "Reading suggestion: Passage compression. A retrieval pipeline shortens selected source passages before placing them in the answer prompt. The intended reader is a software developer.",
+    "label": "RAG",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "A-19-3",
+    "group_id": "A-19",
+    "text": "A developer learning note on passage compression. A retrieval pipeline shortens selected source passages before placing them in the answer prompt.",
+    "label": "RAG",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "B-12-4",
+    "group_id": "B-12",
+    "text": "Reading suggestion: Human escalation after repeated failure. An automated assistant stops retrying unsuccessful actions and asks a person to resolve the issue. The intended reader is a software developer.",
+    "label": "Agents",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "C-16-4",
+    "group_id": "C-16",
+    "text": "Reading suggestion: Preparing ShareGPT records. Labelled task examples are converted into conversation-format records for supervised model training. The intended reader is a software developer.",
+    "label": "Fine-tuning",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "B-19-4",
+    "group_id": "B-19",
+    "text": "Reading suggestion: A simulated environment for decisions. A language model selects actions in an environment and adjusts its next move from observed feedback. The intended reader is a software developer.",
+    "label": "Agents",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "A-18-1",
+    "group_id": "A-18",
+    "text": "Article: Dense retrieval for a help center. Description: A help-center assistant embeds queries and retrieves similar support articles as answer context.",
+    "label": "RAG",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "D-16-3",
+    "group_id": "D-16",
+    "text": "A developer learning note on detecting anomalies in transactions. A statistical model flags unusual transaction patterns using structured features.",
+    "label": "Other",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "D-18-3",
+    "group_id": "D-18",
+    "text": "A developer learning note on translation with a pretrained service. An existing translation API converts text between languages without additional training or autonomous actions.",
+    "label": "Other",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "A-19-0",
+    "group_id": "A-19",
+    "text": "Passage compression. A retrieval pipeline shortens selected source passages before placing them in the answer prompt.",
+    "label": "RAG",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "D-18-1",
+    "group_id": "D-18",
+    "text": "Article: Translation with a pretrained service. Description: An existing translation API converts text between languages without additional training or autonomous actions.",
+    "label": "Other",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "A-18-4",
+    "group_id": "A-18",
+    "text": "Reading suggestion: Dense retrieval for a help center. A help-center assistant embeds queries and retrieves similar support articles as answer context. The intended reader is a software developer.",
+    "label": "RAG",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "B-19-3",
+    "group_id": "B-19",
+    "text": "A developer learning note on a simulated environment for decisions. A language model selects actions in an environment and adjusts its next move from observed feedback.",
+    "label": "Agents",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "A-18-0",
+    "group_id": "A-18",
+    "text": "Dense retrieval for a help center. A help-center assistant embeds queries and retrieves similar support articles as answer context.",
+    "label": "RAG",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "A-16-3",
+    "group_id": "A-16",
+    "text": "A developer learning note on retrieving tables for answers. A system finds the relevant rows in financial reports and passes that context to a text generator.",
+    "label": "RAG",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "A-12-2",
+    "group_id": "A-12",
+    "text": "Small text chunks locate a match, then their parent sections supply context for the generated answer. The article is titled \"Parent documents and small chunks\".",
+    "label": "RAG",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "A-19-2",
+    "group_id": "A-19",
+    "text": "A retrieval pipeline shortens selected source passages before placing them in the answer prompt. The article is titled \"Passage compression\".",
+    "label": "RAG",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "C-09-0",
+    "group_id": "C-09",
+    "text": "Masking the training loss. The training code computes loss on the assistant's target answer instead of learning to repeat the input prompt.",
+    "label": "Fine-tuning",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "D-12-4",
+    "group_id": "D-12",
+    "text": "Reading suggestion: A general language benchmark. A benchmark measures a model's reasoning ability using standalone questions without a retrieval or tool workflow. The intended reader is a software developer.",
+    "label": "Other",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "C-19-0",
+    "group_id": "C-19",
+    "text": "Ablating adapter placement. The experiment changes which transformer layers receive trainable adapters during task adaptation.",
+    "label": "Fine-tuning",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "D-09-4",
+    "group_id": "D-09",
+    "text": "Reading suggestion: An AI hardware launch. A manufacturer announces an accelerator chip and describes its memory and compute specifications. The intended reader is a software developer.",
+    "label": "Other",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "D-18-4",
+    "group_id": "D-18",
+    "text": "Reading suggestion: Translation with a pretrained service. An existing translation API converts text between languages without additional training or autonomous actions. The intended reader is a software developer.",
+    "label": "Other",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "C-19-3",
+    "group_id": "C-19",
+    "text": "A developer learning note on ablating adapter placement. The experiment changes which transformer layers receive trainable adapters during task adaptation.",
+    "label": "Fine-tuning",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "C-12-0",
+    "group_id": "C-12",
+    "text": "Balancing classes for adaptation. A classifier training dataset is balanced before updating a pretrained model for ticket routing.",
+    "label": "Fine-tuning",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "C-18-0",
+    "group_id": "C-18",
+    "text": "Training a compact label router. A small pretrained model learns category labels from reviewed examples and is compared with its original version.",
+    "label": "Fine-tuning",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "A-09-2",
+    "group_id": "A-09",
+    "text": "The experiment measures whether search returns the passages that contain the answer. The article is titled \"Comparing retrieval recall\".",
+    "label": "RAG",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "D-09-2",
+    "group_id": "D-09",
+    "text": "A manufacturer announces an accelerator chip and describes its memory and compute specifications. The article is titled \"An AI hardware launch\".",
+    "label": "Other",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "C-16-3",
+    "group_id": "C-16",
+    "text": "A developer learning note on preparing ShareGPT records. Labelled task examples are converted into conversation-format records for supervised model training.",
+    "label": "Fine-tuning",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "D-09-1",
+    "group_id": "D-09",
+    "text": "Article: An AI hardware launch. Description: A manufacturer announces an accelerator chip and describes its memory and compute specifications.",
+    "label": "Other",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "C-12-3",
+    "group_id": "C-12",
+    "text": "A developer learning note on balancing classes for adaptation. A classifier training dataset is balanced before updating a pretrained model for ticket routing.",
+    "label": "Fine-tuning",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "A-16-2",
+    "group_id": "A-16",
+    "text": "A system finds the relevant rows in financial reports and passes that context to a text generator. The article is titled \"Retrieving tables for answers\".",
+    "label": "RAG",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "D-19-2",
+    "group_id": "D-19",
+    "text": "An existing sentiment service labels text positive or negative; the article does not describe adapting its model. The article is titled \"Classifying customer sentiment\".",
+    "label": "Other",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "D-16-0",
+    "group_id": "D-16",
+    "text": "Detecting anomalies in transactions. A statistical model flags unusual transaction patterns using structured features.",
+    "label": "Other",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "B-19-2",
+    "group_id": "B-19",
+    "text": "A language model selects actions in an environment and adjusts its next move from observed feedback. The article is titled \"A simulated environment for decisions\".",
+    "label": "Agents",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "C-12-4",
+    "group_id": "C-12",
+    "text": "Reading suggestion: Balancing classes for adaptation. A classifier training dataset is balanced before updating a pretrained model for ticket routing. The intended reader is a software developer.",
+    "label": "Fine-tuning",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "A-18-3",
+    "group_id": "A-18",
+    "text": "A developer learning note on dense retrieval for a help center. A help-center assistant embeds queries and retrieves similar support articles as answer context.",
+    "label": "RAG",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "D-16-4",
+    "group_id": "D-16",
+    "text": "Reading suggestion: Detecting anomalies in transactions. A statistical model flags unusual transaction patterns using structured features. The intended reader is a software developer.",
+    "label": "Other",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "B-16-1",
+    "group_id": "B-16",
+    "text": "Article: Auditing an assistant's actions. Description: The article records which tools an agent called, their inputs, and the resulting state changes.",
+    "label": "Agents",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  },
+  {
+    "id": "A-09-4",
+    "group_id": "A-09",
+    "text": "Reading suggestion: Comparing retrieval recall. The experiment measures whether search returns the passages that contain the answer. The intended reader is a software developer.",
+    "label": "RAG",
+    "provenance": "authored_synthetic",
+    "review_status": "author_labelled_not_independent_review"
+  }
+]

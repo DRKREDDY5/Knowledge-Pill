@@ -1,0 +1,80 @@
+{
+  "date": "2026-09-12",
+  "timezone": "America/New_York",
+  "created_at": "2026-09-12T22:09:15.533264+00:00",
+  "topic": "RAG",
+  "language": "en",
+  "concept": "Why retrieve before answering?",
+  "news_window": "recent",
+  "source_warnings": [],
+  "router_engine": "TF-IDF + logistic regression",
+  "schema_version": 1,
+  "task": "daily_pills",
+  "status": "draft",
+  "writer_model": "Assistant-authored dated demonstration",
+  "generation_method": "authored_demo",
+  "duration_note": "5–10 minutes per pill including reading and practice; actual time varies.",
+  "knowledge": {
+    "title": "The librarian who checks the book before answering",
+    "summary": "Understand retrieval-augmented generation, or RAG, through a fictional library visit. Read the story, connect it to software, and try a small evidence-checking exercise.",
+    "story": "Imagine that you volunteer at a neighborhood library. A visitor asks when the weekend reading club meets. You remember helping with the club last year, but you do not know whether its timetable has changed. A confident guess would be easy. Instead, you find the current club notice, read the relevant paragraph, and explain the schedule while pointing to the notice.\nNow imagine the search returns an old announcement and a current notice about a different club. You have found documents, but you have not found the answer. In this fictional situation, a useful response would explain what is missing and ask the organizer for the current timetable. Finding something and finding supporting evidence are different steps.",
+    "connection": "In this analogy, the visitor asks a question, the document search acts as retrieval, and your explanation plays the role of generation. The library notice represents external information supplied with the question. The story is an invented teaching example; neither linked paper reports this library scenario.",
+    "explanation": "The RAG paper describes combining a language model with retrieved external passages. Its system uses a dense index of Wikipedia to supply information for generation. REALM also explores a learned document retriever alongside a language model. Both papers help explain why external documents are useful when knowledge is otherwise stored inside model parameters. This pill introduces that shared idea; it does not claim that the two research systems have identical training or inference designs.",
+    "application": "For a small project, imagine a fictional student-club FAQ. Start with two short, clearly labelled notices. Let a user ask about a meeting, retrieve the notice that appears relevant, and show which sentence supports the proposed answer. As a design exercise, include one question that neither notice answers. Decide what your application should do in that case before adding more documents or a larger model.",
+    "exercise": "Spend two minutes making a tiny example on paper. Write a question, a relevant notice, and an unrelated notice. Underline the words that actually answer the question. Then remove that sentence. Explain to yourself why the same confident answer would no longer be justified. This is practice at judging support, not a measured test of a model.",
+    "question": "What does retrieval add, and why is finding a document not enough?",
+    "answer": "Retrieval adds external material for the model to use. The material must still contain information that supports the answer. A document can be related to the subject without answering the particular question.",
+    "limits": "The librarian is a person who understands the situation; a language model produces text and can still make mistakes. The analogy is a way to remember the workflow, not proof that RAG guarantees correct, current, or fully cited answers.",
+    "source_ids": [
+      "paper-2005.11401",
+      "paper-2002.08909"
+    ]
+  },
+  "news": {
+    "title": "Recent AI reading: start with a working tool sequence",
+    "overview": "This September 12 edition includes one selected update published on September 10. It is a recent reading roundup, not a claim that the announcement happened today. Use the short explanation below, then spend a few minutes checking the linked source and thinking about your own project.",
+    "items": [
+      {
+        "headline": "Google Research describes ToolGrad’s answer-first approach",
+        "what_happened": "Google Research describes ToolGrad as creating a tool-use sequence before writing its matching user request. The framework uses execution feedback to extend those sequences. The authors report better data-generation efficiency and improvements in their evaluated tool-use tasks. These are the authors’ reported findings; this project has not reproduced their experiments.",
+        "why_it_matters": "Our interpretation: when you build a small training dataset, ask what evidence makes an example a good one. A plausible sentence and a demonstrated result are different kinds of evidence. For your own project, write down what you would inspect before accepting a generated example. The appropriate check will depend on the task.",
+        "takeaway": "Try one modest thought experiment: imagine teaching a helper to look up a room number and then book that room. What would you need to observe to call the example successful? Keep the fictional example separate from claims about ToolGrad. The point is to practice defining success before scaling a dataset.",
+        "source_ids": [
+          "news-aa8533b1c5b4"
+        ]
+      }
+    ],
+    "exercise": "Open the source and check its publication date. Find the paragraph that explains the order in which the tool sequence and user request are produced. Next, identify one reported result and ask which dataset or benchmark it refers to. Finally, write two short notes: one statement directly supported by the source and one possible application that is only your interpretation. Do not present the second note as a tested result.",
+    "question": "When you repeat an AI research claim, what should stay attached to it?",
+    "answer": "Keep the original source, the date, and the conditions of the reported evaluation. Describe your own application idea as an interpretation until you have tested it. A useful news summary helps a reader inspect the evidence rather than treating a headline as a general guarantee."
+  },
+  "usage": {},
+  "sources": [
+    {
+      "id": "paper-2005.11401",
+      "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+      "url": "https://arxiv.org/abs/2005.11401",
+      "publisher": "arXiv",
+      "published_at": null,
+      "evidence_type": "paper_abstract"
+    },
+    {
+      "id": "paper-2002.08909",
+      "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+      "url": "https://arxiv.org/abs/2002.08909",
+      "publisher": "arXiv",
+      "published_at": null,
+      "evidence_type": "paper_abstract"
+    },
+    {
+      "id": "news-aa8533b1c5b4",
+      "title": "ToolGrad: Efficient tool-use dataset generation with textual \"gradients\"",
+      "url": "https://research.google/blog/toolgrad-efficient-tool-use-dataset-generation-with-textual-gradients/",
+      "publisher": "Google Research",
+      "published_at": "2026-09-10T22:50:22+00:00",
+      "evidence_type": "article_excerpt",
+      "topic": "Agents"
+    }
+  ],
+  "id": "3c7da074c5b08d7e"
+}

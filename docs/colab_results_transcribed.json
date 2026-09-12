@@ -1,0 +1,66 @@
+{
+  "status": "transcribed_from_user_colab_outputs",
+  "raw_comparison_json_received": true,
+  "data": {
+    "validation_rows": 100,
+    "validation_scenario_groups": 20,
+    "source_cases": 16
+  },
+  "validation": {
+    "lexical": {
+      "accuracy": 1.0,
+      "macro_f1": 1.0
+    },
+    "qwen_base": {
+      "accuracy": 0.25,
+      "macro_f1": 0.1
+    },
+    "qwen_lora": {
+      "accuracy": 1.0,
+      "macro_f1": 1.0
+    }
+  },
+  "source_cases": {
+    "lexical": {
+      "accuracy": 0.9375,
+      "macro_f1": 0.936508
+    },
+    "qwen_base": {
+      "accuracy": 0.25,
+      "macro_f1": 0.1
+    },
+    "qwen_lora": {
+      "accuracy": 0.875,
+      "macro_f1": 0.866667
+    }
+  },
+  "smoke": {
+    "passed": 5,
+    "total": 5
+  },
+  "errors": [
+    {
+      "paper": "CLIP",
+      "id": "paper-2103.00020",
+      "expected": "Other",
+      "predicted": "Fine-tuning"
+    },
+    {
+      "paper": "Whisper",
+      "id": "paper-2212.04356",
+      "expected": "Other",
+      "predicted": "Fine-tuning"
+    }
+  ],
+  "base_revision": "ea980cb0a6c2ae4b936e82123acc929f1cec04c1",
+  "run": {
+    "epochs": 3,
+    "optimizer_steps": 150,
+    "train_seconds": 520.6295,
+    "best_eval_loss": 2.590226173400879,
+    "adapter_saved": true,
+    "merge_completed": true
+  },
+  "product_decision": "Retain the cheap classifier for the browser prototype. It made one fewer error on a tiny diagnostic; larger reviewed evaluation is needed before claiming superiority.",
+  "verification_update": "Original raw prediction files and dataset hashes verified; see results/run_2026-09-12/manifest.json."
+}

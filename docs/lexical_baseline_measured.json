@@ -1,0 +1,238 @@
+{
+  "engine": "TF-IDF + logistic regression",
+  "status": "measured",
+  "validation": {
+    "n": 100,
+    "accuracy": 1.0,
+    "macro_f1": 1.0,
+    "classification_report": {
+      "RAG": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 25.0
+      },
+      "Agents": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 25.0
+      },
+      "Fine-tuning": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 25.0
+      },
+      "Other": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 25.0
+      },
+      "accuracy": 1.0,
+      "macro avg": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 100.0
+      },
+      "weighted avg": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 100.0
+      }
+    },
+    "label_order": [
+      "RAG",
+      "Agents",
+      "Fine-tuning",
+      "Other"
+    ],
+    "confusion_matrix": [
+      [
+        25,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        25,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        25,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        25
+      ]
+    ]
+  },
+  "source_cases": {
+    "n": 16,
+    "accuracy": 0.9375,
+    "macro_f1": 0.9365079365079365,
+    "classification_report": {
+      "RAG": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 4.0
+      },
+      "Agents": {
+        "precision": 1.0,
+        "recall": 0.75,
+        "f1-score": 0.8571428571428571,
+        "support": 4.0
+      },
+      "Fine-tuning": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 4.0
+      },
+      "Other": {
+        "precision": 0.8,
+        "recall": 1.0,
+        "f1-score": 0.8888888888888888,
+        "support": 4.0
+      },
+      "accuracy": 0.9375,
+      "macro avg": {
+        "precision": 0.95,
+        "recall": 0.9375,
+        "f1-score": 0.9365079365079365,
+        "support": 16.0
+      },
+      "weighted avg": {
+        "precision": 0.95,
+        "recall": 0.9375,
+        "f1-score": 0.9365079365079365,
+        "support": 16.0
+      }
+    },
+    "label_order": [
+      "RAG",
+      "Agents",
+      "Fine-tuning",
+      "Other"
+    ],
+    "confusion_matrix": [
+      [
+        4,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        3,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        4,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        4
+      ]
+    ]
+  },
+  "source_predictions": [
+    {
+      "id": "paper-2005.11401",
+      "expected": "RAG",
+      "predicted": "RAG"
+    },
+    {
+      "id": "paper-2002.08909",
+      "expected": "RAG",
+      "predicted": "RAG"
+    },
+    {
+      "id": "paper-2310.11511",
+      "expected": "RAG",
+      "predicted": "RAG"
+    },
+    {
+      "id": "paper-2212.10496",
+      "expected": "RAG",
+      "predicted": "RAG"
+    },
+    {
+      "id": "paper-2210.03629",
+      "expected": "Agents",
+      "predicted": "Agents"
+    },
+    {
+      "id": "paper-2302.04761",
+      "expected": "Agents",
+      "predicted": "Agents"
+    },
+    {
+      "id": "paper-2305.16291",
+      "expected": "Agents",
+      "predicted": "Agents"
+    },
+    {
+      "id": "paper-2405.15793",
+      "expected": "Agents",
+      "predicted": "Other"
+    },
+    {
+      "id": "paper-2106.09685",
+      "expected": "Fine-tuning",
+      "predicted": "Fine-tuning"
+    },
+    {
+      "id": "paper-2305.14314",
+      "expected": "Fine-tuning",
+      "predicted": "Fine-tuning"
+    },
+    {
+      "id": "paper-2305.18290",
+      "expected": "Fine-tuning",
+      "predicted": "Fine-tuning"
+    },
+    {
+      "id": "paper-2402.09353",
+      "expected": "Fine-tuning",
+      "predicted": "Fine-tuning"
+    },
+    {
+      "id": "paper-2010.11929",
+      "expected": "Other",
+      "predicted": "Other"
+    },
+    {
+      "id": "paper-2103.00020",
+      "expected": "Other",
+      "predicted": "Other"
+    },
+    {
+      "id": "paper-2212.04356",
+      "expected": "Other",
+      "predicted": "Other"
+    },
+    {
+      "id": "paper-2112.10752",
+      "expected": "Other",
+      "predicted": "Other"
+    }
+  ]
+}

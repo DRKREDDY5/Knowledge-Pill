@@ -1,0 +1,44 @@
+{
+  "status": "training_evidence_verified_daily_schedule_implemented_activation_pending",
+  "python": "3.12.14",
+  "measured_lexical_environment": {
+    "scikit-learn": "1.8.0",
+    "numpy": "2.3.5"
+  },
+  "core_tests_passed": 11,
+  "python_browser_prediction_parity": {
+    "examples": 116,
+    "status": "passed"
+  },
+  "notebook_code_cells_parse": true,
+  "notebook_embedded_assets_match_source": true,
+  "javascript_syntax": "passed",
+  "recent_editorial_feed": "read_successfully_2026-09-12",
+  "gpu_training": "completed_in_user_colab_verified_from_log",
+  "qwen_baseline": "completed_verified_from_user_output",
+  "merge": "completed_verified_from_user_output",
+  "qwen_metrics": "verified_from_raw_predictions_dataset_hashes_and_recomputed_metrics",
+  "browser_qa": "not_run",
+  "webmcp_execution": "not_run",
+  "daily_scheduling": "workflow_implemented_disabled_until_DAILY_PILLS_ENABLED_true",
+  "lesson_generation": "Fireworks_code_ready_real_provider_run_pending",
+  "telugu_fluent_review": "assistant_editorial_review_of_demos_done_independent_human_review_pending",
+  "github_submission": "source_prepared_for_DRKREDDY5/Knowledge-Pill",
+  "loom_recording": "script_ready_recording_pending",
+  "fireworks_key": "not_configured_in_workspace_or_host",
+  "daily_views": "implemented_auto_load_repository_editions_and_device_local_history",
+  "raw_results_zip": "received_imported_and_verified",
+  "adapter_download": "not_yet_confirmed",
+  "executed_notebook_download": "not_yet_received",
+  "daily_import_date_and_source_tests": "passed",
+  "daily_live_source_collection": {
+    "status": "passed_2026-09-12",
+    "knowledge_abstracts": 2,
+    "news_sources": 2,
+    "news_availability": "recent",
+    "unavailable_feeds": 0
+  },
+  "demo_editions": "dated_assistant_authored_EN_TE_examples_not_Fireworks_outputs",
+  "csv": "500_exact_run_rows_with_original_split_column",
+  "daily_schedule_reuse_and_failure_checks": "passed_with_mocked_provider_no_live_Fireworks_call"
+}

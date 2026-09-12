@@ -1,0 +1,273 @@
+{
+  "metrics": {
+    "n": 16,
+    "accuracy": 0.875,
+    "macro_f1": 0.8666666666666666,
+    "classification_report": {
+      "RAG": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 4.0
+      },
+      "Agents": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 4.0
+      },
+      "Fine-tuning": {
+        "precision": 0.6666666666666666,
+        "recall": 1.0,
+        "f1-score": 0.8,
+        "support": 4.0
+      },
+      "Other": {
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1-score": 0.6666666666666666,
+        "support": 4.0
+      },
+      "accuracy": 0.875,
+      "macro avg": {
+        "precision": 0.9166666666666666,
+        "recall": 0.875,
+        "f1-score": 0.8666666666666666,
+        "support": 16.0
+      },
+      "weighted avg": {
+        "precision": 0.9166666666666666,
+        "recall": 0.875,
+        "f1-score": 0.8666666666666666,
+        "support": 16.0
+      }
+    },
+    "label_order": [
+      "RAG",
+      "Agents",
+      "Fine-tuning",
+      "Other"
+    ],
+    "confusion_matrix": [
+      [
+        4,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        4,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        4,
+        0
+      ],
+      [
+        0,
+        0,
+        2,
+        2
+      ]
+    ]
+  },
+  "predictions": [
+    {
+      "id": "paper-2005.11401",
+      "expected": "RAG",
+      "label": "RAG",
+      "latency_ms": 75.3232269998989,
+      "choice_scores": {
+        "RAG": 1.0,
+        "Agents": 1.4615767485182118e-09,
+        "Fine-tuning": 6.691586174056852e-10,
+        "Other": 8.071593948777434e-10
+      }
+    },
+    {
+      "id": "paper-2002.08909",
+      "expected": "RAG",
+      "label": "RAG",
+      "latency_ms": 75.66912599986608,
+      "choice_scores": {
+        "RAG": 1.0,
+        "Agents": 3.3455824777206544e-09,
+        "Fine-tuning": 3.5061404890512904e-09,
+        "Other": 3.2426497043047675e-09
+      }
+    },
+    {
+      "id": "paper-2310.11511",
+      "expected": "RAG",
+      "label": "RAG",
+      "latency_ms": 64.45227099993645,
+      "choice_scores": {
+        "RAG": 0.9999998807907104,
+        "Agents": 6.93309019084154e-08,
+        "Fine-tuning": 2.017644185059453e-08,
+        "Other": 3.7110154949004936e-08
+      }
+    },
+    {
+      "id": "paper-2212.10496",
+      "expected": "RAG",
+      "label": "RAG",
+      "latency_ms": 64.21562100013034,
+      "choice_scores": {
+        "RAG": 1.0,
+        "Agents": 5.101404187968228e-09,
+        "Fine-tuning": 2.1600705668589626e-09,
+        "Other": 4.295813038623919e-09
+      }
+    },
+    {
+      "id": "paper-2210.03629",
+      "expected": "Agents",
+      "label": "Agents",
+      "latency_ms": 62.78090900013922,
+      "choice_scores": {
+        "RAG": 8.233246262534522e-08,
+        "Agents": 0.9999996423721313,
+        "Fine-tuning": 1.663161413034686e-07,
+        "Other": 6.719780287767207e-08
+      }
+    },
+    {
+      "id": "paper-2302.04761",
+      "expected": "Agents",
+      "label": "Agents",
+      "latency_ms": 62.14807900005326,
+      "choice_scores": {
+        "RAG": 9.184847016285858e-08,
+        "Agents": 0.9999992847442627,
+        "Fine-tuning": 4.381845144507679e-07,
+        "Other": 2.2033302116142295e-07
+      }
+    },
+    {
+      "id": "paper-2305.16291",
+      "expected": "Agents",
+      "label": "Agents",
+      "latency_ms": 70.81280400007017,
+      "choice_scores": {
+        "RAG": 4.247027334258746e-07,
+        "Agents": 0.9999985694885254,
+        "Fine-tuning": 5.896413313166704e-07,
+        "Other": 3.632674747677811e-07
+      }
+    },
+    {
+      "id": "paper-2405.15793",
+      "expected": "Agents",
+      "label": "Agents",
+      "latency_ms": 75.76042599976063,
+      "choice_scores": {
+        "RAG": 2.964901284485677e-07,
+        "Agents": 0.9999982118606567,
+        "Fine-tuning": 9.276356536247476e-07,
+        "Other": 5.989265901007457e-07
+      }
+    },
+    {
+      "id": "paper-2106.09685",
+      "expected": "Fine-tuning",
+      "label": "Fine-tuning",
+      "latency_ms": 71.13347899985456,
+      "choice_scores": {
+        "RAG": 1.052734011075529e-09,
+        "Agents": 1.708755914542337e-09,
+        "Fine-tuning": 0.9999997615814209,
+        "Other": 2.1024332852448424e-07
+      }
+    },
+    {
+      "id": "paper-2305.14314",
+      "expected": "Fine-tuning",
+      "label": "Fine-tuning",
+      "latency_ms": 77.5886670003274,
+      "choice_scores": {
+        "RAG": 6.55032561525104e-09,
+        "Agents": 4.501968575709725e-09,
+        "Fine-tuning": 0.999998927116394,
+        "Other": 1.0348530850023963e-06
+      }
+    },
+    {
+      "id": "paper-2305.18290",
+      "expected": "Fine-tuning",
+      "label": "Fine-tuning",
+      "latency_ms": 71.5551600001163,
+      "choice_scores": {
+        "RAG": 2.8012015818035252e-08,
+        "Agents": 3.5968138689668194e-08,
+        "Fine-tuning": 0.9999927282333374,
+        "Other": 7.183259640441975e-06
+      }
+    },
+    {
+      "id": "paper-2402.09353",
+      "expected": "Fine-tuning",
+      "label": "Fine-tuning",
+      "latency_ms": 70.30544500003089,
+      "choice_scores": {
+        "RAG": 7.307416893809204e-09,
+        "Agents": 5.515927714583313e-09,
+        "Fine-tuning": 0.9999990463256836,
+        "Other": 9.721545666252496e-07
+      }
+    },
+    {
+      "id": "paper-2010.11929",
+      "expected": "Other",
+      "label": "Other",
+      "latency_ms": 61.19582300016191,
+      "choice_scores": {
+        "RAG": 3.653481428500527e-08,
+        "Agents": 6.615600511850062e-08,
+        "Fine-tuning": 3.1249882681549934e-08,
+        "Other": 0.9999997615814209
+      }
+    },
+    {
+      "id": "paper-2103.00020",
+      "expected": "Other",
+      "label": "Fine-tuning",
+      "latency_ms": 64.2377829999532,
+      "choice_scores": {
+        "RAG": 8.539895013370824e-09,
+        "Agents": 2.357940687147675e-08,
+        "Fine-tuning": 0.9996079802513123,
+        "Other": 0.0003920417802873999
+      }
+    },
+    {
+      "id": "paper-2212.04356",
+      "expected": "Other",
+      "label": "Fine-tuning",
+      "latency_ms": 66.3316099999065,
+      "choice_scores": {
+        "RAG": 2.366911644458014e-07,
+        "Agents": 2.916607222402945e-08,
+        "Fine-tuning": 0.9935114979743958,
+        "Other": 0.006488267797976732
+      }
+    },
+    {
+      "id": "paper-2112.10752",
+      "expected": "Other",
+      "label": "Other",
+      "latency_ms": 62.9863999997724,
+      "choice_scores": {
+        "RAG": 1.1610740813239318e-07,
+        "Agents": 9.23744902792123e-09,
+        "Fine-tuning": 4.691163724146463e-08,
+        "Other": 0.9999998807907104
+      }
+    }
+  ],
+  "dataset_hash": "952ceafc758e2b38444b49ac7f3b358af0d526ed303577674e01243bf9d6c61f"
+}

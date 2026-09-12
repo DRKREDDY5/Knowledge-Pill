@@ -1,0 +1,16 @@
+.sites-runtime/
+.env
+.env.*
+!.env.example
+__pycache__/
+.venv/
+data/raw/
+data/processed/
+models/
+outputs/
+LLaMA-Factory/
+*.tar.gz
+
+# Preserve the verified submission evidence, including its dataset snapshot.
+!results/
+!results/**

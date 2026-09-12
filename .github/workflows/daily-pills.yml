@@ -1,0 +1,64 @@
+name: Generate daily pills
+
+on:
+  workflow_dispatch:
+    inputs:
+      collect_only:
+        description: 'Only check live sources (no Fireworks call)'
+        type: boolean
+        default: false
+  schedule:
+    - cron: '17 11 * * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-pills
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    if: github.event_name == 'workflow_dispatch' || vars.DAILY_PILLS_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install the daily writer dependencies
+        run: python -m pip install -r requirements-daily.txt
+      - name: Collect and generate
+        env:
+          FIREWORKS_API_KEY: ${{ secrets.FIREWORKS_API_KEY }}
+          FIREWORKS_MODEL: ${{ vars.FIREWORKS_MODEL }}
+          COLLECT_ONLY: ${{ inputs.collect_only }}
+        run: |
+          if [ "$COLLECT_ONLY" = "true" ]; then
+            python scripts/run_daily.py --collect-only
+          else
+            python scripts/run_daily.py
+          fi
+      - name: Save the evidence and any partial checkpoints
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-source-evidence-${{ github.run_id }}
+          path: |
+            outputs/daily_sources/
+            outputs/daily_checkpoints/
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Publish the completed collection
+        if: success() && inputs.collect_only != true
+        run: |
+          git add editions/latest.json
+          if git diff --cached --quiet; then exit 0; fi
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Save dated daily pill drafts'
+          git push origin HEAD:main

@@ -1,0 +1,6 @@
+{
+  "topics": ["RAG"],
+  "languages": ["en", "te"],
+  "timezone": "America/New_York",
+  "retained_editions": 30
+}

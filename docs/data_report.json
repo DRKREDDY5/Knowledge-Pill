@@ -1,0 +1,29 @@
+{
+  "total_rows": 500,
+  "train_rows": 400,
+  "validation_rows": 100,
+  "unique_scenarios": 100,
+  "train_scenarios": 80,
+  "validation_scenarios": 20,
+  "labels": [
+    "RAG",
+    "Agents",
+    "Fine-tuning",
+    "Other"
+  ],
+  "train_per_class": {
+    "Fine-tuning": 100,
+    "RAG": 100,
+    "Agents": 100,
+    "Other": 100
+  },
+  "validation_per_class": {
+    "Agents": 25,
+    "Fine-tuning": 25,
+    "RAG": 25,
+    "Other": 25
+  },
+  "shared_scenarios": 0,
+  "data_type": "authored synthetic descriptions with five variations per scenario",
+  "evaluation_limit": "Authored validation has 20 independent scenario groups, not 100 independent sources."
+}

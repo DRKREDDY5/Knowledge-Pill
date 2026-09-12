@@ -1,0 +1,27 @@
+[
+  {
+    "text": "An assistant retrieves passages from company documentation and cites them in its answers.",
+    "expected": "RAG",
+    "predicted": "RAG"
+  },
+  {
+    "text": "A coding assistant plans a fix, runs terminal tools and revises its patch from test results.",
+    "expected": "Agents",
+    "predicted": "Agents"
+  },
+  {
+    "text": "Train low-rank adapters while freezing a pretrained model to specialize it for topic labels.",
+    "expected": "Fine-tuning",
+    "predicted": "Fine-tuning"
+  },
+  {
+    "text": "A vision model segments objects in photographs.",
+    "expected": "Other",
+    "predicted": "Other"
+  },
+  {
+    "text": "This newsletter covers retrieval, autonomous tools and model adaptation equally.",
+    "expected": "Other",
+    "predicted": "Other"
+  }
+]

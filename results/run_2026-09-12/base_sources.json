@@ -1,0 +1,273 @@
+{
+  "metrics": {
+    "n": 16,
+    "accuracy": 0.25,
+    "macro_f1": 0.1,
+    "classification_report": {
+      "RAG": {
+        "precision": 0.25,
+        "recall": 1.0,
+        "f1-score": 0.4,
+        "support": 4.0
+      },
+      "Agents": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 4.0
+      },
+      "Fine-tuning": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 4.0
+      },
+      "Other": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 4.0
+      },
+      "accuracy": 0.25,
+      "macro avg": {
+        "precision": 0.0625,
+        "recall": 0.25,
+        "f1-score": 0.1,
+        "support": 16.0
+      },
+      "weighted avg": {
+        "precision": 0.0625,
+        "recall": 0.25,
+        "f1-score": 0.1,
+        "support": 16.0
+      }
+    },
+    "label_order": [
+      "RAG",
+      "Agents",
+      "Fine-tuning",
+      "Other"
+    ],
+    "confusion_matrix": [
+      [
+        4,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        0,
+        0,
+        0
+      ]
+    ]
+  },
+  "predictions": [
+    {
+      "id": "paper-2005.11401",
+      "expected": "RAG",
+      "label": "RAG",
+      "latency_ms": 62.79004199996052,
+      "choice_scores": {
+        "RAG": 0.6203102469444275,
+        "Agents": 0.12214632332324982,
+        "Fine-tuning": 0.1921631395816803,
+        "Other": 0.06538021564483643
+      }
+    },
+    {
+      "id": "paper-2002.08909",
+      "expected": "RAG",
+      "label": "RAG",
+      "latency_ms": 61.505498000087755,
+      "choice_scores": {
+        "RAG": 0.584030032157898,
+        "Agents": 0.11146408319473267,
+        "Fine-tuning": 0.22167280316352844,
+        "Other": 0.08283307403326035
+      }
+    },
+    {
+      "id": "paper-2310.11511",
+      "expected": "RAG",
+      "label": "RAG",
+      "latency_ms": 59.934235000127956,
+      "choice_scores": {
+        "RAG": 0.5657097101211548,
+        "Agents": 0.14081628620624542,
+        "Fine-tuning": 0.21810051798820496,
+        "Other": 0.07537352293729782
+      }
+    },
+    {
+      "id": "paper-2212.10496",
+      "expected": "RAG",
+      "label": "RAG",
+      "latency_ms": 60.06554099985806,
+      "choice_scores": {
+        "RAG": 0.5659670233726501,
+        "Agents": 0.12628431618213654,
+        "Fine-tuning": 0.2181997299194336,
+        "Other": 0.0895489901304245
+      }
+    },
+    {
+      "id": "paper-2210.03629",
+      "expected": "Agents",
+      "label": "RAG",
+      "latency_ms": 59.40710800018678,
+      "choice_scores": {
+        "RAG": 0.5692646503448486,
+        "Agents": 0.1763499677181244,
+        "Fine-tuning": 0.20617400109767914,
+        "Other": 0.04821139574050903
+      }
+    },
+    {
+      "id": "paper-2302.04761",
+      "expected": "Agents",
+      "label": "RAG",
+      "latency_ms": 60.26019000000815,
+      "choice_scores": {
+        "RAG": 0.5021256804466248,
+        "Agents": 0.16819103062152863,
+        "Fine-tuning": 0.2687685191631317,
+        "Other": 0.06091475859284401
+      }
+    },
+    {
+      "id": "paper-2305.16291",
+      "expected": "Agents",
+      "label": "RAG",
+      "latency_ms": 60.000703000014255,
+      "choice_scores": {
+        "RAG": 0.6068074107170105,
+        "Agents": 0.19094042479991913,
+        "Fine-tuning": 0.1582951843738556,
+        "Other": 0.04395698383450508
+      }
+    },
+    {
+      "id": "paper-2405.15793",
+      "expected": "Agents",
+      "label": "RAG",
+      "latency_ms": 67.65271500012204,
+      "choice_scores": {
+        "RAG": 0.5261773467063904,
+        "Agents": 0.21934334933757782,
+        "Fine-tuning": 0.1935698390007019,
+        "Other": 0.0609094500541687
+      }
+    },
+    {
+      "id": "paper-2106.09685",
+      "expected": "Fine-tuning",
+      "label": "RAG",
+      "latency_ms": 68.0781459998343,
+      "choice_scores": {
+        "RAG": 0.5197219252586365,
+        "Agents": 0.0976528599858284,
+        "Fine-tuning": 0.33035534620285034,
+        "Other": 0.05226981267333031
+      }
+    },
+    {
+      "id": "paper-2305.14314",
+      "expected": "Fine-tuning",
+      "label": "RAG",
+      "latency_ms": 60.16498999997566,
+      "choice_scores": {
+        "RAG": 0.553023636341095,
+        "Agents": 0.1106116846203804,
+        "Fine-tuning": 0.2824568450450897,
+        "Other": 0.05390782654285431
+      }
+    },
+    {
+      "id": "paper-2305.18290",
+      "expected": "Fine-tuning",
+      "label": "RAG",
+      "latency_ms": 75.71142799997688,
+      "choice_scores": {
+        "RAG": 0.46411722898483276,
+        "Agents": 0.1229788288474083,
+        "Fine-tuning": 0.3043755292892456,
+        "Other": 0.10852843523025513
+      }
+    },
+    {
+      "id": "paper-2402.09353",
+      "expected": "Fine-tuning",
+      "label": "RAG",
+      "latency_ms": 62.39346899997145,
+      "choice_scores": {
+        "RAG": 0.5712942481040955,
+        "Agents": 0.10567881911993027,
+        "Fine-tuning": 0.2457106113433838,
+        "Other": 0.0773162692785263
+      }
+    },
+    {
+      "id": "paper-2010.11929",
+      "expected": "Other",
+      "label": "RAG",
+      "latency_ms": 57.54745600006572,
+      "choice_scores": {
+        "RAG": 0.5488829016685486,
+        "Agents": 0.1409647911787033,
+        "Fine-tuning": 0.24356530606746674,
+        "Other": 0.06658705323934555
+      }
+    },
+    {
+      "id": "paper-2103.00020",
+      "expected": "Other",
+      "label": "RAG",
+      "latency_ms": 57.21975000005841,
+      "choice_scores": {
+        "RAG": 0.5372169017791748,
+        "Agents": 0.13372386991977692,
+        "Fine-tuning": 0.26181861758232117,
+        "Other": 0.06724058836698532
+      }
+    },
+    {
+      "id": "paper-2212.04356",
+      "expected": "Other",
+      "label": "RAG",
+      "latency_ms": 57.58567799989578,
+      "choice_scores": {
+        "RAG": 0.5226395726203918,
+        "Agents": 0.13848571479320526,
+        "Fine-tuning": 0.2587253451347351,
+        "Other": 0.08014937490224838
+      }
+    },
+    {
+      "id": "paper-2112.10752",
+      "expected": "Other",
+      "label": "RAG",
+      "latency_ms": 59.34373299987783,
+      "choice_scores": {
+        "RAG": 0.5259936451911926,
+        "Agents": 0.13721364736557007,
+        "Fine-tuning": 0.2644862234592438,
+        "Other": 0.07230650633573532
+      }
+    }
+  ],
+  "dataset_hash": "952ceafc758e2b38444b49ac7f3b358af0d526ed303577674e01243bf9d6c61f"
+}

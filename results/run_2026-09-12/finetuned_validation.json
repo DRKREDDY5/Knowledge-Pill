@@ -1,0 +1,1281 @@
+{
+  "metrics": {
+    "n": 100,
+    "accuracy": 1.0,
+    "macro_f1": 1.0,
+    "classification_report": {
+      "RAG": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 25.0
+      },
+      "Agents": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 25.0
+      },
+      "Fine-tuning": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 25.0
+      },
+      "Other": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 25.0
+      },
+      "accuracy": 1.0,
+      "macro avg": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 100.0
+      },
+      "weighted avg": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 100.0
+      }
+    },
+    "label_order": [
+      "RAG",
+      "Agents",
+      "Fine-tuning",
+      "Other"
+    ],
+    "confusion_matrix": [
+      [
+        25,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        25,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        25,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        25
+      ]
+    ]
+  },
+  "predictions": [
+    {
+      "id": "B-16-0",
+      "expected": "Agents",
+      "label": "Agents",
+      "latency_ms": 73.2751030000145,
+      "choice_scores": {
+        "RAG": 9.530678468649967e-09,
+        "Agents": 1.0,
+        "Fine-tuning": 1.3232035023236222e-08,
+        "Other": 8.953242591758226e-09
+      }
+    },
+    {
+      "id": "C-18-2",
+      "expected": "Fine-tuning",
+      "label": "Fine-tuning",
+      "latency_ms": 61.89008299998022,
+      "choice_scores": {
+        "RAG": 3.174134377559312e-08,
+        "Agents": 3.028779715918972e-08,
+        "Fine-tuning": 0.9999791383743286,
+        "Other": 2.078516990877688e-05
+      }
+    },
+    {
+      "id": "B-12-0",
+      "expected": "Agents",
+      "label": "Agents",
+      "latency_ms": 60.90810600016994,
+      "choice_scores": {
+        "RAG": 6.37554023796838e-07,
+        "Agents": 0.9999980926513672,
+        "Fine-tuning": 4.3818400285999815e-07,
+        "Other": 7.811474915797589e-07
+      }
+    },
+    {
+      "id": "B-12-2",
+      "expected": "Agents",
+      "label": "Agents",
+      "latency_ms": 61.208822000025975,
+      "choice_scores": {
+        "RAG": 1.5143248788263008e-07,
+        "Agents": 0.9999990463256836,
+        "Fine-tuning": 4.888300395577971e-07,
+        "Other": 3.866963993459649e-07
+      }
+    },
+    {
+      "id": "A-09-0",
+      "expected": "RAG",
+      "label": "RAG",
+      "latency_ms": 56.23089400023673,
+      "choice_scores": {
+        "RAG": 1.0,
+        "Agents": 3.1428841751335312e-09,
+        "Fine-tuning": 1.6561834126349595e-09,
+        "Other": 2.228638384949022e-09
+      }
+    },
+    {
+      "id": "A-16-4",
+      "expected": "RAG",
+      "label": "RAG",
+      "latency_ms": 60.67469199979314,
+      "choice_scores": {
+        "RAG": 0.9999998807907104,
+        "Agents": 7.380236155540842e-08,
+        "Fine-tuning": 2.3588651032468988e-08,
+        "Other": 4.139937459513021e-08
+      }
+    },
+    {
+      "id": "C-09-1",
+      "expected": "Fine-tuning",
+      "label": "Fine-tuning",
+      "latency_ms": 60.9351709999828,
+      "choice_scores": {
+        "RAG": 4.263374364654737e-08,
+        "Agents": 5.35872345608368e-07,
+        "Fine-tuning": 0.9981319308280945,
+        "Other": 0.001867565093562007
+      }
+    },
+    {
+      "id": "C-19-1",
+      "expected": "Fine-tuning",
+      "label": "Fine-tuning",
+      "latency_ms": 60.13916400024755,
+      "choice_scores": {
+        "RAG": 4.993643898387745e-08,
+        "Agents": 1.3787892783057032e-07,
+        "Fine-tuning": 0.9999850988388062,
+        "Other": 1.4738979189132806e-05
+      }
+    },
+    {
+      "id": "C-16-2",
+      "expected": "Fine-tuning",
+      "label": "Fine-tuning",
+      "latency_ms": 60.07590299986987,
+      "choice_scores": {
+        "RAG": 6.214725090103457e-08,
+        "Agents": 9.77713483507614e-08,
+        "Fine-tuning": 0.999990701675415,
+        "Other": 9.080473319045268e-06
+      }
+    },
+    {
+      "id": "D-16-2",
+      "expected": "Other",
+      "label": "Other",
+      "latency_ms": 60.40025200036325,
+      "choice_scores": {
+        "RAG": 1.0030126986748655e-06,
+        "Agents": 6.276693511608755e-07,
+        "Fine-tuning": 7.571136961814773e-07,
+        "Other": 0.999997615814209
+      }
+    },
+    {
+      "id": "B-09-0",
+      "expected": "Agents",
+      "label": "Agents",
+      "latency_ms": 58.905038999910175,
+      "choice_scores": {
+        "RAG": 2.102432858919201e-07,
+        "Agents": 0.9999995231628418,
+        "Fine-tuning": 1.400522222638756e-07,
+        "Other": 1.1793579801633314e-07
+      }
+    },
+    {
+      "id": "B-18-0",
+      "expected": "Agents",
+      "label": "Agents",
+      "latency_ms": 59.83096199997817,
+      "choice_scores": {
+        "RAG": 6.719781708852679e-08,
+        "Agents": 0.9999998807907104,
+        "Fine-tuning": 4.139937459513021e-08,
+        "Other": 3.7694558585599225e-08
+      }
+    },
+    {
+      "id": "B-09-1",
+      "expected": "Agents",
+      "label": "Agents",
+      "latency_ms": 60.041708999960974,
+      "choice_scores": {
+        "RAG": 5.1522341948384565e-08,
+        "Agents": 0.9999996423721313,
+        "Fine-tuning": 1.400522364747303e-07,
+        "Other": 1.4677348758596054e-07
+      }
+    },
+    {
+      "id": "B-18-2",
+      "expected": "Agents",
+      "label": "Agents",
+      "latency_ms": 60.25966100014557,
+      "choice_scores": {
+        "RAG": 7.614508490405569e-08,
+        "Agents": 0.9999996423721313,
+        "Fine-tuning": 1.2554201589409786e-07,
+        "Other": 1.6373765276966878e-07
+      }
+    },
+    {
+      "id": "D-18-2",
+      "expected": "Other",
+      "label": "Other",
+      "latency_ms": 60.6106360000922,
+      "choice_scores": {
+        "RAG": 9.132546665568952e-07,
+        "Agents": 5.15223028685341e-08,
+        "Fine-tuning": 1.3156680722659075e-07,
+        "Other": 0.999998927116394
+      }
+    },
+    {
+      "id": "A-09-1",
+      "expected": "RAG",
+      "label": "RAG",
+      "latency_ms": 60.04343700033132,
+      "choice_scores": {
+        "RAG": 1.0,
+        "Agents": 2.510999053129126e-08,
+        "Fine-tuning": 1.1861120086109622e-08,
+        "Other": 2.5505416445525952e-08
+      }
+    },
+    {
+      "id": "D-09-0",
+      "expected": "Other",
+      "label": "Other",
+      "latency_ms": 54.68891300006362,
+      "choice_scores": {
+        "RAG": 6.972793009651923e-09,
+        "Agents": 1.3026892453638084e-08,
+        "Fine-tuning": 4.229212535733495e-09,
+        "Other": 1.0
+      }
+    },
+    {
+      "id": "B-09-2",
+      "expected": "Agents",
+      "label": "Agents",
+      "latency_ms": 59.84675800027617,
+      "choice_scores": {
+        "RAG": 3.828815309248057e-08,
+        "Agents": 0.9999997615814209,
+        "Fine-tuning": 1.1979304304077232e-07,
+        "Other": 6.719780998309943e-08
+      }
+    },
+    {
+      "id": "C-19-4",
+      "expected": "Fine-tuning",
+      "label": "Fine-tuning",
+      "latency_ms": 60.903031999714585,
+      "choice_scores": {
+        "RAG": 2.918826567110955e-07,
+        "Agents": 5.453085805129376e-07,
+        "Fine-tuning": 0.9999610185623169,
+        "Other": 3.822908183792606e-05
+      }
+    },
+    {
+      "id": "A-12-4",
+      "expected": "RAG",
+      "label": "RAG",
+      "latency_ms": 61.12861300016448,
+      "choice_scores": {
+        "RAG": 1.0,
+        "Agents": 3.7694562138312904e-08,
+        "Fine-tuning": 8.814435403792231e-09,
+        "Other": 2.1144732187394766e-08
+      }
+    },
+    {
+      "id": "B-12-1",
+      "expected": "Agents",
+      "label": "Agents",
+      "latency_ms": 59.60282799969718,
+      "choice_scores": {
+        "RAG": 3.1071908779267687e-07,
+        "Agents": 0.9999984502792358,
+        "Fine-tuning": 4.0525412714487175e-07,
+        "Other": 8.186357831618807e-07
+      }
+    },
+    {
+      "id": "C-09-2",
+      "expected": "Fine-tuning",
+      "label": "Fine-tuning",
+      "latency_ms": 61.44803699999102,
+      "choice_scores": {
+        "RAG": 2.8453239764303362e-08,
+        "Agents": 1.2751857525472587e-07,
+        "Fine-tuning": 0.9999961853027344,
+        "Other": 3.726638851730968e-06
+      }
+    },
+    {
+      "id": "D-16-1",
+      "expected": "Other",
+      "label": "Other",
+      "latency_ms": 60.436694999680185,
+      "choice_scores": {
+        "RAG": 1.6027596529966104e-06,
+        "Agents": 8.315007562487153e-07,
+        "Fine-tuning": 3.1201838282868266e-05,
+        "Other": 0.9999663829803467
+      }
+    },
+    {
+      "id": "C-19-2",
+      "expected": "Fine-tuning",
+      "label": "Fine-tuning",
+      "latency_ms": 61.96400199996788,
+      "choice_scores": {
+        "RAG": 4.8400423224848055e-08,
+        "Agents": 5.1521986677016685e-08,
+        "Fine-tuning": 0.9999927282333374,
+        "Other": 7.183259640441975e-06
+      }
+    },
+    {
+      "id": "B-16-3",
+      "expected": "Agents",
+      "label": "Agents",
+      "latency_ms": 64.20505799997045,
+      "choice_scores": {
+        "RAG": 4.1399367489702854e-08,
+        "Agents": 0.9999997615814209,
+        "Fine-tuning": 1.2751903000207676e-07,
+        "Other": 7.04227005599023e-08
+      }
+    },
+    {
+      "id": "D-12-2",
+      "expected": "Other",
+      "label": "Other",
+      "latency_ms": 63.38427699984095,
+      "choice_scores": {
+        "RAG": 3.5061396008728707e-09,
+        "Agents": 1.8370858612115626e-08,
+        "Fine-tuning": 1.855391076333035e-07,
+        "Other": 0.9999997615814209
+      }
+    },
+    {
+      "id": "C-18-3",
+      "expected": "Fine-tuning",
+      "label": "Fine-tuning",
+      "latency_ms": 62.165171000287955,
+      "choice_scores": {
+        "RAG": 1.1792081267003596e-07,
+        "Agents": 9.328303463007614e-08,
+        "Fine-tuning": 0.9998724460601807,
+        "Other": 0.00012731101014651358
+      }
+    },
+    {
+      "id": "C-12-2",
+      "expected": "Fine-tuning",
+      "label": "Fine-tuning",
+      "latency_ms": 60.353469000347104,
+      "choice_scores": {
+        "RAG": 1.467687837930498e-07,
+        "Agents": 7.152939218713072e-08,
+        "Fine-tuning": 0.9999675750732422,
+        "Other": 3.2192328944802284e-05
+      }
+    },
+    {
+      "id": "C-18-4",
+      "expected": "Fine-tuning",
+      "label": "Fine-tuning",
+      "latency_ms": 60.94832000007955,
+      "choice_scores": {
+        "RAG": 4.5914495672150224e-07,
+        "Agents": 5.284725830279058e-07,
+        "Fine-tuning": 0.9998501539230347,
+        "Other": 0.00014883832773193717
+      }
+    },
+    {
+      "id": "D-12-1",
+      "expected": "Other",
+      "label": "Other",
+      "latency_ms": 60.92510400003448,
+      "choice_scores": {
+        "RAG": 3.1118765897453216e-10,
+        "Agents": 6.550332720678398e-09,
+        "Fine-tuning": 2.757793104990469e-08,
+        "Other": 1.0
+      }
+    },
+    {
+      "id": "D-19-3",
+      "expected": "Other",
+      "label": "Other",
+      "latency_ms": 61.075255000105244,
+      "choice_scores": {
+        "RAG": 1.0632237312790949e-08,
+        "Agents": 7.04227005599023e-08,
+        "Fine-tuning": 1.5381731088837114e-07,
+        "Other": 0.9999997615814209
+      }
+    },
+    {
+      "id": "B-18-4",
+      "expected": "Agents",
+      "label": "Agents",
+      "latency_ms": 61.613296999894374,
+      "choice_scores": {
+        "RAG": 3.107193151663523e-07,
+        "Agents": 0.9999991655349731,
+        "Fine-tuning": 3.256310492361081e-07,
+        "Other": 2.96490412665662e-07
+      }
+    },
+    {
+      "id": "D-12-0",
+      "expected": "Other",
+      "label": "Other",
+      "latency_ms": 60.33367300005921,
+      "choice_scores": {
+        "RAG": 6.092758519926633e-10,
+        "Agents": 2.4097328576999644e-09,
+        "Fine-tuning": 1.8954017022565495e-08,
+        "Other": 1.0
+      }
+    },
+    {
+      "id": "A-12-0",
+      "expected": "RAG",
+      "label": "RAG",
+      "latency_ms": 60.05486300000484,
+      "choice_scores": {
+        "RAG": 1.0,
+        "Agents": 5.101404187968228e-09,
+        "Fine-tuning": 1.2698398998978178e-09,
+        "Other": 3.0941582629395725e-09
+      }
+    },
+    {
+      "id": "A-12-3",
+      "expected": "RAG",
+      "label": "RAG",
+      "latency_ms": 64.53987000031702,
+      "choice_scores": {
+        "RAG": 0.9999998807907104,
+        "Agents": 5.5708945012611366e-08,
+        "Fine-tuning": 9.530677580471547e-09,
+        "Other": 2.0494175245744373e-08
+      }
+    },
+    {
+      "id": "C-09-4",
+      "expected": "Fine-tuning",
+      "label": "Fine-tuning",
+      "latency_ms": 64.36647999998968,
+      "choice_scores": {
+        "RAG": 7.452867976098787e-07,
+        "Agents": 1.3923790902481414e-06,
+        "Fine-tuning": 0.9998782873153687,
+        "Other": 0.00011959832045249641
+      }
+    },
+    {
+      "id": "B-09-3",
+      "expected": "Agents",
+      "label": "Agents",
+      "latency_ms": 60.823725999853195,
+      "choice_scores": {
+        "RAG": 1.197930146190629e-07,
+        "Agents": 0.9999995231628418,
+        "Fine-tuning": 2.0698377056760364e-07,
+        "Other": 1.4677347337510582e-07
+      }
+    },
+    {
+      "id": "D-09-3",
+      "expected": "Other",
+      "label": "Other",
+      "latency_ms": 60.148314999878494,
+      "choice_scores": {
+        "RAG": 3.326532649339242e-08,
+        "Agents": 6.023572751701067e-08,
+        "Fine-tuning": 3.028842243679719e-08,
+        "Other": 0.9999997615814209
+      }
+    },
+    {
+      "id": "B-19-0",
+      "expected": "Agents",
+      "label": "Agents",
+      "latency_ms": 60.45555399987279,
+      "choice_scores": {
+        "RAG": 1.9142861162890767e-07,
+        "Agents": 0.9999990463256836,
+        "Fine-tuning": 3.689882817070611e-07,
+        "Other": 3.8070120922384376e-07
+      }
+    },
+    {
+      "id": "A-19-1",
+      "expected": "RAG",
+      "label": "RAG",
+      "latency_ms": 61.768455999754224,
+      "choice_scores": {
+        "RAG": 0.9999998807907104,
+        "Agents": 5.5708945012611366e-08,
+        "Fine-tuning": 2.7577927497191013e-08,
+        "Other": 8.764247638737288e-08
+      }
+    },
+    {
+      "id": "B-09-4",
+      "expected": "Agents",
+      "label": "Agents",
+      "latency_ms": 61.841353999625426,
+      "choice_scores": {
+        "RAG": 2.657722575349908e-07,
+        "Agents": 0.999998927116394,
+        "Fine-tuning": 5.715001520911756e-07,
+        "Other": 2.918937127560639e-07
+      }
+    },
+    {
+      "id": "C-18-1",
+      "expected": "Fine-tuning",
+      "label": "Fine-tuning",
+      "latency_ms": 61.93473399980576,
+      "choice_scores": {
+        "RAG": 1.5140452092055057e-07,
+        "Agents": 2.0057839833498292e-07,
+        "Fine-tuning": 0.9998144507408142,
+        "Other": 0.00018522566824685782
+      }
+    },
+    {
+      "id": "D-12-3",
+      "expected": "Other",
+      "label": "Other",
+      "latency_ms": 61.45484099988607,
+      "choice_scores": {
+        "RAG": 6.904000149354772e-10,
+        "Agents": 2.7735853613819472e-09,
+        "Fine-tuning": 3.326533359881978e-08,
+        "Other": 1.0
+      }
+    },
+    {
+      "id": "C-12-1",
+      "expected": "Fine-tuning",
+      "label": "Fine-tuning",
+      "latency_ms": 61.33874299985109,
+      "choice_scores": {
+        "RAG": 7.979384974987624e-08,
+        "Agents": 1.3155781175555603e-07,
+        "Fine-tuning": 0.9999305009841919,
+        "Other": 6.922181637492031e-05
+      }
+    },
+    {
+      "id": "B-18-3",
+      "expected": "Agents",
+      "label": "Agents",
+      "latency_ms": 61.05109200007064,
+      "choice_scores": {
+        "RAG": 6.412059150306959e-08,
+        "Agents": 0.9999996423721313,
+        "Fine-tuning": 8.494598091601802e-08,
+        "Other": 2.0061555972006317e-07
+      }
+    },
+    {
+      "id": "B-19-1",
+      "expected": "Agents",
+      "label": "Agents",
+      "latency_ms": 64.2090129999815,
+      "choice_scores": {
+        "RAG": 3.274958615406831e-08,
+        "Agents": 0.9999994039535522,
+        "Fine-tuning": 2.2033304958313238e-07,
+        "Other": 3.8669654145451204e-07
+      }
+    },
+    {
+      "id": "B-18-1",
+      "expected": "Agents",
+      "label": "Agents",
+      "latency_ms": 62.1601070001816,
+      "choice_scores": {
+        "RAG": 8.233246262534522e-08,
+        "Agents": 0.9999996423721313,
+        "Fine-tuning": 8.764245507109081e-08,
+        "Other": 2.0061555972006317e-07
+      }
+    },
+    {
+      "id": "D-19-0",
+      "expected": "Other",
+      "label": "Other",
+      "latency_ms": 60.42724500002805,
+      "choice_scores": {
+        "RAG": 3.5061404890512904e-09,
+        "Agents": 1.546981742706066e-08,
+        "Fine-tuning": 5.602796449011294e-09,
+        "Other": 1.0
+      }
+    },
+    {
+      "id": "A-12-1",
+      "expected": "RAG",
+      "label": "RAG",
+      "latency_ms": 60.629383999639685,
+      "choice_scores": {
+        "RAG": 0.9999998807907104,
+        "Agents": 7.265816037715922e-08,
+        "Fine-tuning": 3.378918478347259e-08,
+        "Other": 5.7477340220657425e-08
+      }
+    },
+    {
+      "id": "B-16-4",
+      "expected": "Agents",
+      "label": "Agents",
+      "latency_ms": 62.00912699978289,
+      "choice_scores": {
+        "RAG": 3.807010671152966e-07,
+        "Agents": 0.9999986886978149,
+        "Fine-tuning": 5.715000384043378e-07,
+        "Other": 3.359675417868857e-07
+      }
+    },
+    {
+      "id": "B-12-3",
+      "expected": "Agents",
+      "label": "Agents",
+      "latency_ms": 61.93682599996464,
+      "choice_scores": {
+        "RAG": 8.315254262925009e-07,
+        "Agents": 0.9999960660934448,
+        "Fine-tuning": 1.1726388038368896e-06,
+        "Other": 1.9333544969413197e-06
+      }
+    },
+    {
+      "id": "C-16-1",
+      "expected": "Fine-tuning",
+      "label": "Fine-tuning",
+      "latency_ms": 61.111637000067276,
+      "choice_scores": {
+        "RAG": 1.1252857490262613e-07,
+        "Agents": 2.203202598138887e-07,
+        "Fine-tuning": 0.999941349029541,
+        "Other": 5.829124347656034e-05
+      }
+    },
+    {
+      "id": "A-18-2",
+      "expected": "RAG",
+      "label": "RAG",
+      "latency_ms": 61.20849199987788,
+      "choice_scores": {
+        "RAG": 1.0,
+        "Agents": 3.7910417027831045e-09,
+        "Fine-tuning": 2.7305848693259804e-09,
+        "Other": 2.646573848963385e-09
+      }
+    },
+    {
+      "id": "D-19-1",
+      "expected": "Other",
+      "label": "Other",
+      "latency_ms": 60.853532000237465,
+      "choice_scores": {
+        "RAG": 2.1477701395156146e-08,
+        "Agents": 2.699576668874215e-07,
+        "Fine-tuning": 3.256311345012364e-07,
+        "Other": 0.9999994039535522
+      }
+    },
+    {
+      "id": "A-16-0",
+      "expected": "RAG",
+      "label": "RAG",
+      "latency_ms": 61.50591000005079,
+      "choice_scores": {
+        "RAG": 1.0,
+        "Agents": 1.0799672267580718e-08,
+        "Fine-tuning": 2.228638384949022e-09,
+        "Other": 4.718027746264397e-09
+      }
+    },
+    {
+      "id": "C-09-3",
+      "expected": "Fine-tuning",
+      "label": "Fine-tuning",
+      "latency_ms": 62.78223400022398,
+      "choice_scores": {
+        "RAG": 1.3226844508551494e-08,
+        "Agents": 2.784179855552793e-07,
+        "Fine-tuning": 0.9996077418327332,
+        "Other": 0.0003920416929759085
+      }
+    },
+    {
+      "id": "D-18-0",
+      "expected": "Other",
+      "label": "Other",
+      "latency_ms": 65.57776399995419,
+      "choice_scores": {
+        "RAG": 1.0677027830752195e-06,
+        "Agents": 5.152229931582042e-08,
+        "Fine-tuning": 7.265808221745829e-08,
+        "Other": 0.9999988079071045
+      }
+    },
+    {
+      "id": "A-16-1",
+      "expected": "RAG",
+      "label": "RAG",
+      "latency_ms": 62.10951000002751,
+      "choice_scores": {
+        "RAG": 1.0,
+        "Agents": 2.286290801123414e-08,
+        "Fine-tuning": 1.2824929562782472e-08,
+        "Other": 1.752959910561458e-08
+      }
+    },
+    {
+      "id": "C-16-0",
+      "expected": "Fine-tuning",
+      "label": "Fine-tuning",
+      "latency_ms": 60.68741799981581,
+      "choice_scores": {
+        "RAG": 7.614320907123329e-08,
+        "Agents": 2.575891357992077e-07,
+        "Fine-tuning": 0.9999749660491943,
+        "Other": 2.468289494572673e-05
+      }
+    },
+    {
+      "id": "B-16-2",
+      "expected": "Agents",
+      "label": "Agents",
+      "latency_ms": 61.30006300008972,
+      "choice_scores": {
+        "RAG": 9.094236474993522e-09,
+        "Agents": 1.0,
+        "Fine-tuning": 1.1496191554272173e-08,
+        "Other": 5.691028093224304e-09
+      }
+    },
+    {
+      "id": "A-09-3",
+      "expected": "RAG",
+      "label": "RAG",
+      "latency_ms": 60.2569970001241,
+      "choice_scores": {
+        "RAG": 1.0,
+        "Agents": 2.486225669784403e-09,
+        "Fine-tuning": 9.146313151298102e-10,
+        "Other": 1.6822645498848487e-09
+      }
+    },
+    {
+      "id": "D-19-4",
+      "expected": "Other",
+      "label": "Other",
+      "latency_ms": 62.12771300033637,
+      "choice_scores": {
+        "RAG": 9.530677580471547e-09,
+        "Agents": 4.993717439560896e-08,
+        "Fine-tuning": 7.49645820974365e-08,
+        "Other": 0.9999998807907104
+      }
+    },
+    {
+      "id": "A-19-4",
+      "expected": "RAG",
+      "label": "RAG",
+      "latency_ms": 61.58126100035588,
+      "choice_scores": {
+        "RAG": 0.9999998807907104,
+        "Agents": 5.399495961455614e-08,
+        "Fine-tuning": 2.0494175245744373e-08,
+        "Other": 3.7110154949004936e-08
+      }
+    },
+    {
+      "id": "A-19-3",
+      "expected": "RAG",
+      "label": "RAG",
+      "latency_ms": 60.40396199978204,
+      "choice_scores": {
+        "RAG": 1.0,
+        "Agents": 8.953242591758226e-09,
+        "Fine-tuning": 3.0461877464915688e-09,
+        "Other": 5.101404187968228e-09
+      }
+    },
+    {
+      "id": "B-12-4",
+      "expected": "Agents",
+      "label": "Agents",
+      "latency_ms": 62.40477399978772,
+      "choice_scores": {
+        "RAG": 1.2289157211853308e-06,
+        "Agents": 0.9999966621398926,
+        "Fine-tuning": 1.1544594826773391e-06,
+        "Other": 8.990939477371285e-07
+      }
+    },
+    {
+      "id": "C-16-4",
+      "expected": "Fine-tuning",
+      "label": "Fine-tuning",
+      "latency_ms": 66.52119299997139,
+      "choice_scores": {
+        "RAG": 2.575868620624533e-07,
+        "Agents": 4.313768329211598e-07,
+        "Fine-tuning": 0.9999661445617676,
+        "Other": 3.321417170809582e-05
+      }
+    },
+    {
+      "id": "B-19-4",
+      "expected": "Agents",
+      "label": "Agents",
+      "latency_ms": 62.253480999970634,
+      "choice_scores": {
+        "RAG": 5.989248847981798e-07,
+        "Agents": 0.9999953508377075,
+        "Fine-tuning": 1.9947244709328515e-06,
+        "Other": 2.026137053690036e-06
+      }
+    },
+    {
+      "id": "A-18-1",
+      "expected": "RAG",
+      "label": "RAG",
+      "latency_ms": 64.3036410001514,
+      "choice_scores": {
+        "RAG": 1.0,
+        "Agents": 9.98806459762136e-09,
+        "Fine-tuning": 4.792325647429152e-09,
+        "Other": 9.833214242860322e-09
+      }
+    },
+    {
+      "id": "D-16-3",
+      "expected": "Other",
+      "label": "Other",
+      "latency_ms": 60.059642999931384,
+      "choice_scores": {
+        "RAG": 9.93102631241527e-08,
+        "Agents": 1.7429492515930178e-07,
+        "Fine-tuning": 1.6701418644515797e-05,
+        "Other": 0.9999830722808838
+      }
+    },
+    {
+      "id": "D-18-3",
+      "expected": "Other",
+      "label": "Other",
+      "latency_ms": 60.86445499977344,
+      "choice_scores": {
+        "RAG": 4.993714597389953e-08,
+        "Agents": 7.042266503276551e-08,
+        "Fine-tuning": 5.368748929868161e-07,
+        "Other": 0.9999992847442627
+      }
+    },
+    {
+      "id": "A-19-0",
+      "expected": "RAG",
+      "label": "RAG",
+      "latency_ms": 61.24603499984005,
+      "choice_scores": {
+        "RAG": 1.0,
+        "Agents": 5.780648404396516e-09,
+        "Fine-tuning": 2.061153470123145e-09,
+        "Other": 6.550332720678398e-09
+      }
+    },
+    {
+      "id": "D-18-1",
+      "expected": "Other",
+      "label": "Other",
+      "latency_ms": 61.58296700004939,
+      "choice_scores": {
+        "RAG": 2.6995695634468575e-07,
+        "Agents": 4.052534450238454e-07,
+        "Fine-tuning": 2.5612805529817706e-06,
+        "Other": 0.9999967813491821
+      }
+    },
+    {
+      "id": "A-18-4",
+      "expected": "RAG",
+      "label": "RAG",
+      "latency_ms": 66.02848500006075,
+      "choice_scores": {
+        "RAG": 1.0,
+        "Agents": 3.378918833618627e-08,
+        "Fine-tuning": 1.0467402056235642e-08,
+        "Other": 2.510999053129126e-08
+      }
+    },
+    {
+      "id": "B-19-3",
+      "expected": "Agents",
+      "label": "Agents",
+      "latency_ms": 62.73321599974224,
+      "choice_scores": {
+        "RAG": 2.96490213713696e-07,
+        "Agents": 0.9999984502792358,
+        "Fine-tuning": 6.08358448062063e-07,
+        "Other": 6.08358448062063e-07
+      }
+    },
+    {
+      "id": "A-18-0",
+      "expected": "RAG",
+      "label": "RAG",
+      "latency_ms": 60.95537100009096,
+      "choice_scores": {
+        "RAG": 1.0,
+        "Agents": 5.515933043653831e-09,
+        "Fine-tuning": 1.192904219848856e-09,
+        "Other": 2.8616284897253763e-09
+      }
+    },
+    {
+      "id": "A-16-3",
+      "expected": "RAG",
+      "label": "RAG",
+      "latency_ms": 62.024230000133684,
+      "choice_scores": {
+        "RAG": 1.0,
+        "Agents": 1.6467534891262403e-08,
+        "Fine-tuning": 5.181739481940895e-09,
+        "Other": 8.280396812665458e-09
+      }
+    },
+    {
+      "id": "A-12-2",
+      "expected": "RAG",
+      "label": "RAG",
+      "latency_ms": 61.629872000139585,
+      "choice_scores": {
+        "RAG": 1.0,
+        "Agents": 1.9555681518568235e-08,
+        "Fine-tuning": 1.1496191554272173e-08,
+        "Other": 1.0632239977326208e-08
+      }
+    },
+    {
+      "id": "A-19-2",
+      "expected": "RAG",
+      "label": "RAG",
+      "latency_ms": 62.241009999979724,
+      "choice_scores": {
+        "RAG": 1.0,
+        "Agents": 6.587842493743779e-10,
+        "Fine-tuning": 9.736200734522527e-10,
+        "Other": 5.813750592054134e-10
+      }
+    },
+    {
+      "id": "C-09-0",
+      "expected": "Fine-tuning",
+      "label": "Fine-tuning",
+      "latency_ms": 62.50408100004279,
+      "choice_scores": {
+        "RAG": 2.6728022461952605e-08,
+        "Agents": 2.4965689249256684e-07,
+        "Fine-tuning": 0.9999467134475708,
+        "Other": 5.307506944518536e-05
+      }
+    },
+    {
+      "id": "D-12-4",
+      "expected": "Other",
+      "label": "Other",
+      "latency_ms": 78.08119200035435,
+      "choice_scores": {
+        "RAG": 4.271351627949116e-08,
+        "Agents": 3.889109834176452e-08,
+        "Fine-tuning": 4.31391242727841e-07,
+        "Other": 0.9999995231628418
+      }
+    },
+    {
+      "id": "C-19-0",
+      "expected": "Fine-tuning",
+      "label": "Fine-tuning",
+      "latency_ms": 76.72201900004438,
+      "choice_scores": {
+        "RAG": 6.512886585596789e-08,
+        "Agents": 8.764046555143068e-08,
+        "Fine-tuning": 0.9999769926071167,
+        "Other": 2.2827993234386668e-05
+      }
+    },
+    {
+      "id": "D-09-4",
+      "expected": "Other",
+      "label": "Other",
+      "latency_ms": 64.18430899975647,
+      "choice_scores": {
+        "RAG": 1.7983062150506157e-07,
+        "Agents": 1.1253511900122248e-07,
+        "Fine-tuning": 1.5143255893690366e-07,
+        "Other": 0.9999995231628418
+      }
+    },
+    {
+      "id": "D-18-4",
+      "expected": "Other",
+      "label": "Other",
+      "latency_ms": 67.89389599998685,
+      "choice_scores": {
+        "RAG": 3.763622953556478e-05,
+        "Agents": 1.0348093155698734e-06,
+        "Fine-tuning": 4.637693109543761e-06,
+        "Other": 0.9999566078186035
+      }
+    },
+    {
+      "id": "C-19-3",
+      "expected": "Fine-tuning",
+      "label": "Fine-tuning",
+      "latency_ms": 73.49258899967026,
+      "choice_scores": {
+        "RAG": 6.615537273546579e-08,
+        "Agents": 1.3787963837330608e-07,
+        "Fine-tuning": 0.9999902248382568,
+        "Other": 9.51624951994745e-06
+      }
+    },
+    {
+      "id": "C-12-0",
+      "expected": "Fine-tuning",
+      "label": "Fine-tuning",
+      "latency_ms": 60.278414999629604,
+      "choice_scores": {
+        "RAG": 1.0737374367408847e-07,
+        "Agents": 1.7428479281988984e-07,
+        "Fine-tuning": 0.999924898147583,
+        "Other": 7.484621164621785e-05
+      }
+    },
+    {
+      "id": "C-18-0",
+      "expected": "Fine-tuning",
+      "label": "Fine-tuning",
+      "latency_ms": 64.47755999988658,
+      "choice_scores": {
+        "RAG": 7.041582250622014e-08,
+        "Agents": 8.493769598771905e-08,
+        "Fine-tuning": 0.9999021291732788,
+        "Other": 9.761563705978915e-05
+      }
+    },
+    {
+      "id": "A-09-2",
+      "expected": "RAG",
+      "label": "RAG",
+      "latency_ms": 61.360617999980605,
+      "choice_scores": {
+        "RAG": 1.0,
+        "Agents": 2.2159490242756874e-08,
+        "Fine-tuning": 1.0799672267580718e-08,
+        "Other": 1.2430347418046495e-08
+      }
+    },
+    {
+      "id": "D-09-2",
+      "expected": "Other",
+      "label": "Other",
+      "latency_ms": 61.15692699995634,
+      "choice_scores": {
+        "RAG": 6.681513582407206e-07,
+        "Agents": 2.6165182021031796e-07,
+        "Fine-tuning": 1.4908472678598628e-07,
+        "Other": 0.999998927116394
+      }
+    },
+    {
+      "id": "C-16-3",
+      "expected": "Fine-tuning",
+      "label": "Fine-tuning",
+      "latency_ms": 61.261390999789,
+      "choice_scores": {
+        "RAG": 1.6373155631299596e-07,
+        "Agents": 4.313752413054317e-07,
+        "Fine-tuning": 0.9999624490737915,
+        "Other": 3.7052952393423766e-05
+      }
+    },
+    {
+      "id": "D-09-1",
+      "expected": "Other",
+      "label": "Other",
+      "latency_ms": 61.074234999978216,
+      "choice_scores": {
+        "RAG": 1.499385859915492e-08,
+        "Agents": 6.615600511850062e-08,
+        "Fine-tuning": 4.691163368875095e-08,
+        "Other": 0.9999997615814209
+      }
+    },
+    {
+      "id": "C-12-3",
+      "expected": "Fine-tuning",
+      "label": "Fine-tuning",
+      "latency_ms": 60.330372000407806,
+      "choice_scores": {
+        "RAG": 8.627911540770583e-08,
+        "Agents": 1.5869156300141185e-07,
+        "Fine-tuning": 0.9999465942382812,
+        "Other": 5.307506216922775e-05
+      }
+    },
+    {
+      "id": "A-16-2",
+      "expected": "RAG",
+      "label": "RAG",
+      "latency_ms": 61.45178600036161,
+      "choice_scores": {
+        "RAG": 1.0,
+        "Agents": 1.6561834126349595e-09,
+        "Fine-tuning": 1.1744099026600452e-09,
+        "Other": 9.004513246146928e-10
+      }
+    },
+    {
+      "id": "D-19-2",
+      "expected": "Other",
+      "label": "Other",
+      "latency_ms": 63.472193999587034,
+      "choice_scores": {
+        "RAG": 1.689350739297879e-07,
+        "Agents": 4.1163602304550295e-07,
+        "Fine-tuning": 7.811479463271098e-07,
+        "Other": 0.9999986886978149
+      }
+    },
+    {
+      "id": "D-16-0",
+      "expected": "Other",
+      "label": "Other",
+      "latency_ms": 58.514340999863634,
+      "choice_scores": {
+        "RAG": 1.553486185912334e-06,
+        "Agents": 9.132473337558622e-07,
+        "Fine-tuning": 6.540420599776553e-06,
+        "Other": 0.9999909400939941
+      }
+    },
+    {
+      "id": "B-19-2",
+      "expected": "Agents",
+      "label": "Agents",
+      "latency_ms": 65.17322500030787,
+      "choice_scores": {
+        "RAG": 1.1610718786414509e-07,
+        "Agents": 0.9999979734420776,
+        "Fine-tuning": 8.31527017908229e-07,
+        "Other": 1.0845157021321938e-06
+      }
+    },
+    {
+      "id": "C-12-4",
+      "expected": "Fine-tuning",
+      "label": "Fine-tuning",
+      "latency_ms": 62.0906690000993,
+      "choice_scores": {
+        "RAG": 9.625340879892974e-08,
+        "Agents": 1.0737842615071713e-07,
+        "Fine-tuning": 0.9999685287475586,
+        "Other": 3.1201903766486794e-05
+      }
+    },
+    {
+      "id": "A-18-3",
+      "expected": "RAG",
+      "label": "RAG",
+      "latency_ms": 62.02147000021796,
+      "choice_scores": {
+        "RAG": 1.0,
+        "Agents": 4.163644540255973e-09,
+        "Fine-tuning": 1.7356652781685966e-09,
+        "Other": 2.2637343111142627e-09
+      }
+    },
+    {
+      "id": "D-16-4",
+      "expected": "Other",
+      "label": "Other",
+      "latency_ms": 61.15392099991368,
+      "choice_scores": {
+        "RAG": 4.181175086159783e-07,
+        "Agents": 1.6536868088223855e-06,
+        "Fine-tuning": 1.2098630577384029e-06,
+        "Other": 0.9999966621398926
+      }
+    },
+    {
+      "id": "B-16-1",
+      "expected": "Agents",
+      "label": "Agents",
+      "latency_ms": 62.47140899995429,
+      "choice_scores": {
+        "RAG": 3.828814953976689e-08,
+        "Agents": 0.9999996423721313,
+        "Fine-tuning": 1.8266256063270703e-07,
+        "Other": 8.902262038645858e-08
+      }
+    },
+    {
+      "id": "A-09-4",
+      "expected": "RAG",
+      "label": "RAG",
+      "latency_ms": 67.76246200024616,
+      "choice_scores": {
+        "RAG": 0.9999998807907104,
+        "Agents": 4.139937459513021e-08,
+        "Fine-tuning": 1.986363784567402e-08,
+        "Other": 3.432128536928758e-08
+      }
+    }
+  ],
+  "dataset_hash": "fc8f70f6c0a21c763fe590837a487aa27be0588f66a139bee34be8684e3b6d14"
+}

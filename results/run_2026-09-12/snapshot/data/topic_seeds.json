@@ -1,0 +1,411 @@
+{
+  "RAG": [
+    [
+      "Answers from a handbook",
+      "A question-answering app retrieves relevant handbook passages and supplies them to the model as evidence."
+    ],
+    [
+      "Choosing chunk boundaries",
+      "The article compares paragraph boundaries and overlapping windows when indexing documents for grounded answers."
+    ],
+    [
+      "Search before generation",
+      "The system searches a document collection before asking a language model to answer the user's question."
+    ],
+    [
+      "Combining lexical and vector retrieval",
+      "A search pipeline merges keyword results with embedding matches to find useful context for an answer."
+    ],
+    [
+      "Ranking passages for the prompt",
+      "A reranking stage selects the most relevant retrieved passages before response generation."
+    ],
+    [
+      "Refreshing a knowledge index",
+      "The tutorial updates an external document index when policies change, without adapting the generator's weights."
+    ],
+    [
+      "Citations from retrieved context",
+      "An assistant links factual statements in its answer to the document passages it retrieved."
+    ],
+    [
+      "Retrieving across linked entities",
+      "A question-answering system follows graph relationships to collect evidence before writing a response."
+    ],
+    [
+      "Finding text in scanned manuals",
+      "Scanned pages are extracted and indexed so a generator can answer questions using the retrieved material."
+    ],
+    [
+      "Comparing retrieval recall",
+      "The experiment measures whether search returns the passages that contain the answer."
+    ],
+    [
+      "Filters on a vector index",
+      "A company search tool restricts retrieved context by department and document access before generation."
+    ],
+    [
+      "Question rewriting for search",
+      "A follow-up question is rewritten into a standalone query to retrieve relevant knowledge-base passages."
+    ],
+    [
+      "Parent documents and small chunks",
+      "Small text chunks locate a match, then their parent sections supply context for the generated answer."
+    ],
+    [
+      "Reducing duplicate context",
+      "The pipeline removes near-identical retrieved passages to use the model's context budget more effectively."
+    ],
+    [
+      "Grounded answers with missing evidence",
+      "A knowledge assistant declines to answer when its search results do not contain the requested fact."
+    ],
+    [
+      "Evaluating answer grounding",
+      "The article tests whether answers are supported by the context retrieved from source documents."
+    ],
+    [
+      "Retrieving tables for answers",
+      "A system finds the relevant rows in financial reports and passes that context to a text generator."
+    ],
+    [
+      "Searching multilingual documents",
+      "A multilingual embedding index retrieves relevant passages across languages for question answering."
+    ],
+    [
+      "Dense retrieval for a help center",
+      "A help-center assistant embeds queries and retrieves similar support articles as answer context."
+    ],
+    [
+      "Passage compression",
+      "A retrieval pipeline shortens selected source passages before placing them in the answer prompt."
+    ],
+    [
+      "Routing a query to a document collection",
+      "A knowledge assistant chooses the right index and retrieves source material before composing its answer."
+    ],
+    [
+      "Caching retrieved context",
+      "The article reduces repeated document searches by caching retrieved passages for common questions."
+    ],
+    [
+      "A retrieval ablation study",
+      "The evaluation removes the external knowledge search to measure its effect on generated answers."
+    ],
+    [
+      "Searching private project documents",
+      "A team uses authorized project files as a searchable source of context for a question-answering assistant."
+    ],
+    [
+      "Retrieval versus memorized knowledge",
+      "The comparison studies accessing external documents at answer time instead of relying only on model parameters."
+    ]
+  ],
+  "Agents": [
+    [
+      "Selecting a tool for the next step",
+      "An assistant chooses a function, supplies arguments, and inspects the returned result before deciding what to do next."
+    ],
+    [
+      "A planner and an executor",
+      "A model breaks a task into steps while a separate execution component runs the selected tools."
+    ],
+    [
+      "Pausing before an external action",
+      "A tool-using assistant waits for human approval before sending a message or changing an external record."
+    ],
+    [
+      "Recovering from a failed tool call",
+      "An autonomous workflow examines a tool error and decides whether to retry, change arguments, or escalate."
+    ],
+    [
+      "A browser assistant with checkpoints",
+      "A model navigates a website through tools and pauses at consequential actions for user review."
+    ],
+    [
+      "Maintaining state over several actions",
+      "A long-running assistant records completed actions so it can resume a task without repeating them."
+    ],
+    [
+      "A coding assistant that uses a terminal",
+      "The system edits code, runs tests, reads the failures, and decides which change to attempt next."
+    ],
+    [
+      "Choosing when a task is complete",
+      "An assistant uses explicit stopping conditions to avoid continuing tool calls after its goal is satisfied."
+    ],
+    [
+      "Delegating work between specialists",
+      "A coordinator assigns subtasks to specialized assistants and combines their results into one response."
+    ],
+    [
+      "Functions exposed through MCP",
+      "A tool server exposes operations that an assistant can discover and invoke while performing a task."
+    ],
+    [
+      "Remembering previous tool observations",
+      "An assistant retains useful outcomes of earlier actions to inform later decisions in the same workflow."
+    ],
+    [
+      "A search tool within a larger task",
+      "A model can choose search, calculation, or record updates depending on what a multi-step user request needs."
+    ],
+    [
+      "Human escalation after repeated failure",
+      "An automated assistant stops retrying unsuccessful actions and asks a person to resolve the issue."
+    ],
+    [
+      "Structured tool arguments",
+      "The application validates the function name and arguments proposed by an assistant before execution."
+    ],
+    [
+      "A workflow with conditional branches",
+      "The orchestration code chooses a next stage based on the result of a model-driven step."
+    ],
+    [
+      "Budgeting autonomous actions",
+      "The coordinator limits an assistant's tool calls and elapsed time while it works toward a goal."
+    ],
+    [
+      "Auditing an assistant's actions",
+      "The article records which tools an agent called, their inputs, and the resulting state changes."
+    ],
+    [
+      "A shopping assistant with approval",
+      "The assistant compares products through tools and asks for confirmation before placing an order."
+    ],
+    [
+      "Recovering a paused workflow",
+      "An assistant resumes from a saved checkpoint after a person supplies a missing decision."
+    ],
+    [
+      "A simulated environment for decisions",
+      "A language model selects actions in an environment and adjusts its next move from observed feedback."
+    ],
+    [
+      "Tools as untrusted data sources",
+      "A tool-using assistant separates external tool content from instructions controlling its actions."
+    ],
+    [
+      "Parallel independent tool calls",
+      "A coordinator runs independent lookups concurrently and waits for their results before taking the next action."
+    ],
+    [
+      "Selecting specialist assistants",
+      "An orchestrator routes a task to an assistant with the right tool access and combines the returned work."
+    ],
+    [
+      "A research-and-write workflow",
+      "A model plans source lookups, invokes research tools, inspects findings, and decides when it has enough material."
+    ],
+    [
+      "Testing action sequences",
+      "The evaluation checks whether a tool-using assistant performs required steps in the correct order."
+    ]
+  ],
+  "Fine-tuning": [
+    [
+      "Adapting with low-rank matrices",
+      "The guide freezes pretrained weights and learns small adapter matrices for a supervised task."
+    ],
+    [
+      "Training from labelled examples",
+      "A pretrained model is adapted using input-output examples for a specific classification problem."
+    ],
+    [
+      "Choosing an adapter rank",
+      "The experiment changes low-rank adapter capacity and compares validation performance after training."
+    ],
+    [
+      "A smaller learning rate",
+      "The tutorial adjusts the optimizer step size when adapting a pretrained language model on a task dataset."
+    ],
+    [
+      "Merging a trained adapter",
+      "A trained adaptation is folded into the base model weights to export one model for inference."
+    ],
+    [
+      "Quantized adapter training",
+      "The training recipe keeps a quantized base model frozen and learns low-rank task adapters."
+    ],
+    [
+      "Comparing training epochs",
+      "A team changes the number of passes through labelled data and checks whether task adaptation overfits."
+    ],
+    [
+      "Preferences as training data",
+      "The method adapts a model using pairs of preferred and rejected responses."
+    ],
+    [
+      "Cleaning an instruction dataset",
+      "A team removes conflicting examples before supervised adaptation of a pretrained assistant."
+    ],
+    [
+      "Masking the training loss",
+      "The training code computes loss on the assistant's target answer instead of learning to repeat the input prompt."
+    ],
+    [
+      "Freezing most parameters",
+      "The study updates a small subset of a pretrained model's parameters during task-specific adaptation."
+    ],
+    [
+      "Adapting a domain writing style",
+      "A model is trained on reviewed examples to reproduce a domain-specific response style."
+    ],
+    [
+      "Balancing classes for adaptation",
+      "A classifier training dataset is balanced before updating a pretrained model for ticket routing."
+    ],
+    [
+      "Gradient accumulation on a small GPU",
+      "The tutorial accumulates gradients across microbatches while training a task adapter."
+    ],
+    [
+      "A checkpoint comparison",
+      "The team compares validation scores from saved checkpoints of the same supervised adaptation run."
+    ],
+    [
+      "A multilingual task adapter",
+      "Training examples in several languages are used to adapt a pretrained model to a defined task."
+    ],
+    [
+      "Preparing ShareGPT records",
+      "Labelled task examples are converted into conversation-format records for supervised model training."
+    ],
+    [
+      "Changing an optimizer schedule",
+      "A task adaptation experiment compares learning-rate schedules while updating model parameters."
+    ],
+    [
+      "Training a compact label router",
+      "A small pretrained model learns category labels from reviewed examples and is compared with its original version."
+    ],
+    [
+      "Ablating adapter placement",
+      "The experiment changes which transformer layers receive trainable adapters during task adaptation."
+    ],
+    [
+      "Preventing validation leakage",
+      "Related examples are grouped before splitting a dataset used to adapt a pretrained model."
+    ],
+    [
+      "Distilling a task into a small model",
+      "A small model is trained on reviewed teacher outputs to reproduce a narrow task behaviour."
+    ],
+    [
+      "Comparing full and adapter updates",
+      "The study contrasts updating every model parameter with learning a compact task-specific adaptation."
+    ],
+    [
+      "Resuming a supervised training run",
+      "A training job loads its adapter and optimizer checkpoint to continue updating the model on labelled examples."
+    ],
+    [
+      "Adapting a retrieval component",
+      "The main contribution is a supervised parameter-update recipe for a pretrained retriever, rather than a new search pipeline."
+    ]
+  ],
+  "Other": [
+    [
+      "Generating images from a description",
+      "A diffusion system creates a picture from a text prompt; the article focuses on visual synthesis quality."
+    ],
+    [
+      "Recognizing spoken words",
+      "A speech recognition system converts recorded audio into text and is evaluated on transcription errors."
+    ],
+    [
+      "A new image classifier",
+      "A vision architecture identifies objects in pictures; the focus is the visual recognition method."
+    ],
+    [
+      "Forecasting electricity demand",
+      "A time-series model predicts future energy use from past observations and calendar variables."
+    ],
+    [
+      "An AI company funding announcement",
+      "A company announces an investment round and discusses its business plans without explaining a technical workflow."
+    ],
+    [
+      "Comparing model API prices",
+      "The article compares published inference prices and account limits for several hosted language models."
+    ],
+    [
+      "Deploying an inference server",
+      "A systems guide configures batching and request handling to serve an existing model efficiently."
+    ],
+    [
+      "Designing a better prompt",
+      "The tutorial improves a single model prompt without training parameters or invoking external tools."
+    ],
+    [
+      "Generating speech from text",
+      "A text-to-speech system produces narration and the article compares audio quality and speaker characteristics."
+    ],
+    [
+      "An AI hardware launch",
+      "A manufacturer announces an accelerator chip and describes its memory and compute specifications."
+    ],
+    [
+      "Forecasting with tabular features",
+      "A predictive model estimates outcomes from rows of structured data; no language-model adaptation is discussed."
+    ],
+    [
+      "Compressing weights for inference",
+      "The guide quantizes an existing model for deployment without training an adapter or updating task behaviour."
+    ],
+    [
+      "A general language benchmark",
+      "A benchmark measures a model's reasoning ability using standalone questions without a retrieval or tool workflow."
+    ],
+    [
+      "An image segmentation architecture",
+      "A vision system identifies object regions inside an image and compares segmentation quality."
+    ],
+    [
+      "Reducing inference latency",
+      "The article optimizes key-value caching and token generation throughput for an already trained model."
+    ],
+    [
+      "An AI policy announcement",
+      "A policy document describes organizational AI governance responsibilities rather than model training or orchestration."
+    ],
+    [
+      "Detecting anomalies in transactions",
+      "A statistical model flags unusual transaction patterns using structured features."
+    ],
+    [
+      "Building a dataset viewer",
+      "A web interface displays and filters data records; it does not adapt a model or implement an assistant workflow."
+    ],
+    [
+      "Translation with a pretrained service",
+      "An existing translation API converts text between languages without additional training or autonomous actions."
+    ],
+    [
+      "Classifying customer sentiment",
+      "An existing sentiment service labels text positive or negative; the article does not describe adapting its model."
+    ],
+    [
+      "Vector similarity for product search",
+      "An ecommerce search engine ranks products by similarity, but no language generation or grounded answering is involved."
+    ],
+    [
+      "A fixed calendar automation",
+      "A scheduled script copies calendar entries between services without a model deciding which action to take."
+    ],
+    [
+      "Learning a vision model from scratch",
+      "The paper develops a new visual architecture and trains it from initialization rather than adapting a pretrained assistant."
+    ],
+    [
+      "Video generation from text",
+      "A generative video system creates moving scenes from descriptions; the article focuses on output quality."
+    ],
+    [
+      "A roundup without a main technical topic",
+      "A brief newsletter mentions model launches, retrieval, agents, and training equally, with no clear dominant topic."
+    ]
+  ]
+}
+

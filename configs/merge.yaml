@@ -1,0 +1,8 @@
+model_name_or_path: Qwen/Qwen3-1.7B-Base
+adapter_name_or_path: outputs/adapter
+template: qwen3_nothink
+trust_remote_code: false
+export_dir: models/knowledge-pill-merged
+export_size: 2
+export_device: cpu
+export_legacy_format: false
