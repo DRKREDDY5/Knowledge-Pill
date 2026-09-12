@@ -9,7 +9,7 @@ Open these tabs in order:
 1. The app, Daily pills, RAG, English.
 2. Your executed Colab training notebook, at steps 3 and 7–10.
 3. GitHub: data/knowledge_pill.csv and results/run_2026-09-12/comparison.json.
-4. GitHub Actions: Generate daily pills, if a real run has succeeded.
+4. GitHub Actions: [Generate daily pills, successful attempt 3](https://github.com/DRKREDDY5/Knowledge-Pill/actions/runs/34724909759/attempts/3).
 
 Refresh the app once, check that the dated edition loads, and test the language switch. If Fireworks is not configured, use the labelled demonstration and say so. Do not recreate a successful workflow screenshot or describe a source-only check as generation.
 
@@ -89,6 +89,10 @@ I used a fixed workflow because the steps are known. I did not need several auto
 
 - Before the first real run: “The generation and scheduling code is included. Fireworks configuration and the first live run are still pending.”
 - After a verified real manual run: “This workflow run generated the edition shown here. I reviewed its sources and language. The daily schedule is enabled only after setting the activation variable.”
+
+**Current verified status:** the real manual run succeeded and saved both languages. Until you have finished your own content review, say: “This successful run generated both English and Telugu drafts. Automated checks passed. I am reviewing the content and Telugu wording before enabling daily generation.”
+
+If explaining the failure and fix: “The first response ran out of tokens. I added structured output, separate English and Telugu budgets, and a lower reasoning setting. I kept the validation checks and verified the fix with an actual successful run.”
 
 Do not say the schedule has run successfully unless an actual scheduled run exists. A manual generation run proves the generation path, not the scheduler's delivery history.
 

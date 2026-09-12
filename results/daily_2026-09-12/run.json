@@ -1,0 +1,68 @@
+{
+  "workflow_run_id": 34724909759,
+  "attempt": 3,
+  "job_id": 103639082578,
+  "conclusion": "success",
+  "event": "workflow_dispatch",
+  "code_checkout_sha": "bf76ac47e1ea81e4c8c96df7d631a97a610cb937",
+  "published_commit_sha": "88fa31b72e3df66fbdf8aca64280483b2b70d88e",
+  "run_url": "https://github.com/DRKREDDY5/Knowledge-Pill/actions/runs/34724909759/attempts/3",
+  "collection_updated_at": "2026-09-12T23:32:57.255712+00:00",
+  "max_tokens": {
+    "en": 16000,
+    "te": 32000
+  },
+  "reasoning_effort": "low",
+  "response_format": "json_schema",
+  "validation": "Python and browser packet checks passed",
+  "editorial_status": "assistant_review_findings_recorded_in_docs/CONTENT_REVIEW.md_reader_approval_pending",
+  "source_collection_sha256": "702e8c03c6c216521f1403cb75fef09ed183e986821ee52af28486f77472d59b",
+  "packets": [
+    {
+      "language": "en",
+      "id": "3c7da074c5b08d7e",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "usage": {
+        "prompt_tokens": 3530,
+        "total_tokens": 5404,
+        "completion_tokens": 1874,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "knowledge_words": 805,
+      "news_words": 515,
+      "finish_reason": "stop",
+      "status": "draft"
+    },
+    {
+      "language": "te",
+      "id": "fecfc443d411377c",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "usage": {
+        "prompt_tokens": 3530,
+        "total_tokens": 15671,
+        "completion_tokens": 12141,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 24
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 24
+        }
+      },
+      "knowledge_words": 632,
+      "news_words": 418,
+      "finish_reason": "stop",
+      "status": "draft"
+    }
+  ]
+}

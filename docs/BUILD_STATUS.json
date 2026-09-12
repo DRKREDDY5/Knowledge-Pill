@@ -1,11 +1,11 @@
 {
-  "status": "training_evidence_verified_daily_schedule_implemented_activation_pending",
+  "status": "training_and_first_live_daily_generation_verified_reader_review_pending",
   "python": "3.12.14",
   "measured_lexical_environment": {
     "scikit-learn": "1.8.0",
     "numpy": "2.3.5"
   },
-  "core_tests_passed": 11,
+  "core_tests_passed": 15,
   "python_browser_prediction_parity": {
     "examples": 116,
     "status": "passed"
@@ -20,12 +20,12 @@
   "qwen_metrics": "verified_from_raw_predictions_dataset_hashes_and_recomputed_metrics",
   "browser_qa": "not_run",
   "webmcp_execution": "not_run",
-  "daily_scheduling": "workflow_implemented_disabled_until_DAILY_PILLS_ENABLED_true",
-  "lesson_generation": "Fireworks_code_ready_real_provider_run_pending",
-  "telugu_fluent_review": "assistant_editorial_review_of_demos_done_independent_human_review_pending",
-  "github_submission": "source_prepared_for_DRKREDDY5/Knowledge-Pill",
+  "daily_scheduling": "workflow_implemented_activation_variable_not_inspected_scheduled_run_not_verified",
+  "lesson_generation": "first_real_EN_TE_run_succeeded_2026-09-12_attempt_3",
+  "telugu_fluent_review": "assistant_review_completed_findings_recorded_independent_human_review_pending",
+  "github_submission": "published_DRKREDDY5/Knowledge-Pill",
   "loom_recording": "script_ready_recording_pending",
-  "fireworks_key": "not_configured_in_workspace_or_host",
+  "fireworks_key": "configured_in_GitHub_Actions_verified_by_successful_request_not_available_to_app",
   "daily_views": "implemented_auto_load_repository_editions_and_device_local_history",
   "raw_results_zip": "received_imported_and_verified",
   "adapter_download": "not_yet_confirmed",
@@ -40,5 +40,7 @@
   },
   "demo_editions": "dated_assistant_authored_EN_TE_examples_not_Fireworks_outputs",
   "csv": "500_exact_run_rows_with_original_split_column",
-  "daily_schedule_reuse_and_failure_checks": "passed_with_mocked_provider_no_live_Fireworks_call"
+  "daily_schedule_reuse_and_failure_checks": "passed_mocked_provider_checks_and_first_real_EN_TE_generation",
+  "daily_writer_truncation_regression": "passed_complete_cutoff_and_language_budget_tests",
+  "daily_generation_run": "https://github.com/DRKREDDY5/Knowledge-Pill/actions/runs/34724909759/attempts/3"
 }

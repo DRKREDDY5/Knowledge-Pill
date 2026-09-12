@@ -14,9 +14,10 @@ The hosted app is currently owner-private. Reviewers can inspect this public rep
 - Actual exported predictions, dataset hashes and metrics verified; reports, logs and figures are committed in [results/run_2026-09-12](results/run_2026-09-12).
 - A real browser classifier, source-linked foundation lessons, daily knowledge/news views, English/Telugu selection, recall practice and device-local history.
 - Fireworks generation code, a manual Colab notebook and a daily GitHub Actions workflow. Saved editions load automatically from this repository.
+- First real English and Telugu generation verified in [workflow attempt 3](https://github.com/DRKREDDY5/Knowledge-Pill/actions/runs/34724909759/attempts/3). Both languages produced a knowledge pill and a news pill, passed validation and were saved automatically.
 - Dated English/Telugu demonstration editions with explicit provenance. These were authored for the demo and are **not evidence of a successful Fireworks run**.
 
-**Activation still required:** set the Fireworks secret/model, run the first real generation, review its content, then enable the schedule. An executed training notebook, adapter download confirmation and the Loom recording remain outstanding. See [setup](docs/DAILY_SETUP.md) and [status](docs/BUILD_STATUS.json). The repository notebook is reproducible source, not a reconstructed executed notebook.
+**Remaining:** review the generated drafts and Telugu wording, then enable the schedule with `DAILY_PILLS_ENABLED=true` if it is not already set. A manual run is verified; a scheduled run has not been verified. An executed training notebook, adapter download confirmation and the Loom recording remain outstanding. See [setup](docs/DAILY_SETUP.md), [content review](docs/CONTENT_REVIEW.md) and [status](docs/BUILD_STATUS.json). The repository notebook is reproducible source, not a reconstructed executed notebook.
 
 ## Week 5: one small classification decision
 

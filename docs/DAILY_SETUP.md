@@ -1,6 +1,6 @@
 # Daily generation: exact setup
 
-The app already reads saved editions automatically. GitHub Actions will generate new drafts on a schedule once you add the provider configuration. The first real Fireworks request has not been verified yet.
+The first real Fireworks generation is now verified: [September 12, attempt 3](https://github.com/DRKREDDY5/Knowledge-Pill/actions/runs/34724909759/attempts/3) generated and saved both English and Telugu editions. Your repository key and model are working. The app reads these saved drafts automatically. Review the content, then enable the daily schedule as described below; an actual scheduled run has not yet been verified.
 
 ## 1. Add the key privately
 
@@ -17,6 +17,8 @@ In the same settings area choose **Variables → New repository variable**.
 
 - Name: `FIREWORKS_MODEL`
 - Value: the exact inference-ready model or deployment path from your Fireworks account, beginning with `accounts/`.
+
+The model verified in this project's successful run is `accounts/fireworks/models/glm-5p3-flash`.
 
 Use a model already available for inference in your account. There is intentionally no guessed model default: availability depends on the account. The request uses the [Fireworks chat-completions API](https://docs.fireworks.ai/api-reference/post-chatcompletions) with JSON output. Do not create a dedicated paid deployment just to bypass an unavailable-model error.
 
@@ -71,3 +73,5 @@ Generation runs off-device on GitHub Actions. Reading and recall progress remain
 The first manual run reached Fireworks with `accounts/fireworks/models/glm-5p3-flash`, but its response reached the original 7,500-token limit. The writer now requests the exact JSON schema and allows up to 16,000 output tokens for English and 32,000 for Telugu, with a five-minute request timeout. The second attempt completed English at 4,937 completion tokens but Telugu reached 16,000, motivating the language-specific allowance. GLM 5.3 Flash is requested with low reasoning effort; no unsupported disable-thinking option is sent. Telugu is requested as direct Unicode. These limits are ceilings, not required output lengths. Story and news reading targets are unchanged. [Fireworks recommends increasing the token budget for truncated responses and supports schema-constrained output](https://docs.fireworks.ai/structured-responses/structured-response-formatting).
 
 The runner logs the language, finish reason and token counts without logging credentials or reasoning text. It still rejects truncated or invalid drafts and does not automatically retry paid requests. A failed workflow can be rerun after a fix: its checkout explicitly reads current `main`.
+
+The successful run used 1,874 completion tokens for English and 12,141 for Telugu, both ending with `stop`. This is evidence for this run, not a guarantee that every future draft will pass. No extra paid generation was needed to verify the saved files.

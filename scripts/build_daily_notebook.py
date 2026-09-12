@@ -12,7 +12,7 @@ The Week 5 training notebook is complete. This separate notebook creates the pro
 
 The measured simple classifier routes source descriptions here; the completed Qwen + LoRA experiment remains in the training notebook. An existing Fireworks model writes the lessons from supplied sources.
 
-This notebook offers manual generation. The repository also includes a GitHub Actions schedule, activated after Fireworks setup. The hosted app loads saved repository editions or imports this JSON. API calls spend your Fireworks credits. The first real provider run still needs verification; dated demonstration editions are explicitly labelled.
+This notebook offers manual generation. The repository also includes a GitHub Actions schedule, activated after Fireworks setup. The hosted app loads saved repository editions or imports this JSON. API calls spend your Fireworks credits. The first English and Telugu provider run succeeded on September 12, 2026; the saved editions remain drafts for reader review. Dated demonstration editions are separately labelled.
 
 Before switching notebooks, save your training results ZIP, adapter ZIP and executed training notebook. Keep them together for the GitHub + Loom submission.
 ''')

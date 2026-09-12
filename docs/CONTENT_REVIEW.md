@@ -1,5 +1,29 @@
 # Content review record
 
+## First real Fireworks edition: September 12, 2026
+
+[Successful run, attempt 3](https://github.com/DRKREDDY5/Knowledge-Pill/actions/runs/34724909759/attempts/3) saved both languages. The [original generated collection](https://github.com/DRKREDDY5/Knowledge-Pill/blob/88fa31b72e3df66fbdf8aca64280483b2b70d88e/editions/latest.json) is preserved in Git history; it has not been silently rewritten as reviewed content.
+
+| Check | Result |
+|---|---|
+| English knowledge / news length | 805 / 515 whitespace-counted words; valid under the existing content limits |
+| Telugu knowledge / news length | 632 / 418 whitespace-counted words; Telugu-script check passed |
+| Source references and dates | Two paper sources and two September 10 news sources; correctly labelled recent |
+| Python and browser validation | Both packets passed |
+| Editorial review | Assistant compared the source claims and read both languages; corrections below remain before reader approval |
+| Human review | Independent fluent Telugu review still pending |
+
+The [RAG](https://arxiv.org/abs/2005.11401) and [REALM](https://arxiv.org/abs/2002.08909) abstracts support the descriptions of external retrieval alongside model parameters. The [Google Research post](https://research.google/blog/toolgrad-efficient-tool-use-dataset-generation-with-textual-gradients/) supports ToolGrad's reported method and the quoted benchmark numbers; the experiment has not been reproduced here. The [OpenAI article](https://openai.com/index/using-codex-chatgpt-to-search-for-new-antimicrobials/) supports the research-assistance example. The generator used only that item's feed excerpt and disclosed this limitation.
+
+**Review findings to correct before approving the draft:**
+
+- The Telugu summary says retrieval works instead of parameter knowledge. RAG combines both; change that wording to “alongside.”
+- The Telugu story infers that information is absent from the whole library after finding one unhelpful document. It should say the retrieved material did not supply the answer.
+- Treat similarity thresholds and evidence-checking steps as proposed engineering choices. They are not guaranteed fact checks or results demonstrated in the supplied paper abstracts. Missing retrieval results can indicate retrieval failure as well as missing documents.
+- Smooth the Telugu recall question and the phrase “పాత్ర ధరించిన సాక్ష్యం” in the news answer with a fluent reader.
+
+The two versions were written independently from the same source pack and concept; their fictional stories differ. They are not sentence-by-sentence translations. Successful API execution is distinct from final editorial approval.
+
 ## Dated demonstrations included in the repository
 
 - Edition: September 12, 2026, RAG, English and Telugu.
