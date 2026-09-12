@@ -69,6 +69,7 @@ const bad=structuredClone(p);bad.sources[0].url='javascript:alert(1)';assert.thr
   self.assertEqual(packet['knowledge'],draft['knowledge'])
   self.assertGreaterEqual(payload['max_tokens'],16000)
   self.assertEqual(payload['response_format']['type'],'json_schema')
+  self.assertEqual(payload['reasoning_effort'],'low')
   schema=payload['response_format']['json_schema']['schema']
   self.assertEqual(schema['properties']['news']['properties']['items']['maxItems'],len(pack['news_sources']))
   self.assertIn('3500',log.getvalue())
@@ -87,5 +88,15 @@ const bad=structuredClone(p);bad.sources[0].url='javascript:alert(1)';assert.thr
  def test_no_news_schema_requires_empty_items(self):
   items=daily.draft_schema({'news_sources':[]})['properties']['news']['properties']['items']
   self.assertEqual((items['minItems'],items['maxItems']),(0,0))
+
+ def test_telugu_budget_and_model_specific_reasoning(self):
+  pack,_=self.writer_fixture();pack['language']='te'
+  result={'choices':[{'finish_reason':'length','message':{'content':''}}]}
+  with patch.object(daily.urllib.request,'urlopen',return_value=BytesIO(json.dumps(result).encode())) as request,redirect_stdout(StringIO()):
+   with self.assertRaisesRegex(ValueError,'cut off for te at the 32000-token budget'):
+    daily.generate(pack,'PRIVATE_TEST_KEY','accounts/example/models/another-model')
+  payload=json.loads(request.call_args.args[0].data)
+  self.assertEqual(payload['max_tokens'],32000)
+  self.assertNotIn('reasoning_effort',payload)
 
 if __name__=='__main__':unittest.main()

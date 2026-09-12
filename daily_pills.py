@@ -145,6 +145,7 @@ def make_pack(topic='RAG',language='en',timezone_name='America/New_York',recent_
 KNOWLEDGE_FIELDS=['title','summary','story','connection','explanation','application','exercise','question','answer','limits']
 NEWS_FIELDS=['headline','what_happened','why_it_matters','takeaway']
 WRITER_MAX_TOKENS=16000
+TELUGU_MAX_TOKENS=32000
 
 def draft_schema(pack):
     """Constrain the response shape; factual and word-count checks still run locally."""
@@ -207,12 +208,16 @@ def generate(pack,api_key,model):
       'The news_window field is set by code: today means local-calendar publication, recent means dated earlier in the last seven days. '
       'If evidence_type is feed_excerpt, do not imply that you read the full article. '
       'Use natural Telugu for language te, retaining technical English terms where helpful; otherwise use English. '
+      'Write Telugu characters directly in JSON strings, not Unicode escape sequences. '
       'source_ids must come from the provided relevant sources. Do not add URLs or source records. '
       'Avoid promises about memory gains, model quality, or language correctness. The output is a draft for human review.'
     )
+    max_tokens=TELUGU_MAX_TOKENS if pack['language']=='te' else WRITER_MAX_TOKENS
     payload={'model':model,'messages':[{'role':'system','content':system},{'role':'user','content':json.dumps({'source_pack':pack,'output_shape':shape},ensure_ascii=False)}],
-        'temperature':0.3,'max_tokens':WRITER_MAX_TOKENS,
+        'temperature':0.3,'max_tokens':max_tokens,
         'response_format':{'type':'json_schema','json_schema':{'name':'daily_pills','schema':draft_schema(pack)}}}
+    if model=='accounts/fireworks/models/glm-5p3-flash':
+        payload['reasoning_effort']='low'
     request=urllib.request.Request('https://api.fireworks.ai/inference/v1/chat/completions',data=json.dumps(payload).encode(),
         headers={'Authorization':'Bearer '+api_key.strip(),'Content-Type':'application/json'},method='POST')
     try:
@@ -226,12 +231,14 @@ def generate(pack,api_key,model):
     usage=result.get('usage') or {}
     diagnostic={k:usage[k] for k in ['prompt_tokens','completion_tokens','total_tokens']
         if isinstance(usage.get(k),int) and not isinstance(usage[k],bool)}
+    details=usage.get('completion_tokens_details') or {}
+    if isinstance(details.get('reasoning_tokens'),int):diagnostic['reasoning_tokens']=details['reasoning_tokens']
     finish=choice.get('finish_reason')
     print('Writer result:',json.dumps({'language':pack['language'],
         'finish_reason':finish if finish in ['stop','length','content_filter','tool_calls'] else 'other',
-        'max_tokens':WRITER_MAX_TOKENS,**diagnostic}),flush=True)
+        'max_tokens':max_tokens,**diagnostic}),flush=True)
     if finish=='length':
-        raise ValueError(f"Writer response was cut off for {pack['language']} at the {WRITER_MAX_TOKENS}-token budget; no draft was accepted. Review token usage before retrying.")
+        raise ValueError(f"Writer response was cut off for {pack['language']} at the {max_tokens}-token budget; no draft was accepted. Review token usage before retrying.")
     draft=validate_draft(json.loads(choice['message']['content']),pack)
     packet={k:pack[k] for k in ['date','timezone','created_at','topic','language','concept','news_window','source_warnings','router_engine']}
     packet.update(schema_version=1,task='daily_pills',status='draft',writer_model=model,
