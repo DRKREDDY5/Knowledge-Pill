@@ -11,7 +11,7 @@ Our custom problem is AI article-topic routing, using the same small-model fine-
 | Review loss curve | 8 | loss_curve.png | Completed |
 | Merge, classify(), five examples | 9 | smoke_results.json: 5/5 | Completed; weights were in Colab, not uploaded here |
 | Evaluate and compare | 5–6, 10 | comparison.json, per-example predictions, confusion_matrices.png | Metrics and dataset hashes independently recomputed from export |
-| Custom GitHub and Loom | Documentation | This repository, executed notebook and recording | Repository prepared; executed notebook/recording pending |
+| Custom GitHub and Loom | Documentation | This repository, source and executed notebooks, actual run exports and recording | Repository assets present; Loom recording/link pending |
 
 LLaMA Board is the graphical interface demonstrated by the handout. We used its LLaMA Factory training engine through CLI commands. The custom submission must describe this accurately; no Board screenshot is included.
 
@@ -21,4 +21,4 @@ The CSV is a readable export of the exact examples used in the run. The self-con
 
 The daily writer, bilingual stories, dated news, recall UI and scheduled generation are extensions. They do not change the fine-tuning task or its evaluation. Keep separate evidence for classifier accuracy and writer quality. A good classification score does not establish factual or linguistic quality of generated pills.
 
-The handout allows custom projects to submit GitHub assets and a Loom rather than the standard Google Doc screenshot route. Add the executed notebook and Loom link before final submission. The supplied handout's deadline is September 13, 2026, 11:59 PM Pacific.
+The handout allows custom projects to submit GitHub assets and a Loom rather than the standard Google Doc screenshot route. Source notebooks, the uploaded executed Colab notebook and actual results are present. Add the Loom link before submission. The supplied handout's deadline is September 13, 2026, 11:59 PM Pacific. See [FINAL_SUBMISSION.md](FINAL_SUBMISSION.md).

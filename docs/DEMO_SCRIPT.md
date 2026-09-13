@@ -1,113 +1,80 @@
-# Loom recording script — Knowledge Pill
+# Knowledge Pill — three-minute demo script
 
-Aim for about 5 minutes. This is a suggested length, not a handout rule. Read naturally; pause while showing each screen. Do not record API keys or secret settings.
+Target: about 3 minutes at a comfortable pace, including brief screen changes. Rehearse once with a timer. Only the **Say** paragraphs are spoken; the **Show** lines are directions.
 
-## Before recording
+## Open these tabs before recording
 
-Open these tabs in order:
+1. [Knowledge Pill app](https://knowledge-pill.drkreddy.chatgpt.site) → Daily pills, RAG, English. Click **Check for new editions**.
+2. [Dataset CSV](https://github.com/DRKREDDY5/Knowledge-Pill/blob/main/data/knowledge_pill.csv).
+3. [Executed Colab notebook](https://github.com/DRKREDDY5/Knowledge-Pill/blob/main/notebooks/Knowledge_Pill_Executed.ipynb), or keep your original Colab tab open. Use steps 8–10; the [README results](https://github.com/DRKREDDY5/Knowledge-Pill#actual-results) are a compact alternative.
+4. [Successful daily-generation run, attempt 3](https://github.com/DRKREDDY5/Knowledge-Pill/actions/runs/34724909759/attempts/3).
 
-1. The app, Daily pills, RAG, English.
-2. Your executed Colab training notebook, at steps 3 and 7–10.
-3. GitHub: data/knowledge_pill.csv and results/run_2026-09-12/comparison.json.
-4. GitHub Actions: [Generate daily pills, successful attempt 3](https://github.com/DRKREDDY5/Knowledge-Pill/actions/runs/34724909759/attempts/3).
+Keep text large enough to read. Close account settings and secret tabs. Record the app from your signed-in browser; its current hosted link is owner-private. The public repository can be reviewed separately.
 
-Refresh the app once, check that the dated edition loads, and test the language switch. If Fireworks is not configured, use the labelled demonstration and say so. Do not recreate a successful workflow screenshot or describe a source-only check as generation.
+Router example to paste:
 
-## 0:00–0:35 — The problem
+```text
+An assistant retrieves relevant pages from a company handbook and uses them to answer employees’ questions with citations.
+```
 
-**Show:** Daily pills and the two tabs.
+The displayed topic should be **RAG**. The app uses the measured simple classifier; describe the Qwen experiment using the exported results.
 
-**Say:**
+## 0:00–0:25
 
-“Hi, I'm Rushikeshava. My Week 5 project is Knowledge Pill. As a developer learning AI, I find plenty of articles, but choosing what to read and understanding it takes time.
-
-My idea is two small learning sessions. One teaches a concept using a familiar story, an explanation and a practice question. The other explains recent AI developments with their original sources and dates. Readers can choose English or Telugu. Each session targets five to ten minutes, including the activity.”
-
-## 0:35–1:10 — The Week 5 scope
-
-**Show:** Article router. Paste: An assistant retrieves relevant pages from a company handbook and uses them to answer employees' questions with citations. Click Find the topic.
+**Show:** App → Daily pills. Show the two pill tabs.
 
 **Say:**
 
-“I kept the fine-tuning task small. The handout routes support tickets. My custom version routes an English article title and description into RAG, Agents, Fine-tuning or Other.
+> Hi, I’m Rushikeshava. My project is Knowledge Pill. AI learners have plenty to read, but choosing useful material takes time. My idea is two short sessions: one explains a concept through a familiar story; the other covers recent AI developments. Readers can choose English or Telugu.
 
-That is the only decision I trained Qwen to make. The model is not trained to write all the learning content. This gives me a clear problem and a result I can measure.”
+## 0:25–0:55
 
-## 1:10–1:55 — Data and training
-
-**Show:** CSV, then Colab's data table, training settings and loss curve.
+**Show:** App → Article router. Paste the prepared example and show the RAG result.
 
 **Say:**
 
-“My data has one hundred authored scenarios. Five shared formatting variations produce five hundred rows. These are not five hundred independently collected articles.
+> For Week Five, I scoped one measurable decision: classify an English article title and description as RAG, Agents, Fine-tuning, or Other. This adapts the handout’s support-ticket router to my product. The trained model chooses a topic. A separate Fireworks model writes the learning content. This keeps the training task focused and easy to evaluate.
 
-I split by scenario, giving four hundred training rows and one hundred validation rows. Variations of the same scenario never appear in both sets.
+## 0:55–1:25
 
-I used Qwen3-1.7B-Base and trained a LoRA adapter with LLaMA Factory. LoRA learns a small set of extra parameters while the base weights remain frozen. I used the command line for the same training engine demonstrated through LLaMA Board in the handout. The run used three epochs, and both training and validation loss decreased.”
-
-## 1:55–2:50 — Actual results and judgment
-
-**Show:** Five smoke results, comparison table, confusion matrix and the two paper errors.
+**Show:** GitHub → data/knowledge_pill.csv; then executed notebook → step 8, loss curve.
 
 **Say:**
 
-“After training, I merged the adapter into the base model and tested the classifier. All five smoke tests passed.
+> The dataset has one hundred authored scenarios, each in five formats, giving five hundred rows. I split by scenario: four hundred training rows and one hundred validation rows. Related variations stay together. I trained Qwen3-1.7B-Base with LoRA for three epochs using LLaMA Factory’s command line. LoRA trains a small adapter while the base weights stay frozen. Here is the loss curve.
 
-On the same validation set, Qwen improved from twenty-five percent to one hundred percent accuracy. I also checked sixteen separate paper summaries, where it improved from twenty-five percent to eighty-seven point five percent.
+## 1:25–2:00
 
-I compared it with a simple TF-IDF and logistic regression classifier. That model also reached one hundred percent validation accuracy and got fifteen of the sixteen paper examples right, compared with fourteen for fine-tuned Qwen.
-
-So I retained the simpler classifier in the browser. Fine-tuning clearly helped Qwen in this experiment, but that does not mean it is automatically the best product choice. The evaluation set is small and authored. Here are two mistakes: CLIP and Whisper were assigned to Fine-tuning instead of Other.”
-
-## 2:50–3:45 — The learning experience
-
-**Show:** Knowledge Pill story, connection, exercise and recall. Switch to Telugu. Then open AI News Pill and its source.
+**Show:** Executed notebook → step 9, Passed 5/5; step 10, comparison tables and confusion matrix.
 
 **Say:**
 
-“Here is the reading experience. The story is explicitly fictional. The next section connects it to the real concept and explains where the analogy stops working. The reader tries a small exercise and explains the idea back before revealing the answer.
+> After merging the adapter, all five smoke tests passed. Qwen’s validation accuracy improved from twenty-five to one hundred percent. On sixteen separate paper examples, it reached eighty-seven point five percent. But the simple classifier got fifteen of sixteen right, compared with Qwen’s fourteen. So I kept the simple classifier in the product. These small, authored evaluation sets do not prove broad accuracy.
 
-The news pill shows source links and publication dates. Older material is labelled recent, rather than being presented as today's announcement. If no eligible updates exist, the workflow says so.
+## 2:00–2:35
 
-Changing the language changes the explanation. This is bilingual content; I am not claiming that my topic classifier was trained to understand Telugu.”
-
-**If demonstrating the included samples, add:**
-
-“These are dated, assistant-authored demonstration editions. They show the reading flow, but they are not outputs from a Fireworks run.”
-
-## 3:45–4:25 — Daily workflow
-
-**Show:** README architecture and the daily workflow. If available, show a successful real generation run and its saved edition.
+**Show:** App → Daily pills: show the story, exercise and recall answer; switch to Telugu; open AI News Pill and a source.
 
 **Say:**
 
-“The daily workflow collects a bounded set of official sources, checks dates, chooses relevant material and asks an existing Fireworks model to write both pills. Code checks the structure and source references before saving a dated JSON edition. The app loads saved editions from GitHub automatically.
+> Here is the product experience: a fictional story, a concept explanation, and a small exercise with a recall question. Each pill targets five to ten minutes including the activity. The news pill shows original sources and publication dates. Older updates are labelled recent. The English and Telugu versions teach the same concept, although their stories can differ. Generated text remains open to review.
 
-I used a fixed workflow because the steps are known. I did not need several autonomous agents. By default, one topic in English and Telugu uses two writer requests per day.”
+## 2:35–3:00
 
-**Choose the truthful status sentence:**
-
-- Before the first real run: “The generation and scheduling code is included. Fireworks configuration and the first live run are still pending.”
-- After a verified real manual run: “This workflow run generated the edition shown here. I reviewed its sources and language. The daily schedule is enabled only after setting the activation variable.”
-
-**Current verified status:** the real manual run succeeded and saved both languages. Until you have finished your own content review, say: “This successful run generated both English and Telugu drafts. Automated checks passed, and known wording issues were corrected and documented. Automatic daily generation can be enabled with one repository setting.”
-
-If explaining the failure and fix: “The first response ran out of tokens. I added structured output, separate English and Telugu budgets, and a lower reasoning setting. I kept the validation checks and verified the fix with an actual successful run.”
-
-Do not say the schedule has run successfully unless an actual scheduled run exists. A manual generation run proves the generation path, not the scheduler's delivery history.
-
-## 4:25–5:00 — Close with what you learned
-
-**Show:** GitHub evidence folder and README limitations.
+**Show:** GitHub Actions → successful attempt 3; finish on README and the repository files.
 
 **Say:**
 
-“My main learning is that model choice is a product decision. I should measure the improvement, inspect the mistakes and keep the simpler option when it is sufficient.
+> This run generated both languages and saved the editions. The workflow collects sources, checks dates, writes drafts, and validates them before saving. It supports an optional daily schedule. My main learning: measure model choices and use the simpler option when it works. The repository includes the evidence and documentation. Thank you.
 
-The repository includes the data, notebook, training configuration, actual predictions, loss plot and evaluation report. The next quality step is a fresh, independently labelled article set and human review of real generated English and Telugu editions.
+## Recording notes
 
-Knowledge Pill connects the Week 5 fine-tuning experiment to a small learning product, while keeping its results and limitations visible. Thank you.”
+- Spoken script: **337 words**. Aim for approximately 125–135 words per minute and brief screen transitions; exact duration depends on your pace.
+- The daily run shown is a successful **manual** run. Say the schedule is supported; do not claim scheduled delivery was verified.
+- The executed Colab notebook is included with saved outputs. Its training and evaluation completed; only the final adapter-download cell is unrun. Show steps 8–10 without rerunning training.
+- The original handout used LLaMA Board. Our custom project used the same LLaMA Factory training engine through the command line.
+- Do not rerun GPU training just to record the demo. Use the completed run and saved evidence.
 
 ## After recording
 
-Watch the recording once. Check sound, legible text, dates and the status sentence. Add the Loom URL to README.md and submit it with https://github.com/DRKREDDY5/Knowledge-Pill through the handout form. The executed Colab notebook must be added separately; the source notebook here does not contain invented execution outputs.
+Watch the recording once, check audio and screen readability, then add the Loom URL beside the project links at the top of README.md. Submit the GitHub and Loom links through the [handout form](https://forms.gle/7Hpa2Pkd8ZaWUomm6). See [FINAL_SUBMISSION.md](FINAL_SUBMISSION.md) for the remaining steps.

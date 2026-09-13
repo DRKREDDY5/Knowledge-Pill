@@ -1,12 +1,14 @@
-# Finish Knowledge Pill in this order
+# Finish Knowledge Pill
 
-Your GPU training is complete. The actual results ZIP has been received and verified. You do not need to retrain.
+Your training, CSV, source notebooks, results, app and first real bilingual generation are complete. The latest source notebooks are verified in GitHub. Your saved training reports show the completed experiment.
 
-1. **Save the remaining training files.** In Colab run the last adapter-download cell. Choose File → Download → Download .ipynb to save the executed notebook. Upload the executed notebook to this project conversation; the adapter can stay in your own storage. Do not claim an adapter upload until it is confirmed.
-2. **Open the app.** Daily pills now load the real September 12 RAG drafts in English and Telugu. Click **Check for new editions** to refresh. Both the knowledge and news pill were generated successfully by Fireworks. The Experiment page summarizes the separate training results.
-3. **Check the successful writer run.** [Attempt 3 succeeded](https://github.com/DRKREDDY5/Knowledge-Pill/actions/runs/34724909759/attempts/3) and saved both languages. Your key and model are configured in GitHub; no retraining or key replacement is needed. After reviewing the drafts, set repository variable DAILY_PILLS_ENABLED=true to activate the existing schedule. See [DAILY_SETUP.md](docs/DAILY_SETUP.md).
-4. **Read the corrected edition.** Known English/Telugu wording issues have been corrected. Open both pill tabs and switch languages to prepare your demo. The app's review button is an optional record on your device; independent language review is recommended, not an extra handout submission requirement.
-5. **Record your Loom.** Use [DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md). Speak in your own words and show the actual report, loss curve, five smoke tests and product. Only say the scheduled writer is running after its real workflow succeeds.
-6. **Submit.** GitHub: https://github.com/DRKREDDY5/Knowledge-Pill. Add your Loom URL to the README. Use the handout's submission form: https://forms.gle/7Hpa2Pkd8ZaWUomm6. Deadline: September 13, 2026, 11:59 PM Pacific.
+1. **Prepare the demo:** open the [three-minute script](docs/DEMO_SCRIPT.md). It tells you which four tabs to open and exactly what to show and say.
+2. **Record:** show the app, CSV, actual result table/loss curve and successful daily-generation run. Rehearse once, then record about three minutes. No training rerun is needed.
+3. **Add your video link:** put the real Loom URL near the top of README.md. Check that evaluators can watch it.
+4. **Submit:** send the [GitHub repository](https://github.com/DRKREDDY5/Knowledge-Pill) and Loom URL through the [handout form](https://forms.gle/7Hpa2Pkd8ZaWUomm6). Deadline: **September 13, 2026, 11:59 PM Pacific**.
 
-The daily setup uses an existing inference-ready Fireworks model. It does not deploy your fine-tuned Qwen to Fireworks and does not create paid dedicated infrastructure.
+Your [executed Colab notebook](notebooks/Knowledge_Pill_Executed.ipynb) is now included with its saved training and evaluation outputs. Its metrics match the original reports. The final adapter-download cell is unrun; run it only if you still need to back up the adapter ZIP. No training rerun is needed.
+
+Automatic daily generation is optional for submission. Set repository variable `DAILY_PILLS_ENABLED=true` if you want it to run daily using your Fireworks credits. A real manual run is already verified.
+
+Open the [final submission guide](docs/FINAL_SUBMISSION.md) for the asset check and remaining steps. The [hosted app](https://knowledge-pill.drkreddy.chatgpt.site) is owner-private; record from your signed-in browser. Reviewers can use the public repository and video.

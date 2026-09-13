@@ -4,7 +4,7 @@
 
 Developers face more AI articles than they can read. Knowledge Pill narrows that problem to three learning interests—RAG, Agents and Fine-tuning—and turns selected source material into a story, explanation, practice task and recall question. Each pill targets 5–10 minutes including the activity. This is a learning aid, not a proven memory-improvement intervention.
 
-[Open the app](https://knowledge-pill.drkreddy.chatgpt.site) · [Start here](START_HERE.md) · [Demo recording script](docs/DEMO_SCRIPT.md) · [Handout mapping](docs/HANDOUT_MAPPING.md)
+[Open the app](https://knowledge-pill.drkreddy.chatgpt.site) · [Final submission guide](docs/FINAL_SUBMISSION.md) · [Three-minute demo script](docs/DEMO_SCRIPT.md) · [Handout mapping](docs/HANDOUT_MAPPING.md)
 
 The hosted app is currently owner-private. Reviewers can inspect this public repository, run the static app locally, and watch the Loom once its link is added. There is no Loom recording linked yet.
 
@@ -17,7 +17,7 @@ The hosted app is currently owner-private. Reviewers can inspect this public rep
 - First real English and Telugu generation verified in [workflow attempt 3](https://github.com/DRKREDDY5/Knowledge-Pill/actions/runs/34724909759/attempts/3). Both languages produced a knowledge pill and a news pill, passed validation and were saved automatically.
 - Dated English/Telugu demonstration editions with explicit provenance. These were authored for the demo and are **not evidence of a successful Fireworks run**.
 
-**Remaining:** enable the optional daily schedule with `DAILY_PILLS_ENABLED=true` if desired. The first manual run is verified, and known English/Telugu wording issues are corrected; a scheduled run has not been verified. An executed training notebook, adapter download confirmation and the Loom recording remain outstanding. See [setup](docs/DAILY_SETUP.md), [content review](docs/CONTENT_REVIEW.md) and [status](docs/BUILD_STATUS.json). The repository notebook is reproducible source, not a reconstructed executed notebook.
+**Ready to record:** current source notebooks, CSV, actual training results and real bilingual generation are in this repository. Record the [three-minute walkthrough](docs/DEMO_SCRIPT.md), add the Loom link here and submit. Your [executed Colab notebook](notebooks/Knowledge_Pill_Executed.ipynb), including the saved training and evaluation outputs, is now included. Automatic daily scheduling is optional. See the [final checklist](docs/FINAL_SUBMISSION.md), [content review](docs/CONTENT_REVIEW.md) and [status](docs/BUILD_STATUS.json).
 
 ## Week 5: one small classification decision
 
@@ -92,7 +92,7 @@ node --check dist/daily-view.mjs
 
 | Location | Purpose |
 |---|---|
-| `notebooks/` | Reproducible training notebook and manual daily writer |
+| `notebooks/` | Executed Colab evidence, reproducible training notebook and manual daily writer |
 | `data/knowledge_pill.csv` | Spreadsheet-readable labelled examples; split column preserves the actual run |
 | `data/topic_seeds.json`, `data/source_cases.json` | Authored source scenarios and 16 paper diagnostics |
 | `router.py`, `configs/train.yaml`, `configs/merge.yaml` | Data preparation, model inference and training configuration |
@@ -108,4 +108,4 @@ node --check dist/daily-view.mjs
 
 Custom projects use GitHub + Loom under the supplied handout. Deadline: **September 13, 2026, 11:59 PM Pacific**. [Submission form](https://forms.gle/7Hpa2Pkd8ZaWUomm6).
 
-Add the executed training notebook and Loom link before submitting. Keep the adapter ZIP safe; do not commit multi-gigabyte model weights or credentials. A readable repository and an honest demo matter more than extra features.
+Add your Loom link before submitting. Current source notebooks, your executed Colab notebook and actual run exports are included. Keep the adapter ZIP safely backed up. Follow the [final submission guide](docs/FINAL_SUBMISSION.md). Do not commit multi-gigabyte model weights or credentials.

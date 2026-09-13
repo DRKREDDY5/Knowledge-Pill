@@ -1,5 +1,5 @@
 {
-  "status": "training_and_first_live_daily_generation_verified_reader_review_pending",
+  "status": "repository_assets_verified_ready_for_three_minute_recording",
   "python": "3.12.14",
   "measured_lexical_environment": {
     "scikit-learn": "1.8.0",
@@ -24,12 +24,12 @@
   "lesson_generation": "first_real_EN_TE_run_succeeded_2026-09-12_attempt_3",
   "telugu_fluent_review": "known_wording_issues_corrected_by_assistant_independent_human_review_optional_and_not_claimed",
   "github_submission": "published_DRKREDDY5/Knowledge-Pill",
-  "loom_recording": "script_ready_recording_pending",
+  "loom_recording": "three_minute_337_word_script_ready_recording_pending",
   "fireworks_key": "configured_in_GitHub_Actions_verified_by_successful_request_not_available_to_app",
   "daily_views": "implemented_auto_load_repository_editions_and_device_local_history",
   "raw_results_zip": "received_imported_and_verified",
   "adapter_download": "not_yet_confirmed",
-  "executed_notebook_download": "not_yet_received",
+  "executed_notebook_download": "received_verified_and_included_notebooks/Knowledge_Pill_Executed.ipynb",
   "daily_import_date_and_source_tests": "passed",
   "daily_live_source_collection": {
     "status": "passed_2026-09-12",
@@ -43,5 +43,24 @@
   "daily_schedule_reuse_and_failure_checks": "passed_mocked_provider_checks_and_first_real_EN_TE_generation",
   "daily_writer_truncation_regression": "passed_complete_cutoff_and_language_budget_tests",
   "daily_generation_run": "https://github.com/DRKREDDY5/Knowledge-Pill/actions/runs/34724909759/attempts/3",
-  "editorial_corrections": "applied_to_saved_EN_TE_editions_original_preserved_in_git"
+  "editorial_corrections": "applied_to_saved_EN_TE_editions_original_preserved_in_git",
+  "github_notebook_verification": {
+    "commit_checked": "841063b271549fd59eb53edc6ed3b4754a287d5d",
+    "training_blob_sha": "3176f613506d9eefeb4f7d9da0b98d59f8167443",
+    "daily_blob_sha": "30186e3c22f8c2122c665d0d16dd4531c2551af8",
+    "source_matches_local": true,
+    "training_code_cells": 13,
+    "daily_code_cells": 5,
+    "executed_notebook_path": "notebooks/Knowledge_Pill_Executed.ipynb",
+    "executed_blob_sha": "9cb5080fccbc1ca3e7b5a6d444d89a6d9f934794",
+    "executed_sha256": "fc2559944e49421cb5fbd26916e82237d72a1d2506d7994d7e09928429a5a431",
+    "executed_code_cells": 13,
+    "cells_with_execution_and_outputs": 12,
+    "saved_error_outputs": 0,
+    "remaining_unrun_cell": "adapter ZIP download",
+    "metrics_match_saved_run": true,
+    "original_bytes_preserved": true,
+    "source_notebook_saved_output_cells": 0
+  },
+  "demo_script_words": 337
 }
