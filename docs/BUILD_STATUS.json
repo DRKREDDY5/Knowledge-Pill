@@ -24,7 +24,7 @@
   "lesson_generation": "first_real_EN_TE_run_succeeded_2026-09-12_attempt_3",
   "telugu_fluent_review": "known_wording_issues_corrected_by_assistant_independent_human_review_optional_and_not_claimed",
   "github_submission": "published_DRKREDDY5/Knowledge-Pill",
-  "loom_recording": "three_minute_337_word_script_ready_recording_pending",
+  "loom_recording": "recording_pending",
   "fireworks_key": "configured_in_GitHub_Actions_verified_by_successful_request_not_available_to_app",
   "daily_views": "implemented_auto_load_repository_editions_and_device_local_history",
   "raw_results_zip": "received_imported_and_verified",
@@ -61,6 +61,5 @@
     "metrics_match_saved_run": true,
     "original_bytes_preserved": true,
     "source_notebook_saved_output_cells": 0
-  },
-  "demo_script_words": 337
+  }
 }

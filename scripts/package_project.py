@@ -16,8 +16,7 @@ shutil.copyfile(notebook,downloads/notebook.name)
 # Saved URLs continue to deliver the simplified notebook.
 shutil.copyfile(notebook,downloads/'Knowledge_Pill_Training.ipynb')
 shutil.copyfile(root/'notebooks/Knowledge_Pill_Daily.ipynb',downloads/'Knowledge_Pill_Daily.ipynb')
-shutil.copyfile(root/'START_HERE.md',downloads/'START_HERE.md')
-files=[root/name for name in ['README.md','START_HERE.md','router.py','daily_pills.py','requirements-data.txt','requirements-daily.txt','.gitignore']]
+files=[root/name for name in ['README.md','router.py','daily_pills.py','requirements-data.txt','requirements-daily.txt','.gitignore']]
 for directory in ['scripts','tests','configs','notebooks','docs','dist','results','examples','editions','.github']:
     files.extend(p for p in (root/directory).rglob('*') if p.is_file() and '__pycache__' not in p.parts and 'downloads' not in p.parts)
 files.extend([root/'data/topic_seeds.json',root/'data/source_cases.json',root/'data/knowledge_pill.csv'])
