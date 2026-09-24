@@ -1,0 +1,381 @@
+[
+  {
+    "id": "decision-models-01",
+    "order": 1,
+    "topic": "Decision models",
+    "series": "Jev & Laya, explained",
+    "minutes": 7,
+    "date": "2026-09-24",
+    "kind": "Guided pill",
+    "provenance": "Editorial explainer",
+    "en": {
+      "title": "The model that makes a choice",
+      "summary": "Understand what Jev and Laya do—and where a decision model fits beside an LLM.",
+      "story": "Imagine Meera runs a busy restaurant. One teammate welcomes guests, explains the menu and answers unusual questions. Another stands at the pass and sends each finished plate to the right table. Asking the welcoming teammate to write a paragraph about every plate would slow down dinner. The person at the pass needs a clear destination, not a speech.\nOne evening a plate arrives with no table number. The smart response is to ask for help. Quickly choosing a table would not make that choice correct.",
+      "bridge": "The menu expert is our analogy for a conversational model. The dispatcher represents a narrow decision model. The missing table number represents uncertainty. Real AI systems still need testing: this story explains the division of work, not how a model is trained.",
+      "concepts": [
+        {
+          "heading": "A decision your code can use",
+          "body": "Jev is TypeSafe AI’s hosted System One model. Laya is an open-weight decision-model project from ConvAI Innovations. They focus on structured decisions such as choosing a category or assigning a score, with uncertainty estimates. They are not replacements for every task a generative language model performs."
+        },
+        {
+          "heading": "Put it at a branch in the workflow",
+          "body": "Think of a support request: first choose a queue, then let an appropriate service handle it. A decision component can supply that first choice. A separate language model can draft the eventual reply. Your application owns the allowed actions and decides when a person must review a case."
+        },
+        {
+          "heading": "A valid choice can still be wrong",
+          "body": "If a response must be billing, technical or review, the software avoids arbitrary free-text destinations. But billing can still be the wrong answer. Output format, decision accuracy and safe action are three separate questions."
+        }
+      ],
+      "example": {
+        "title": "A support inbox, in practical terms",
+        "before": "Input: “I was charged twice for my subscription.”",
+        "after": "Allowed queues: billing / technical / human review",
+        "body": "A hypothetical result is billing with a confidence estimate. That result routes the ticket; it does not issue a refund. Refund policy, authorization and evidence checks remain ordinary application rules. This is an illustrative workflow, not a measured model response."
+      },
+      "remember": "A decision model helps choose the next step. The application controls what happens next.",
+      "exercise": {
+        "prompt": "Take one workflow you know. Write one narrow decision, three allowed outcomes and the outcome that asks a person for help.",
+        "placeholder": "Example: route a support ticket…",
+        "answer": "For a support queue: “Which team should receive this request?” Outcomes could be billing, technical support and human review. Keep the action reversible and retain the original request so a person can correct a mistaken route."
+      },
+      "quiz": {
+        "question": "A model always returns one of your allowed categories. What does that establish?",
+        "options": [
+          "Every category choice is correct.",
+          "Its output fits the allowed format; the choice may still be wrong.",
+          "The app no longer needs human review."
+        ],
+        "correct": 1,
+        "explanation": "Format constraints prevent unexpected labels. They do not establish factual correctness, accuracy or permission to act."
+      },
+      "limits": [
+        "“System One” is a product/research framing, not proof of human-like understanding.",
+        "Evaluate on your own inputs before allowing consequential actions."
+      ]
+    },
+    "te": {
+      "title": "మాటలు రాయకుండా నిర్ణయం తీసుకునే model",
+      "summary": "Jev, Laya ఏమి చేస్తాయి? LLM పక్కన decision model ఎక్కడ ఉపయోగపడుతుందో తెలుసుకోండి.",
+      "story": "మీరా ఒక రెస్టారెంట్ నడుపుతోంది అనుకోండి. ఒక ఉద్యోగి అతిథులను ఆహ్వానించి, మెనూ వివరించి, వారి ప్రశ్నలకు సమాధానం చెబుతాడు. మరొకరు వంటగది దగ్గర నిలబడి ప్రతి వంటకాన్ని సరైన టేబుల్‌కు పంపిస్తారు. ప్రతి ప్లేట్ గురించి పెద్ద వివరణ రాయమంటే పని ఆలస్యం అవుతుంది. ఆ సమయంలో కావాల్సింది సరైన గమ్యం మాత్రమే.\nఒక ప్లేట్‌పై టేబుల్ నంబరు లేకపోతే సహాయం అడగాలి. వేగంగా ఏదో టేబుల్ ఎంచుకున్నంత మాత్రాన అది సరైన నిర్ణయం కాదు.",
+      "bridge": "మెనూ వివరించే వ్యక్తి conversational model‌కు ఒక పోలిక. ప్లేట్‌ను పంపించే వ్యక్తి decision model‌కు పోలిక. టేబుల్ నంబరు లేకపోవడం uncertainty‌ను సూచిస్తుంది. ఇది అర్థం చేసుకోవడానికి ఊహించిన కథ; model training వివరణ కాదు.",
+      "concepts": [
+        {
+          "heading": "Code ఉపయోగించగల నిర్ణయం",
+          "body": "Jev అనేది TypeSafe AI అందించే hosted System One model. Laya అనేది ConvAI Innovations రూపొందించిన open-weight decision-model project. ఇవి category ఎంచుకోవడం, score ఇవ్వడం వంటి structured decisions‌పై దృష్టి పెడతాయి. ప్రతి generative LLM పనికీ ఇవే ప్రత్యామ్నాయం కావు."
+        },
+        {
+          "heading": "Workflow‌లో సరైన చోట పెట్టండి",
+          "body": "ఒక support request‌కు ముందు సరైన team ఎంచుకోవచ్చు. తరువాత మరో language model సమాధానం రాయవచ్చు. ఏ చర్యలు అనుమతించాలి, ఎప్పుడు మనిషి చూడాలి అనే నియమాలు application‌లో ఉండాలి."
+        },
+        {
+          "heading": "Format సరైనదైనా నిర్ణయం తప్పవచ్చు",
+          "body": "billing, technical, review అనే మూడు options‌లోనే సమాధానం వచ్చినా, తప్పు option ఎంచుకోవచ్చు. Format, accuracy, చర్య తీసుకునే అనుమతి—మూడు వేర్వేరు విషయాలు."
+        }
+      ],
+      "example": {
+        "title": "Support inbox ఉదాహరణ",
+        "before": "Input: “నా subscription‌కు రెండుసార్లు charge అయ్యింది.”",
+        "after": "Options: billing / technical / human review",
+        "body": "ఊహించిన result billing కావచ్చు. దాంతో ticket‌ను పంపించవచ్చు; వెంటనే refund చేయకూడదు. Refund policy, అనుమతి, ఆధారాలు వేరుగా check చేయాలి. ఇది కొలిచిన model result కాదు."
+      },
+      "remember": "Decision model తరువాతి దశను ఎంచుకోవడంలో సహాయం చేస్తుంది. చర్యను application నియంత్రిస్తుంది.",
+      "exercise": {
+        "prompt": "మీకు తెలిసిన workflow‌లో ఒక చిన్న decision రాయండి. మూడు outcomes‌లో ఒకటి మనిషి review కోసం ఉండాలి.",
+        "placeholder": "ఉదాహరణ: support ticket‌ను సరైన team‌కు పంపడం…",
+        "answer": "“ఈ request ఏ team చూడాలి?” అని అడగవచ్చు. Billing, technical support, human review అనే outcomes పెట్టవచ్చు. తప్పు route అయితే మార్చగలగాలి; అసలు request‌ను ఉంచాలి."
+      },
+      "quiz": {
+        "question": "Model ఎప్పుడూ అనుమతించిన category ఇస్తే ఏమి నిర్ధారణ అవుతుంది?",
+        "options": [
+          "ప్రతి నిర్ణయమూ సరైనదే.",
+          "Format సరైనదే; నిర్ణయం ఇంకా తప్పవచ్చు.",
+          "Human review అవసరం లేదు."
+        ],
+        "correct": 1,
+        "explanation": "Format నియమాలు తెలియని labels‌ను అడ్డుకుంటాయి. సరైన నిర్ణయం లేదా చర్యకు అనుమతి వచ్చిందని అవి చెప్పవు."
+      },
+      "limits": [
+        "System One అనే పేరు మనిషిలా అర్థం చేసుకుంటుందని రుజువు కాదు.",
+        "ముఖ్యమైన చర్యలకు ముందు మీ dataతో పరీక్షించాలి."
+      ]
+    },
+    "sources": [
+      {
+        "id": "jev-launch",
+        "title": "Introducing System One Models & Jev",
+        "publisher": "TypeSafe AI",
+        "url": "https://typesafe.ai/blog/introducing-system-one-models-and-jev",
+        "date": "2026-09-15",
+        "note": "Vendor announcement; performance claims depend on its test setup."
+      },
+      {
+        "id": "laya-code",
+        "title": "Laya: code, examples and benchmark guidance",
+        "publisher": "ConvAI Innovations · GitHub",
+        "url": "https://github.com/NandhaKishorM/laya",
+        "date": null,
+        "note": "Maintainer documentation; inspect the version you deploy."
+      }
+    ],
+    "evidence_note": "An authored learning guide checked against the linked primary sources on September 24, 2026. Stories and examples are illustrative. Telugu is an editorial draft awaiting fluent-speaker review."
+  },
+  {
+    "id": "decision-models-02",
+    "order": 2,
+    "topic": "Decision models",
+    "series": "Jev & Laya, explained",
+    "minutes": 7,
+    "date": "2026-09-24",
+    "kind": "Guided pill",
+    "provenance": "Editorial explainer",
+    "en": {
+      "title": "Confidence is a promise to check",
+      "summary": "Learn calibration with a weather story, then design a sensible review rule.",
+      "story": "Arun’s weather app predicts an 80% chance of rain. He carries an umbrella. Across a hundred comparable forecasts marked 80%, roughly eighty rainy days would make that forecast well calibrated. A dry day would not, by itself, prove the forecast was broken.\nNow Arun moves to a different climate. He should not assume the same forecast system remains equally reliable. And an umbrella decision has a different cost from deciding whether to close a school. The number matters, but the setting and consequences matter too.",
+      "bridge": "The forecast is an analogy for a probability estimate. Calibration asks how well estimates agree with observed frequencies over many cases. A single high-confidence answer cannot demonstrate calibration.",
+      "concepts": [
+        {
+          "heading": "Accuracy and calibration answer different questions",
+          "body": "Accuracy asks how often the selected answer is right. Calibration asks whether the stated probabilities match observed outcomes. A system may be accurate overall yet too confident in the mistakes it makes. Measure both using held-out examples that resemble the work you will actually send it."
+        },
+        {
+          "heading": "Check the setting before trusting the number",
+          "body": "TypeSafe describes Jev as returning confidence with its decisions. Laya’s maintainers also discuss calibration and document language-dependent failures. In their tests, an English checkpoint could be confidently wrong on unfamiliar scripts. A confidence threshold alone cannot repair an unsuitable model or missing evidence."
+        },
+        {
+          "heading": "A threshold is a policy choice",
+          "body": "Use historical examples to compare a few thresholds. Count errors among accepted cases and how many cases go to review. Choose based on the cost of a mistake and the review capacity available. There is no universal threshold that makes all applications safe."
+        }
+      ],
+      "example": {
+        "title": "A small evaluation before automation",
+        "before": "Prepare 100 representative requests with checked labels.",
+        "after": "Track correct decisions, confidence bins and cases sent to review.",
+        "body": "If 20 requests receive confidence near 0.8, compare that bin with its observed accuracy. Twenty cases give only a rough estimate; repeat with more data and inspect important subgroups. Use unseen examples for the final test. This is an illustrative evaluation design, not a Jev or Laya benchmark."
+      },
+      "remember": "Confidence becomes useful when you compare it with outcomes in your own setting.",
+      "exercise": {
+        "prompt": "Write two reasons a high-confidence decision might still deserve human review.",
+        "placeholder": "The input may be unfamiliar because…",
+        "answer": "Examples: the language or domain differs from the evaluation data; the request lacks important evidence; or an error would be costly. A threshold should sit beside these checks, not replace them."
+      },
+      "quiz": {
+        "question": "An English model gives a Telugu request a confidence of 0.97. What is the best next step?",
+        "options": [
+          "Act immediately because 0.97 is high.",
+          "Assume the model understands Telugu.",
+          "Check language support and relevant evaluation before trusting it."
+        ],
+        "correct": 2,
+        "explanation": "A high score does not prove that a model handles that language. Validate the checkpoint and input conditions first."
+      },
+      "limits": [
+        "Small samples make calibration estimates noisy.",
+        "Recheck after changing the model, language mix, input distribution or decision policy."
+      ]
+    },
+    "te": {
+      "title": "Confidence‌ను ఫలితాలతో పోల్చి చూడాలి",
+      "summary": "వర్షం ఉదాహరణతో calibration అర్థం చేసుకుని, human review నియమం రూపొందించండి.",
+      "story": "అరుణ్ weather app వర్షం పడే అవకాశం 80% అని చెప్పింది. అతను గొడుగు తీసుకెళ్లాడు. ఇలాగే 80% అని చెప్పిన వంద పోల్చదగిన సందర్భాల్లో దాదాపు ఎనభైసార్లు వర్షం పడితే ఆ అంచనాలు బాగా calibrated అని అనవచ్చు. ఒక్కరోజు వర్షం పడలేదని app తప్పు అని తేల్చలేం.\nఅరుణ్ వేరే వాతావరణం ఉన్న ఊరికి వెళితే అక్కడ కూడా అదే reliability ఉంటుందని అనుకోకూడదు. గొడుగు తీసుకెళ్లడం, school మూసివేయడం—వాటి ప్రభావం వేరు.",
+      "bridge": "వాతావరణ అంచనా probability‌కు ఒక పోలిక. చాలా సందర్భాల్లో ఇచ్చిన అంచనాలు నిజమైన ఫలితాలకు ఎంత దగ్గరగా ఉన్నాయో calibration చూస్తుంది. ఒక్క high-confidence answer సరిపోదు.",
+      "concepts": [
+        {
+          "heading": "Accuracy, calibration ఒకటి కావు",
+          "body": "ఎంచుకున్న సమాధానం ఎన్నిసార్లు సరైనది అనేది accuracy. చెప్పిన probability, నిజంగా జరిగిన ఫలితాలు సరిపోతున్నాయా అనేది calibration. మీ అసలు పనిని పోలిన, training‌లో వాడని examples‌తో రెండింటినీ చూడాలి."
+        },
+        {
+          "heading": "Number కంటే ముందు పరిస్థితి చూడండి",
+          "body": "Jev decisions‌తో confidence ఇస్తుందని TypeSafe చెబుతోంది. Laya maintainers language‌కు సంబంధించిన పరిమితులు వివరిస్తున్నారు. వారి tests‌లో English checkpoint తెలియని scripts‌పై high confidence‌తో తప్పులు చేసింది. Model సరిపోకపోతే threshold ఒక్కటే రక్షణ కాదు."
+        },
+        {
+          "heading": "Threshold ఒక policy నిర్ణయం",
+          "body": "కొన్ని thresholds‌తో accepted cases‌లో తప్పులు, reviewకు వెళ్లే cases లెక్కించండి. తప్పు జరిగితే నష్టం ఎంత, review చేయగల సామర్థ్యం ఎంత అన్నవి చూడండి. అన్ని applications‌కూ ఒకే safe threshold ఉండదు."
+        }
+      ],
+      "example": {
+        "title": "Automation ముందు చిన్న evaluation",
+        "before": "సరిగ్గా label చేసిన 100 సాధారణ requests సిద్ధం చేయండి.",
+        "after": "Correct decisions, confidence groups, review cases లెక్కించండి.",
+        "body": "0.8 దగ్గర confidence వచ్చిన 20 cases ఉంటే వాటిలో నిజంగా ఎన్ని సరైనవో చూడండి. చిన్న sampleతో అంచనా roughగానే ఉంటుంది. మరిన్ని examples, ముఖ్యమైన subgroups‌తో పరీక్షించండి. ఇది ఉదాహరణ మాత్రమే; Jev లేదా Laya benchmark కాదు."
+      },
+      "remember": "మీ పరిస్థితుల్లో నిజమైన ఫలితాలతో పోల్చినప్పుడే confidence ఉపయోగపడుతుంది.",
+      "exercise": {
+        "prompt": "High-confidence decision‌కూ human review అవసరమయ్యే రెండు కారణాలు రాయండి.",
+        "placeholder": "Input తెలియనిది కావచ్చు, ఎందుకంటే…",
+        "answer": "భాష లేదా domain మారడం, అవసరమైన ఆధారాలు లేకపోవడం, తప్పు నిర్ణయంతో పెద్ద నష్టం రావడం కారణాలు కావచ్చు. Threshold‌తో పాటు ఈ checks కూడా అవసరం."
+      },
+      "quiz": {
+        "question": "English model ఒక Telugu request‌కు 0.97 confidence ఇచ్చింది. తరువాత ఏమి చేయాలి?",
+        "options": [
+          "వెంటనే చర్య తీసుకోవాలి.",
+          "Telugu అర్థమైందని అనుకోవాలి.",
+          "Language support, సంబంధిత evaluation ముందుగా చూడాలి."
+        ],
+        "correct": 2,
+        "explanation": "High score ఒక్కటే ఆ భాషను model అర్థం చేసుకుందని రుజువు కాదు. సరైన checkpoint, input conditions చూడాలి."
+      },
+      "limits": [
+        "చిన్న samplesతో calibration అంచనాలు స్థిరంగా ఉండవు.",
+        "Model, భాషలు లేదా input రకం మారితే మళ్లీ పరీక్షించాలి."
+      ]
+    },
+    "sources": [
+      {
+        "id": "jev-product",
+        "title": "Jev: typed decisions and confidence",
+        "publisher": "TypeSafe AI",
+        "url": "https://typesafe.ai/",
+        "date": null,
+        "note": "Product documentation checked September 24, 2026."
+      },
+      {
+        "id": "laya-limits",
+        "title": "Laya research: architecture and limitations",
+        "publisher": "ConvAI Innovations",
+        "url": "https://laya.convaiinnovations.com/",
+        "date": null,
+        "note": "Maintainer-reported results; not an independent comparison."
+      }
+    ],
+    "evidence_note": "An authored learning guide checked against the linked primary sources on September 24, 2026. Stories and examples are illustrative. Telugu is an editorial draft awaiting fluent-speaker review."
+  },
+  {
+    "id": "decision-models-03",
+    "order": 3,
+    "topic": "Decision models",
+    "series": "Jev & Laya, explained",
+    "minutes": 7,
+    "date": "2026-09-24",
+    "kind": "Guided pill",
+    "provenance": "Editorial explainer",
+    "en": {
+      "title": "Jev or Laya? Start with the job.",
+      "summary": "Compare hosted and self-hosted decisions without treating a launch headline as a benchmark.",
+      "story": "Two cafés need fresh bread. One orders from a bakery; the other buys an oven. Ordering reduces the work of running a kitchen, but creates a dependency on the supplier. Owning an oven gives control, but someone must maintain it, buy ingredients and learn to bake.\nThe cafés should compare the same number of loaves, opening hours, quality checks and staff costs. “My oven bakes in ten minutes” and “your delivery takes an hour” are not a fair comparison if the oven still needs warming and someone else makes the dough.",
+      "bridge": "The bakery represents a hosted service. The oven represents running a model yourself. This is an operational analogy; it is not evidence that either product is faster or better.",
+      "concepts": [
+        {
+          "heading": "Choose a deployment arrangement",
+          "body": "Jev is accessed through TypeSafe’s hosted service. Laya publishes model weights and code that can be run in your own environment. Self-hosting can offer deployment control, but compute, maintenance and engineering effort still cost money. An open license does not make operating a model free."
+        },
+        {
+          "heading": "Compare the same work",
+          "body": "Use the same held-out requests, candidate labels and correctness rules. Record the exact model version, hardware, language and batching setup. Measure end-to-end latency, cost per accepted correct decision and review rate. Vendor speed claims are useful leads for an experiment, not a universal ranking."
+        },
+        {
+          "heading": "Respect the checkpoint and task",
+          "body": "Laya’s documentation distinguishes checkpoints and highlights limitations when many choices compete. Its reported fine-tuned results should not be read as guaranteed out-of-the-box quality. Read the model card and test the specific version you plan to use. For either product, keep difficult or consequential cases on a review path."
+        }
+      ],
+      "example": {
+        "title": "Your first side-by-side experiment",
+        "before": "Task: route support tickets into three teams plus review.",
+        "after": "Compare: a simple baseline, Jev and the appropriate Laya checkpoint.",
+        "body": "Use a small development set to write the label definitions and pick thresholds. Freeze those choices before measuring a separate test set. Include ambiguous tickets and every language you intend to support. A simple classifier may be enough. The point is to ship the smallest solution that meets your requirements."
+      },
+      "remember": "Choose with your workload, constraints and measured errors—not somebody else’s fastest demo.",
+      "exercise": {
+        "prompt": "Write your three non-negotiable requirements before choosing a decision model.",
+        "placeholder": "For my app, I need…",
+        "answer": "For example: handle English and Telugu tickets, keep requests within an approved environment, and send ambiguous cases to review. Then define a test for each requirement. Do not infer Telugu quality from a claim about broad multilingual coverage."
+      },
+      "quiz": {
+        "question": "Which comparison is most useful before shipping?",
+        "options": [
+          "The biggest speedup in either launch post.",
+          "The same held-out workload, with model versions and deployment costs recorded.",
+          "Parameter count alone."
+        ],
+        "correct": 1,
+        "explanation": "A matched workload exposes the tradeoffs you will actually face. Hardware, batching, versions and error rates change the result."
+      },
+      "limits": [
+        "No live Jev-versus-Laya benchmark was run for these learning pills.",
+        "Product details evolve; the linked primary sources were checked September 24, 2026."
+      ]
+    },
+    "te": {
+      "title": "Jev లేదా Laya? మీ పనితో మొదలుపెట్టండి.",
+      "summary": "Hosted, self-hosted decisions‌ను సరైన ప్రమాణాలతో పోల్చండి.",
+      "story": "రెండు cafés‌కు bread కావాలి. ఒకటి bakery నుంచి తెప్పిస్తుంది; మరొకటి oven కొంటుంది. Bakery నుంచి తెప్పిస్తే వంటగది నడిపే పని తగ్గుతుంది, కానీ supplier‌పై ఆధారపడాలి. Oven ఉంటే control పెరుగుతుంది; maintenance, ingredients, baking నేర్చుకోవడం అవసరం.\nరెండు cafés ఒకే పరిమాణం, quality, పని సమయం, staff ఖర్చుతో పోల్చాలి. Oven warm-up, dough తయారీ సమయం వదిలేసి “పది నిమిషాల్లో bake అవుతుంది” అనడం పూర్తి comparison కాదు.",
+      "bridge": "Bakery అంటే hosted service‌కు పోలిక. Oven అంటే model‌ను మీ environment‌లో నడపడానికి పోలిక. ఇది operation గురించి అర్థం చేసుకోవడానికి మాత్రమే; ఏ product వేగంగా ఉందో రుజువు కాదు.",
+      "concepts": [
+        {
+          "heading": "Deployment ఎలా కావాలో నిర్ణయించండి",
+          "body": "Jev‌ను TypeSafe hosted service ద్వారా ఉపయోగిస్తారు. Laya model weights, code అందిస్తుంది; మీ environment‌లో run చేయవచ్చు. Control పెరిగినా compute, maintenance, engineering ఖర్చులు ఉంటాయి. Open license ఉందంటే నిర్వహణ ఉచితం అని కాదు."
+        },
+        {
+          "heading": "ఒకే పనితో పోల్చండి",
+          "body": "ఒకే held-out requests, labels, correctness rules వాడండి. Model version, hardware, language, batching వివరాలు నమోదు చేయండి. మొత్తం latency, సరైన accepted decision‌కు ఖర్చు, review rate కొలవండి. Launch speed claims‌ను మీ app‌కు నేరుగా వర్తింపజేయకండి."
+        },
+        {
+          "heading": "సరైన checkpoint‌ను పరీక్షించండి",
+          "body": "Laya docs checkpoints‌ను వేరు చేసి, options ఎక్కువైతే వచ్చే పరిమితులు చెబుతున్నాయి. Fine-tuned result‌ను మొదటిసారి వాడగానే అదే quality వస్తుందని అనుకోకండి. మీరు వాడే version model card చదివి test చేయండి. ముఖ్యమైన cases‌కు review మార్గం ఉంచండి."
+        }
+      ],
+      "example": {
+        "title": "మొదటి comparison ఎలా చేయాలి",
+        "before": "Task: tickets‌ను మూడు teams లేదా reviewకు పంపడం.",
+        "after": "ఒక simple baseline, Jev, సరైన Laya checkpoint పోల్చండి.",
+        "body": "Development examples‌తో labels, thresholds నిర్ణయించండి. Final test‌కు ముందు అవి మార్చకుండా ఉంచండి. Ambiguous tickets, అవసరమైన ప్రతి భాష include చేయండి. Simple classifier సరిపోవచ్చు. మీ అవసరాలు తీరే చిన్న solution‌ను ఎంచుకోవడమే లక్ష్యం."
+      },
+      "remember": "మీ workload, పరిమితులు, కొలిచిన తప్పులతో ఎంచుకోండి; launch demoతో మాత్రమే కాదు.",
+      "exercise": {
+        "prompt": "Model ఎంచుకునే ముందు మీ మూడు ముఖ్యమైన అవసరాలు రాయండి.",
+        "placeholder": "నా app కోసం అవసరమైనవి…",
+        "answer": "English, Telugu tickets handle చేయడం; approved environment‌లో requests ఉంచడం; ambiguity ఉంటే reviewకు పంపడం ఉదాహరణలు. ప్రతి అవసరానికి test రాయండి. Multilingual claim వల్ల Telugu quality నిర్ధారణ కాదు."
+      },
+      "quiz": {
+        "question": "Ship చేసే ముందు ఉపయోగకరమైన comparison ఏది?",
+        "options": [
+          "Launch post‌లో పెద్ద speedup.",
+          "ఒకే held-out workload‌తో versions, deployment ఖర్చులు నమోదు చేయడం.",
+          "Parameter count మాత్రమే."
+        ],
+        "correct": 1,
+        "explanation": "ఒకే workload మీ అవసరాలకు సంబంధించిన tradeoffs చూపిస్తుంది. Hardware, batching, versions, error rates ఫలితాన్ని మార్చుతాయి."
+      },
+      "limits": [
+        "ఈ pills కోసం live Jev-versus-Laya benchmark run చేయలేదు.",
+        "Primary sources September 24, 2026న పరిశీలించాం; వివరాలు మారవచ్చు."
+      ]
+    },
+    "sources": [
+      {
+        "id": "jev-product",
+        "title": "Jev: typed decisions and confidence",
+        "publisher": "TypeSafe AI",
+        "url": "https://typesafe.ai/",
+        "date": null,
+        "note": "Product documentation checked September 24, 2026."
+      },
+      {
+        "id": "laya-code",
+        "title": "Laya: code, examples and benchmark guidance",
+        "publisher": "ConvAI Innovations · GitHub",
+        "url": "https://github.com/NandhaKishorM/laya",
+        "date": null,
+        "note": "Maintainer documentation; inspect the version you deploy."
+      },
+      {
+        "id": "laya-limits",
+        "title": "Laya research: architecture and limitations",
+        "publisher": "ConvAI Innovations",
+        "url": "https://laya.convaiinnovations.com/",
+        "date": null,
+        "note": "Maintainer-reported results; not an independent comparison."
+      },
+      {
+        "id": "laya-model",
+        "title": "Laya model card and checkpoints",
+        "publisher": "ConvAI Innovations · Hugging Face",
+        "url": "https://huggingface.co/convaiinnovations/laya",
+        "date": null,
+        "note": "Check checkpoint, license and language coverage before use."
+      }
+    ],
+    "evidence_note": "An authored learning guide checked against the linked primary sources on September 24, 2026. Stories and examples are illustrative. Telugu is an editorial draft awaiting fluent-speaker review."
+  }
+]

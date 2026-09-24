@@ -14,7 +14,7 @@ from zoneinfo import ZoneInfo
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
-from daily_pills import TOPICS, make_pack, generate, route_baseline
+from daily_pills import TOPICS, make_pack, generate, route_baseline, collect_news, headline_index
 
 def read_collection(path):
     if not path.exists():return []
@@ -41,6 +41,10 @@ def run(root=ROOT, collect_only=False, force=False):
     target=root/'editions/latest.json';old=read_collection(target)
     pending=[(t,l) for t in topics for l in languages if force or not any(p['date']==today and p['topic']==t and p['language']==l and p.get('generation_method')=='fireworks' for p in old)]
     if not pending and not collect_only:
+        rows,warnings=collect_news()
+        index=headline_index(rows)
+        if index['items']:atomic_json(root/'editions/headlines.json',index)
+        print(f"Checked live headlines: {len(index['items'])} available; {len(warnings)} source warnings.")
         print('All configured editions already exist for today. No provider calls.');return {'generated':0,'reused':len(topics)*len(languages)}
     key=os.environ.get('FIREWORKS_API_KEY','');model=os.environ.get('FIREWORKS_MODEL','')
     if not collect_only and (not key or not model.startswith('accounts/')):
@@ -52,6 +56,7 @@ def run(root=ROOT, collect_only=False, force=False):
         recent=[p['concept'] for p in old if p['topic']==topic and p['date']!=today][-7:]
         pack=make_pack(topic,languages[0],zone,recent,lambda text:route_baseline(text,baseline),'TF-IDF + logistic regression',root)
         packs[topic]=pack
+        if pack.get('headline_index',{}).get('items'):atomic_json(root/'editions/headlines.json',pack['headline_index'])
         atomic_json(root/'outputs/daily_sources'/f'{today}-{topic.lower()}.json',pack)
         print(f"{topic}: {len(pack['knowledge_sources'])} knowledge sources, {len(pack['news_sources'])} news sources ({pack['news_window']}).")
     if collect_only:return {'generated':0,'source_topics':len(packs)}

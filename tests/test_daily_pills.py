@@ -24,6 +24,24 @@ class DailyChecks(unittest.TestCase):
   selected,window=daily.choose_news(parsed,'RAG','2026-09-11','America/New_York',now=now)
   self.assertEqual(window,'today')
 
+ def test_atom_publication_is_required_and_recent_launches_remain_eligible(self):
+  now=datetime(2026,9,24,18,tzinfo=timezone.utc)
+  raw='<feed xmlns="http://www.w3.org/2005/Atom"><entry><title>Launch</title><link href="https://typesafe.ai/launch"/><published>2026-09-15T12:00:00Z</published><summary>A primary launch.</summary></entry><entry><title>Old page updated</title><link href="https://typesafe.ai/old"/><updated>2026-09-24T12:00:00Z</updated></entry></feed>'
+  rows=daily.parse_feed(raw,'TypeSafe','typesafe.ai',now)
+  self.assertEqual([x['title'] for x in rows],['Launch'])
+  selected,window=daily.choose_news(rows,'RAG','2026-09-24','UTC',now=now)
+  self.assertEqual(window,'recent');self.assertEqual(len(selected),1)
+
+ def test_discovery_never_uses_discussion_date_as_publication(self):
+  now=datetime(2026,9,24,18,tzinfo=timezone.utc)
+  html='<html><h1>Launch</h1><article>'+('Source material. '*30)+'</article></html>'
+  with patch.object(daily,'read_url',return_value=html):
+   self.assertIsNone(daily.dated_primary_article('https://typesafe.ai/launch',now,100))
+  html=html.replace('<h1>','<meta property="article:published_time" content="2026-09-15T12:00:00Z"><h1>')
+  with patch.object(daily,'read_url',return_value=html):
+   self.assertEqual(daily.dated_primary_article('https://typesafe.ai/launch',now,100)['published_at'],'2026-09-15T12:00:00+00:00')
+   self.assertIsNone(daily.dated_primary_article('https://unknown.example/launch',now,100))
+
  def test_packet_validation_in_python_and_browser(self):
   sources=[{'id':'paper-1','title':'Fixture paper','url':'https://arxiv.org/abs/2005.11401','publisher':'arXiv','published_at':None,'evidence_type':'paper_abstract'},
     {'id':'news-1','title':'Fixture update','url':'https://openai.com/news/fixture','publisher':'OpenAI','published_at':'2026-09-12T12:00:00+00:00','evidence_type':'article_excerpt'}]

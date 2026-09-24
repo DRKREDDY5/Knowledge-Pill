@@ -1,0 +1,1 @@
+{"name":"knowledge-pill","private":true,"type":"module","scripts":{"dev":"vite --host 0.0.0.0","test":"node --test tests/learning-core.test.mjs"},"devDependencies":{"vite":"7.1.3"}}

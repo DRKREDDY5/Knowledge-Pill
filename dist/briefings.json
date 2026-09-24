@@ -1,0 +1,92 @@
+[
+  {
+    "id": "jev-launch-2026-09-15",
+    "topic": "Decision models",
+    "minutes": 5,
+    "date": "2026-09-24",
+    "kind": "Editorial news explainer",
+    "related": "decision-models-01",
+    "sources": [
+      {
+        "title": "Introducing System One Models & Jev",
+        "publisher": "TypeSafe AI",
+        "url": "https://typesafe.ai/blog/introducing-system-one-models-and-jev",
+        "date": "2026-09-15",
+        "note": "Original launch announcement. Product claims come from the publisher."
+      }
+    ],
+    "evidence_note": "Editorial explainer checked September 24, 2026. Launch date: September 15. The use case is illustrative; no model benchmark was performed.",
+    "en": {
+      "title": "Jev arrived. What does it actually do?",
+      "summary": "A September 15 launch, explained: structured decisions, confidence, and where to use them.",
+      "story": "On September 15, TypeSafe AI introduced Jev, its first System One model. The company describes it as a model for typed decisions with confidence estimates.\nStart with a simple question: does your app need a paragraph, or does it need to choose the next step? That difference is the useful idea behind this launch.",
+      "bridge": "The launch is recent news, dated September 15. This explainer was prepared September 24. The examples below are our illustrations, not measured performance results.",
+      "concepts": [
+        {
+          "heading": "What changed",
+          "body": "Jev puts structured decisions at the center of the interface. Treat the publisher’s speed and reliability claims as claims to test on your own task."
+        },
+        {
+          "heading": "Why you might care",
+          "body": "Imagine a support inbox. Before anyone writes a reply, one decision sends the request to billing, technical support or review. That small decision could be a useful component inside a larger workflow."
+        },
+        {
+          "heading": "What to check",
+          "body": "Choose representative inputs and decide what a correct route looks like. Count mistakes, inspect uncertain cases, measure latency and cost, and keep a human fallback. A valid category can still be the wrong category."
+        }
+      ],
+      "example": {
+        "title": "Try the idea without buying anything",
+        "before": "Request: “My receipt shows two payments.”",
+        "after": "Possible routes: billing / technical / human review",
+        "body": "Write the route you expect and explain what evidence would change your mind. This is a reasoning exercise; the app is not calling Jev."
+      },
+      "remember": "Understand the decision, then test the model. Attention alone is not evidence of fit.",
+      "exercise": {
+        "prompt": "Write one decision in an app you use. List three allowed answers and one reason to ask a person for help.",
+        "answer": "For support routing, billing / technical / human review could work. A message mixing a payment problem with an account-access problem may need review."
+      },
+      "recallQuestion": "Why should you test a model even if it always returns a valid category?",
+      "limits": [
+        "This is a publisher announcement, not an independent evaluation.",
+        "A short pill gives you a useful starting point. Practice and primary-source reading build deeper understanding."
+      ]
+    },
+    "te": {
+      "title": "Jev వచ్చింది. అసలు ఏం చేస్తుంది?",
+      "summary": "September 15 ప్రకటనను తెలుసుకోండి: structured decisions, confidence, ఉపయోగాలు.",
+      "story": "September 15న TypeSafe AI తన మొదటి System One model అయిన Jevను పరిచయం చేసింది. Typed decisions, confidence estimates కోసం రూపొందించిన model అని సంస్థ చెబుతోంది.\nమీ appకు పెద్ద సమాధానం కావాలా? లేక తరువాతి దశను ఎంచుకోవాలా? ఈ తేడాతో మొదలుపెట్టండి.",
+      "bridge": "ఇది September 15 ప్రకటన. ఈ వివరణ September 24న తయారైంది. కింది ఉదాహరణలు అర్థం చేసుకోవడానికి మాత్రమే; కొలిచిన model results కావు.",
+      "concepts": [
+        {
+          "heading": "కొత్తగా ఏం వచ్చింది?",
+          "body": "Jev interfaceలో structured decisions ప్రధానమైనవి. Speed, reliability గురించి సంస్థ చెప్పే విషయాలను మీ పనిపై పరీక్షించాలి."
+        },
+        {
+          "heading": "ఎందుకు ఉపయోగపడవచ్చు?",
+          "body": "Support inboxలో reply రాసే ముందు requestను billing, technical support లేదా reviewకు పంపవచ్చు. పెద్ద workflowలో ఇది ఒక చిన్న decision."
+        },
+        {
+          "heading": "ఏం check చేయాలి?",
+          "body": "మీ పని నుంచి ఉదాహరణలు తీసుకోండి. సరైన route ముందే నిర్ణయించండి. తప్పులు, uncertain cases, latency, cost పరిశీలించండి. Valid category అయినా తప్పు category కావచ్చు."
+        }
+      ],
+      "example": {
+        "title": "కొనుగోలు చేయకుండా ఆలోచనను ప్రయత్నించండి",
+        "before": "Request: “నా receiptలో రెండు payments ఉన్నాయి.”",
+        "after": "Routes: billing / technical / human review",
+        "body": "ఏ route సరైనదో రాయండి. ఏ ఆధారం వస్తే నిర్ణయం మారుతుందో చెప్పండి. ఈ app Jev APIకు call చేయడం లేదు."
+      },
+      "remember": "ముందు decision అర్థం చేసుకోండి. తరువాత modelను పరీక్షించండి. Popularity ఒక్కటే సరైన ఎంపికకు ఆధారం కాదు.",
+      "exercise": {
+        "prompt": "మీకు తెలిసిన appలో ఒక decision, మూడు answers, మనిషి సహాయం అవసరమయ్యే ఒక పరిస్థితి రాయండి.",
+        "answer": "Support routingకు billing / technical / human review ఉండవచ్చు. Payment, account access సమస్యలు కలిసిన requestను reviewకు పంపవచ్చు."
+      },
+      "recallQuestion": "Model valid category ఇచ్చినా ఎందుకు పరీక్షించాలి?",
+      "limits": [
+        "ఇది సంస్థ ప్రకటన ఆధారంగా రాసిన వివరణ; independent evaluation కాదు.",
+        "Pill ఒక ప్రారంభ అవగాహన ఇస్తుంది. Practice, original sourcesతో మరింత తెలుసుకోవాలి."
+      ]
+    }
+  }
+]

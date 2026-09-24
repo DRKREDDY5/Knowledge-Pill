@@ -4,6 +4,10 @@ AI topic routing and short concept/news lessons in English and Telugu. Built by 
 
 [App](https://knowledge-pill.drkreddy.chatgpt.site) — currently owner-private. The static app can also run locally.
 
+## Learning experience
+
+Daily dose and AI News load dated editions automatically. Jev and Laya have a three-part editorial series with stories, examples, notes, quizzes, source links and spaced recall. Live publisher headlines are refreshed separately from generated explanations; an empty roundup never appears as a completed lesson. English and Telugu are available; Telugu wording still needs fluent-speaker review. Bookmarks and notes are device-local and can be exported/imported in Library settings. The original experiments and router remain in Week 5 lab.
+
 ## Files
 
 - [Executed Colab notebook](notebooks/Knowledge_Pill_Executed.ipynb): original training and evaluation outputs.
@@ -31,6 +35,7 @@ python -m http.server 8000 --directory dist
 Open `http://localhost:8000`. Source notebooks run in Colab; completed training does not need repeating. To generate new pills, use the daily notebook or the existing GitHub Actions workflow with the Fireworks secret and model variable configured. See [provider setup](docs/DAILY_SETUP.md).
 
 ```bash
-python -m pip install -r requirements-data.txt
+python -m pip install -r requirements-data.txt -r requirements-daily.txt
 python -m unittest discover -s tests -v
+node --test tests/learning-core.test.mjs
 ```

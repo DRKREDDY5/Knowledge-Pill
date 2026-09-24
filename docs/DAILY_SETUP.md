@@ -1,7 +1,6 @@
 # Daily generation: exact setup
 
-The first real Fireworks generation is now verified: [September 12, attempt 3](https://github.com/DRKREDDY5/Knowledge-Pill/actions/runs/34724909759/attempts/3) generated and saved both English and Telugu editions. Your repository key and model are working. The app reads these saved drafts automatically. Review the content, then enable the daily schedule as described below; an actual scheduled run has not yet been verified.
-
+Manual generation succeeded again on September 24. The September 21–24 scheduled jobs were skipped by the old opt-in gate. Scheduling now runs by default unless `DAILY_PILLS_ENABLED=false` explicitly pauses it. The app automatically reads published editions and a separate dated headline index.
 ## 1. Add the key privately
 
 Open [repository Actions secrets](https://github.com/DRKREDDY5/Knowledge-Pill/settings/secrets/actions). Choose **New repository secret**.
@@ -38,16 +37,9 @@ Check the fictional story label, factual explanation, source IDs, original news 
 
 The writer returns drafts, not certified facts. Automated validation checks structure, source IDs, dates and rough length/language signals. It cannot prove that every sentence is true or the Telugu is natural.
 
-## 5. Enable the schedule
+## 5. Daily schedule
 
-In plain language, this variable is the **on/off switch for automatic daily generation**. It is optional for the Week 5 submission. The generator already works manually, and the known wording issues in its first saved edition have been corrected.
-
-Open [repository Actions variables](https://github.com/DRKREDDY5/Knowledge-Pill/settings/variables/actions), click **New repository variable**, enter the name and value below, then click **Add variable**. If it already exists, edit its value. This is a variable, separate from the API-key secret.
-
-After the manual run succeeds, add repository variable:
-
-- Name: `DAILY_PILLS_ENABLED`
-- Value: `true`
+Scheduling is enabled by default. An existing `DAILY_PILLS_ENABLED=false` remains an explicit pause. Set it to `true` or remove it to resume.
 
 The workflow schedule is **11:17 UTC every day**: 7:17 AM in Ohio during daylight saving time and 6:17 AM during standard time. It uses the latest default-branch code. GitHub schedules can be delayed; it is not an exact-time delivery guarantee. See [workflow schedule documentation](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onschedule).
 
@@ -62,7 +54,7 @@ To pause paid generation, set DAILY_PILLS_ENABLED to `false`. Manual Run workflo
 | Model unavailable or insufficient credit | Choose an existing supported model or check your account; no automatic deployment |
 | Invalid or truncated response | Reject the draft; inspect the error before another paid attempt |
 | One language succeeds and the other fails | Keep public collection unchanged; partial checkpoint is a workflow artifact |
-| Same day rerun after success | Reuse existing Fireworks editions; no repeated provider requests |
+| Same day rerun after success | Reuse existing Fireworks editions and refresh the free headline index; no repeated provider requests |
 | News feed unavailable | Record the unavailable publisher; use other eligible sources; never invent updates |
 | No eligible recent news | Publish a clear no-updates explanation with no news items |
 | Older saved edition | App displays its date and warns it is not today's news |
@@ -79,3 +71,7 @@ The first manual run reached Fireworks with `accounts/fireworks/models/glm-5p3-f
 The runner logs the language, finish reason and token counts without logging credentials or reasoning text. It still rejects truncated or invalid drafts and does not automatically retry paid requests. A failed workflow can be rerun after a fix: its checkout explicitly reads current `main`.
 
 The successful run used 1,874 completion tokens for English and 12,141 for Telugu, both ending with `stop`. This is evidence for this run, not a guarantee that every future draft will pass. No extra paid generation was needed to verify the saved files.
+
+## News coverage
+
+The collector supports RSS and Atom with original publication dates, a 14-day recent window, and bounded discovery through Hacker News links to allowlisted primary publishers. Discussion popularity suggests sources to inspect; it never proves a claim. Pages without a verifiable publication date are rejected. `editions/headlines.json` includes only headline, publisher, URL and original date. It refreshes even on same-day reruns without another writer call. Missing feeds preserve the last nonempty headline index. The app labels stale content and separates original-source links, editorial explainers and generated roundups.

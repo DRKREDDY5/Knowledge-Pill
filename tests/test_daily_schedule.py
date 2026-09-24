@@ -25,7 +25,7 @@ class ScheduleChecks(unittest.TestCase):
     def test_same_day_reuses_existing_editions_without_provider(self):
         with tempfile.TemporaryDirectory() as d:
             root=Path(d);self.setup_root(root)
-            with patch.object(run_daily,'generate') as generate,patch.dict(os.environ,{},clear=True):
+            with patch.object(run_daily,'collect_news',return_value=([],[])),patch.object(run_daily,'generate') as generate,patch.dict(os.environ,{},clear=True):
                 self.assertEqual(run_daily.run(root)['generated'],0)
                 generate.assert_not_called()
 

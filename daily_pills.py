@@ -13,7 +13,7 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
 from pathlib import Path
-from urllib.parse import urlsplit
+from urllib.parse import urlsplit, urlencode
 from zoneinfo import ZoneInfo
 
 FEEDS = [
@@ -23,6 +23,8 @@ FEEDS = [
     ('Google Research', 'https://research.google/blog/rss/', 'research.google'),
 ]
 TOPICS=['RAG','Agents','Fine-tuning']
+NEWS_DAYS=14
+PRIMARY_HOSTS={'openai.com','www.anthropic.com','anthropic.com','deepmind.google','research.google','huggingface.co','typesafe.ai','laya.convaiinnovations.com','mistral.ai','ai.meta.com','blog.google','blogs.nvidia.com'}
 CONCEPTS={
  'RAG':['Why retrieve before answering?','What makes a source relevant?','When retrieval finds the wrong evidence','Why citations need checking','Retrieval versus model memory','Writing a useful retrieval query','Comparing retrieved passages','Knowing when evidence is missing'],
  'Agents':['When should an assistant use a tool?','Planning an action and checking its result','Why a failed tool call needs a recovery step','Human approval before a consequential action','An agent versus a fixed workflow','Keeping tool inputs and outputs visible','Learning from environment feedback','Setting a stopping condition'],
@@ -46,22 +48,79 @@ def clean_html(value):
 
 def parse_feed(raw, publisher, host, now):
     root=ET.fromstring(raw);rows=[]
-    for item in root.findall('./channel/item'):
-        url=item.findtext('link','').strip();parts=urlsplit(url)
+    atom='{http://www.w3.org/2005/Atom}'
+    entries=[(i,False) for i in root.findall('./channel/item')]+[(i,True) for i in root.findall(atom+'entry')]
+    for item,is_atom in entries:
+        links=item.findall(atom+'link') if is_atom else []
+        url=next((link.get('href','') for link in links if link.get('rel','alternate')=='alternate'),'') if is_atom else item.findtext('link','').strip()
+        parts=urlsplit(url)
         if parts.scheme!='https' or parts.hostname!=host or parts.username or parts.password:continue
         if host=='huggingface.co' and len(parts.path.strip('/').split('/'))!=2:continue
         try:
-            published=parsedate_to_datetime(item.findtext('pubDate',''))
+            date_text=item.findtext(atom+'published','') if is_atom else item.findtext('pubDate','')
+            published=datetime.fromisoformat(date_text.replace('Z','+00:00')) if is_atom else parsedate_to_datetime(date_text)
             if published.tzinfo is None:published=published.replace(tzinfo=timezone.utc)
         except (ValueError,TypeError):continue
-        if published>now or published<now-timedelta(days=7):continue
-        title=clean_html(item.findtext('title',''))
-        summary=clean_html(item.findtext('description',''))[:4500]
+        if published>now or published<now-timedelta(days=NEWS_DAYS):continue
+        title=clean_html(item.findtext(atom+'title' if is_atom else 'title',''))
+        summary=clean_html((item.findtext(atom+'summary','') or item.findtext(atom+'content','')) if is_atom else item.findtext('description',''))[:4500]
         if not title:continue
         rows.append({'id':'news-'+hashlib.sha256(url.encode()).hexdigest()[:12],
             'title':title,'url':url,'publisher':publisher,'published_at':published.isoformat(),
             'text':summary,'evidence_type':'feed_excerpt'})
     return rows
+
+def dated_primary_article(url, now, signal=0):
+    """Discussion links are discovery hints. Only dated, allowlisted originals become evidence."""
+    from bs4 import BeautifulSoup
+    parts=urlsplit(url)
+    if parts.scheme!='https' or parts.hostname not in PRIMARY_HOSTS or parts.username or parts.password or parts.port not in (None,443):return None
+    soup=BeautifulSoup(read_url(url),'html.parser')
+    candidates=[]
+    for name in ['article:published_time','datePublished','date','pubdate']:
+        node=soup.find('meta',attrs={'property':name}) or soup.find('meta',attrs={'name':name})
+        if node:candidates.append(node.get('content',''))
+    def dates(value):
+        if isinstance(value,dict):
+            if isinstance(value.get('datePublished'),str):candidates.append(value['datePublished'])
+            for child in value.values():dates(child)
+        elif isinstance(value,list):
+            for child in value:dates(child)
+    for node in soup.find_all('script',type='application/ld+json'):
+        try:dates(json.loads(node.get_text()))
+        except (ValueError,TypeError):pass
+    published=None
+    for candidate in candidates:
+        try:
+            dt=datetime.fromisoformat(candidate.replace('Z','+00:00'))
+            if dt.tzinfo is None:dt=dt.replace(tzinfo=timezone.utc)
+            if now-timedelta(days=NEWS_DAYS)<=dt<=now:published=dt;break
+        except (ValueError,TypeError):continue
+    if published is None:return None  # Never substitute a discussion or crawl date for publication.
+    body=soup.find('article') or soup.find('main')
+    text=clean_html(str(body)) if body else ''
+    title=soup.find('h1') or soup.find('title')
+    if not title or len(text)<200:return None
+    return {'id':'news-'+hashlib.sha256(url.encode()).hexdigest()[:12], 'title':title.get_text(' ',strip=True), 'url':url, 'publisher':parts.hostname,
+        'published_at':published.isoformat(),'text':text[:10000],'evidence_type':'article_excerpt','discussion_points':int(signal),'discovery_channel':'Hacker News link to primary source'}
+
+def discover_primary_news(now):
+    """Bounded, no-key discovery. Popularity suggests what to inspect; it is never evidence of truth."""
+    urls={};warnings=[]
+    for term in ['AI','model','agent']:
+        try:
+            query=urlencode({'query':term,'tags':'story','hitsPerPage':40,'numericFilters':f'created_at_i>{int((now-timedelta(days=NEWS_DAYS)).timestamp())}'})
+            data=json.loads(read_url('https://hn.algolia.com/api/v1/search?'+query))
+            for hit in data.get('hits',[]):
+                url=hit.get('url') or ''
+                if int(hit.get('points') or 0)>=25 and urlsplit(url).hostname in PRIMARY_HOSTS:urls[url]=max(urls.get(url,0),int(hit.get('points') or 0))
+        except Exception as error:warnings.append({'publisher':'Discovery index','reason':type(error).__name__})
+    ranked=sorted(urls.items(),key=lambda item:item[1],reverse=True)[:6]
+    def inspect(item):
+        try:return dated_primary_article(item[0],now,item[1])
+        except Exception:return None
+    with ThreadPoolExecutor(max_workers=3) as pool:rows=[r for r in pool.map(inspect,ranked) if r]
+    return rows,warnings
 
 def collect_news(now=None):
     now=now or datetime.now(timezone.utc)
@@ -74,19 +133,32 @@ def collect_news(now=None):
         for result,warning in pool.map(collect,FEEDS):
             rows.extend(result)
             if warning:warnings.append(warning)
+    discovered,discovery_warnings=discover_primary_news(now)
+    rows.extend(discovered);warnings.extend(discovery_warnings)
     unique={r['url']:r for r in rows}
     return sorted(unique.values(),key=lambda x:x['published_at'],reverse=True),warnings
 
+def headline_index(rows, now=None):
+    now=now or datetime.now(timezone.utc)
+    dated=[r for r in rows if now-timedelta(days=NEWS_DAYS)<=datetime.fromisoformat(r['published_at'])<=now]
+    ranked=sorted(dated,key=lambda r:(r.get('discussion_points',0)>=25,r['published_at']),reverse=True)
+    seen=set();items=[]
+    for r in ranked:
+        if r['url'] in seen:continue
+        seen.add(r['url'])
+        items.append({k:r[k] for k in ['id','title','url','publisher','published_at']})
+        if len(items)==12:break
+    return {'schema_version':1,'task':'ai_headlines','checked_at':now.isoformat(),'items':items}
+
 def choose_news(rows, topic, local_date, timezone_name, classify=None, now=None):
     now=now or datetime.now(timezone.utc);zone=ZoneInfo(timezone_name)
-    valid=[r for r in rows if now-timedelta(days=7)<=datetime.fromisoformat(r['published_at'])<=now]
-    todays=[r for r in valid if datetime.fromisoformat(r['published_at']).astimezone(zone).date().isoformat()==local_date]
-    candidates=todays or valid
+    valid=[r for r in rows if now-timedelta(days=NEWS_DAYS)<=datetime.fromisoformat(r['published_at'])<=now]
+    candidates=valid
     # A broad AI development remains eligible even when its topic is Other.
     for row in candidates:
         try:row['topic']=classify((row['title']+'. '+row['text'])[:800]) if classify else 'Other'
         except ValueError:row['topic']='Other'
-    candidates=sorted(candidates,key=lambda r:(r['topic']==topic,datetime.fromisoformat(r['published_at'])),reverse=True)
+    candidates=sorted(candidates,key=lambda r:(r.get('discussion_points',0)>=25,r['topic']==topic,datetime.fromisoformat(r['published_at'])),reverse=True)
     chosen=[];publishers=set()
     for row in candidates:
         if row['publisher'] not in publishers:
@@ -95,7 +167,8 @@ def choose_news(rows, topic, local_date, timezone_name, classify=None, now=None)
     for row in candidates:
         if len(chosen)==3:break
         if row not in chosen:chosen.append(row)
-    return chosen,('today' if todays else 'recent' if chosen else 'none')
+    same_day=chosen and all(datetime.fromisoformat(r['published_at']).astimezone(zone).date().isoformat()==local_date for r in chosen)
+    return chosen,('today' if same_day else 'recent' if chosen else 'none')
 
 def enrich_news(rows):
     from bs4 import BeautifulSoup
@@ -138,7 +211,7 @@ def make_pack(topic='RAG',language='en',timezone_name='America/New_York',recent_
     chosen,window=choose_news(candidates,topic,day,timezone_name,classify,now)
     news=enrich_news(chosen)
     if not news:window='none'
-    return {'date':day,'timezone':timezone_name,'created_at':now.isoformat(),'topic':topic,'language':language,
+    return {'headline_index':headline_index(candidates,now),'date':day,'timezone':timezone_name,'created_at':now.isoformat(),'topic':topic,'language':language,
         'concept':concept,'news_window':window,'knowledge_sources':knowledge,'news_sources':news,
         'source_warnings':warnings,'router_engine':router_engine}
 
@@ -201,11 +274,14 @@ def generate(pack,api_key,model):
       'Knowledge: teach the chosen concept through an explicitly fictional everyday story, then map its parts to the actual concept, '
       'explain a practical application and an honest limit of the analogy. Include a two-minute exercise and recall question with answer. '
       'Write about 450–700 words for the knowledge pill, aiming at 5–10 minutes including the activity. '
-      'News: one item per supplied news source; explain the development, its significance and a restrained takeaway. '
+      'News: one item per supplied news source. In what_happened, explain what the product or development actually does in plain language. '
+      'In why_it_matters, give a concrete everyday or developer use case and a clearly labelled analogy when useful. '
+      'In takeaway, state an important limitation and what to inspect before trying it. Do not call a launch a universal breakthrough. '
       'Separate publisher claims from your interpretation. Do not describe an older source as breaking or published today. '
       'Write about 350–750 words in total for news when sources exist, including a two-minute source-check exercise. '
       'Use a short availability explanation with zero items if no sources exist; never invent news to fill the time. '
-      'The news_window field is set by code: today means local-calendar publication, recent means dated earlier in the last seven days. '
+      'The news_window field is set by code: today means local-calendar publication, recent means dated within the last fourteen days. '
+      'Discussion votes are discovery signals only, never proof of accuracy or widespread adoption. '
       'If evidence_type is feed_excerpt, do not imply that you read the full article. '
       'Use natural Telugu for language te, retaining technical English terms where helpful; otherwise use English. '
       'Write Telugu characters directly in JSON strings, not Unicode escape sequences. '
@@ -213,7 +289,7 @@ def generate(pack,api_key,model):
       'Avoid promises about memory gains, model quality, or language correctness. The output is a draft for human review.'
     )
     max_tokens=TELUGU_MAX_TOKENS if pack['language']=='te' else WRITER_MAX_TOKENS
-    payload={'model':model,'messages':[{'role':'system','content':system},{'role':'user','content':json.dumps({'source_pack':pack,'output_shape':shape},ensure_ascii=False)}],
+    payload={'model':model,'messages':[{'role':'system','content':system},{'role':'user','content':json.dumps({'source_pack':{k:v for k,v in pack.items() if k!='headline_index'},'output_shape':shape},ensure_ascii=False)}],
         'temperature':0.3,'max_tokens':max_tokens,
         'response_format':{'type':'json_schema','json_schema':{'name':'daily_pills','schema':draft_schema(pack)}}}
     if model=='accounts/fireworks/models/glm-5p3-flash':

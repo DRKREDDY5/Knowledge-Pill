@@ -19,7 +19,8 @@ concurrency:
 
 jobs:
   generate:
-    if: github.event_name == 'workflow_dispatch' || vars.DAILY_PILLS_ENABLED == 'true'
+    # Daily publishing is active by default. An explicit false remains the owner's pause switch.
+    if: github.event_name == 'workflow_dispatch' || vars.DAILY_PILLS_ENABLED != 'false'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -59,6 +60,7 @@ jobs:
         if: success() && inputs.collect_only != true
         run: |
           git add editions/latest.json
+          if [ -f editions/headlines.json ]; then git add editions/headlines.json; fi
           if git diff --cached --quiet; then exit 0; fi
           git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Save dated daily pill drafts'
           git push origin HEAD:main
