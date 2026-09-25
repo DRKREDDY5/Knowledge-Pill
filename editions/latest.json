@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "task": "daily_pills_collection",
-  "updated_at": "2026-09-24T18:59:13.355476+00:00",
+  "updated_at": "2026-09-25T15:52:07.762719+00:00",
   "packets": [
     {
       "date": "2026-09-12",
@@ -396,6 +396,268 @@
         }
       ],
       "id": "ac7f59bcafda45ca"
+    },
+    {
+      "date": "2026-09-25",
+      "timezone": "America/New_York",
+      "created_at": "2026-09-25T15:50:19.943329+00:00",
+      "topic": "RAG",
+      "language": "en",
+      "concept": "Retrieval versus model memory",
+      "news_window": "recent",
+      "source_warnings": [],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "Retrieval versus Model Memory: Why RAG Looks Things Up",
+        "summary": "Large language models store facts implicitly in their parameters, which makes them powerful but hard to update, hard to attribute, and prone to gaps on knowledge-heavy tasks. Retrieval-Augmented Generation (RAG) pairs the model with an external, searchable index so it can consult documents at generation time. This pill explains the difference between parametric memory (weights) and non-parametric memory (a retrievable corpus), using a fictional everyday story, then maps it to real systems and practice.",
+        "story": "Imagine a small-town pharmacist named Meera. She has worked for decades and carries an enormous amount in her head: common drug interactions, dosing conventions, which shelf everything is on. Customers love her speed. But one morning a customer asks about a drug approved last month. Meera's head knowledge is a year out of date, and she cannot show the customer where a fact came from — it is simply 'in her head'. Across the street, a new pharmacist, Dev, has a different setup. He knows general pharmacy well, but next to his counter sits a live-updated reference shelf. When a question touches on specifics, he walks over, pulls the relevant pages, reads them, and answers while pointing at the source. When a drug label changes, the shelf updates — Dev does not need to re-learn his entire career. Meera is a parametric-only model: knowledge baked into the person (the weights), fixed at training time. Dev is a RAG model: the same trained mind, plus a non-parametric memory (the reference shelf) consulted at question time, with each answer traceable to a specific page.",
+        "connection": "In the story, Meera's head is parametric memory: facts compressed into billions of weights during training. Dev's shelf is non-parametric memory: an explicit, external index of documents. Dev's walk to the shelf is the retrieval step — a neural retriever searches a dense vector index for passages relevant to the question. Dev reading the pages before answering is the generation step: the seq2seq model conditions its output on the retrieved passages. The paper's two RAG variants map neatly: one reads the same pages once and answers the whole question from them (like Dev pulling one reference for the entire answer), the other can pull a different page for each part of the answer (per-token retrieval).",
+        "explanation": "The RAG paper (Lewis et al.) frames this as combining pre-trained parametric memory (a seq2seq model) with non-parametric memory (a dense vector index of Wikipedia accessed by a pre-trained neural retriever). The motivation matches the story's problems: parameter-only models have limited ability to access and precisely manipulate knowledge, lag on knowledge-intensive tasks, and struggle with provenance and updating world knowledge. The REALM paper tackles the same issue from the pre-training side, adding a latent knowledge retriever used during pre-training, fine-tuning, and inference, and notes that implicit parameter storage requires ever-larger networks to cover more facts. Both approaches report strong open-domain QA results, and the RAG paper additionally finds that retrieval-augmented generation produces more specific, diverse, and factual language than a parametric-only baseline. The key architectural insight is modularity: because the knowledge lives in an index, you can update the corpus without retraining the model, and you can inspect which documents influenced an answer.",
+        "application": "In practice, RAG is the standard pattern for building assistants over changing or private data: connect a model to a vector index of your documentation, tickets, or product specs, retrieve the top matching passages for each user query, and pass them into the prompt or generation context. This gives you answers grounded in current sources, citations you can show users, and the ability to add or correct knowledge by editing the index rather than fine-tuning. When evaluating such a system, check retrieval quality separately from generation quality — a fluent wrong answer often means the retriever missed the right passage.",
+        "exercise": "Two minutes: take a question your app might receive and split it into two lists — 'facts that rarely change and are general' versus 'facts that change often or are private to your data'. The first list is a fit for parametric memory; the second is a fit for retrieval. Sketch which list is bigger for your use case; that ratio tells you how much RAG architecture you actually need.",
+        "question": "In RAG terms, what do the pharmacist's head knowledge and the reference shelf represent, and why can the shelf be updated without retraining the pharmacist?",
+        "answer": "Head knowledge is parametric memory — facts stored in the model's weights during training. The shelf is non-parametric memory — an external document index consulted at inference time. The shelf can be updated independently because it is separate from the model: you change the corpus or index, not the weights, so no retraining is needed.",
+        "limits": "The pharmacy analogy understates the engineering difficulty. Dev knows exactly which page to pull; real retrievers can miss relevant documents, retrieve plausible-but-wrong passages, or fetch text the generator then ignores. The analogy also makes retrieval look free — dense indexes over millions of documents add latency and infrastructure cost. Finally, retrieved text is not guaranteed truth: a RAG system can cite a bad source confidently, so provenance shows where an answer came from, not whether it is correct.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "Recent AI Developments: Family Agents, Cyber Access, and Reproducible Benchmarks",
+        "overview": "Three recent items from the supplied sources: Google Labs expands its CC agent to households, OpenAI extends a cyber-defense program to Ukraine, and UK AISI partners with EvalEval on open evaluation reporting. Each is summarized from the provided excerpts only; the OpenAI item is based on a feed excerpt, not the full article.",
+        "items": [
+          {
+            "headline": "Google Labs' CC agent expands to families and households",
+            "what_happened": "According to Google's blog post, CC is an experimental personal agent that now supports up to six household members. It runs on its own Google account with a permissions model where each member chooses what to share (such as school or vet emails). It produces a shared daily brief, adds calendar events and tasks from shared information, and can take actions like pre-filling PDF forms with permission. Google states it runs on an isolated cloud computer using the company's agentic harness, Antigravity, and Gemini models, and is available to users 18+ in the U.S. with a personal Google account.",
+            "why_it_matters": "For developers, this is a concrete example of a shared-context agent: one agent instance with per-member permissions and a distinction between household-level and individual-level memory. The design problem — deciding what context is shared versus private — is the same one you face building any multi-user assistant over personal data. Analogy: it is like a shared family fridge calendar where each person chooses which notes to pin, rather than one person's private diary being read aloud.",
+            "takeaway": "This is a publisher description of an early Google Labs experiment, not an independently verified review. Before trying it, inspect exactly what data sources each member can share, how the auto-'cc' email sender list works, and what the agent can do with Calendar, Tasks, and form-filling permissions — and note it is U.S.-only per the post.",
+            "source_ids": [
+              "news-e78be4774342"
+            ]
+          },
+          {
+            "headline": "OpenAI extends Daybreak cyber access to Ukraine for civilian defense",
+            "what_happened": "Per an OpenAI feed excerpt, OpenAI is extending access to its Daybreak program to the Government of Ukraine to support the cyber defense of civilian infrastructure. The excerpt is brief, so details about the program's scope and tooling are not available in the supplied source.",
+            "why_it_matters": "Government access to frontier AI tooling for defensive cyber operations signals that AI-assisted security work is moving from internal use to formal national programs. For developers in security, it suggests growing demand for AI systems that can operate on defensive infrastructure tasks under institutional controls — though the excerpt does not describe what capabilities Daybreak actually provides.",
+            "takeaway": "This item is based on a feed excerpt only, so treat the scope as unverified. Before drawing conclusions, inspect OpenAI's full announcement for what Daybreak includes, which Ukrainian institutions get access, and what usage restrictions apply.",
+            "source_ids": [
+              "news-9328fa400dd3"
+            ]
+          },
+          {
+            "headline": "UK AISI shares verified benchmark results via EvalEval's open infrastructure",
+            "what_happened": "A Hugging Face blog post by the EvalEval Coalition describes a collaboration in which the UK AI Security Institute (AISI) publishes evaluation methods and verified results through EvalEval's Evaluation Cards, using the Every Eval Ever reporting schema. The release covers five benchmarks (including HealthBench, FrontierMath, Humanity's Last Exam, SWE-Bench Pro, and Terminal-Bench 2.0) across six frontier models, alongside two cyber evaluations, and accompanies an AISI paper on how inference-time compute and evaluation protocol affect benchmark performance.",
+            "why_it_matters": "Benchmark numbers are often reported without the setup details needed to reproduce them, and rerunning evaluations can be expensive. Openly released results with configuration information give developers reference points for interpreting scores — for example, understanding that performance on a benchmark like Humanity's Last Exam can shift with evaluation protocol and token budget. If you compare models for a purchase or architecture decision, this kind of shared metadata helps you tell whether similar-looking scores were produced under meaningfully different conditions.",
+            "takeaway": "The post is from the EvalEval Coalition describing its own collaboration, so treat its framing as a participant's account. Before relying on any specific number, inspect the Evaluation Cards for the exact configuration — protocol, compute, and feedback conditions — rather than comparing headline scores across different setups.",
+            "source_ids": [
+              "news-e9f63aa1f7aa"
+            ]
+          }
+        ],
+        "exercise": "Two minutes: pick one of the three items and find the primary source link in the excerpt. Then list two things the publisher claims and one detail the excerpt does not tell you — that gap is exactly what you should verify before repeating the claim to your team.",
+        "question": "Why does the AISI/EvalEval release matter for interpreting benchmark scores you see in model announcements?",
+        "answer": "Because it publishes verified results together with configuration and protocol details, letting you check whether apparently similar scores were produced under different conditions — something headline numbers alone cannot tell you. (Note: the source is the coalition's own blog post, so verify specifics against the underlying Evaluation Cards.)"
+      },
+      "usage": {
+        "prompt_tokens": 4143,
+        "total_tokens": 6399,
+        "completion_tokens": 2256,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-e78be4774342",
+          "title": "The new CC, an AI agent built for families",
+          "url": "https://blog.google/innovation-and-ai/models-and-research/google-labs/cc-expanding-to-groups/",
+          "publisher": "blog.google",
+          "published_at": "2026-09-17T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 52,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "Other"
+        },
+        {
+          "id": "news-9328fa400dd3",
+          "title": "OpenAI extends cyber access to Ukraine for civilian defense",
+          "url": "https://openai.com/index/openai-extends-cyber-access-to-ukraine-for-civilian-defense",
+          "publisher": "OpenAI",
+          "published_at": "2026-09-23T13:00:00+00:00",
+          "evidence_type": "feed_excerpt",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-e9f63aa1f7aa",
+          "title": "How UK AISI and EvalEval Are Making Benchmark Results Reproducible",
+          "url": "https://huggingface.co/blog/evaleval-aisi",
+          "publisher": "Hugging Face",
+          "published_at": "2026-09-22T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "RAG"
+        }
+      ],
+      "id": "17d381d73612a534"
+    },
+    {
+      "date": "2026-09-25",
+      "timezone": "America/New_York",
+      "created_at": "2026-09-25T15:50:19.943329+00:00",
+      "topic": "RAG",
+      "language": "te",
+      "concept": "Retrieval versus model memory",
+      "news_window": "recent",
+      "source_warnings": [],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "Retrieval vs Model Memory: మోడల్ జ్ఞాపకాలు vs బయట ఉన్న పుస్తకాలు",
+        "summary": "Language models తమ parameters లో విషయాలను అంతర్గతంగా నేర్చుకుంటాయి, కానీ ఖచ్చితమైన facts కావాల్సిన పనుల్లో ఇది సరిపోదు. Retrieval-Augmented Generation (RAG) అంటే మోడల్ సమాధానం చెప్పే ముందు బయటి document index నుంచి సంబంధిత passages ని వెతికి చదివి, ఆ ఆధారాలతో సమాధానం ఇవ్వడం. ఈ pill లో రెండు విధానాల తేడాను ఒక కుటుంబ కథ ద్వారా నేర్చుకుంటాం.",
+        "story": "శ్రీను అనే పిల్లాడికి రెండు మార్గాల్లో విషయాలు తెలుసు. ఒకటి — అతని తల లోపల: పాఠశాలలో చదివిన కథలు, పాటలు, సాధారణ విషయాలు. వీటిని అతను వెంటనే చెప్పగలడు, కానీ కొన్నిసార్లు వివరాలు తప్పుగా గుర్తుంచుకుంటాడు — 'ఆ సినిమా 2018 లో వచ్చిందా, 2019 లోనా?' అని అయోమయం పడతాడు. రెండు — ఇంట్లో ఉన్న పెద్ద పుస్తక అలమారీ. ఎవరైనా ఖచ్చితమైన ప్రశ్న అడిగితే, అతను అలమారీలో సరైన పుస్తకం తీసి, సంబంధిత పేజీ చదివి, 'ఇదిగో, ఇక్కడ ఇలా రాసి ఉంది' అని చూపిస్తాడు. తలలో ఉన్న జ్ఞానం వేగంగా ఉంటుంది కానీ తప్పులు జరగవచ్చు, దాన్ని అప్డేట్ చేయడం కష్టం. అలమారీ కొంచెం సమయం తీసుకుంటుంది కానీ ఎప్పుడూ తాజాగా, ఆధారంతో సమాధానం ఇస్తుంది — ఎవరైనా సందేహిస్తే ఆ పుస్తకం చూపించగలం.",
+        "connection": "ఈ కథలో శ్రీను తల = model యొక్క parametric memory (weights లో దాచిన జ్ఞానం). అలమారీ = non-parametric memory, అంటే బయటి document index. పుస్తకం వెతకడం = retriever పని. పుస్తకం చదివి సమాధానం చెప్పడం = generation సమయంలో retrieved passages ని conditioning గా వాడటం.",
+        "explanation": "పెద్ద pre-trained language models తమ parameters లో factual knowledge ని నిల్వ చేస్తాయని పరిశోధనలు చూపించాయి, కానీ ఆ జ్ఞానాన్ని ఖచ్చితంగా access చేయడం, నిర్ణయాలకు provenance (మూలం) ఇవ్వడం, world knowledge ని అప్డేట్ చేయడం — ఇవి కష్టమవుతాయి. RAG దీనికి పరిష్కారం: pre-trained seq2seq model (parametric memory) + dense vector index (non-parametric memory) + neural retriever కలిపి, generation అంతటా retrieved passages పై ఆధారపడుతుంది. కొన్ని RAG రూపాల్లో మొత్తం సమాధానానికి ఒకే passages, మరికొన్నింట్లో token వారీగా వేరు వేరు passages వాడవచ్చు. REALM అనే సంబంధిత పద్ధతిలో, pre-training అప్పుడే ఒక latent knowledge retriever ని unsupervised గా నేర్పిస్తారు — millions of documents లో retrieval step ద్వారా backpropagate చేస్తూ. ఇలా retrieval కలిపిన models open-domain QA లో parametric-only models కంటే మెరుగ్గా పనిచేశాయి, అలాగే interpretability (ఏ document ఆధారంగా సమాధానమో చూపగలగడం) మరియు modularity (index ని విడిగా అప్డేట్ చేయగలగడం) వంటి ప్రయోజనాలు ఇస్తాయి. Generation tasks లో RAG models మరింత specific, factual భాష వాడినట్లు గమనించారు.",
+        "application": "మీ company యొక్క internal docs పై ప్రశ్నలకు సమాధానం ఇచ్చే chatbot ని బిల్డ్ చేస్తున్నారని ఊహించండి. Model ని retrain చేయకుండా, docs ని ఒక vector index లో పెట్టి, ప్రతి ప్రశ్నకు retriever సంబంధిత sections ని తీసుకొచ్చి, model వాటి ఆధారంగా సమాధానం చెప్పేలా RAG pipeline ని వాడవచ్చు. Docs మారినప్పుడల్లా index ని మాత్రమే అప్డేట్ చేస్తే చాలు — ఇదే modularity యొక్క ప్రయోజనం. సమాధానంతో పాటు source document చూపిస్తే users నమ్మకం పెరుగుతుంది.",
+        "exercise": "రెండు నిమిషాల వ్యాయామం: ఒక చిన్న ప్రశ్న తీసుకోండి (ఉదా: 'మా విధానం ప్రకారం leave ఎన్ని రోజులు?'). (1) మీ తలలో ఉన్న జ్ఞానంతో సమాధానం చెప్పినట్లయితే ఏమి ప్రమాదం ఉంది అని ఒక వాక్యంలో రాయండి. (2) మీరు ఏ document చూస్తారు, దాన్లో ఏ section వెతుకుతారు అని రాయండి. ఇదే తేడానే — parametric memory vs retrieval.",
+        "question": "RAG లో parametric memory మరియు non-parametric memory అంటే ఏమిటి? ఏది సులభంగా అప్డేట్ చేయగలం?",
+        "answer": "Parametric memory అంటే pre-trained model యొక్క weights లో దాచిన జ్ఞానం; non-parametric memory అంటే retriever తో access చేసే బయటి dense vector index (documents). Non-parametric index ని సులభంగా అప్డేట్ చేయవచ్చు — కొత్త documents చేర్చడం చాలా, model ని retrain చేయక్కర్లేదు.",
+        "limits": "ఈ అలమారీ ఉపమానం అతిసరళం. నిజమైన retriever ఎప్పుడూ 'సరైన పుస్తకం' మాత్రమే తీసుకురాదు — తప్పు లేదా అసంబద్ధ passages వచ్చే అవకాశం ఉంది, అప్పుడు model తప్పు ఆధారాలపై సమాధానం చెప్పవచ్చు. అలాగే అలమారీలో పుస్తకం లేకపోతే శ్రీను 'లేదు' అని చెప్తాడు, కానీ model మాత్రం తన parametric జ్ఞానంతో ఊహించి చెప్పే ప్రమాదం ఉంది. Retrieval అంటేనే ఖచ్చితత్వం అని ఊహించకూడదు.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "ఈ వారం AI వార్తలు",
+        "overview": "ఈ రోజుల్లో మూడు అంశాలు: Google Labs యొక్క CC కుటుంబాల కోసం విస్తరణ, OpenAI యొక్క Ukraine సైబర్ కార్యక్రమ విస్తరణ, మరియు UK AISI + EvalEval యొక్క reproducible evaluations. ఒక్కో అంశానికీ publisher చెప్పిన దానికీ, మా విశ్లేషణకూ తేడా గుర్తించండి.",
+        "items": [
+          {
+            "headline": "Google Labs యొక్క CC agent ఇప్పుడు కుటుంబాల కోసం",
+            "what_happened": "Google Labs వారి ప్రకటన ప్రకారం, CC అనే experimental agent ఇప్పుడు కుటుంబాల/గృహాల కోసం విస్తరించింది. దీనికి స్వంత verified Google account ఉంటుంది; గరిష్ఠంగా ఆరుగురు సభ్యులు దానితో పనిచేయవచ్చు. ప్రతి సభ్యుడు ఏమి share చేయాలో ఎంచుకుంటారు — ఉదా: పిల్లల స్కూల్ emails. CC రోజువారీ 'Your Day Ahead' brief ఇస్తుంది, Calendar/Tasks తో connect అవుతుంది, permission slips లేదా registration PDFs నింపడం వంటి పనులు అడిగి తెలుసుకుని చేస్తుంది. ఇది Google యొక్క Antigravity agentic harness పై isolated cloud computer లో నడుస్తుందని, shared memory కలదని పేర్కొన్నారు. U.S. లో 18+ personal Google account ఉన్నవారికి web/mobile లో అందుబాటులో ఉంది.",
+            "why_it_matters": "ఇది ఒకే వ్యక్తి inbox లో చిక్కిన ఇంటి logistics ని shared context గా మార్చే ప్రయత్నం. Developer దృష్టితో చూస్తే, ఇది multi-user permissions model + shared memory + agentic actions (form filling, API calls) కలిపిన ఒక ఉదాహరణ — మీరు group-oriented assistants design చేస్తుంటే చూడవలసిన pattern. ఒక ఉపమానం: ఇది ఇంటి కోసం ఒక shared notice-board లాంటిది, ప్రతి సభ్యుడు ఏ పోస్ట్-ఇట్ నోట్స్ అందరికీ కనిపించాలో ఎంచుకునే స్వేచ్ఛతో.",
+            "takeaway": "ఇది Google Labs యొక్క early experiment — production-ready అని కాదు. ప్రయత్నించే ముందు: CC కు మీరు share చేసే email senders జాబితాను, ప్రతి వారం వచ్చే new senders రివ్యూ జాబితాను, మరియు ఏ actions కి permission అవసరమో తనిఖీ చేయండి. Privacy settings మీ చేతుల్లోనే ఉన్నాయని publisher చెప్పినా, మీరే ధృవీకరించాలి.",
+            "source_ids": [
+              "news-e78be4774342"
+            ]
+          },
+          {
+            "headline": "OpenAI Daybreak కార్యక్రమాన్ని Ukraine కు విస్తరించింది",
+            "what_happened": "OpenAI తన feed లో ప్రకటించిన దాని ప్రకారం, పౌర మౌలిక సదుపాయాల (civilian infrastructure) cyber defense కు మద్దతుగా, Daybreak అనే కార్యక్రమానికి Ukraine ప్రభుత్వానికి access ఇస్తోంది. ఈ మూలం ఒక feed excerpt మాత్రమే — కార్యక్రమం యొక్క వివరాలు, పరిధి, నియంత్రణల గురించి అదనపు సమాచారం అందుబాటులో లేదు.",
+            "why_it_matters": "సైబర్ రక్షణలో AI tools పాత్ర గురించి ఆలోచించేలా చేసే అంశం. Developer కు ఉపయోగకరమైన అర్థం: AI access అంటే కేవలం consumer chatbot కాదు — ప్రభుత్వ, భద్రతా సందర్భాల్లో ఎవరికి ఏ tools ఇస్తారో అనేది ఒక నిర్ణయం. ఒక స్పష్టమైన ఉపమానం: ఇది ఒక అగ్నిమాపక శిక్షణ కేంద్రానికి కొత్త పరికరాలు ఇవ్వడం లాంటిది — పరికరాలు ఎలా వాడబడతాయో నియంత్రణ చాలా ముఖ్యం.",
+            "takeaway": "ఈ feed excerpt ఆధారంగా కార్యక్రమం యొక్క లోపలి వివరాల గురించి తీర్మానాలకు రాకూడదు — మేము పూర్తి ప్రకటన చదవలేదు. ప్రయత్నించే లేదా విశ్లేషించే ముందు: Daybreak యొక్క పూర్తి ప్రకటనలో access పరిధి, ఏ systems కి వర్తిస్తుందో, ఏ నియంత్రణలున్నాయో చూడండి.",
+            "source_ids": [
+              "news-9328fa400dd3"
+            ]
+          },
+          {
+            "headline": "UK AISI, EvalEval తో కలిసి benchmark results ని reproducible చేస్తోంది",
+            "what_happened": "Hugging Face బ్లాగ్ పోస్ట్ (Sep 22, 2026) ప్రకారం, UK AI Security Institute (AISI) EvalEval యొక్క infrastructure ని వాడి evaluation results ని బహిరంగంగా share చేస్తోంది. EvalEval యొక్క Every Eval Ever (EEE) schema మరియు Evaluation Cards platform ద్వారా, AISI తన paper లోని ఐదు benchmarks — HealthBench, FrontierMath, Humanity's Last Exam, SWE-Bench Pro, Terminal-Bench 2.0 — ఫలితాలను, verified results, context, configuration సమాచారంతో release చేసింది. ఇవి Claude Opus 4/4.5/4.6, GPT-5, GPT-5.2, GPT-5.4 వంటి ఆరు frontier models పై, రెండు cyber evaluations తో కలిపి ఉన్నాయి. పోస్ట్ లో ఒక ముఖ్యమైన గమనిక: evaluation protocol మరియు inference-time compute మారితే benchmark scores కూడా మారతాయి — ఉదాహరణకు, correctness feedback ఇస్తే models token usage పెరిగే కొద్దీ ఇంకా tasks solve చేశాయి.",
+            "why_it_matters": "Developer గా, మీరు model leaderboards చూసి నిర్ణయాలు తీసుకుంటారు. ఒకే benchmark కి వేరు వేరు setup లలో వేరు వేరు scores వస్తే, ఆ scores ని నేరుగా పోల్చడం తప్పు. EEE schema + Evaluation Cards లాంటి shared reporting formats వాడితే, 'ఈ స్కోరు ఏ పరిస్థితుల్లో వచ్చింది' అనేది తెలుసుకోవచ్చు — ఇది model selection లో నిజమైన ప్రయోజనం. Retrieval systems కూడా ఇలాంటి evaluation standards నుంచి లబ్ది పొందవచ్చు.",
+            "takeaway": "ఇది ఒక collaboration ప్రకటన — అన్ని evaluations ఇప్పుడు reproducible అయ్యాయని కాదు; ఇది ఒక మొదటి అడుగు. Benchmark స్కోరు చూసేటప్పుడు: evaluation protocol, token budget, feedback conditions, configuration details ఏమిటో తనిఖీ చేయండి — లేకపోతే ఆ సంఖ్యలను అంతగా నమ్మకూడదు.",
+            "source_ids": [
+              "news-e9f63aa1f7aa"
+            ]
+          }
+        ],
+        "exercise": "రెండు నిమిషాల source-check వ్యాయామం: పై మూడు అంశాల్లో ఒకదాన్ని ఎంచుకోండి. ఆ అంశానికి సంబంధించి మీరు చదివిన వివరణలో (1) publisher నేరుగా చెప్పిన claim ఒకటి, (2) మా interpretation ఒకటి గుర్తించండి. తర్వాత ఒక ప్రశ్న అడగండి: 'ఈ claim ని ధృవీకరించడానికి నాకు ఏ అదనపు సమాచారం కావాలి?' — ఉదాహరణకు, OpenAI అంశంలో feed excerpt మాత్రమే ఉన్నందున పూర్తి ప్రకటన చదవడం మొదటి అడుగు.",
+        "question": "AISI release ప్రకారం, ఒకే benchmark కి వేరు వేరు scores ఎందుకు రావచ్చు?",
+        "answer": "Evaluation protocol మరియు inference-time compute మారితే ఫలితాలు మారతాయి — ఉదాహరణకు, ప్రతి attempt తర్వాత correctness feedback ఇస్తే, token usage పెరిగే కొద్దీ models అదనపు tasks solve చేశాయి. అందుకే setup details లేకుండా scores ని పోల్చకూడదు."
+      },
+      "usage": {
+        "prompt_tokens": 4143,
+        "total_tokens": 13965,
+        "completion_tokens": 9822,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 32
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 32
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-e78be4774342",
+          "title": "The new CC, an AI agent built for families",
+          "url": "https://blog.google/innovation-and-ai/models-and-research/google-labs/cc-expanding-to-groups/",
+          "publisher": "blog.google",
+          "published_at": "2026-09-17T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 52,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "Other"
+        },
+        {
+          "id": "news-9328fa400dd3",
+          "title": "OpenAI extends cyber access to Ukraine for civilian defense",
+          "url": "https://openai.com/index/openai-extends-cyber-access-to-ukraine-for-civilian-defense",
+          "publisher": "OpenAI",
+          "published_at": "2026-09-23T13:00:00+00:00",
+          "evidence_type": "feed_excerpt",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-e9f63aa1f7aa",
+          "title": "How UK AISI and EvalEval Are Making Benchmark Results Reproducible",
+          "url": "https://huggingface.co/blog/evaleval-aisi",
+          "publisher": "Hugging Face",
+          "published_at": "2026-09-22T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "RAG"
+        }
+      ],
+      "id": "03d60f8801c272ad"
     }
   ]
 }
