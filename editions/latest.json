@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "task": "daily_pills_collection",
-  "updated_at": "2026-09-25T15:52:07.762719+00:00",
+  "updated_at": "2026-09-26T15:01:08.503725+00:00",
   "packets": [
     {
       "date": "2026-09-12",
@@ -658,6 +658,268 @@
         }
       ],
       "id": "03d60f8801c272ad"
+    },
+    {
+      "date": "2026-09-26",
+      "timezone": "America/New_York",
+      "created_at": "2026-09-26T14:59:04.983676+00:00",
+      "topic": "RAG",
+      "language": "en",
+      "concept": "Writing a useful retrieval query",
+      "news_window": "recent",
+      "source_warnings": [],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "Writing a Useful Retrieval Query",
+        "summary": "RAG systems combine a model's parametric knowledge with documents fetched from an external index at generation time. The retriever only finds passages that resemble your query, so the quality of what comes back depends heavily on how you phrase the query. This pill teaches query-writing through a fictional story, then maps it to dense retrieval and gives you a practical exercise.",
+        "story": "Maya runs a small bakery and keeps a binder of every recipe, supplier invoice, and health-inspection note. Her new assistant, Dev, has never baked before but is fast at flipping through the binder — if Maya tells him exactly what to look for. One morning Maya says, 'Check the binder.' Dev returns with a random page about flour. The next day she says, 'Find the note about the sourdough starter from the inspector.' Dev comes back with exactly the right page, and Maya's bread turns out fine. Over weeks, Maya learns Dev's habits: vague requests get vague pages; naming the dish, the source, and the question gets the right page. She also learns that Dev matches words, not meaning perfectly — asking for 'bread problems' misses the page that says 'crumb structure defects,' so she started including both phrasings. Eventually she stops asking one big question and instead asks two or three small ones: one about the starter, one about oven temperature, one about inspection dates. Dev fetches a page for each, and Maya reads them together before deciding.",
+        "connection": "The binder is a document corpus. Dev is the retriever: fast, literal, and only as good as the request. Maya's phrasing is the retrieval query. The pages Dev brings back are the context the generator conditions on. When Maya's request is vague, the retrieved passage is irrelevant, and no amount of fluent writing downstream can fix a wrong answer built on the wrong page.",
+        "explanation": "In retrieval-augmented generation, a pre-trained seq2seq model (parametric memory) is combined with a dense vector index of documents accessed by a neural retriever (non-parametric memory), as described in the RAG paper by Lewis et al. The retriever embeds the query and the documents into vectors and fetches passages that are close in that space. This matters because large language models store facts implicitly in parameters, which limits precise knowledge access, provenance, and updating — problems that explicit retrieval addresses, as REALM's authors also argue. A dense retriever matches semantic similarity, not just keywords, but it still reflects the query's framing: a query missing key entities or mixing several questions at once produces passages that are nearby in embedding space yet unhelpful. Practical query-writing habits follow directly: include the specific entities and intent, split multi-part questions into separate retrieval calls, and consider rewriting or expanding a user's casual phrasing before embedding it.",
+        "application": "In a support chatbot over a product knowledge base, don't retrieve with the user's raw message like 'it's broken again.' First form a query such as 'error when exporting PDF report version 2.3' — naming the feature, action, and version. If the user asks two things ('how do I export, and what formats are supported?'), run two retrievals and feed both passage sets to the generator. This is query rewriting, one of the highest-leverage, lowest-cost improvements in a RAG pipeline.",
+        "exercise": "Take any question a user might ask your system (or a public one, like 'why is my sourdough flat?'). Spend two minutes writing three versions of the retrieval query: (1) the raw user phrasing, (2) a version naming concrete entities and intent, (3) a version that splits it into two narrower queries if it contains more than one question. Note which version you would actually embed and why.",
+        "question": "Why does splitting a multi-part user question into separate retrieval queries usually improve RAG answers?",
+        "answer": "Because the retriever fetches passages similar to the whole query; a compound query sits in an embedding region that may not be close to any single relevant passage. Splitting it lets each retrieval target one intent, so the generator receives focused passages for each part instead of diluted or irrelevant context.",
+        "limits": "The bakery analogy suggests the retriever understands your intent the way Dev eventually learns Maya's habits. Real retrievers do not learn from your phrasing over time in this story's sense; they match embeddings fixed at indexing time. The analogy also underplays failure modes: a well-written query can still retrieve a plausible-looking but wrong passage, and the generator may then state it confidently. Good queries reduce, but do not eliminate, the need to evaluate retrieved context.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "Recent AI developments: family agents, cyber access, and reproducible benchmarks",
+        "overview": "Three recent items from the supplied sources: Google Labs expands its CC agent to households, OpenAI extends a cyber program to Ukraine (reported only via a feed excerpt), and UK AISI partners with EvalEval to publish reproducible evaluation results. Each is summarized from the provided excerpts only.",
+        "items": [
+          {
+            "headline": "Google Labs' CC agent expands to families and households",
+            "what_happened": "According to a Google Labs blog post dated September 17, 2026, CC is an experimental AI agent that now supports up to six household members. It runs on its own verified Google account, sees only what each member chooses to share (such as school or vet emails), and produces a shared daily brief, calendar events, and task lists. Google says it can also take actions like pre-filling PDF forms with permission, and that each CC instance runs on an isolated cloud computer using Google's Antigravity harness and Gemini models. It is available to users 18+ in the U.S. with a personal Google account, via upgrade emails or a waitlist.",
+            "why_it_matters": "For developers, this is a concrete example of a multi-user permission model around a shared agent: per-member sharing controls, a distinct agent identity, and separation of household-level versus personal memory. The pattern — an agent with scoped access to email, calendar, and files — is analogous to building any collaborative assistant where the hard part is not the model but the authorization boundaries. Think of it like a shared team inbox with per-person visibility rules rather than one user's assistant with everyone's data.",
+            "takeaway": "This is a vendor description of an early experiment, not an independent assessment. Before trying it or designing something similar, inspect exactly what data-sharing defaults exist, how 'auto cc' sender rules work, and what the agent can do without per-action approval — the blog states actions require permission, but the implementation details are not in this source.",
+            "source_ids": [
+              "news-e78be4774342"
+            ]
+          },
+          {
+            "headline": "OpenAI extends Daybreak cyber access to Ukraine",
+            "what_happened": "An OpenAI feed excerpt states that OpenAI is extending access to its Daybreak program to the Government of Ukraine to support the cyber defense of civilian infrastructure. The excerpt is a single summary line; no further detail about the program's scope, tools, or conditions is available in the supplied source.",
+            "why_it_matters": "If accurate as described, this signals AI providers making defensive cyber capabilities available to governments for protecting civilian systems — a category of deployment with obvious policy and safety implications. For developers, it is a reminder that access to advanced AI capabilities is increasingly mediated by programs with eligibility and usage conditions, not just API tiers.",
+            "takeaway": "This item is based on a feed excerpt, not a full article, so treat the scope and terms as unverified. Before drawing conclusions, inspect OpenAI's primary announcement for what Daybreak actually provides, who qualifies, and what restrictions apply.",
+            "source_ids": [
+              "news-9328fa400dd3"
+            ]
+          },
+          {
+            "headline": "UK AISI publishes evaluation results via EvalEval's open infrastructure",
+            "what_happened": "A Hugging Face blog post (September 22, 2026) by the EvalEval Coalition and UK AISI describes AISI using EvalEval's Evaluation Cards and the Every Eval Ever schema to openly share verified evaluation results. The release covers five benchmarks — HealthBench, FrontierMath, Humanity's Last Exam, SWE-Bench Pro, and Terminal-Bench 2.0 — across six frontier models, plus two cyber evaluations, accompanying AISI's paper on how inference-time compute and evaluation protocol shape benchmark performance.",
+            "why_it_matters": "For anyone building RAG or agent systems, this addresses a real pain: benchmark scores are often reported without the setup details needed to reproduce or compare them. Openly released results with configuration information let you check whether an apparently similar score was produced under meaningfully different conditions — the same lesson as writing a good retrieval query: context determines meaning.",
+            "takeaway": "The post is authored by the collaborating organizations, so it describes their own initiative favorably. Before relying on these reference numbers, inspect the Evaluation Cards for the exact protocol, token budgets, and feedback conditions per run, since the post itself shows performance shifting substantially with evaluation setup.",
+            "source_ids": [
+              "news-e9f63aa1f7aa"
+            ]
+          }
+        ],
+        "exercise": "Pick one of the three items and spend two minutes finding the primary source (the Google Labs blog, OpenAI's announcement, or the AISI paper linked from the Hugging Face post). Note one claim in the secondary summary that you can verify against the primary source and one detail the summary omits.",
+        "question": "Why should the OpenAI/Ukraine item be treated with more caution than the other two?",
+        "answer": "Because the supplied evidence is only a feed excerpt — a brief summary line rather than a full article — so the program's scope, terms, and conditions cannot be verified from the provided source, whereas the other items include fuller article text."
+      },
+      "usage": {
+        "prompt_tokens": 4142,
+        "total_tokens": 6266,
+        "completion_tokens": 2124,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 33
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 33
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-e78be4774342",
+          "title": "The new CC, an AI agent built for families",
+          "url": "https://blog.google/innovation-and-ai/models-and-research/google-labs/cc-expanding-to-groups/",
+          "publisher": "blog.google",
+          "published_at": "2026-09-17T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 52,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "Other"
+        },
+        {
+          "id": "news-9328fa400dd3",
+          "title": "OpenAI extends cyber access to Ukraine for civilian defense",
+          "url": "https://openai.com/index/openai-extends-cyber-access-to-ukraine-for-civilian-defense",
+          "publisher": "OpenAI",
+          "published_at": "2026-09-23T13:00:00+00:00",
+          "evidence_type": "feed_excerpt",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-e9f63aa1f7aa",
+          "title": "How UK AISI and EvalEval Are Making Benchmark Results Reproducible",
+          "url": "https://huggingface.co/blog/evaleval-aisi",
+          "publisher": "Hugging Face",
+          "published_at": "2026-09-22T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "RAG"
+        }
+      ],
+      "id": "c052bb85bb4587ed"
+    },
+    {
+      "date": "2026-09-26",
+      "timezone": "America/New_York",
+      "created_at": "2026-09-26T14:59:04.983676+00:00",
+      "topic": "RAG",
+      "language": "te",
+      "concept": "Writing a useful retrieval query",
+      "news_window": "recent",
+      "source_warnings": [],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "ఉపయోగకరమైన retrieval query రాయడం: RAG లో సమాచారాన్ని సరిగా వెతకడం",
+        "summary": "RAG (Retrieval-Augmented Generation) systems లో మోడల్ నాణ్యత ఎంత ముఖ్యమైనా, retrieval జరిగే ముందు మీరు రాసే query వల్లే ఫలితాలు నిర్ణయమవుతాయి. ఈ pill లో ఒక కథ ద్వారా query రూపకల్పన (query formulation) ఎందుకు ముఖ్యమో, దాన్ని ప్రాక్టీస్‌లో ఎలా వాడాలో నేర్చుకుంటారు.",
+        "story": "కథ ఇది: లైబ్రరీ అసిస్టెంట్ లక్ష్మి చాలా నేర్పు. ఒక రోజు రెంగురు వచ్చి అన్నారు, \"ఏదైనా పుస్తకం ఇవ్వండి.\" లక్ష్మి ఏం ఇవ్వాలో తెలియక ఒక పొల్లు పుస్తకం ఇచ్చింది. రెండో వ్యక్తి అన్నారు, \"నా పిల్లల స్కూల్ ప్రాజెక్ట్ కోసం వర్షాలు ఎలా ఏర్పడతాయో చెప్పే చిన్న పిల్లల పుస్తకం కావాలి.\" లక్ష్మి వెంటనే సరైన మూడు పుస్తకాలు తీసుకువచ్చింది. మూడో వ్యక్తి అన్నారు, \"వర్షం... కానీ నా ప్రశ్న అసలు నా పట్టణంలో గత నెల వర్షపాతం గురించి.\" లక్ష్మి చిరునామా లేకుండా అది లైబ్రరీలో దొరకదని చెప్పింది — ఆ సమాచారం లైబ్రరీ కాలెక్షన్‌లో లేదు. ఇక్కడ గమనించాల్సింది: లక్ష్మి మూడు సార్లూ ఒకే విధంగా పనిచేసింది. తేడా కేవలం వచ్చిన ప్రశ్నలోనే ఉంది. మొదటి query చాలా అస్పష్టం, రెండోది స్పష్టంగా కావలసిన దాన్ని చెప్పింది, మూడోది స్పష్టంగా ఉన్నా ఆ సమాచారం కాలెక్షన్‌లో లేకపోవడంతో పనిచేయలేదు.",
+        "connection": "RAG system లో లక్ష్మి స్థానంలో retriever ఉంటుంది, లైబ్రరీ కాలెక్షన్ స్థానంలో document index ఉంటుంది. మీరు రాసే query అనేది ఆ అసిస్టెంట్‌కు ఇచ్చే అభ్యర్థనే. అసలైన RAG పరిశోధనలో — Lewis తదితరుల RAG paper (arXiv 2005.11401) మరియు REALM paper (arXiv 2002.08909) — retriever అనేది ఒక pre-trained neural retriever లేదా latent knowledge retriever, అది query ఆధారంగా భారీ corpus (ఉదా: Wikipedia యొక్క dense vector index) నుంచి passages ని ఎంచుకుంటుంది. అక్కడ మోడల్ తన ప్రశ్నను తానే query గా మార్చుకుంటుంది; మీ application లో ఆ పనిని మీరు లేదా మీ pipeline చేస్తుంది.",
+        "explanation": "సాంకేతికంగా, retrieval అంటే query ని ఒక vector గా మార్చి, index లోని document vectors తో సారూప్యత (similarity) పోల్చడం. దీని అర్థం: query లో ఉన్న పదాలు, సందర్భం, ప్రశ్న యొక్క ఉద్దేశం — ఇవన్నీ ఆ vector ని నిర్ణయిస్తాయి. అస్పష్టమైన query అస్పష్టమైన vector అవుతుంది, దగ్గరి అనిపించే కానీ పనికిరాని passages వస్తాయి. రెండు సూత్రాలు గుర్తుపెట్టుకోండి. ఒకటి: query లో కావలసిన సమాచారం యొక్క కీలక పదాలు (entities, సందర్భం, పరిమితులు) ఉండాలి — కథలో రెండో వ్యక్తి లాగా. రెండు: query అనేది index లో ఉన్న దానితో సరిపోలాలి — మూడో వ్యక్తి అడిగిన పట్టణ వర్షపాతం లైబ్రరీలో లేదు; అలాగే మీ knowledge base లో లేని సమాచారాన్ని ఎలా అడిగినా retrieval దొరకదు. RAG paper లో చెప్పినట్టు, retrieval అనేది non-parametric memory — అంటే మోడల్ parameters లో లేని, బయటి index లో ఉన్న జ్ఞానం. Query అనేది ఆ memory ని తడులు తడులు తడులు తడియే చేతి దీపం లాంటిది.",
+        "application": "ప్రాక్టికల్ వాడుక: మీరు ఒక internal docs Q&A bot నిర్మిస్తున్నారనుకోండి. యూజర్ అడిగే \"ఇది ఎలా పని చేస్తుంది?\" అనే ప్రశ్నను నేరుగా retriever కి పంపకండి. బదులుగా ఒక చిన్న step తో దాన్ని enrich చేయండి: conversation లోని సందర్భాన్ని (ఏ product, ఏ version, ఏ error message) జోడించి \"payment service v2 retry logic timeout configuration\" లాంటి స్పష్టమైన query చేయండి. అలాగే మీ documents లో ఏ భాషలో, ఏ పదాలతో సమాచారం రాసి ఉందో ఒకసారి చూసి, query ల పదాలను దానికి దగ్గరగా సరిచేయండి. ఇదే పద్ధతిని మీ టెస్ట్ సెట్‌లో వాడి, మంచి query vs చెడు query ల retrieval ఫలితాలను పోల్చి చూడవచ్చు.",
+        "exercise": "రెండు నిమిషాల వ్యాయామం: మీ ప్రాజెక్ట్‌లో ఒక సాధారణ యూజర్ ప్రశ్నను తీసుకోండి (ఉదా: \"deploy fail అవుతోంది\"). దానికి మూడు మెరుగైన query వెర్షన్లు రాయండి — ఒకటి సందర్భం జోడించి, ఒకటి కీలక పదాలతో, ఒకటి మీ docs లో నిజంగా ఉండే పదాలను వాడి. ఒక్కో వెర్షన్‌ను మీ search tool లో నడిపి, ఏ వెర్షన్ సరైన document ని ముందు చూపిస్తుందో గమనించండి.",
+        "question": "ఒక స్పష్టమైన, సరిగా రూపొందించిన query కూడా retrieval లో ఏమీ దొరకకపోతే దానికి సాధారణంగా కారణం ఏమిటి?",
+        "answer": "ఆ సమాచారం మీ index లేదా knowledge base లో అసలు లేకపోవడం — కథలో పట్టణ వర్షపాతం లైబ్రరీ కాలెక్షన్‌లో లేనట్లే. Query ఎంత బాగున్నా, index లో లేని దాన్ని retriever వెలికితీయలేదు; అలాగే query పదాలు documents లో ఉన్న పదాలకు చాలా దూరంగా ఉంటేను matching విఫలం కావచ్చు.",
+        "limits": "ఈ analogy పరిమితులు: లక్ష్మి అర్థాన్ని అర్థం చేసుకుని సందర్భాన్ని ఊహించగలదు, కానీ vector retriever కేవలం query యొక్క సారూప్యతపై ఆధారపడుతుంది — అది \"నిజంగా కావాల్సింది\" ఏమిటో తెలియదు. అలాగే ఈ కథలో ఒకే అసిస్టెంట్ ఉంది, కానీ RAG paper లో చెప్పినట్టు కొన్ని formulations లో generation లోని ఒక్కో భాగానికి వేరు వేరు passages వాడవచ్చు — అది ఒకే సారి వెతకడం కంటే క్లిష్టం. చివరగా, మంచి query రాయడం retrieval నాణ్యతకు ఒక భాగం మాత్రమే; chunking, index design, ranking వంటి అంశాలు ఇక్కడ పరిగణించలేదు.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "ఈ వారం AI వార్తలు: కుటుంబ agent, సైబర్ రక్షణ access, reproducible benchmarks",
+        "overview": "ఈ వారం మూడు అంశాలు: Google Labs కుటుంబాల కోసం రూపొందించిన CC agent expansion, OpenAI Ukraine ప్రభుత్వానికి Daybreak cyber defense program access పొడిగింపు, మరియు UK AISI - EvalEval భాగస్వామ్యం ద్వారా benchmark results ని reproducible చేయడం. ఒక్కో అంశానికీ మూలం ఏమి చెప్పిందో, ఏది publisher claim ఏది మా వివరణో విడిపించి చెబుతాము.",
+        "items": [
+          {
+            "headline": "Google Labs కుటుంబాల కోసం CC agent ని విస్తరించింది",
+            "what_happened": "Google Labs blog ప్రకారం, CC అనే experimental personal agent ని ఇప్పుడు కుటుంబాలు/households కోసం విస్తరించారు (Sep 17, 2026 ప్రచురణ). ఇది సొంత verified Google account తో, గరిష్ఠంగా ఆరుగురు సభ్యులు ఎంచుకున్న సమాచారాన్ని (స్కూల్ emails, swim center, vet లాంటివి) share చేయగలరు. Agent ఆ సమాచారాన్ని సర్ది, రోజువారీ \"Your Day Ahead\" brief ఇస్తుంది, Calendar/Tasks తో connect అవుతుంది, permission slips లేదా registration PDF లను నింపడం లాంటి పనులు యూజర్ అనుమతితో చేస్తుందని blog చెబుతోంది. ఇది U.S లో 18+ personal Google account ఉన్నవారికి web/mobile లో అందుబాటులో ఉంది; కొత్త వారు waitlist లో చేరవచ్చు. ఇది Google Labs యొక్క early experiment అని వారే స్పష్టంగా చెప్పారు.",
+            "why_it_matters": "డెవలపర్ దృష్టిలో ఇక్కడ ముఖ్యమైన design pattern ఏమిటంటే: multi-user shared context ని permissions తో నిర్వహించడం — ప్రతి సభ్యుడు ఏమి share చేయాలో స్వయంగా ఎంచుకోవడం, shared memory vs personal memory ని వేరు చేయడం. మీరు కుటుంబ calendar bot లేదా shared assistant నిర్మిస్తే, ఇది ఒక స్పష్టమైన analogy: agent ఒక సభ్యుని inbox లో పడిపోయిన సమాచారాన్ని ఇతరులకు అందుబాటులోకి తెచ్చే coordination layer లాగా పనిచేస్తుంది.",
+            "takeaway": "ఇది Google వారి స్వంత వర్ణన ఆధారిత early experiment — పరిమిత availability (U.S, 18+, waitlist) మరియు ప్రకటించిన capabilities నిజంగా ఎలా పనిచేస్తాయో ఇంకా స్వతంత్రంగా ధృవీకరించబడలేదు. ప్రయత్నించే ముందు permissions model, ఏ డేటా share అవుతుందో, weekly sender list లాంటి controls ఎలా పనిచేస్తాయో blog లోని వివరాలను జాగ్రత్తగా చదవండి.",
+            "source_ids": [
+              "news-e78be4774342"
+            ]
+          },
+          {
+            "headline": "OpenAI Ukraine ప్రభుత్వానికి Daybreak cyber defense access పొడిగించింది",
+            "what_happened": "OpenAI తన వెబ్‌సైట్‌లో ప్రకటించిన ప్రకారం (Sep 23, 2026), పౌర మౌలాధారాల (civilian infrastructure) cyber defense కోసం తన Daybreak program access ని Ukraine ప్రభుత్వానికి పొడిగిస్తోంది. అందుబాటులో ఉన్న మూలం ఒక చాలా పొట్టి feed excerpt మాత్రమే — Daybreak program లో ఖచ్చితంగా ఏమి tools/capabilities ఉన్నాయో, ఎవరు వాడతారో, ఏ పరిమితులతో ఇస్తారో ఈ excerpt లో వివరాలు లేవు.",
+            "why_it_matters": "AI systems ని సున్నితమైన ప్రభుత్వ security సందర్భాల్లో access చేయడం అనేది ఒక ముఖ్యమైన ధోరణి — ఇది ఎక్కడైతే సున్నితమైన డేటా మరియు పరిమిత access controls అవసరమో అక్కడ enterprise deployments కి ఒక ఉదాహరణ. ఒక స్పష్టమైన analogy: ఇది ఒక సాధనాన్ని అందరికీ open market లో అమ్మకపోయి, ఒక నిర్దిష్ట రక్షణ పని కోసం ఒక సంస్థకు పరిమితంగా ఇవ్వడం లాంటిది.",
+            "takeaway": "మూలం feed excerpt మాత్రమే కావడంతో మేము పూర్తి ప్రకటన చదవలేదు; program యొక్క scope, safeguards, పరిమితుల గురించి ఎటువంటి నిర్ధారణ చేయలేం. దీన్ని అంచనా వేయడానికి ముందు OpenAI యొక్క పూర్తి ప్రకటనలో access ఎవరికి, ఏ పరిస్థితుల్లో, ఏ డేటా handling నిబంధనలతో ఇస్తున్నారో తనిఖీ చేయండి.",
+            "source_ids": [
+              "news-9328fa400dd3"
+            ]
+          },
+          {
+            "headline": "UK AISI, EvalEval తో కలిసి benchmark results ని reproducible చేస్తోంది",
+            "what_happened": "Hugging Face blog (Sep 22, 2026) ప్రకారం, UK AI Security Institute (AISI) EvalEval యొక్క infrastructure వాడి evaluation results ని openly share చేస్తోంది. EvalEval యొక్క Every Eval Ever (EEE) schema మరియు Evaluation Cards platform, evaluation results ని వాటి setup/configuration వివరాలతో కలిపి ఒక సాధారణ నిర్మాణంలో పెడతాయి. AISI తన paper లోని ఐదు benchmarks (HealthBench, FrontierMath, Humanity's Last Exam, SWE-Bench Pro, Terminal-Bench 2.0) కోసం ఆరు frontier models ఫలితాలు, రెండు cyber evaluations ఫలితాలు release చేసింది. Blog లో చూపిన ఒక ఉదాహరణ: Humanity's Last Exam ఫలితాలు evaluation protocol మరియు inference-time compute మారితే మారతాయి — oracle feedback ఇచ్చినప్పుడు models ఎక్కువ token వాడి అదనపు tasks solve చేశాయి.",
+            "why_it_matters": "డెవలపర్‌గా మీరు leaderboards లేదా model cards చూసి ఎంపిక చేసుకుంటారు. ఒకే score వేరు వేరు setups లో పొందబడి ఉంటే పోల్చడం తప్పు అవుతుంది. ఇది ఒక స్పష్టమైన analogy: రెండు కార్ల mileage పోల్చడానికి ఒకదాన్ని highway లో, మరింత దాన్ని city traffic లో పరీక్షిస్తే సంఖ్యలు అర్థం కావు — setup details లేకుండా benchmark scores పోల్చడం అంతే. EEE schema లాంటి shared reporting అలవాటు వస్తే, మీ ఇంటర్నల్ evals ని కూడా ఇలా document చేయడం మంచి అలవాటు.",
+            "takeaway": "Openly released results అనేవి reference points గా ఉపయోగపడతాయి, కానీ ఇది ఒక సంస్థ యొక్క భాగస్వామ్య ప్రకటన — ప్రతి benchmark కి పూర్తి reproducibility సాధించినట్టు కాదు. ఏదైనా score ఆధారంగా నిర్ణయం తీసుకునే ముందు Evaluation Card లో evaluation protocol, compute settings, ఏ models ఏ conditions లో పరీక్షించారో తప్పనిసరిగా చూడండి.",
+            "source_ids": [
+              "news-e9f63aa1f7aa"
+            ]
+          }
+        ],
+        "exercise": "రెండు నిమిషాల source-check వ్యాయామం: మూడు వార్తా అంశాల్లో ఒకదాన్ని ఎంచుకోండి. దాని మూల text లో (i) ఇది publisher స్వయంగా claim చేస్తున్నదా లేదా స్వతంత్రంగా ధృవీకరించిన ఫలితమా, (ii) availability/scope పరిమితులు ఏమిటి, (iii) ఏ evidence_type తో ఈ అంశం మాకు అందింది (పూర్తి article excerpt నా, పొట్టి feed excerpt నా) — ఈ మూడింటినీ గుర్తించండి. మూడో అంశానికి feed excerpt మాత్రమే ఉందని గమనించి, ఆ పరిమితి వల్ల మీ నమ్మకం ఎలా మారుతుందో ఒక వాక్యంలో రాయండి.",
+        "question": "EvalEval/AISI భాగస్వామ్యం ప్రకారం, ఒకే benchmark కి వేరు వేరు నివేదికల్లో భిన్నమైన scores రావడానికి ఒక సాధారణ కారణం ఏమిటి?",
+        "answer": "Evaluation protocol మరియు inference-time compute వంటి setup తేడాలు. Blog లో చూపినట్టు, Humanity's Last Exam లో oracle correctness feedback ఇచ్చినప్పుడు models ఎక్కువ tokens వాడి అదనపు tasks solve చేశాయి — అంటే setup వివరాలు లేకుండా scores ని నేరుగా పోల్చడం తప్పు. అందుకే EEE schema, Evaluation Cards లాంటి shared reporting structures ముఖ్యం."
+      },
+      "usage": {
+        "prompt_tokens": 4142,
+        "total_tokens": 15458,
+        "completion_tokens": 11316,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 21
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 21
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-e78be4774342",
+          "title": "The new CC, an AI agent built for families",
+          "url": "https://blog.google/innovation-and-ai/models-and-research/google-labs/cc-expanding-to-groups/",
+          "publisher": "blog.google",
+          "published_at": "2026-09-17T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 52,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "Other"
+        },
+        {
+          "id": "news-9328fa400dd3",
+          "title": "OpenAI extends cyber access to Ukraine for civilian defense",
+          "url": "https://openai.com/index/openai-extends-cyber-access-to-ukraine-for-civilian-defense",
+          "publisher": "OpenAI",
+          "published_at": "2026-09-23T13:00:00+00:00",
+          "evidence_type": "feed_excerpt",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-e9f63aa1f7aa",
+          "title": "How UK AISI and EvalEval Are Making Benchmark Results Reproducible",
+          "url": "https://huggingface.co/blog/evaleval-aisi",
+          "publisher": "Hugging Face",
+          "published_at": "2026-09-22T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "RAG"
+        }
+      ],
+      "id": "c653f0fd883f0fe5"
     }
   ]
 }

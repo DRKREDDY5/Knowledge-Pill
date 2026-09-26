@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "task": "ai_headlines",
-  "checked_at": "2026-09-25T15:50:19.943329+00:00",
+  "checked_at": "2026-09-26T14:59:04.983676+00:00",
   "items": [
     {
       "id": "news-e78be4774342",
@@ -9,6 +9,13 @@
       "url": "https://blog.google/innovation-and-ai/models-and-research/google-labs/cc-expanding-to-groups/",
       "publisher": "blog.google",
       "published_at": "2026-09-17T00:00:00+00:00"
+    },
+    {
+      "id": "news-9de028fbe46c",
+      "title": "Proaction boosts sales 60% and saves 75+ hours with Codex",
+      "url": "https://openai.com/index/proaction",
+      "publisher": "OpenAI",
+      "published_at": "2026-09-25T19:00:00+00:00"
     },
     {
       "id": "news-8451e6726f36",
@@ -79,13 +86,6 @@
       "url": "https://openai.com/index/ringg",
       "publisher": "OpenAI",
       "published_at": "2026-09-23T12:00:00+00:00"
-    },
-    {
-      "id": "news-3d7b9aab56c8",
-      "title": "Introducing MentalHealthBench",
-      "url": "https://openai.com/index/introducing-mentalhealthbench",
-      "publisher": "OpenAI",
-      "published_at": "2026-09-23T10:00:00+00:00"
     }
   ]
 }
