@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "task": "daily_pills_collection",
-  "updated_at": "2026-09-26T15:01:08.503725+00:00",
+  "updated_at": "2026-09-27T15:42:04.419870+00:00",
   "packets": [
     {
       "date": "2026-09-12",
@@ -920,6 +920,278 @@
         }
       ],
       "id": "c653f0fd883f0fe5"
+    },
+    {
+      "date": "2026-09-27",
+      "timezone": "America/New_York",
+      "created_at": "2026-09-27T15:40:34.298334+00:00",
+      "topic": "RAG",
+      "language": "en",
+      "concept": "Comparing retrieved passages",
+      "news_window": "recent",
+      "source_warnings": [
+        {
+          "publisher": "Google DeepMind",
+          "reason": "ParseError"
+        }
+      ],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "Comparing Retrieved Passages in RAG",
+        "summary": "Retrieval-augmented generation (RAG) systems fetch multiple candidate passages from an external index and must decide which ones actually support an answer. Comparing retrieved passages — weighing relevance, agreement, and provenance before generating — is a core skill for building and debugging RAG pipelines. This pill uses a fictional story to make that comparison step concrete, then maps it to how RAG models condition on retrieved documents.",
+        "story": "Imagine a small-town librarian named Priya who answers questions at a reference desk. A visitor asks, \"When was the old bridge built?\" Priya pulls three index cards from the catalog. Card A says the bridge was completed in 1932. Card B, a newspaper clipping, says \"construction finished in the early 1930s.\" Card C, a tourism flyer, says 1987 — but Priya notices the flyer is about a newer pedestrian walkway, not the road bridge. She compares the cards: A is specific and from the town archive, B is consistent with A, and C is about a different structure. She answers \"1932\" and mentions the archive as her source. If A and C had disagreed without an obvious explanation, she would have said so rather than silently picking one.",
+        "connection": "Each card is a retrieved passage from a non-parametric memory (like a dense vector index of documents). Priya's comparison — checking specificity, agreement between sources, and whether a passage is actually about the asked-about entity — is exactly the judgment a RAG system must approximate when it conditions its generation on retrieved documents. Her citing the archive is provenance; her flagging the conflict is honest handling of disagreement.",
+        "explanation": "The RAG paper (Lewis et al.) describes models that combine a pre-trained seq2seq generator (parametric memory) with a dense vector index of Wikipedia accessed by a neural retriever (non-parametric memory). Two formulations are compared: one conditions on the same retrieved passages for the whole generated sequence, and the other can use different passages per token. Either way, the generator sees several passages and must effectively weigh them while producing output. The REALM paper takes a related approach: a latent knowledge retriever lets the model retrieve and attend over documents from a large corpus during pre-training, fine-tuning, and inference, and its authors highlight interpretability and modularity as benefits — you can inspect which documents the model used. Both papers report that retrieval-augmented models outperform parametric-only baselines on open-domain QA benchmarks. The practical lesson: retrieval quality and how the model uses multiple passages matter as much as generator size, and comparing passages (rather than trusting the top hit blindly) is where much of the accuracy comes from.",
+        "application": "In a production RAG system, apply this by retrieving k passages (not just one), logging which passages the generator actually cited or attended to, and adding a lightweight comparison step: check whether top passages agree on key facts, and whether each is about the right entity (Priya's card C problem). If passages conflict, either surface the conflict to the user or route to a re-ranking step. When debugging wrong answers, inspect the retrieved set first — often the failure is retrieval or passage selection, not the language model.",
+        "exercise": "Two-minute exercise: Take any question and imagine retrieving three passages: one specific and authoritative, one vague but consistent, one specific but about a related-but-different topic. Write one sentence for each saying whether you would use it, and one sentence stating your answer with its source. Notice which comparison criteria you used — specificity, agreement, topical match.",
+        "question": "In a RAG system that retrieves several passages, why is it risky to generate an answer from only the single top-ranked passage?",
+        "answer": "Because ranking is imperfect: a lower-ranked passage may be more specific, more consistent with other evidence, or actually about the right entity. Comparing passages for agreement, specificity, and topical match — and keeping provenance — reduces the chance the answer rests on a misleading or off-topic document.",
+        "limits": "The librarian analogy breaks down in an important way: Priya consciously reasons about each card, while a RAG generator's use of passages is implicit in attention weights and not guaranteed to reflect careful comparison. Also, the papers describe research benchmarks (open-domain QA over Wikipedia); real corpora are messier, and neither abstract specifies how well these mechanisms handle conflicting sources in production settings.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "Recent AI developments: family agents, cyber access, and reproducible benchmarks",
+        "overview": "Three recent items: Google Labs expands its CC agent to households, OpenAI extends a cyber-defense program to Ukraine, and UK AISI partners with EvalEval on open evaluation reporting. Each is summarized from the supplied excerpts; the OpenAI item is based on a feed excerpt only, so details are limited.",
+        "items": [
+          {
+            "headline": "Google Labs' CC agent expands to families and households",
+            "what_happened": "According to a Google Labs blog post dated September 17, 2026, CC — an experimental personal agent — is becoming a household agent. Up to six members can share selected information (such as school or vet emails) with CC, which runs on its own Google account with a permissions model. It produces a shared daily brief, adds calendar events and tasks from shared emails, and can take actions like pre-filling registration PDFs with user permission. It is available on web and mobile for users 18+ in the U.S. with a personal Google account; the post says existing users will receive upgrade emails and new users can join a waitlist.",
+            "why_it_matters": "For developers, this is a concrete example of an agent with scoped, per-user sharing controls and a distinct account identity — a pattern relevant to any multi-user assistant that must keep one person's data out of another's context. A useful analogy: it works like a shared family inbox where each member decides which senders get auto-forwarded, rather than one person granting blanket access to their email.",
+            "takeaway": "This is a vendor description of an early experiment, not an independent evaluation. Before trying it, inspect exactly what sharing is on by default (the post mentions a weekly list of new email senders you can choose to share), what actions the agent can take autonomously, and the stated availability restrictions (U.S., 18+, personal accounts).",
+            "source_ids": [
+              "news-e78be4774342"
+            ]
+          },
+          {
+            "headline": "OpenAI extends Daybreak cyber access to Ukraine for civilian defense",
+            "what_happened": "An OpenAI feed excerpt dated September 23, 2026 states that OpenAI is extending access to its Daybreak program to the Government of Ukraine to support the cyber defense of civilian infrastructure. The excerpt is brief, so the program's scope, tools included, and conditions are not detailed in the available source.",
+            "why_it_matters": "Programs granting AI tools for defensive cyber work raise practical questions for security teams: what capabilities are provided, who is authorized, and how misuse is constrained. Even at headline level, it signals that AI providers are formalizing government access channels for defensive cyber operations rather than ad hoc arrangements.",
+            "takeaway": "Because this is a feed excerpt, I have not read a full article and cannot verify details beyond the single sentence. Before drawing conclusions, inspect OpenAI's primary announcement for the program's actual scope, eligibility, and any stated usage policies or limitations.",
+            "source_ids": [
+              "news-9328fa400dd3"
+            ]
+          },
+          {
+            "headline": "UK AISI shares evaluation results via EvalEval's open infrastructure",
+            "what_happened": "A Hugging Face blog post dated September 22, 2026 describes a collaboration in which the UK AI Security Institute (AISI) uses EvalEval's infrastructure — the Every Eval Ever schema and Evaluation Cards — to publish evaluation results openly. The release includes verified results and configuration details for five benchmarks (HealthBench, FrontierMath, Humanity's Last Exam, SWE-Bench Pro, Terminal-Bench 2.0) across six frontier models, plus two cyber evaluations, accompanying an AISI paper on how inference-time compute and evaluation protocol shape benchmark performance.",
+            "why_it_matters": "For developers, this addresses a real pain point: benchmark scores are often reported without enough setup information to reproduce or compare them. The post shows that the same model's score can shift with evaluation protocol and compute budget — so when you pick a model based on a leaderboard, the setup behind the number matters as much as the number itself.",
+            "takeaway": "The limitation is coverage: this release covers specific benchmarks and models chosen by AISI, and open reporting is a growing practice, not yet a universal standard. Before trusting any benchmark figure — including these — inspect the recorded configuration (protocol, compute, prompting) and check whether the conditions match how you intend to use the model.",
+            "source_ids": [
+              "news-e9f63aa1f7aa"
+            ]
+          }
+        ],
+        "exercise": "Two-minute source-check exercise: Pick one item above and open the primary source. Identify one claim that comes from the publisher (e.g., a capability or availability statement) and one thing the source does not tell you (e.g., pricing, independent evaluation, full program scope). Write both down — this separates vendor claims from verified fact.",
+        "question": "Why does the AISI/EvalEval release matter for interpreting benchmark scores you see elsewhere?",
+        "answer": "Because it publishes results together with configuration and protocol details, showing that scores can vary with inference-time compute and evaluation setup — so a score without that context may not be comparable to, or reproducible from, other reported results."
+      },
+      "usage": {
+        "prompt_tokens": 4156,
+        "total_tokens": 6244,
+        "completion_tokens": 2088,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 28
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 28
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-e78be4774342",
+          "title": "The new CC, an AI agent built for families",
+          "url": "https://blog.google/innovation-and-ai/models-and-research/google-labs/cc-expanding-to-groups/",
+          "publisher": "blog.google",
+          "published_at": "2026-09-17T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 52,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "Other"
+        },
+        {
+          "id": "news-9328fa400dd3",
+          "title": "OpenAI extends cyber access to Ukraine for civilian defense",
+          "url": "https://openai.com/index/openai-extends-cyber-access-to-ukraine-for-civilian-defense",
+          "publisher": "OpenAI",
+          "published_at": "2026-09-23T13:00:00+00:00",
+          "evidence_type": "feed_excerpt",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-e9f63aa1f7aa",
+          "title": "How UK AISI and EvalEval Are Making Benchmark Results Reproducible",
+          "url": "https://huggingface.co/blog/evaleval-aisi",
+          "publisher": "Hugging Face",
+          "published_at": "2026-09-22T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "RAG"
+        }
+      ],
+      "id": "ccddbacc60fa4ad3"
+    },
+    {
+      "date": "2026-09-27",
+      "timezone": "America/New_York",
+      "created_at": "2026-09-27T15:40:34.298334+00:00",
+      "topic": "RAG",
+      "language": "te",
+      "concept": "Comparing retrieved passages",
+      "news_window": "recent",
+      "source_warnings": [
+        {
+          "publisher": "Google DeepMind",
+          "reason": "ParseError"
+        }
+      ],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "రిట్రీవ్ చేసిన passages ని పోల్చడం: RAG లో సమాచారాన్ని ఎంచుకోవడం",
+        "summary": "RAG systems లో retriever ఒకే ప్రశ్నకు అనేక passages ని తిరిగి ఇస్తుంది. వాటిని ఎలా పోల్చి, ఏది నమ్మదగినదో ఎంచుకోవాలో ఈ lesson వివరిస్తుంది.",
+        "story": "ఒక చిన్న పట్టణంలో లైబ్రరీ అసిస్టెంట్ అయిన లత ఒక పరిశోధకుడికి సహాయం చేస్తోంది. పరిశోధకుడు 'మన నగరంలో వర్షపాతం గత పదేళ్లలో ఎలా మారింది?' అని అడిగాడు. లత షెల్ఫ్ నుంచి ఐదు పుస్తకాలు తీసుకువచ్చింది. మొదటి పుస్తకం పాతది, డేటా పది సంవత్సరాల క్రితం ఆగిపోయింది. రెండోది ప్రభుత్వ గణాంకాల సంపుటి, కానీ నగరం కాకుండా మొత్తం జిల్లా గురించి. మూడోది వార్తాపత్రిక కథనం — రచయిత వ్యక్తిగత అభిప్రాయం ఎక్కువ. నాలుగోది నగర పాలక సంస్థ వార్షిక నివేదిక, ఇటీవలిది మరియు నగరం ప్రత్యేకంగా. ఐదోది ఒక బ్లాగ్ పేజీ, మూలం ఎవరో తెలియదు. లత అన్నింటినీ పక్కపక్కన పెట్టి పోల్చి చూసింది: ఏ పుస్తకం ఇటీవలిది? ఏది ప్రశ్నకు సరిగ్గా సంబంధించినది? ఏ మూలం నమ్మదగినది? వేర్వేరు పుస్తకాల్లో సంఖ్యలు విభేదిస్తే ఏది నిజమో ఎలా తెలుసుకోవాలి? ఆమె మూసివేయకుండా, అన్ని పుస్తకాల సమాచారాన్ని కలిపి, విభేదాలను గుర్తించి, మూలాల నాణ్యత ఆధారంగా సమాధానం రూపొందించింది.",
+        "connection": "ఈ కథలో లత చేసిన పని అంటే RAG pipeline లో retrieval తర్వాత, generation కి ముందు జరిగే పోలిక దశ. Retriever అనేక passages ని తిరిగి ఇస్తుంది; వాటిని పోల్చడం ద్వారా మేము ఏ passage ఆధారంగా సమాధానం ఇవ్వాలో నిర్ణయిస్తాము.",
+        "explanation": "RAG (Retrieval-Augmented Generation) లో రెండు రకాల జ్ఞానం ఉంటుంది: model parameters లో నిలిచిన parametric memory, మరియు dense vector index వంటి non-parametric memory. Lewis et al. రాసిన RAG paper ప్రకారం, ఈ రెండింటినీ కలిపి pre-trained seq2seq model మరియు neural retriever తో Wikipedia index ని ఉపయోగించవచ్చు. అక్కడ రెండు formulations ఉన్నాయి: ఒకటి మొత్తం generated sequence అంతటా ఒకే set of retrieved passages పై ఆధారపడుతుంది; రెండోది token కి వేరు వేరు passages ని ఉపయోగించగలదు. అంటే model ప్రతి భాగాన్ని రాసేటప్పుడు ఏ passage అత్యంత సంబంధితమైనదో ఎంచుకోవచ్చు — ఇదే passages మధ్య పోలిక మరియు ఎంపిక. REALM paper దీనికి మరో కోణం చూపిస్తుంది: retrieval step ద్వారా backpropagate చేసి, retriever ని unsupervised గా pre-train చేయవచ్చు. అంటే retriever ఏ documents ని తీసుకురావాలో నేర్చుకుంటుంది. రెండు papers లోనూ ముఖ్యమైన అంశం — retrieval ఒక్కసారి జరిగి పూర్తయిన ప్రక్రియ కాదు; ఏ passages ఉపయోగపడతాయో పోల్చడం, వాటిలో సమాచారం విభేదిస్తే గుర్తించడం, మరియు సమాధానానికి provenance (మూలం) ఇవ్వగలగడం. RAG paper ప్రకారం, parametric-only models తో పోలిస్తే retrieval-augmented models ఎక్కువ specific, diverse మరియు factual భాషను ఉత్పత్తి చేస్తాయి — ఎందుకంటే సమాధానం ప్రత్యేకంగా తిరిగి పొందిన పాఠాలపై ఆధారపడుతుంది.",
+        "application": "ప్రాక్టికల్‌గా, మీ RAG app లో top-k passages తిరిగి వచ్చినప్పుడు: (1) ప్రతి passage కి relevance score, recency, మరియు source reliability ని లాగ్ చేయండి; (2) passages మధ్య విభేదాలను (ఉదా: వేర్వేరు సంఖ్యలు) గుర్తించి, model కి 'ఈ మూలాలు విభేదిస్తున్నాయి' అని స్పష్టంగా చెప్పండి; (3) సమాధానంలో ఏ passage నుంచి ఏ భాగం వచ్చిందో citations తో చూపించండి. ఇది debugging కి కూడా పనికొస్తుంది — తప్పు సమాధానం వస్తే ఏ passage వల్ల వచ్చిందో వెంటనే కనుక్కోవచ్చు.",
+        "exercise": "రెండు నిమిషాల వ్యాయామం: ఒక ప్రశ్నను ఎంచుకోండి (ఉదా: 'మా product లో refund policy ఏమిటి?'). దానికి రెండు వేర్వేరు మూలాలు ఊహించి రాయండి — ఒకటి పాత FAQ పేజీ, ఒకటి ఇటీవలి అప్డేట్ చేసిన policy doc. ఇప్పుడు మూడు ప్రమాణాలను రాయండి: recency, relevance, reliability. ఏ మూలం గెలుస్తుందో, ఎందుకో ఒక వాక్యంలో రాయండి. ఇదే పోలికను మీ RAG system లో prompt లేదా reranker ద్వారా encode చేయవచ్చు.",
+        "question": "RAG paper లో వివరించిన రెండు formulations లో, token-by-token వేర్వేరు passages ని ఉపయోగించే approach ఎందుకు ఉపయోగకరంగా ఉంటుంది?",
+        "answer": "ఒక సమాధానంలోని వివిధ భాగాలకు వివిధ passages సంబంధితం కావచ్చు. ప్రతి token కి సరైన passage ని ఎంచుకోగలిగితే, model ఒకే fixed passage set పై ఆధారపడకుండా, ప్రతి భాగానికి అత్యంత సంబంధిత సమాచారాన్ని ఉపయోగించగలదు — ఇది multi-hop లేదా బహుముఖ ప్రశ్నలకు సహాయపడుతుంది.",
+        "limits": "ఈ analogy పరిమితులు: లత పుస్తకాల నాణ్యతను స్పృశించి, సహేతుకతతో తీర్పు ఇవ్వగలదు. కానీ neural retriever లో 'relevance' అంటే embedding similarity — అది నాణ్యత లేదా నమ్మకస్థాయిని అర్థం చేసుకోదు. అలాగే RAG లో పోలిక స్పష్టమైన ఒకే దశ కాకపోవచ్చు; అది model లోపల attention ద్వారా implicit గా జరుగుతుంది, మరియు మనం చూడలేము. Provenance ఇవ్వడం సులభం కాదు — RAG paper కూడా దీన్ని open research problem గా పేర్కొంది.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "ఈ వారం AI వార్తలు",
+        "overview": "మూడు అంశాలు: Google Labs కుటుంబాల కోసం CC agent, OpenAI Ukraine cyber defense access, మరియు UK AISI-EvalEval benchmark reproducibility సహకారం.",
+        "items": [
+          {
+            "headline": "Google Labs, కుటుంబాల కోసం రూపొందించిన CC agent ని విస్తరించింది",
+            "what_happened": "Google Labs blog ప్రకారం (Sep 17, 2026), CC అనే experimental agent ఇప్పుడు కుటుంబాల కోసం రూపొందించబడింది. గరిష్ఠంగా ఆరుగురు సభ్యులు సమాచారాన్ని share చేయగలరు; agent ఇమెయిల్స్ నుంచి సమాచారాన్ని సేకరించి రోజువారీ brief ఇస్తుంది, Calendar మరియు Tasks తో connect అవుతుంది, permission slips వంటి PDF forms నింపడం వంటి పనులు చేస్తుంది. CC కి స్వంత verified Google account ఉంది; ప్రతి సభ్యుడు ఏమి share చేయాలో ఎంచుకోవచ్చు. ఇది Google Labs కు చెందిన early experiment; U.S లో 18+ వ్యక్తిగత Google account ఉన్నవారికి మాత్రమే అందుబాటులో ఉంది.",
+            "why_it_matters": "డెవలపర్ల దృష్టిలో ముఖ్యమైన అంశం — permissions model: agent కి స్వంత identity ఇచ్చి, ప్రతి వినియోగదారు ఏమి share చేయాలో నియంత్రించే విధానం. ఇది multi-user agent design కి ఒక ఉదాహరణ. Analogy గా: ఇది ఒక shared family notebook లాంటిది — ప్రతి సభ్యుడు తన పేజీలను మాత్రమే అందిస్తారు, కానీ notebook మొత్తం సమాచారంతో పని చేస్తుంది.",
+            "takeaway": "ఇది Google Labs చేత ప్రచురించబడిన ప్రయోగాత్మక ప్రకటన — స్వతంత్ర పరీక్ష లేదు. దీన్ని try చేసే ముందు: మీ ప్రాంతంలో availability, ఏ డేటా share అవుతుందో, మరియు agent ఏ actions కి permission అడుగుతుందో అనే వివరాలను blog లో స్వయంగా చూడండి.",
+            "source_ids": [
+              "news-e78be4774342"
+            ]
+          },
+          {
+            "headline": "OpenAI, Ukraine పౌర మౌలిక సదుపాయాల cyber defense కోసం Daybreak access విస్తరించింది",
+            "what_happened": "OpenAI ప్రకటన (Sep 23, 2026) ప్రకారం, Daybreak అనే program కి Ukraine ప్రభుత్వానికి access ఇవ్వడం జరిగింది — పౌర మౌలిక సదుపాయాల cyber defense కోసం. అందుబాటులో ఉన్న మూలం ఒక feed excerpt మాత్రమే, కాబట్టి program యొక్క వివరాలు, పరిమితులు లేదా ఏ tools అందుబాటులో ఉన్నాయో ఈ సారాంశం నుంచి చెప్పలేము.",
+            "why_it_matters": "AI companies భద్రతా సందర్భాల్లో ప్రభుత్వాలకు access ఇవ్వడం అనేది ఎలాంటి పరిమితులు, safeguards తో జరుగుతుందో అర్థం చేసుకోవడానికి ఇది ఒక సందర్భం. Cyber defense వంటి సున్నితమైన రంగాల్లో access policies ఎలా రూపొందిస్తారో గమనించడం దేశీయ విధానాలకు కూడా ఉపయోగపడుతుంది.",
+            "takeaway": "మూలం feed excerpt మాత్రమే — పూర్తి ప్రకటన చదివి ఉన్నట్టు భావించకూడదు. Try లేదా విశ్లేషణ ముందు: ప్రాథమిక ప్రకటనలో program పరిధి, ఏ సాంకేతికత access అవుతుందో, మరియు ఏ పరిమితులు విధించారో తనిఖీ చేయండి.",
+            "source_ids": [
+              "news-9328fa400dd3"
+            ]
+          },
+          {
+            "headline": "UK AISI మరియు EvalEval, benchmark ఫలితాలను reproducible చేయడానికి కలిసి పనిచేస్తున్నాయి",
+            "what_happened": "Hugging Face blog (Sep 22, 2026) ప్రకారం, UK AI Security Institute (AISI) EvalEval మౌలిక సదుపాయాన్ని ఉపయోగించి evaluation ఫలితాలను బహిరంగంగా share చేస్తోంది. Every Eval Ever (EEE) schema మరియు Evaluation Cards ద్వారా, AISI HealthBench, FrontierMath, Humanity's Last Exam, SWE-Bench Pro, Terminal-Bench 2.0 వంటి benchmarks పై ఆరు frontier models కి verified results, context, configuration సమాచారాన్ని ప్రచురించింది. Blog లో ఒక ముఖ్యమైన అంశం: benchmark performance inference-time compute మరియు evaluation protocol పై ఆధారపడి మారుతుంది — అంటే ఒకే model కి వేర్వేరు setups లో వేర్వేరు స్కోర్లు రావచ్చు.",
+            "why_it_matters": "RAG లో retrieved passages ని పోల్చడం వల్ల సమాధానం నాణ్యత తెలుస్తుంది; అలాగే evaluation ఫలితాలను పోల్చడానికి setup వివరాలు అవసరం. మీరు ఒక benchmark స్కోర్ చూసి model ఎంచుకుంటున్నట్టయితే, ఆ స్కోర్ ఏ పరిస్థితుల్లో వచ్చిందో తెలియకపోతే తప్పు నిర్ణయం అవుతుంది. Evaluation Cards ఆ setup వివరాలను ఒకే చోట ఇస్తాయి.",
+            "takeaway": "ఇది ప్రామాణికీకరణ మౌలిక సదుపాయం — ఏదైనా universal breakthrough కాదు; ఇంకా చాలా evaluation reports లో setup వివరాలు లోపిస్తున్నాయి. ఏదైనా benchmark స్కోర్ చూసే ముందు: evaluation protocol, token budget, మరియు feedback conditions వంటి configuration వివరాలు అందుబాటులో ఉన్నాయో లేదో తనిఖీ చేయండి.",
+            "source_ids": [
+              "news-e9f63aa1f7aa"
+            ]
+          }
+        ],
+        "exercise": "రెండు నిమిషాల వ్యాయామం: మీరు ఇటీవల చూసిన ఏదైనా model benchmark స్కోర్ గుర్తుకు తెచ్చుకోండి. ఈ మూడు ప్రశ్నలు అడిగి చూడండి: (1) ఆ స్కోర్ ఏ evaluation protocol లో వచ్చింది? (2) inference-time compute పరిమితి ఏమిటి? (3) అదే model కి వేరే setup లో ఫలితాలు ఉన్నాయా? వీటికి సమాధానం లేకపోతే, ఆ స్కోర్ ని ఎంత వరకు నమ్మవచ్చో తిరిగి ఆలోచించండి.",
+        "question": "AISI ప్రచురించిన ఫలితాల ప్రకారం, ఒకే benchmark పై వేర్వేరు స్కోర్లు ఎందుకు రావచ్చు?",
+        "answer": "Benchmark performance inference-time compute మరియు evaluation protocol పై ఆధారపడి మారుతుంది. ఉదాహరణకు, blog లో పేర్కొన్నట్టు, ప్రతి attempt తర్వాత correctness feedback ఇస్తే models ఎక్కువ token usage తో అదనపు tasks solve చేశాయి. కాబట్టి setup వివరాలు లేకుండా స్కోర్లను నేరుగా పోల్చకూడదు."
+      },
+      "usage": {
+        "prompt_tokens": 4156,
+        "total_tokens": 14172,
+        "completion_tokens": 10016,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 30
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 30
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-e78be4774342",
+          "title": "The new CC, an AI agent built for families",
+          "url": "https://blog.google/innovation-and-ai/models-and-research/google-labs/cc-expanding-to-groups/",
+          "publisher": "blog.google",
+          "published_at": "2026-09-17T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 52,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "Other"
+        },
+        {
+          "id": "news-9328fa400dd3",
+          "title": "OpenAI extends cyber access to Ukraine for civilian defense",
+          "url": "https://openai.com/index/openai-extends-cyber-access-to-ukraine-for-civilian-defense",
+          "publisher": "OpenAI",
+          "published_at": "2026-09-23T13:00:00+00:00",
+          "evidence_type": "feed_excerpt",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-e9f63aa1f7aa",
+          "title": "How UK AISI and EvalEval Are Making Benchmark Results Reproducible",
+          "url": "https://huggingface.co/blog/evaleval-aisi",
+          "publisher": "Hugging Face",
+          "published_at": "2026-09-22T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "RAG"
+        }
+      ],
+      "id": "4f8b566910eb9afe"
     }
   ]
 }
