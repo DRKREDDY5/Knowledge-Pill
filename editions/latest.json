@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "task": "daily_pills_collection",
-  "updated_at": "2026-09-27T15:42:04.419870+00:00",
+  "updated_at": "2026-09-28T18:39:34.744966+00:00",
   "packets": [
     {
       "date": "2026-09-12",
@@ -1192,6 +1192,278 @@
         }
       ],
       "id": "4f8b566910eb9afe"
+    },
+    {
+      "date": "2026-09-28",
+      "timezone": "America/New_York",
+      "created_at": "2026-09-28T18:37:11.557416+00:00",
+      "topic": "RAG",
+      "language": "en",
+      "concept": "Knowing when evidence is missing",
+      "news_window": "recent",
+      "source_warnings": [
+        {
+          "publisher": "Google DeepMind",
+          "reason": "ParseError"
+        }
+      ],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "Knowing When Evidence Is Missing: The RAG Skill Nobody Teaches",
+        "summary": "Retrieval-augmented generation (RAG) grounds a language model in documents fetched at query time, but retrieval can fail silently: the corpus may simply not contain the answer. This pill teaches you to recognize when evidence is missing, why models tend to answer anyway, and how to design systems that say 'I don't know' instead of guessing.",
+        "story": "Imagine a librarian named Priya. A visitor asks, 'What time does the harbor tour leave on Tuesdays in winter?' Priya searches her catalog and finds three brochures: one about summer schedules, one about the harbor's history, and one about a different tour company. She could pick the summer brochure and answer confidently — the visitor would probably never check. Or she could say, 'I found summer schedules and general history, but nothing about winter Tuesday times. Let me check with the tour office.' Priya's skill isn't searching; it's noticing that her search came up empty in a specific way. She knows what an answer would look like, so she can tell when she hasn't found one. A less careful librarian would blend the summer schedule with a guess about winter and produce something plausible and wrong.",
+        "connection": "In RAG, the model is the librarian and the vector index is the catalog. The original RAG paper (Lewis et al.) describes combining a pre-trained seq2seq model (parametric memory) with a dense vector index of documents (non-parametric memory) accessed through a neural retriever. REALM takes a similar approach, adding a latent knowledge retriever to language model pre-training so the model can attend over documents from a large corpus. Both papers motivate retrieval the same way: knowledge stored only in model parameters is hard to update, hard to trace, and imprecise on knowledge-intensive tasks. But neither retrieval mechanism guarantees the corpus contains the answer. The retriever always returns the nearest neighbors — even when the true answer is nowhere in the index.",
+        "explanation": "This creates the core failure mode: retrieval never returns 'nothing,' it returns 'closest.' A query about a fact absent from your corpus still yields top-k chunks, and the generator, conditioned on those chunks plus its parametric knowledge, will usually produce a fluent answer. Distinguishing 'the answer is in chunk 3' from 'chunk 3 is merely the least irrelevant thing I found' requires deliberate design. Practical signals include: low similarity scores across all retrieved chunks, retrieved documents that are topically related but don't address the specific question, the generator hedging or contradicting the sources, and answers that cite no specific passage. Evaluation matters too — the RAG paper reports gains on open-domain QA benchmarks where Wikipedia plausibly contains answers; your internal corpus may not share that coverage, so benchmark success says little about your gap rate.",
+        "application": "In a support-chatbot over product documentation, add a two-stage check: after retrieval, require a minimum similarity threshold and have the generator first state which passage supports each claim before answering. If no passage supports the core claim, route to a human or a fallback message. Log every 'no evidence' event — clusters of them reveal corpus gaps worth fixing, which is often higher-value than tuning the model.",
+        "exercise": "Take any RAG demo you can access (or imagine one). Write three questions: one the corpus definitely answers, one it partially answers, and one it cannot answer at all. For each, predict what the retriever will return and what a naive system would say. Two minutes: sketch what a 'missing evidence' detector would check for the third question — score thresholds, support-checking, or refusal wording.",
+        "question": "Why does a RAG system rarely return 'no results,' and what does that imply for detecting missing evidence?",
+        "answer": "Because a dense retriever always returns the top-k nearest chunks, even when none contain the answer. So 'empty retrieval' never happens; you must detect missingness indirectly — via low similarity scores, lack of passage-level support for the generated claims, or hedged answers — rather than relying on the retriever to signal failure.",
+        "limits": "The librarian analogy understates the problem: Priya knows what a complete catalog looks like, but a RAG system has no ground-truth inventory of what its corpus should contain. Similarity scores are also unreliable — a paraphrase of the question can score high while answering something else, and thresholds vary by embedding model and query type. Treat any single signal as a heuristic, not proof.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "Recent developments: a family agent, cyber access for Ukraine, and reproducible benchmarks",
+        "overview": "Three recent items: Google Labs expands its CC agent to households, OpenAI extends a cyber-defense program to Ukraine (reported only via a brief feed excerpt), and UK AISI partners with EvalEval to publish reproducible evaluation results. Each connects loosely to grounding and evidence: what an agent can see, what access it gets, and how claims about model performance are documented.",
+        "items": [
+          {
+            "headline": "Google Labs' CC agent expands to families with shared accounts and permissions",
+            "what_happened": "According to a Google Labs blog post dated September 17, 2026, CC — an experimental personal agent — is becoming a household agent. It runs on its own Google account, supports up to six members, and only sees what each member chooses to share, such as school or vet emails. It produces a shared daily brief, connects to Calendar and Tasks, and can take actions like pre-filling PDF forms with permission. Google says each CC instance runs on an isolated cloud computer using its agentic harness, Antigravity, and Gemini models. It is available to users 18+ in the U.S. with a personal Google account.",
+            "why_it_matters": "This is a concrete example of permission-scoped context sharing — the same problem RAG developers face when grounding an agent in user data. CC's model of per-member sharing and a weekly list of new email senders is essentially a human-in-the-loop ingestion filter: deciding what enters the agent's context before retrieval ever happens. A developer building a multi-tenant assistant can study this as a productized pattern for scoping what a shared agent may retrieve and act on.",
+            "takeaway": "This is a vendor description of an early experiment, not an independent assessment. Before trying it, inspect exactly what defaults to shared (the 'auto cc' sender list), how the agent's own account is permissioned, and what 'isolated cloud computer' means for data retention — none of which can be verified from the blog post alone.",
+            "source_ids": [
+              "news-e78be4774342"
+            ]
+          },
+          {
+            "headline": "OpenAI extends Daybreak cyber access to Ukraine for civilian defense",
+            "what_happened": "An OpenAI feed excerpt dated September 23, 2026 states that OpenAI is extending access to its Daybreak program to the Government of Ukraine to support cyber defense of civilian infrastructure. The excerpt is a single summary sentence; this analysis is based only on that excerpt, not the full article.",
+            "why_it_matters": "If accurate as described, it signals AI providers granting state-level access to cyber-defense tooling for civilian infrastructure protection — a notable shift in who gets advanced AI capabilities for security work. For developers, it's a reminder that access policies and safety tiers, not just model quality, determine what real-world systems can be built.",
+            "takeaway": "Because the source is a feed excerpt, key details are unknown: what Daybreak actually provides, what safeguards apply, and how eligibility is verified. Do not treat this summary as a full account — read the primary OpenAI page and any independent reporting before drawing conclusions or citing it.",
+            "source_ids": [
+              "news-9328fa400dd3"
+            ]
+          },
+          {
+            "headline": "UK AISI publishes verified benchmark results via EvalEval's Evaluation Cards",
+            "what_happened": "A Hugging Face blog post (September 22, 2026) describes a collaboration in which the UK AI Security Institute shares evaluation methods and verified results through EvalEval's Evaluation Cards, using the Every Eval Ever reporting schema. The release covers five benchmarks — including HealthBench, Humanity's Last Exam, SWE-Bench Pro, and Terminal-Bench 2.0 — across six frontier models, alongside AISI's paper on how inference-time compute and evaluation protocol shape benchmark scores.",
+            "why_it_matters": "For anyone comparing models, this attacks a real pain point: identical-looking scores can come from meaningfully different setups (attempt budgets, feedback, compute). Evaluation Cards bundle results with configuration context, so a team choosing a model for a RAG pipeline can check whether a benchmark's protocol resembles their own conditions instead of trusting a leaderboard number.",
+            "takeaway": "Open reporting improves comparability but doesn't eliminate disagreement about which conditions matter. Before citing any of these results, inspect the Evaluation Card for the exact protocol — inference compute, feedback, and attempt limits — and confirm the benchmark's setup matches your use case.",
+            "source_ids": [
+              "news-e9f63aa1f7aa"
+            ]
+          }
+        ],
+        "exercise": "Pick one of the three items. In two minutes, list three questions you would need answered before relying on the claim — e.g., for the AISI release: which evaluation-protocol fields are documented per benchmark, and do the published configurations match how you would run the benchmark?",
+        "question": "Why is the OpenAI/Ukraine item flagged as weaker evidence than the other two?",
+        "answer": "Its evidence type is a feed excerpt — a single summary sentence — so the analysis is based on that excerpt rather than the full article. Details about what Daybreak provides and its safeguards are unverified here, unlike the two items where fuller article text was available for review."
+      },
+      "usage": {
+        "prompt_tokens": 4330,
+        "total_tokens": 6451,
+        "completion_tokens": 2121,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 43
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 43
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-e78be4774342",
+          "title": "The new CC, an AI agent built for families",
+          "url": "https://blog.google/innovation-and-ai/models-and-research/google-labs/cc-expanding-to-groups/",
+          "publisher": "blog.google",
+          "published_at": "2026-09-17T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 52,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "Other"
+        },
+        {
+          "id": "news-9328fa400dd3",
+          "title": "OpenAI extends cyber access to Ukraine for civilian defense",
+          "url": "https://openai.com/index/openai-extends-cyber-access-to-ukraine-for-civilian-defense",
+          "publisher": "OpenAI",
+          "published_at": "2026-09-23T13:00:00+00:00",
+          "evidence_type": "feed_excerpt",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-e9f63aa1f7aa",
+          "title": "How UK AISI and EvalEval Are Making Benchmark Results Reproducible",
+          "url": "https://huggingface.co/blog/evaleval-aisi",
+          "publisher": "Hugging Face",
+          "published_at": "2026-09-22T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "RAG"
+        }
+      ],
+      "id": "cb93ffcb36fd0915"
+    },
+    {
+      "date": "2026-09-28",
+      "timezone": "America/New_York",
+      "created_at": "2026-09-28T18:37:11.557416+00:00",
+      "topic": "RAG",
+      "language": "te",
+      "concept": "Knowing when evidence is missing",
+      "news_window": "recent",
+      "source_warnings": [
+        {
+          "publisher": "Google DeepMind",
+          "reason": "ParseError"
+        }
+      ],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "RAGలో సాక్ష్యం లేనప్పుడు గుర్తించడం: సాక్ష్యం లేకపోతే చెప్పడం నేర్చుకోవడం",
+        "summary": "RAG (Retrieval-Augmented Generation) అంటే మోడల్ తన పారామీటర్లలో దాచుకున్న జ్ఞానానికి బదులుగా బయటి డాక్యుమెంట్ ఇండెక్స్ నుంచి సమాచారాన్ని వెతికి పట్టుకుని సమాధానం చెప్పడం. ఈ పాఠం యొక్క కీలక అంశం: రిట్రీవర్ ఏమీ పట్టుకోకపోతే, లేదా పట్టుకున్న దానిలో సమాధానం లేకపోతే, సిస్టమ్ ఆ లోపాన్ని గుర్తించి 'సాక్ష్యం లేదు' అని చెప్పగలగాలి — ఊహించి చెప్పకూడదు.",
+        "story": "ఒక ఊరిలో లక్ష్మి అనే లైబ్రరీ అసిస్టెంట్ ఉంది. గ్రామస్థులు ఏదైనా ప్రశ్న అడిగితే ఆమె రెండు పనులు చేస్తుంది: ముందు తన తలలో ఉన్న జ్ఞానంతో సమాధానం చెప్పడం, లేదా అరగంట పడుతూ గ్రంథాలయంలోని పుస్తకాలలో వెతకడం. ఒక రోజు ఒక పిల్లవాడు 'మా ఊరి పంచాయితీ 1987లో ఎన్ని రూపాయలు ఖర్చు చేసిందో చెప్పు' అని అడిగాడు. లక్ష్మి అరలలో వెతికింది — పాత రికార్డులు కొన్ని దొరికాయి, కానీ ఆ ఏడాది లెక్కలు ఎక్కడా లేవు. ఇక్కడ ఆమె ఎదుర్కొన్న పరీక్ష ఇది: పిల్లవాడు ఏదో ఒక సంఖ్య చెప్పమని గట్టిగా అడుగుతున్నాడు, ఆమెకు సంవత్సరాల అనుభవం ఉంది, ఒక అంచనా వేస్తే ఎవరూ పట్టుకోరు. కానీ ఆమె చేసిన సరైన పని: 'ఈ సమాచారం మా రికార్డులలో లేదు; తహశీల్ కార్యాలయంలో చూడవచ్చు' అని చెప్పడం. మరో రోజు ఒక రైతు 'వరికి నీళ్లు ఎప్పుడు పడతాయి' అని అడిగాడు. లక్ష్మి వ్యవసాయ పుస్తకం ఒకటి తీసింది, కానీ అది మామిడి సాగు గురించి మాత్రమే రాసి ఉంది. పుస్తకం చేతిలో ఉందని సమాధానం ఉందని కాదు — ఆమె ఆ వ్యత్యాసాన్ని గుర్తించాలి. ఈ రెండు సందర్భాలు — రికార్డే లేకపోవడం, దొరికిన పుస్తకంలో సమాధానం లేకపోవడం — RAG సిస్టమ్ రోజూ ఎదుర్కొనే రెండు వైఫల్య మార్గాలు.",
+        "connection": "ఈ కథలోని భాగాలు RAG భాగాలకు ఇలా సరిపోతాయి: లక్ష్మి యొక్క తలలో ఉన్న జ్ఞానం = మోడల్ యొక్క parametric memory (ప్రీ-ట్రైన్డ్ seq2seq మోడల్). గ్రంథాలయ అరలు = non-parametric memory, అంటే డాక్యుమెంట్ల dense vector index. అరలలో వెతకడం = pre-trained neural retriever. పిల్లవాడి ప్రశ్న = user query. 'రికార్డుల్లో లేదు' అని చెప్పడం = evidence-missing detection. 'పుస్తకం దొరికింది కానీ సమాధానం లేదు' = retrieval relevance vs answer coverage మధ్య తేడా.",
+        "explanation": "RAG పేపర్ (Lewis et al.) చెప్పేది ఏమిటంటే: పెద్ద భాషా మోడల్స్ వాస్తవాలను పారామీటర్లలో దాచుకుంటాయి, కానీ ఆ జ్ఞానాన్ని ఖచ్చితంగా యాక్సెస్ చేయడం, నిర్ణయాలకు provenance (మూలం) చూపడం, కొత్త సమాచారంతో జ్ఞానాన్ని అప్‌డేట్ చేయడం — ఇవి కష్టమైన సమస్యలు. RAG దీనికి పరిష్కారం: pre-trained seq2seq మోడల్ (parametric memory) ప్లస్ Wikipedia లాంటి కార్పస్ యొక్క dense vector index (non-parametric memory), దీన్ని neural retriever తో యాక్సెస్ చేస్తారు. REALM పేపర్ ఇదే ఆలోచనను pre-training అంచులో తీసుకొచ్చింది: latent knowledge retriever ద్వారా మిలియన్ల డాక్యుమెంట్లలో retrieval step ద్వారా backpropagate చేసి, unsupervised గా retriever ని pre-train చేస్తుంది. REALM interpretability మరియు modularity లాంటి ప్రయోజనాలను పేర్కొంటుంది — మోడల్ ఏ డాక్యుమెంట్లను చూసిందో మనం చూడగలం. ఇక్కడే 'evidence missing' అనే అంశం ముఖ్యం: retrieval అనేది సమాధానం హామీ కాదు. Retriever ఎప్పుడూ టాప్-k డాక్యుమెంట్లను ఇస్తూనే ఉంటుంది — అవి సంబంధం లేనివి అయినా. కాబట్టి ప్రొడక్షన్ RAG సిస్టమ్లో రెండు తనిఖీలు అవసరం: (1) retrieval confidence — పట్టుకున్న డాక్యుమెంట్లు query కి నిజంగా సంబంధించినవేనా (similarity score, reranker), (2) answer grounding — జనరేట్ చేసిన వాక్యాలు ఆ డాక్యుమెంట్లలోని కంటెంట్ ఆధారంగానే ఉన్నాయా, లేదా మోడల్ తన parametric జ్ఞానంతో ఖాళీలను నింపుతోందా. రెండో తనిఖీ విఫలమైతే, సరైన ప్రవర్తన 'సాక్ష్యం సరిపోలేదు' అని చెప్పడం — లక్ష్మి చేసినట్టే.",
+        "application": "మీరు ఒక కంపెనీ డాక్యుమెంట్ QA సిస్టమ్ బిల్డ్ చేస్తున్నారనుకోండి. ప్రాక్టికల్ అమలు: ప్రతి query కి retriever నుంచి వచ్చే top-k స్కోర్లను లాగ్ చేయండి; టాప్ స్కోర్ ఒక threshold కంటే తక్కువ ఉంటే 'సంబంధిత డాక్యుమెంట్ కనబడలేదు' అని చెప్పండి. జనరేషన్ తర్వాత, సమాధానంలోని వాదనలు రిట్రీవ్డ్ chunks లో నిజంగా ఉన్నాయో లేదో తనిఖీ చేసే grounding check (ప్రతి వాక్యానికి మూల chunk citation ఇవ్వడం) పెట్టండి. సాక్ష్యం లేనప్పుడు మోడల్ ని అంచనా వేయకుండా 'ఇవ్వబడిన డాక్యుమెంట్లలో సమాధానం లేదు' అని చెప్పేలా prompt మరియు fallback flow రూపొందించండి. ఇది hallucination ను పూర్తిగా ఆపదు, కానీ విఫలమయ్యే చోటును ఊహిక సమాధానం నుంచి స్పష్టమైన 'తెలియదు' కి మారుస్తుంది — ఇది debugging కి, user trust కి చాలా విలువైనది.",
+        "exercise": "రెండు నిమిషాల వ్యాయామం: మీ కంప్యూటర్ ముందు కూర్చోండి, మీ ప్రాజెక్ట్ లేదా వ్యక్తిగత నోట్స్ నుంచి ఒక ప్రశ్నను కల్పించుకోండి (ఉదా: 'ఈ రిపోలో retry logic ఎక్కడ ఉంది?'). ఇప్పుడు మీరు RAG సిస్టమ్ అయితే మూడు సందర్భాలను రాయండి: (1) సరైన chunk దొరికి సమాధానం ఉంది, (2) సంబంధితం కాని chunks మాత్రమే దొరికాయి, (3) ఇండెక్స్ ఖాళీ. ప్రతి సందర్భానికి సిస్టమ్ ఏ సమాధానం ఇవ్వాలి, ఏ signal (స్కోర్, grounding check) ఆ నిర్ణయానికి ఆధారమవుతుందో ఒక్కొక్క వాక్యంలో రాయండి. మీ ప్రస్తుత లేదా ఊహించిన సిస్టమ్ ఈ మూడింటినీ వేరు చేసి చూపగలదా అని ఆలోచించండి.",
+        "question": "Retriever ఒక డాక్యుమెంట్ ను తిరిగి ఇచ్చినట్లు అంటే ఆ డాక్యుమెంట్ లో ప్రశ్నకు సమాధానం ఉందని హామీనా? ఎందుకు లేదు?",
+        "answer": "కాదు, హామీ కాదు. Retriever ఎల్లప్పుడూ top-k డాక్యుమెంట్లను ఇస్తూనే ఉంటుంది — అవి query కి కేవలం పదాల పోలిక లేదా embedding సారూప్యత ఆధారంగా వచ్చి ఉండవచ్చు, కాని ఖచ్చిత సమాధానం అందులో లేకపోవచ్చు. అందుకే retrieval relevance (డాక్యుమెంట్ సంబంధించినదా) మరియు answer grounding (సమాధానం ఆ డాక్యుమెంట్ లో నిజంగా ఉందా) రెండు విడివిడి తనిఖీలుగా అవసరం; రెండో తనిఖీ విఫలమైతే 'సాక్ష్యం లేదు' అని చెప్పడమే సరైన ప్రవర్తన.",
+        "limits": "ఈ ఉపమానం యొక్క పరిమితులు: లక్ష్మి తనకు సమాధానం తెలియదని స్పష్టంగా గ్రహించి నిర్ణయం తీసుకుంటుంది; కానీ నిజమైన మోడల్స్‌లో 'తెలియదు' అనే స్పృహ లేదు — grounding checks, thresholds, calibration లాంటి బాహ్య యంత్రాంగాలతో మనమే ఆ ప్రవర్తనను కట్టిపెట్టాలి, అవి కూడా పూర్తిగా నమ్మదగినవి కావు. అలాగే లక్ష్మి కేసులో అరలు పరిమితం; RAG ఇండెక్స్ పెద్దదైనా దాని coverage ఎల్లప్పుడూ అపూర్ణం — ఏ డాక్యుమెంట్ లేదని చెప్పడం కూడా తప్పు కావచ్చు (ఇండెక్సింగ్ లోపం వల్ల దొరకకపోవచ్చు). చివరగా, ఈ పేపర్లు Wikipedia ఆధారిత open-domain QA పై ఫలితాలు చూపాయి; మీ డొమైన్‌లో అదే ప్రవర్తన ఉంటుందని ఊహించకండి.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "ఈ వారం AI వార్తలు: కుటుంబ ఏజెంట్ నుంచి reproducible evals వరకు",
+        "overview": "ఈ వారం మూడు అంశాలు: Google Labs యొక్క కుటుంబాల కోసం CC ఏజెంట్ విస్తరణ, OpenAI యొక్క Daybreak సైబర్ ప్రోగ్రామ్ ఉక్రెయిన్‌కు విస్తరణ (పరిమిత మూల సమాచారంతో), మరియు UK AISI - EvalEval భాగస్వామ్యం ద్వారా benchmark ఫలితాలను reproducible గా పంచుకోవడం. చివరి అంశం RAG అంశంతో నేరుగా ముడిపడి ఉంటుంది: ఫలితాలతో పాటు setup వివరాలు లేకుంటే వాటిని నమ్మడం కష్టం — ఇది మన 'evidence missing' పాఠంతో సరిపోలుతుంది.",
+        "items": [
+          {
+            "headline": "Google Labs యొక్క CC ఏజెంట్ ఇప్పుడు కుటుంబాల కోసం: ఆరుగురు సభ్యుల షేర్డ్ కాంటెక్స్ట్",
+            "what_happened": "Google Labs తమ ప్రయోగాత్మక CC ఏజెంట్‌ను కుటుంబాలు/గృహాల కోసం విస్తరించినట్లు ప్రకటించింది (సెప్టెంబర్ 17, 2026 బ్లాగ్ పోస్ట్). CC కి స్వంత verified Google Account ఉంటుంది; గరిష్ఠంగా ఆరుగురు సభ్యులు దీనితో కలిసి పనిచేయవచ్చు. ప్రతి సభ్యుడు ఏమి షేర్ చేయాలో ఎంచుకుంటారు (ఉదా: పిల్లల స్కూల్ ఇమెయిల్స్, స్విమ్ సెంటర్ సమాచారం). CC ఆ షేర్ చేసిన సమాచారం నుంచి రోజువారీ 'Your Day Ahead' brief తయారు చేస్తుంది, Calendar మరియు Tasks తో కనెక్ట్ అవుతుంది, అనుమతితో permission slips లేదా registration PDF ఫారాలు నింపడం లాంటి పనులు చేస్తుంది. ఇది Gmail, Chat, Docs, Calendar లతో పనిచేస్తుంది; ప్రతి CC ఇన్‌స్టాన్స్ Google యొక్క Antigravity agentic harness పై వేరుచేసిన (isolated) క్లౌడ్ కంప్యూటర్‌లో పరుగుతుందని, latest Gemini models తో నడుస్తుందని పోస్ట్ చెబుతుంది. ఇది 18+ వయసు గల వ్యక్తిగత Google Account ఉన్న U.S. వినియోగదారులకు web మరియు mobile లలో అందుబాటులో ఉంది; కొత్త వినియోగదారులు waitlist లో చేరవచ్చు.",
+            "why_it_matters": "డెవలపర్ దృష్టిలో ఇక్కడ ముఖ్యమైన డిజైన్ అంశం పెర్మిషన్స్ మోడల్: ఒకే ఏజెంట్ బహుళ వినియోగదారుల నుంచి వచ్చే డేటాను చూసేటప్పుడు 'ఎవరు ఏమి షేర్ చేశారు' అనే ఎల్లలను ఎలా గౌరవిస్తుందనేది ఏదైనా multi-user agent కి మూల సవాలు. ఇది RAG పాఠంతో ముడుస్తుంది: ఏజెంట్ యొక్క shared memory అనేది ఒక రకమైన retrieval store — ఏ సమాచారం ఎవరికి కనబడాలో నిర్ణయించడం అనేది retrieval సమయంలో access control అవసరమవుతుంది. ఇంటి ఉపయోగ కోణంలో: పిల్లల షెడ్యూల్స్, బిల్లులు, వంట ప్లాన్లు ఒకే చోట చూడటం వంటి రోజువారీ సమన్వయ భారాన్ని తగ్గించే ప్రయత్నం ఇది.",
+            "takeaway": "ఇది Google Labs యొక్క ప్రయోగాత్మక (experimental) విడుదల — పరిపక్వ ఉత్పత్తి కాదు, మరియు ఇది ఏ విధమైన సార్వత్రిక పురోగతి కాదు. ప్రయత్నించే ముందు తనిఖీ చేయవలసినవి: మీ డేటా ఏజెంట్ యొక్క స్వంత ఖాతాలో ఎలా నిల్వ ఉంటుంది, 'షేర్ చేయకపోవడం' ఎంతవరకు పారదర్శకంగా పనిచేస్తుంది, ఫారాలు నింపే వంటి actions కి ఎలాంటి అనుమతి/లాగింగ్ ఉంది. ఈ ప్రకటనలోని ఫీచర్ వివరాలు publisher అయిన Google చెప్పినవే; స్వతంత్ర పరీవేదనలు లేవు.",
+            "source_ids": [
+              "news-e78be4774342"
+            ]
+          },
+          {
+            "headline": "OpenAI Daybreak సైబర్ ప్రోగ్రామ్ ఉక్రెయిన్ పౌర రక్షణకు విస్తరణ",
+            "what_happened": "OpenAI తమ Daybreak ప్రోగ్రామ్‌ను ఉక్రెయిన్ ప్రభుత్వానికి విస్తరిస్తున్నట్లు, పౌర మౌలిక సదుపాయాల (civilian infrastructure) సైబర్ రక్షణకు మద్దతు ఇస్తున్నట్లు ప్రకటించింది (సెప్టెంబర్ 23, 2026). అందుబాటులో ఉన్న మూల సమాచారం ఒక చాలా చిన్న feed excerpt మాత్రమే — Daybreak ప్రోగ్రామ్ ఖచ్చితంగా ఏమిటో, ఏ సామర్థ్యాలు షేర్ చేస్తున్నారో, ఏ షరతులతో ఇస్తున్నారో ఈ సారాంశంలో వివరాలు లేవు.",
+            "why_it_matters": "AI సాధనాలను జాతీయ/పౌర సైబర్ రక్షణకు అందించడం అనేది మోడల్ యాక్సెస్ విధానంలో ఒక ముఖ్యమైన నమూనా — డెవలపర్లు మరియు విధాన నిర్ణేతలు ఇలాంటి ప్రోగ్రామ్ల పరిధిని అర్థం చేసుకోవడం ముఖ్యం. ఒక స్పష్టమైన ఉపమానం: ఇది ఒక సాధన సేకరణను (toolkit) ఒక నిర్దిష్ట రక్షణ సంస్థకు అందించడం లాంటిది — సాధనం ఏమిటో, ఎవరు వాడగలరో, ఏ పరిమితులతో వాడతారో అనేవి వేర్వేరు ప్రశ్నలు. కానీ ఈ సందర్భంలో మా దగ్గర ఉన్న మూలం చాలా సంక్షిప్తం కావడంతో ఈ ప్రశ్నలకు సమాధానాలు ఇవ్వలేము — ఊహించి వివరాలు నింపడం మన పాఠం నేర్పే తప్పే.",
+            "takeaway": "ముఖ్యమైన పరిమితి: ఈ అంశం feed excerpt ఆధారంగా రాయబడింది — పూర్తి ప్రకటనను చదివినట్లు భావించకూడదు. దీన్ని పరిశోధించాలంటే OpenAI యొక్క పూర్తి ప్రకటనను చదవండి: Daybreak యొక్క ఖచ్చిత పరిధి, ఉక్రెయిన్‌కు అందించే సామర్థ్యాలు, వాడక పరిమితులు మరియు భద్రతా షరతులు ఏమిటో అక్కడే తెలుస్తుంది. సారాంశం ఒక్క వాక్యం అయినప్పుడు, అది సాక్ష్యం కాదు — సూచన మాత్రమే.",
+            "source_ids": [
+              "news-9328fa400dd3"
+            ]
+          },
+          {
+            "headline": "UK AISI మరియు EvalEval: benchmark ఫలితాలను reproducible గా పంచుకోవడం",
+            "what_happened": "Hugging Face బ్లాగ్ పోస్ట్ (సెప్టెంబర్ 22, 2026) ప్రకారం, UK AI Security Institute (AISI) EvalEval కోఆలిషన్ యొక్క ఇన్‌ఫ్రాస్ట్రక్చర్‌ను ఉపయోగించి తమ evaluation ఫలితాలను బహిరంగంగా పంచుకోవడం ప్రారంభించింది. EvalEval యొక్క రెండు ప్రధాన ప్రాజెక్టులు: Every Eval Ever (EEE) అనే షేర్డ్ reporting schema, మరియు Evaluation Cards అనే ఓపెన్ ప్లాట్‌ఫారం — benchmark metadata, evaluation-run data, model metadata ని ఒక నిర్మాణంలో కలిపి చూపే రికార్డులు. ఈ విడుదలలో AISI తమ పేపర్ (How Inference Compute Shapes Frontier LLM Evaluation) లోని ఐదు benchmarks — HealthBench, FrontierMath, Humanity's Last Exam, SWE-Bench Pro, Terminal-Bench 2.0 — కోసం verified ఫలితాలు, context, configuration సమాచారాన్ని ప్రచురించింది; ఇందులో Claude Opus 4, 4.5, 4.6, GPT-5, GPT-5.2, GPT-5.4 అనే ఆరు frontier models ఫలితాలు, అలాగే రెండు cyber evaluations ఫలితాలు ఉన్నాయి. పోస్ట్ చెబుతున్న ముఖ్యమైన పరిశోధన: benchmark పనితీవు inference-time compute మరియు evaluation protocol మార్చడంతో మారుతుంది — ఉదాహరణకు Humanity's Last Exam లో, ప్రతి ప్రయత్నం తర్వాత oracle నుంచి correctness feedback అందితే, token వినియోగం పెరిగే కొద్దీ మోడల్స్ అదనపు tasks పరిష్కరించాయి.",
+            "why_it_matters": "ఇది ఈ వారపు పాఠంతో నేరుగా ముడుస్తుంది: 'apparently similar scores can be produced under meaningfully different conditions' — అంటే ఒకే benchmark స్కోరు వేర్వేరు setup లలో వేర్వేరు అర్థాలు ఇవ్వవచ్చు. RAG సిస్టమ్లను అంచనా వేసేటప్పుడు కూడా ఇదే సూత్రం వర్తిస్తుంది: retrieval కి ఎన్ని documents, ఏ threshold, ఏ prompt — ఇవి లేకుండా చెప్పే స్కోరు పోలిక కాదు. రోజువారీ ఉపయోగం: మీరు ఒక మోడల్ లేదా RAG pipeline ఎంచుకునేటప్పుడు, leaderboard స్క్రీన్‌షాట్ చూసి నిర్ణయం తీసుకోకూడదు; setup వివరాలతో కూడిన evaluation రికార్డు చూడాలి. Evaluation Cards లాంటి నిర్మాణాలు eval ను 'leaderboard screenshot' నుంచి 'contract' గా మారుస్తాయి.",
+            "takeaway": "పరిమితి: ఈ విడుదల AISI యొక్క ఒక పేపర్‌లోని ప్రయోగాలకు సంబంధించినది — ఇది అన్ని benchmarks, అన్ని మోడల్స్‌ను కవర్ చేయదు, మరియు EEE schema వాడకం ఇంకా ప్రారంభ దశలోనే ఉంది. ప్రయత్నించే ముందు తనిఖీ చేయండి: Evaluation Cards లో మీకు సంబంధించిన benchmark ఉందా, configuration fields (seed, tool access, attempt budget, oracle feedback) నింపబడ్డాయా, లేదా ఖాళీగా ఉన్నాయా. ఖాళీ field ను 'default అనుకోవాలి' కాదు, 'ఆ delta ను cite చేయవద్దు' అని పరిగణించడమే సరైన వైఖరి.",
+            "source_ids": [
+              "news-e9f63aa1f7aa"
+            ]
+          }
+        ],
+        "exercise": "రెండు నిమిషాల source-check వ్యాయామం: పై మూడు అంశాలలో ప్రతి దానికి ఒక ప్రశ్న అడగండి — 'ఈ వాదనకు సాక్ష్యం ఏమిటి?' (1) CC ఏజెంట్ కోసం: ఇది publisher (Google) చెప్పిన వివరణ మాత్రమేనా, స్వతంత్ర సమీక్షలు ఉన్నాయా? (2) OpenAI Daybreak కోసం: మా దగ్గర ఉన్నది feed excerpt మాత్రమే — పూర్తి ప్రకటన చదవకుండా ఏ వివరాలు చెప్పలేము, అని జాబితా చేయండి. (3) EvalEval కోసం: AISI విడుదల చేసిన benchmarks జాబితాలో మీ పనికి సంబంధించినది ఉందా, configuration వివరాలు చూడటానికి Evaluation Cards తెరవగలరా? ఈ మూడు ప్రశ్నలు ఒక్కొక్కటి 'సాక్ష్యం లేదు' అనే పాఠం యొక్క వేర్వేరు రూపాలను చూపుతాయి: publisher claim, అపరిపూర్ణ సాక్ష్యం, మరియు setup-ఆధారిత ఫలితాలు.",
+        "question": "OpenAI Daybreak అంశం విషయంలో, మా దగ్గర ఉన్న మూలం evidence_type 'feed_excerpt' అయి ఉండటం వల్ల మనం ఏమి చెప్పగలం, ఏమి చెప్పకూడదు?",
+        "answer": "చెప్పగలం: OpenAI తమ Daybreak ప్రోగ్రామ్‌ను ఉక్రెయిన్ ప్రభుత్వానికి, పౌర మౌలిక సదుపాయాల సైబర్ రక్షణ కోసం విస్తరిస్తున్నట్లు ప్రకటించిందని — అంటే ప్రకటన జరిగిందనే వాదన (attribution) ఉంది. చెప్పకూడదు: Daybreak ప్రోగ్రామ్ వివరాలు, అందించే సామర్థ్యాలు, షరతులు, లేదా దీని ప్రభావం గురించి ఏమీ — ఎందుకంటే మేము పూర్తి ప్రకటన చదవలేదు, చిన్న సారాంశం మాత్రమే చూశాము. Attribution స్వతంత్ర ధృవీకరణ కాదు; సాక్ష్యం యొక్క పరిధిని గుర్తించడమే ఈ పాఠం యొక్క సారాంశం."
+      },
+      "usage": {
+        "prompt_tokens": 4330,
+        "total_tokens": 21528,
+        "completion_tokens": 17198,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 30
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 30
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-e78be4774342",
+          "title": "The new CC, an AI agent built for families",
+          "url": "https://blog.google/innovation-and-ai/models-and-research/google-labs/cc-expanding-to-groups/",
+          "publisher": "blog.google",
+          "published_at": "2026-09-17T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 52,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "Other"
+        },
+        {
+          "id": "news-9328fa400dd3",
+          "title": "OpenAI extends cyber access to Ukraine for civilian defense",
+          "url": "https://openai.com/index/openai-extends-cyber-access-to-ukraine-for-civilian-defense",
+          "publisher": "OpenAI",
+          "published_at": "2026-09-23T13:00:00+00:00",
+          "evidence_type": "feed_excerpt",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-e9f63aa1f7aa",
+          "title": "How UK AISI and EvalEval Are Making Benchmark Results Reproducible",
+          "url": "https://huggingface.co/blog/evaleval-aisi",
+          "publisher": "Hugging Face",
+          "published_at": "2026-09-22T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "RAG"
+        }
+      ],
+      "id": "089ae45c05525062"
     }
   ]
 }
