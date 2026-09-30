@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "task": "ai_headlines",
-  "checked_at": "2026-09-29T16:54:18.528292+00:00",
+  "checked_at": "2026-09-30T16:50:26.121097+00:00",
   "items": [
     {
       "id": "news-e78be4774342",
@@ -11,16 +11,65 @@
       "published_at": "2026-09-17T00:00:00+00:00"
     },
     {
-      "id": "news-50d71cd52400",
-      "title": "How we will do better for Australia",
-      "url": "https://openai.com/index/how-we-will-do-better-for-australia",
+      "id": "news-c696e8b1f342",
+      "title": "Introducing SynthID Bio",
+      "url": "https://deepmind.google/blog/introducing-synthid-bio/",
+      "publisher": "Google DeepMind",
+      "published_at": "2026-09-30T15:03:07+00:00"
+    },
+    {
+      "id": "news-061338e668ed",
+      "title": "Helping small businesses put AI to work",
+      "url": "https://openai.com/index/helping-small-businesses-put-ai-to-work",
       "publisher": "OpenAI",
-      "published_at": "2026-09-28T19:00:00+00:00"
+      "published_at": "2026-09-30T10:00:00+00:00"
+    },
+    {
+      "id": "news-74c2ff7e2707",
+      "title": "Open TTS Leaderboard: Scalable Evaluation for Multilingual Text-to-Speech and Voice Cloning",
+      "url": "https://huggingface.co/blog/open-tts-leaderboard",
+      "publisher": "Hugging Face",
+      "published_at": "2026-09-30T00:00:00+00:00"
+    },
+    {
+      "id": "news-5cc8f180d7d2",
+      "title": "How Diffusion Controller unifies and simplifies AI image generation",
+      "url": "https://research.google/blog/how-diffusion-controller-unifies-and-simplifies-ai-image-generation/",
+      "publisher": "Google Research",
+      "published_at": "2026-09-29T18:38:27+00:00"
+    },
+    {
+      "id": "news-6071f63e21f6",
+      "title": "DevDay 2026 Recap",
+      "url": "https://openai.com/index/devday-2026-recap",
+      "publisher": "OpenAI",
+      "published_at": "2026-09-29T10:00:00+00:00"
+    },
+    {
+      "id": "news-d6b9f5e651b1",
+      "title": "Introducing GPT-6.1 Sol",
+      "url": "https://openai.com/index/introducing-gpt-6-1-sol",
+      "publisher": "OpenAI",
+      "published_at": "2026-09-29T10:00:00+00:00"
+    },
+    {
+      "id": "news-dec620cb7225",
+      "title": "Introducing dots",
+      "url": "https://openai.com/index/introducing-dots",
+      "publisher": "OpenAI",
+      "published_at": "2026-09-29T00:00:00+00:00"
     },
     {
       "id": "news-2fc54b690d7b",
       "title": "Towards safety cases for frontier AI training",
       "url": "https://openai.com/index/towards-safety-cases-for-frontier-ai-training",
+      "publisher": "OpenAI",
+      "published_at": "2026-09-28T19:00:00+00:00"
+    },
+    {
+      "id": "news-50d71cd52400",
+      "title": "How we will do better for Australia",
+      "url": "https://openai.com/index/how-we-will-do-better-for-australia",
       "publisher": "OpenAI",
       "published_at": "2026-09-28T19:00:00+00:00"
     },
@@ -32,60 +81,11 @@
       "published_at": "2026-09-28T07:00:00+00:00"
     },
     {
-      "id": "news-833e9419a34f",
-      "title": "Are you a Codex Original?",
-      "url": "https://openai.com/form/codex-originals",
-      "publisher": "OpenAI",
-      "published_at": "2026-09-28T00:00:00+00:00"
-    },
-    {
       "id": "news-eb674100bb68",
       "title": "Basis completes a tax workbook 2x faster with GPT-6 Astra",
       "url": "https://openai.com/index/basis-tax-workbook-with-astra",
       "publisher": "OpenAI",
       "published_at": "2026-09-28T00:00:00+00:00"
-    },
-    {
-      "id": "news-9de028fbe46c",
-      "title": "Proaction boosts sales 60% and saves 75+ hours with Codex",
-      "url": "https://openai.com/index/proaction",
-      "publisher": "OpenAI",
-      "published_at": "2026-09-25T19:00:00+00:00"
-    },
-    {
-      "id": "news-8451e6726f36",
-      "title": "Automating coherent long-form video generation",
-      "url": "https://research.google/blog/coherent-long-form-video-generation/",
-      "publisher": "Google Research",
-      "published_at": "2026-09-24T19:40:00+00:00"
-    },
-    {
-      "id": "news-34692efacd3b",
-      "title": "Introducing Gemini 3.8 Live with Live Avatar",
-      "url": "https://deepmind.google/blog/introducing-gemini-38-live-with-live-avatar/",
-      "publisher": "Google DeepMind",
-      "published_at": "2026-09-24T16:20:39+00:00"
-    },
-    {
-      "id": "news-68ead6b6af2b",
-      "title": "Advancing Private AI Compute with secure, server-side memory",
-      "url": "https://deepmind.google/blog/advancing-private-ai-compute-with-secure-server-side-memory/",
-      "publisher": "Google DeepMind",
-      "published_at": "2026-09-23T16:00:57+00:00"
-    },
-    {
-      "id": "news-52e46e8371e1",
-      "title": "Two years of OpenAI Academy",
-      "url": "https://openai.com/index/two-years-of-openai-academy",
-      "publisher": "OpenAI",
-      "published_at": "2026-09-23T16:00:00+00:00"
-    },
-    {
-      "id": "news-81481aa316e3",
-      "title": "Gemini 3.8 text-to-speech says hello",
-      "url": "https://deepmind.google/blog/say-hello-to-gemini-38-text-to-speech/",
-      "publisher": "Google DeepMind",
-      "published_at": "2026-09-23T15:25:14+00:00"
     }
   ]
 }

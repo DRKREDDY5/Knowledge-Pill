@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "task": "daily_pills_collection",
-  "updated_at": "2026-09-29T16:56:12.344489+00:00",
+  "updated_at": "2026-09-30T16:52:20.841589+00:00",
   "packets": [
     {
       "date": "2026-09-12",
@@ -1726,6 +1726,268 @@
         }
       ],
       "id": "c28dd13a86721561"
+    },
+    {
+      "date": "2026-09-30",
+      "timezone": "America/New_York",
+      "created_at": "2026-09-30T16:50:26.121097+00:00",
+      "topic": "RAG",
+      "language": "en",
+      "concept": "What makes a source relevant?",
+      "news_window": "recent",
+      "source_warnings": [],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "What Makes a Source Relevant? Relevance in Retrieval-Augmented Generation",
+        "summary": "In RAG systems, relevance is not just textual similarity: a retrieved source is useful when it actually contains the knowledge needed to answer, is retrievable by the system's dense index, and can be attended to by the generator. The original RAG and REALM papers show why explicit, retrievable memory matters for knowledge-intensive tasks.",
+        "story": "Imagine a hospital librarian named Priya. A doctor rushes in: 'Which drug interacts badly with this patient's blood thinner?' Priya has two options. She can answer from memory — she read thousands of journals years ago, but she can't cite anything, can't update what she 'remembers', and might blur details. Or she can walk to the shelves, pull three specific papers, and hand them over. But here's the catch: her search skill matters enormously. If the doctor says 'blood thinner problem', Priya might grab papers containing those exact words — a patient anecdote, a billing memo — none of which contain the actual interaction data. The relevant paper uses different vocabulary: 'anticoagulant contraindications'. One day Priya reorganises her search method: instead of matching words, she matches meaning. She asks herself 'what is this question about?' and retrieves documents about the same topic even when the wording differs. Now the shelf-pulled answers are precise, and she can point to exactly which paragraph supports each claim. Her memory-based answers were fluent but unverifiable; her retrieval-based answers were checkable — but only as good as her notion of 'about the same thing'.",
+        "connection": "Priya answering from memory is a pre-trained language model relying on parametric knowledge — facts stored implicitly in weights. Priya walking to the shelves is retrieval-augmented generation: an explicit, non-parametric memory (a document index) consulted at answer time. Her word-matching search is sparse lexical retrieval; her meaning-matching search is a dense neural retriever. The doctor's ability to check the cited paragraph is provenance.",
+        "explanation": "The RAG paper (Lewis et al.) argues that purely parametric models struggle to access and precisely manipulate knowledge, and that provenance and knowledge updates remain open problems. Their solution couples a pre-trained seq2seq generator with a dense vector index of Wikipedia accessed by a pre-trained neural retriever, achieving state-of-the-art results on open-domain QA and generating more specific, factual text than a parametric-only baseline. REALM (Guu et al.) takes a complementary route: it trains the retriever itself during pre-training, using masked language modeling as the signal and backpropagating through a retrieval step over millions of documents, improving Open-QA accuracy by 4–16 absolute points while adding interpretability and modularity. Together they frame relevance as a learned, task-driven property: a source is relevant when the retriever ranks it highly for the query's meaning AND the generator can actually use it. RAG even offers two formulations — one retrieving passages once for the whole answer, one retrieving per token — showing relevance can be scoped at different granularities.",
+        "application": "When building a RAG pipeline, treat the retriever as a first-class component, not an afterthought. Embed your corpus with a dense retriever, but evaluate retrieval separately from generation: check whether the passages that contain the true answer are actually ranked highly for realistic queries. Watch for the vocabulary-mismatch problem Priya hit — queries and documents using different words for the same concept — which dense retrieval is designed to mitigate. Also prefer architectures that expose which passages fed each answer, so users get provenance and stale knowledge can be fixed by updating the index rather than retraining the model.",
+        "exercise": "Take five realistic user questions for a system you know (or a public dataset). For each, write two paraphrases: one using the same vocabulary as the likely source document, one using a natural user phrasing with different words. Sketch which version a purely keyword-based search would handle well, and which would need meaning-based retrieval. Two minutes.",
+        "question": "In RAG, why is a document that shares many words with the query not necessarily the most relevant one?",
+        "answer": "Because relevance depends on whether the document's meaning matches the information need and whether the generator can use it — not on surface word overlap. Dense retrievers learn to match meaning, which is why they can surface the right passage even when wording differs.",
+        "limits": "The librarian analogy understates the machinery: real retrievers are neural networks trained end-to-end (REALM backpropagates through retrieval over millions of documents), and 'relevance' is distributed across a vector index, not a shelf location. The analogy also suggests retrieval is always right; in practice the retriever can rank plausible-but-wrong passages highly, and the generator may follow them. Finally, both papers evaluate on open-domain QA and similar benchmarks — strong retrieval there does not guarantee relevance judgements transfer to your domain.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "Recent developments: a family agent, cyber access for Ukraine, and reproducible benchmarks",
+        "overview": "Three recent items from the supplied sources: Google Labs expands its CC agent to households, OpenAI extends a cyber-defense program to Ukraine, and UK AISI partners with EvalEval on reproducible evaluation reporting. Each is summarised only from the provided excerpts; the OpenAI item is a feed excerpt, so coverage is limited to what it states.",
+        "items": [
+          {
+            "headline": "Google Labs' CC agent expands to families and households",
+            "what_happened": "According to a Google Labs blog post dated September 17, 2026, CC — previously a personal agent that became the Gemini App's Daily Brief — is becoming a household agent. Up to six members can share selected information with a CC instance that has its own verified Google account and a permissions model: each member chooses what to share (for example school or vet emails), and CC produces a shared daily brief, adds calendar events and tasks, and can act with permission, such as pre-filling registration PDFs. Google says each CC runs on an isolated cloud computer using its agentic harness, Antigravity, and Gemini models, with shared household-level memory. It is an early experiment for users 18+ in the U.S. with personal Google accounts.",
+            "why_it_matters": "For developers, this is a concrete example of multi-user context sharing with per-member permissions — the same design problem behind any collaborative agent. A useful analogy: it is like a shared family inbox where each person decides which letters to forward, and the assistant only acts on what it has been forwarded. The pattern of separating what the agent sees, what it remembers collectively, and what it may act on is directly reusable in workplace or team assistants.",
+            "takeaway": "This is a vendor description of an early, geographically limited experiment, not an independently reviewed product. Before trying it, inspect the actual permission controls — what 'only sees what each member chooses to share' means in practice, how the weekly list of new email senders works, and what the agent's own account can access.",
+            "source_ids": [
+              "news-e78be4774342"
+            ]
+          },
+          {
+            "headline": "OpenAI extends Daybreak cyber access to Ukraine for civilian defense",
+            "what_happened": "An OpenAI feed excerpt dated September 23, 2026 states that OpenAI is extending access to its Daybreak program to the Government of Ukraine to support the cyber defense of civilian infrastructure. The excerpt is brief and does not describe the program's scope, tools, or terms.",
+            "why_it_matters": "If accurate as stated, it signals AI providers granting government-level access to cyber-defense capabilities for protecting civilian systems — a category that could include utilities or hospitals. For security teams, it is a data point on how frontier AI access is being structured for state actors under wartime conditions.",
+            "takeaway": "This item is based on a feed excerpt only; I have not read the full announcement, so the program's details, eligibility, and safeguards are unknown here. Before drawing conclusions, read OpenAI's full page and any usage policies governing the program.",
+            "source_ids": [
+              "news-9328fa400dd3"
+            ]
+          },
+          {
+            "headline": "UK AISI shares verified benchmark results via EvalEval's Evaluation Cards",
+            "what_happened": "A Hugging Face article dated September 22, 2026 describes a collaboration in which the UK AI Security Institute uses EvalEval's infrastructure — the Every Eval Ever schema and Evaluation Cards — to publish evaluation results openly. The release covers five benchmarks (HealthBench, FrontierMath, Humanity's Last Exam, SWE-Bench Pro, Terminal-Bench 2.0) across six frontier models, plus two cyber evaluations, accompanying an AISI paper on how inference-time compute and evaluation protocol shape benchmark performance. The article argues that apparently similar scores can come from meaningfully different setups, and that open configuration details let researchers interpret results in context.",
+            "why_it_matters": "For anyone comparing models, this addresses a daily pain: benchmark numbers quoted without setup details are hard to trust or reproduce. Analogy: it is the difference between a race result and a race result that also lists the course, weather, and each runner's shoes. Evaluation Cards aim to make evaluation a verifiable record rather than a leaderboard screenshot.",
+            "takeaway": "The claim that results are 'verified' comes from the publishing organisations, not independent audit. Before citing any of these numbers, inspect the Evaluation Card for each run — especially protocol details like attempt budgets and feedback conditions, which the AISI paper shows can change outcomes.",
+            "source_ids": [
+              "news-e9f63aa1f7aa"
+            ]
+          }
+        ],
+        "exercise": "Pick one of the three items and spend two minutes locating the primary source. For the AISI item, find one Evaluation Card and note which configuration fields it includes; for the Google post, find the exact wording of the sharing controls; for the OpenAI item, check whether more detail exists beyond the feed excerpt. Write down one claim you could not verify from the primary source.",
+        "question": "Why should you treat the OpenAI item differently from the other two news items?",
+        "answer": "Because its evidence type is a feed excerpt — a very short summary — so the program's scope and conditions are unknown; the other two are fuller article excerpts with more verifiable detail, though all claims still originate from the publishers themselves."
+      },
+      "usage": {
+        "prompt_tokens": 4313,
+        "total_tokens": 6550,
+        "completion_tokens": 2237,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 33
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 33
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-e78be4774342",
+          "title": "The new CC, an AI agent built for families",
+          "url": "https://blog.google/innovation-and-ai/models-and-research/google-labs/cc-expanding-to-groups/",
+          "publisher": "blog.google",
+          "published_at": "2026-09-17T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 52,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "Other"
+        },
+        {
+          "id": "news-9328fa400dd3",
+          "title": "OpenAI extends cyber access to Ukraine for civilian defense",
+          "url": "https://openai.com/index/openai-extends-cyber-access-to-ukraine-for-civilian-defense",
+          "publisher": "OpenAI",
+          "published_at": "2026-09-23T13:00:00+00:00",
+          "evidence_type": "feed_excerpt",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-e9f63aa1f7aa",
+          "title": "How UK AISI and EvalEval Are Making Benchmark Results Reproducible",
+          "url": "https://huggingface.co/blog/evaleval-aisi",
+          "publisher": "Hugging Face",
+          "published_at": "2026-09-22T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "RAG"
+        }
+      ],
+      "id": "69c27c87461493a0"
+    },
+    {
+      "date": "2026-09-30",
+      "timezone": "America/New_York",
+      "created_at": "2026-09-30T16:50:26.121097+00:00",
+      "topic": "RAG",
+      "language": "te",
+      "concept": "What makes a source relevant?",
+      "news_window": "recent",
+      "source_warnings": [],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "RAGలో సోర్స్ రిలవెన్స్ అంటే ఏమిటి?",
+        "summary": "Retrieval-Augmented Generation (RAG) సిస్టమ్స్‌లో, మోడల్ సమాధానం ఇవ్వడానికి ముందు భారీ కార్పస్ నుంచి డాక్యుమెంట్లను వెతికి తెస్తుంది. ఈ పాఠంలో 'ఏ డాక్యుమెంట్ రిలవెంట్?' అనే ప్రశ్నకు సమాధానం ఎలా పుడుతుందో — dense vector retrieval, ప్రశ్న మరియు డాక్యుమెంట్ మధ్య semantic సారూప్యత — ఒక కథనం ద్వారా నేర్చుకుంటాం.",
+        "story": "ఊహించండి: మీరు పెద్ద లైబ్రరీలో పనిచేసే సహాయకురాలిని అడుగుతారు — 'పక్షులు రాత్రిపూట ఎలా నావిగేట్ చేస్తాయి?' అని. ఆమె ప్రతి పుస్తకం చదవడం సాధ్యం కాదు. బదులుగా, ఆమె వెనుక ఉన్న ఇండెక్స్ కార్డులలో ప్రతి పుస్తకానికి ఒక చిన్న 'సారాంశ ప్రింట్' ఉంటుంది — పుస్తకం గురించి ముఖ్యమైన అంశాలను సూచించే ఒక సంఖ్యా ముద్ర. మీ ప్రశ్నకు కూడా అలాంటి ముద్ర తయారవుతుంది. ఆమె రెండు ముద్రల మధ్య దూరాన్ని కొలిచి, అత్యంత దగ్గరగా ఉన్న ఐదు పుస్తకాలు తీసుకువస్తుంది. 'పక్షుల వలస దార్శనికత' అనే పుస్తకం ఎంపిక అవుతుంది; 'పక్షి గూళ్లు ఎలా నిర్మించాలి' అనేది కాదు — ఎందుకంటే రెండోదాని ముద్ర మీ ప్రశ్న ముద్రకు దూరంగా ఉంటుంది. కొన్నిసార్లు తప్పుగా కూడా ఎంపిక అవుతుంది: 'పక్షులు' మరియు 'విమానాలు' అనే పదాలు దగ్గరగా ఉండటంతో విమానయాన పుస్తకం కూడా వచ్చేస్తుంది.",
+        "connection": "ఈ కథలోని భాగాలు RAG భాగాలకు సరిపోతాయి: సహాయకురాలు = retriever; ఇండెక్స్ కార్డులు = dense vector index (ప్రతి డాక్యుమెంట్ ఒక embedding vectorగా); ముద్రల మధ్య దూరం = similarity score; తీసుకువచ్చిన పుస్తకాలు = retrieved passages; వాటిని చదివి సమాధానం రాయడం = generator.",
+        "explanation": "RAG పేపర్ (Lewis et al.) ప్రకారం, సిస్టమ్‌లో రెండు రకాల మెమరీ ఉంటాయి: మోడల్ పారామీటర్లలో నిలిచిన parametric memory, మరియు Wikipedia వంటి కార్పస్‌పై నిర్మించిన non-parametric memory (dense vector index). ఈ ఇండెక్స్‌ను ఒక pre-trained neural retriever ఉపయోగిస్తాడు. 'రిలవెన్స్' అంటే ఇక్కడ ముఖ్యంగా vector సారూప్యత: ప్రశ్న మరియు డాక్యుమెంట్ embeddingలు ఒకే semantic స్పేస్‌లో దగ్గరగా ఉంటే ఆ డాక్యుమెంట్ రిలవెంట్‌గా పరిగణించబడుతుంది. REALM పేపర్ ఇంకో ముఖ్యమైన ఆలోచన చూపిస్తుంది: retrieverను unsupervisedగా, masked language modeling signalతో, మిలియన్ల డాక్యుమెంట్ల ద్వారా backpropagate చేస్తూ pre-train చేయవచ్చు. అంటే 'ఏ డాక్యుమెంట్ రిలవెంట్?' అనే నిర్వచనం స్థిరం కాదు — మోడల్ తన పనిని బాగా చేయడానికి సహాయపడే డాక్యుమెంట్లను గుర్తించేలా retriever నేర్చుకుంటుంది. రిలవెన్స్ అంటే కేవలం పదాల సారూప్యం కాదు; డౌన్‌స్ట్రీమ్ టాస్క్ విజయానికి దోహదపడే సమాచారం కలిగి ఉండటం. అలాగే RAG పేపర్ రెండు ఫార్ములేషన్లను పోల్చింది: మొత్తం జనరేషన్‌కు ఒకే పాసేజీలు వాడేది, మరియు టోకెన్ వారీగా వేరు వేరు పాసేజీలు వాడగలిగేది — అంటే 'ఎప్పుడేది రిలవెంట్?' అనేది సమయాన్ని బట్టి కూడా మారవచ్చు.",
+        "application": "ప్రాక్టికల్‌గా: మీ డాక్యుమెంటేషన్ పై ఒక Q&A బాట్ నిర్మిస్తున్నప్పుడు, రిలవెన్స్ అంచనా వేయడానికి చిన్న టెస్ట్ సెట్ తయారు చేయండి — ప్రశ్న, ఆ ప్రశ్నకు నిజంగా సమాధానం ఇచ్చే డాక్యుమెంట్ ID. తర్వాత retriever టాప్-k ఫలితాల్లో ఆ డాక్యుమెంట్ ఎప్పుడు వస్తుందో కొలవండి (recall@k). చాలా తక్కువగా ఉంటే, chunking పరిమాణం, embedding మోడల్, లేదా ప్రశ్న రూపకల్పన మార్చడం వంటి సవరణలు చేయండి. రిలవెన్స్‌ను కొలవకుండా generatorను మెరుగుపరిస్తే, తప్పు సోర్స్‌ల ఆధారంగా ధైర్యంగా తప్పు సమాధానాలు వస్తాయి.",
+        "exercise": "రెండు నిమిషాల వ్యాయామం: మీ ప్రాజెక్ట్‌లో (లేదా ఊహించిన ప్రాజెక్ట్‌లో) మూడు ప్రశ్నలు రాయండి. ఒక్కో ప్రశ్నకు సరైన డాక్యుమెంట్ ఒకటి, మరియు పదాలు దగ్గరగా ఉండి కానీ సమాధానం ఇవ్వని 'అయోమయ డాక్యుమెంట్' ఒకటి గుర్తించండి. ఇప్పుడు రాయండి: ఈ రెండింటిని వేరు చేయడానికి vector similarity సరిపోతుందా, లేదా metadata filter (ఉదా: doc type, date) కావాలా? ఒక వాక్యంలో మీ నిర్ణయాన్ని సమర్థించండి.",
+        "question": "RAGలో retriever ఒక డాక్యుమెంట్‌ను 'రిలవెంట్'గా ప్రధానంగా ఎలా నిర్ణయిస్తుంది, మరియు REALM ఆ నిర్ణయాన్ని మెరుగుపరచడంలో ఏం చేసింది?",
+        "answer": "ప్రధానంగా dense vector సారూప్యత ద్వారా: ప్రశ్న మరియు డాక్యుమెంట్ embeddingలు ఒకే semantic స్పేస్‌లో దగ్గరగా ఉంటే ఆ డాక్యుమెంట్ రిలవెంట్‌గా ఎంపిక అవుతుంది. REALM ఈ నిర్ణయాన్ని స్థిరపరచకుండా, masked language modelingను learning signalగా వాడి, మిలియన్ల డాక్యుమెంట్ల మీదుగా backpropagate చేస్తూ retrieverను pre-train చేసింది — అంటే టాస్క్‌కు సహాయపడే డాక్యుమెంట్లను గుర్తించేలా రిలవెన్స్ స్వయంగా నేర్చుకోబడుతుంది.",
+        "limits": "ఈ ఉపమానం పరిమితులు: లైబ్రరీ కార్డులు మానవులు రాస్తారు, కానీ embeddings మోడల్ నేర్చుకుంటుంది — అందుకే 'పక్షులు/విమానాలు' వంటి తప్పు దగ్గరితనాలు జరుగుతాయి. అలాగే కథలో సహాయకురాలు పుస్తకాలు చదివి అర్థం చేసుకుంటుంది; నిజమైన retrieverకి 'అర్థం' ఉండదు, కేవలం సారూప్యత స్కోర్ ఉంటుంది. రిలవెన్స్ = సమాధానం ఇచ్చే డాక్యుమెంట్ అని కూడా కాదు — రిలవెంట్‌గా ఎంపికైన పాసేజీలో సమాధానం లేకపోవచ్చు. చివరగా, టోకెన్-వారీ రిట్రీవల్ వంటి వివరాలు ఈ సాదా కథలో సరిపోవు; అవి ఇంప్లిమెంటేషన్ స్థాయి నిర్ణయాలు.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "ఇటీవలి అభివృద్ధులు: ఫ్యామిలీ ఏజెంట్, సైబర్ యాక్సెస్, రిప్రొడ్యూసిబుల్ evals",
+        "overview": "ఈ వారం మూడు వార్తా సోర్స్‌లు అందాయి: Google Labs కుటుంబాల కోసం CC ఏజెంట్ విస్తరణ, OpenAI Ukraineకి Daybreak సైబర్ యాక్సెస్ పొడిగింపు, మరియు UK AISI–EvalEval భాగస్వామ్యం. మూడోది RAG ప్రాక్టీషనర్లకు నేరుగా సంబంధించినది — ఎవల్యుయేషన్ ఫలితాలను రిప్రొడ్యూసిబుల్‌గా షేర్ చేయడం.",
+        "items": [
+          {
+            "headline": "Google Labs CC ఇప్పుడు కుటుంబాల కోసం ఒక ఏజెంట్‌గా",
+            "what_happened": "Google Labs బ్లాగ్ ప్రకారం (సెప్టెంబర్ 17, 2026), CC అనే ప్రయోగాత్మక ఏజెంట్ ఇప్పుడు కుటుంబాలు/గృహాల కోసం విస్తరించబడింది. ఇది స్వంత verified Google account కలిగి ఉంటుంది; ఆరుగురు వరకు సభ్యులు దీనితో కలిసి పనిచేయవచ్చు. ప్రతి సభ్యుడు ఏమి షేర్ చేయాలో ఎంచుకుంటారు (ఉదా: పాఠశాల ఇమెయిల్స్). CC రోజువారీ 'Your Day Ahead' బ్రీఫ్ ఇస్తుంది, Calendar/Tasks కు కనెక్ట్ అవుతుంది, ఫారమ్‌లు నింపడం వంటి పనులు అనుమతితో చేస్తుంది. ఇది Google యొక్క Antigravity agentic harness పై, వేరుచేసిన cloud computerలో నడుస్తుందని బ్లాగ్ పేర్కొంది. ఇది 18+ వయసు ఉన్నవారికి, U.S.లో వ్యక్తిగత Google account ఉన్నవారికి మాత్రమే అందుబాటులో ఉన్న ప్రారంభ ప్రయోగం.",
+            "why_it_matters": "డెవలపర్ దృష్టికోణంలో ఆసక్తికరమైన భాగం permissions మోడల్: ఒకే ఏజెంట్ బహుళ వినియోగదారుల నుంచి ఎంచుకున్న సమాచారం మాత్రమే చూడటం, మరియు ఇంటి స్థాయి vs వ్యక్తిగత సమాచారాన్ని వేరు చేసే shared memory. ఇది మల్టీ-యూజర్ ఏజెంట్ డిజైన్‌లో స్కోపింగ్ ఎలా పనిచేస్తుందో చూపే ఒక ఉదాహరణ — మీ సొంత ఏజెంట్ యాప్‌లలో context ఎవరికి కనిపిస్తుందో నిర్వచించే అవసరాన్ని గుర్తు చేస్తుంది.",
+            "takeaway": "ఇది Google Labs ప్రారంభ ప్రయోగం, పరిపక్వ ఉత్పత్తి కాదు; ప్రకటనలోని కెపాసిటీ క్లెయిమ్స్ publisher వాటి. దీన్ని ప్రయత్నించే ముందు: ఏ డేటా షేర్ అవుతుందో, ఏజెంట్ ఏ యాక్షన్లకు అనుమతి అడుగుతుందో, మరియు మీ ప్రాంతంలో అందుబాటులో ఉందా అని ఆఫీషియల్ డాక్యుమెంటేషన్‌లో తనిఖీ చేయండి.",
+            "source_ids": [
+              "news-e78be4774342"
+            ]
+          },
+          {
+            "headline": "OpenAI Ukraine ప్రభుత్వానికి Daybreak సైబర్ యాక్సెస్ పొడిగింపు",
+            "what_happened": "OpenAI ప్రకటన (సెప్టెంబర్ 23, 2026) ప్రకారం, పౌర మౌలిక సదుపాయాల సైబర్ రక్షణకు మద్దతుగా Daybreak ప్రోగ్రామ్‌కు Ukraine ప్రభుత్వానికి యాక్సెస్ పొడిగిస్తోంది. అందుబాటులో ఉన్న సోర్స్ ఒక సంక్షిప్త feed excerpt మాత్రమే — ప్రోగ్రామ్ పరిధి, టూల్స్, షరతుల గురించి వివరాలు ఈ excerptలో లేవు.",
+            "why_it_matters": "AI కెపాసిటీలను జాతీయ/పౌర రక్షణ సందర్భాల్లో ఎలా చేర్చుతున్నారో చూపే ఉదాహరణ. డెవలపర్లకు ఇది ఒక ఉపమానంగా: ఒక టూల్‌కు యాక్సెస్ ఇవ్వడం అంటే కేవలం మోడల్ API కాదు, విధానపరమైన నిర్ణయం — ఎవరు, ఏ పరిమితులతో వాడవచ్చు అనేది ప్రోగ్రామ్ డిజైన్‌లో భాగం.",
+            "takeaway": "ఇది feed excerpt ఆధారంగా సారాంశం — పూర్తి ప్రకటన చదివి ఉన్నట్టు చెప్పలేము. ప్రయత్నించే లేదా విశ్లేషించే ముందు: Daybreak ప్రోగ్రామ్ అసలు పరిధి, ఏ కెపాసిటీలు చేర్చబడ్డాయి, ఏవి మినహాయించబడ్డాయి అని OpenAI పూర్తి పేజీలో తనిఖీ చేయండి.",
+            "source_ids": [
+              "news-9328fa400dd3"
+            ]
+          },
+          {
+            "headline": "UK AISI, EvalEvalతో కలిసి బెంచ్‌మార్క్ ఫలితాలను రిప్రొడ్యూసిబుల్‌గా షేర్ చేస్తోంది",
+            "what_happened": "Hugging Face బ్లాగ్ (సెప్టెంబర్ 22, 2026) ప్రకారం, UK AI Security Institute (AISI) EvalEval ఇన్‌ఫ్రాస్ట్రక్చర్‌ను ఉపయోగించి ఎవల్యుయేషన్ ఫలితాలను ఓపెన్‌గా షేర్ చేస్తోంది. Every Eval Ever (EEE) అనే shared schema మరియు Evaluation Cards అనే ప్లాట్‌ఫారం ద్వారా, ఫలితాలతో పాటు వాటిని అర్థం చేసుకోవడానికి కావాల్సిన configuration సమాచారం కూడా పంచుకోబడుతుంది. ఈ విడుదలలో HealthBench, FrontierMath, Humanity's Last Exam, SWE-Bench Pro, Terminal-Bench 2.0 వంటి బెంచ్‌మార్క్‌లపై ఆరు frontier మోడల్స్ ఫలితాలు, మరియు రెండు cyber evals ఫలితాలు ఉన్నాయని బ్లాగ్ పేర్కొంది. ఇది AISI యొక్క 'How Inference Compute Shapes Frontier LLM Evaluation' పేపర్‌తో ముడిపడి ఉంది, ఇది inference-time compute మరియు evaluation protocol ప్రకారం బెంచ్‌మార్క్ పనితీవు ఎలా మారుతుందో అధ్యయనం చేస్తుంది.",
+            "why_it_matters": "RAG మరియు retrieval పని చేసే ఎవరికైనా ఇది నేరుగా ప్రస్తావన: ఒకే బెంచ్‌మార్క్ స్కోరు setup వివరాలు లేకుండా పోల్చడం తప్పు — oracle feedback, attempt budget, tool access వంటి ఎంపికలు ఫలితాలను గణనీయంగా మార్చగలవు. Retrieval evals కూడా ఇదే సూత్రానికి లోబడి ఉంటాయి: మీ recall@k సంఖ్యను ఎవరైనా పునఃసృష్టించాలంటే, chunking, corpus version, k విలువ వంటి configuration షేర్ చేయాలి. Evaluation Cards అనే ఆలోచనను మీ సొంత eval రిపోర్టింగ్‌లో అనుకరించవచ్చు.",
+            "takeaway": "పరిమితి: రిప్రొడ్యూసిబుల్ రిపోర్టింగ్ అభిప్రాయ భేదాలను తొలగించదు — ఏ వేరియబుల్స్ ముఖ్యమో అనే చర్చను మాత్రమే స్పష్టం చేస్తుంది. ఏదైనా eval ఫలితాన్ని ఉదహరించే ముందు: Evaluation Card లో setup వివరాలు (protocol, compute, feedback) పూర్తిగా ఉన్నాయో లేదో, మరియు మీ సన్నివేశంతో పోలిక సాధ్యమేనో తనిఖీ చేయండి.",
+            "source_ids": [
+              "news-e9f63aa1f7aa"
+            ]
+          }
+        ],
+        "exercise": "రెండు నిమిషాల సోర్స్-చెక్ వ్యాయామం: మూడు వార్తా అంశాల్లో ఒకదాన్ని ఎంచుకోండి. ఒక్కో దానికి మూడు ప్రశ్నలు రాయండి: (1) ఈ క్లెయిమ్ ఎవరు చేస్తున్నారు — publisher స్వయంగానా, స్వతంత్ర విశ్లేషణా? (2) ఏ evidence_type ఆధారంగా సారాంశం రాశారో గుర్తించండి (పూర్తి ఆర్టికల్ vs feed excerpt). (3) ఈ క్లెయిమ్‌ను స్వయంగా ధృవీకరించాలంటే మీరు ఏ ప్రాథమిక సోర్స్‌ను తెరవాలి? మూడో ప్రశ్నకు సమాధానంగా ఆ ప్రాథమిక సోర్స్ URL రకాన్ని (బ్లాగ్, పేపర్, ప్రకటన) రాయండి.",
+        "question": "AISI–EvalEval భాగస్వామ్యం ప్రకారం, 'Model A beat Model B' అనే పోలికను నమ్మకంగా చేయడానికి ఫలితంతో పాటు ఏమి షేర్ చేయాలి, ఎందుకు?",
+        "answer": "ఫలితంతో పాటు evaluation configuration — protocol, inference-time compute, feedback mechanism, attempt budget వంటి setup వివరాలు — షేర్ చేయాలి. ఎందుకంటే AISI పేపర్ చూపినట్టు ఇవి మారితే ఒకే బెంచ్‌మార్క్ ఫలితాలు గణనీయంగా మారతాయి; configuration లేకుండా స్కోర్ల పోలిక అర్థరహితం కావచ్చు."
+      },
+      "usage": {
+        "prompt_tokens": 4313,
+        "total_tokens": 17447,
+        "completion_tokens": 13134,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 29
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 29
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-e78be4774342",
+          "title": "The new CC, an AI agent built for families",
+          "url": "https://blog.google/innovation-and-ai/models-and-research/google-labs/cc-expanding-to-groups/",
+          "publisher": "blog.google",
+          "published_at": "2026-09-17T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 52,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "Other"
+        },
+        {
+          "id": "news-9328fa400dd3",
+          "title": "OpenAI extends cyber access to Ukraine for civilian defense",
+          "url": "https://openai.com/index/openai-extends-cyber-access-to-ukraine-for-civilian-defense",
+          "publisher": "OpenAI",
+          "published_at": "2026-09-23T13:00:00+00:00",
+          "evidence_type": "feed_excerpt",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-e9f63aa1f7aa",
+          "title": "How UK AISI and EvalEval Are Making Benchmark Results Reproducible",
+          "url": "https://huggingface.co/blog/evaleval-aisi",
+          "publisher": "Hugging Face",
+          "published_at": "2026-09-22T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "RAG"
+        }
+      ],
+      "id": "863cd2c362336607"
     }
   ]
 }
