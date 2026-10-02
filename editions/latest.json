@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "task": "daily_pills_collection",
-  "updated_at": "2026-10-01T17:25:54.494162+00:00",
+  "updated_at": "2026-10-02T16:41:26.787891+00:00",
   "packets": [
     {
       "date": "2026-09-12",
@@ -2260,6 +2260,274 @@
         }
       ],
       "id": "69b079360e7c3763"
+    },
+    {
+      "date": "2026-10-02",
+      "timezone": "America/New_York",
+      "created_at": "2026-10-02T16:40:02.879250+00:00",
+      "topic": "RAG",
+      "language": "en",
+      "concept": "Why citations need checking",
+      "news_window": "recent",
+      "source_warnings": [
+        {
+          "publisher": "Google DeepMind",
+          "reason": "ParseError"
+        }
+      ],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "Why citations need checking: what RAG actually guarantees",
+        "summary": "Retrieval-Augmented Generation grounds a model's answers in retrieved documents, which improves factuality and gives you provenance you can inspect. But a retrieved source is not a verified source: the retriever can surface the wrong passage, and the generator can still misstate what it says. Checking citations is a design step, not an optional courtesy.",
+        "story": "Imagine a new library assistant, Priya, who answers every question by walking to the shelves, pulling a book, and reading you a paragraph. Her boss tells customers, 'Priya always cites her sources, so she's trustworthy.' One day a customer asks about visa rules. Priya fetches a book quickly — but the shelf is enormous and her shortcut through the catalogue lands her on a tourism guide, not the immigration handbook. She reads the paragraph fluently and confidently. She did cite a real book. The citation was genuine; the answer was still wrong. Later that week she pulls the correct handbook but summarizes it loosely, blending an old edition's rule with the new one. Again: real source, imperfect answer. The library fixes this with two habits: a second clerk spot-checks whether the fetched book is the right one, and Priya must read the paragraph aloud so the customer can compare her summary against it.",
+        "connection": "Priya is a RAG model. The shelves are a non-parametric memory — in the original RAG formulation, a dense vector index of Wikipedia accessed by a pre-trained neural retriever — while Priya herself is the parametric memory, a pre-trained seq2seq generator. The boss's claim ('she cites sources, so trust her') is the common but flawed inference that grounding equals correctness.",
+        "explanation": "The RAG paper (Lewis et al.) motivates the approach precisely because parametric-only models struggle to access and precisely manipulate knowledge, and because provenance and knowledge updates were open problems. RAG combines parametric and non-parametric memory and was shown to generate more specific, diverse, and factual language than a parametric-only baseline, setting state-of-the-art results on open-domain QA. REALM tackles the same problem from the pre-training side, adding a latent knowledge retriever used during pre-training, fine-tuning, and inference, and reports both accuracy gains and qualitative benefits such as interpretability and modularity. Interpretability is the key word: because you can see which documents the model attended over, you can audit the answer. But neither paper claims the retrieved documents are always the right ones, or that the generator faithfully reflects them. Retrieval is a similarity lookup, not a fact-check. The generator is still a language model that can paraphrase, blend, or over-read a passage. So a citation tells you where the model claims to have looked — it does not certify that the look was successful or the reading accurate.",
+        "application": "In a production RAG system, build citation checking into the pipeline rather than the UI. First, log the retrieved chunk identifiers and scores with every answer so you can audit failures later. Second, add a verification pass: a second model call (or rule) that asks whether the answer is entailed by the retrieved passages, flagging mismatches. Third, show users the actual passage, not just a document title, so they can compare the summary against the source — Priya reading aloud. Fourth, treat low retrieval scores or empty hits as a signal to say 'I don't know' instead of answering from parametric memory alone.",
+        "exercise": "Take any RAG-powered assistant you use and ask it a niche factual question. Open the cited source and ask three things: Is this the right document for the question? Does the passage actually contain the claim? Does the answer add anything the passage doesn't say? Note which of the three checks fails most often.",
+        "question": "A RAG system returns an answer with a citation to a real document. What two things could still be wrong, and why does RAG's design not prevent them?",
+        "answer": "The retrieval could have fetched an irrelevant or low-quality passage (the retriever ranks by similarity, not truth), and the generator could misrepresent the passage through loose paraphrasing or blending with parametric knowledge. RAG improves factuality and provides provenance you can audit, but it does not verify retrieval relevance or guarantee faithful generation — which is why citations need checking.",
+        "limits": "The library analogy understates the scale problem: Priya browses a few shelves, while real retrievers search millions of documents, so 'checking the right book was fetched' is a statistical judgment, not a glance. The analogy also implies a human second clerk; automated entailment checks have their own failure modes and can be confidently wrong. Finally, the cited papers report results on specific benchmarks and Wikipedia-based indexes; their numbers do not transfer unchanged to your domain or corpus.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "Recent RAG-adjacent developments: grounding, evaluation reproducibility, and benchmark data",
+        "overview": "Three recent items: a vendor case study on retrieval-style assistants saving staff time, a collaboration making AI evaluation results reproducible and inspectable, and an open-source benchmark generator for logistics optimization. All three connect to the same theme as this week's concept: claims are only as good as the checkable evidence behind them.",
+        "items": [
+          {
+            "headline": "OpenAI describes a social club saving 10–15 hours a week with ChatGPT Work",
+            "what_happened": "An OpenAI customer story, published October 1, 2026, describes The Den, a family social club, using ChatGPT Work while opening a new location. The club reports preparing grant applications in 2 hours instead of 3 days and liquor-license materials in 3 hours instead of 4 days. Note this is a feed excerpt: I have only the summary text, not the full article.",
+            "why_it_matters": "For developers, this is a familiar pattern: an assistant grounded in the organization's own documents (licenses, past grants, requirements) accelerates document-heavy drafting — essentially retrieval plus generation applied to internal knowledge. A useful analogy: it's a paralegal who drafts quickly but still needs a lawyer to verify every filing. Time savings on a first draft are plausible; correctness of the submitted document is a separate question.",
+            "takeaway": "The hours-saved figures are publisher claims from a vendor's own customer story, not an independent measurement, and the excerpt gives no detail on how outputs were verified. Before trying anything similar, inspect what source documents the assistant draws on, who reviews the outputs, and whether the workflow includes the citation-checking step from this week's concept — especially for compliance materials like liquor-license filings.",
+            "source_ids": [
+              "news-2167384f51e2"
+            ]
+          },
+          {
+            "headline": "UK AISI and EvalEval push reproducible, inspectable AI evaluation results",
+            "what_happened": "A September 22, 2026 Hugging Face article describes the UK AI Security Institute using EvalEval's infrastructure to openly share evaluation results. AISI is publishing verified results, context, and configuration for benchmarks including HealthBench, FrontierMath, Humanity's Last Exam, SWE-Bench Pro, and Terminal-Bench 2.0, covering six frontier models, via the Every Eval Ever schema and Evaluation Cards. The accompanying work shows benchmark performance can shift substantially with evaluation protocol and inference-time compute.",
+            "why_it_matters": "This is citation checking applied to benchmarks. When apparently similar scores are produced under meaningfully different conditions, a bare 'Model A beat Model B' claim is not comparable evidence. Evaluation Cards act like the passage-level citation from this week's lesson: they let you inspect the setup behind a number. For developers choosing models for a RAG pipeline, this means you can check whether a reported score used a comparable protocol, attempt budget, or feedback regime to your use case.",
+            "takeaway": "Open reporting improves comparability but does not eliminate disagreement — it moves the argument to the right variables, as the article's own commentary notes. Before citing any benchmark delta, inspect the Evaluation Card for missing configuration fields; a missing setup detail should be treated as a reason not to cite the comparison, not as an assumption of defaults.",
+            "source_ids": [
+              "news-e9f63aa1f7aa"
+            ]
+          },
+          {
+            "headline": "Google Research open-sources MilleMiglia, a middle-mile logistics benchmark generator",
+            "what_happened": "A September 18, 2026 Google Research post introduces MilleMiglia, an open-source C++ instance generator creating realistic, privacy-preserving benchmarks for middle-mile logistics — the bulk movement of goods between distribution centers. It models fixed vehicle schedules, distribution-center throughput limits, and synchronization constraints as a multi-commodity flow problem on a space-time graph, and offers instances from small academic-scale to industrial-scale.",
+            "why_it_matters": "The post argues middle-mile optimization lagged because real network data is proprietary, so research lacked shared benchmarks. This mirrors the RAG lesson at the data layer: claims about solver performance need checkable, inspectable instances, just as model answers need checkable citations. For developers in optimization or supply-chain ML, it provides standardized test data and a format for training ML models on synthetic but realistic networks.",
+            "takeaway": "This is a research infrastructure release, not a proven production system, and the post notes a specialized solver is still in progress. Real distribution networks may include constraints the generator's statistical distributions do not capture, so validate any solver results against your own operational data before drawing conclusions.",
+            "source_ids": [
+              "news-a7f1f0b4928f"
+            ]
+          }
+        ],
+        "exercise": "Pick one of the three items and spend two minutes finding the primary source (the OpenAI page, the Hugging Face article, or the Google Research post). Identify one claim that is the publisher's own report and one concrete detail you could independently inspect — such as a benchmark configuration, a GitHub repository, or a stated before/after time comparison.",
+        "question": "The EvalEval article says apparently similar scores can come from meaningfully different conditions. How does that parallel the reason a RAG citation needs checking?",
+        "answer": "In both cases, a surface-level signal (a benchmark score, a cited document) is not sufficient without the surrounding context — the evaluation configuration, or the actual retrieved passage. Verification requires inspecting the setup behind the claim, not just the claim itself."
+      },
+      "usage": {
+        "prompt_tokens": 5043,
+        "total_tokens": 7280,
+        "completion_tokens": 2237,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 32
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 32
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-2167384f51e2",
+          "title": "The Den frees up 10-15 hours a week to grow with ChatGPT Work",
+          "url": "https://openai.com/index/the-den-family-social",
+          "publisher": "OpenAI",
+          "published_at": "2026-10-01T00:00:00+00:00",
+          "evidence_type": "feed_excerpt",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-e9f63aa1f7aa",
+          "title": "How UK AISI and EvalEval Are Making Benchmark Results Reproducible",
+          "url": "https://huggingface.co/blog/evaleval-aisi",
+          "publisher": "Hugging Face",
+          "published_at": "2026-09-22T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-a7f1f0b4928f",
+          "title": "MilleMiglia: A realistic instance generator for middle-mile logistics",
+          "url": "https://research.google/blog/millemiglia-a-realistic-instance-generator-for-middle-mile-logistics/",
+          "publisher": "Google Research",
+          "published_at": "2026-09-18T17:46:09+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "RAG"
+        }
+      ],
+      "id": "842ded431e6d78c6"
+    },
+    {
+      "date": "2026-10-02",
+      "timezone": "America/New_York",
+      "created_at": "2026-10-02T16:40:02.879250+00:00",
+      "topic": "RAG",
+      "language": "te",
+      "concept": "Why citations need checking",
+      "news_window": "recent",
+      "source_warnings": [
+        {
+          "publisher": "Google DeepMind",
+          "reason": "ParseError"
+        }
+      ],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "RAG లో citations ఎందుకు తనిఖీ చేయాలి",
+        "summary": "Retrieval-Augmented Generation (RAG) మోడల్స్ బాహ్య documents నుంచి సమాచారం తీసుకుని సమాధానాలు ఇస్తాయి, దీనివల్ల provenance (మూలం) చూపించడం సాధ్యమవుతుంది. కానీ citation చూపించడం అంటేనే సరైన సమాధానం అని కాదు — retrieved passage నిజంగా claim కి support చేస్తోందో లేదో మనం తనిఖీ చేయాలి.",
+        "story": "ఒక ఊరిలో లైబ్రరీ అసిస్టెంట్ అయిన రాజు ఒక పెద్ద ప్రశ్నకు సమాధానం కావాలంటారు. అతను వేగంగా మూడు పుస్తకాలు తీసుకొచ్చి, వాటిలోని వాక్యాలు కలిపి ఒక జవాబు రాస్తాడు, పైన 'ఈ పుస్తకాల ఆధారంగా' అని రాస్తాడు. జవాబు చాలా confident గా ఉంది. కానీ ఒక పాఠకురాలు ఆ పుస్తకాలు తిరిగి చూస్తే — ఒక పుస్తకం వేరే topic గురించి, రెండోది పాత సంవత్సరం డేటా, మూడోది అసలు ప్రశ్నకు సంబంధం లేని పేరా. రాజు సరైన పుస్తకాలు తెచ్చాడు కానీ, అతని సారాంశం ఆ పుస్తకాల్లో లేని మాటలు కూడా చేర్చాడు. Citation ఉంది, కానీ citation సరైనదని ఎవరూ ధృవీకరించలేదు.",
+        "connection": "ఈ కథలో రాజు = RAG system లోని generator; పుస్తకాలు = retrieved documents; 'ఈ పుస్తకాల ఆధారంగా' అనే రాత = citation. పాఠకురాలు చేసిన తనిఖీ = మనం చేయాల్సిన citation verification.",
+        "explanation": "RAG అనేది pre-trained seq2seq మోడల్ (parametric memory) తో dense vector index లాంటి non-parametric memory ను కలిపే approach. Lewis et al. (2005.11401) ప్రకారం, ఇది knowledge-intensive tasks లో మెరుగైన, ఎక్కువ factual output ఇస్తుంది మరియు provenance ఇవ్వగలదు. REALM (2002.08909) కూడా retriever తో pre-training చేసి, interpretability మరియు modularity లాంటి ప్రయోజనాలను చూపింది. కానీ రెండు papers లోనూ ముఖ్యమైన అంశం: retrieval అనేది సమాధానాన్ని ధృవీకరించేది కాదు, కేవలం సహాయపరిచేది. Retriever తప్పు లేదా పాత passages తీసుకురావచ్చు; generator ఆ passages లో లేని విషయాలను కూడా జోడించవచ్చు. అందుకే citation అనేది 'ఇక్కడ చూడండి' అనే pointer మాత్రమే — pointer సరిగ్గా ఉందో అనేది వినియోగదారు లేదా evaluation pipeline బాధ్యత.",
+        "application": "మీ RAG app లో (ఉదా: internal docs assistant) ప్రతి answer తో source passages చూపించండి, కానీ అక్కడ ఆగొద్దు. (1) Sample queries మీదుగా answer లోని ప్రతి claim ని cited passage తో సరిపోల్చండి — faithfulness check. (2) Retrieval quality ని విడిగా కొలవండి: top-k results నిజంగా relevant గా ఉన్నాయా? (3) Stale index ఉందో లేదో చూడండి — knowledge updates అవసరం. ఇది చేస్తే citations అనేవి marketing కాకుండా verifiable contract అవుతాయి.",
+        "exercise": "రెండు నిమిషాలు: మీ RAG system (లేదా ఏదైనా chatbot) ఇచ్చిన ఒక answer తీసుకోండి. Answer లోని మూడు factual claims గుర్తించి, ప్రతి దానికి cited source లో exact supporting sentence ఉందో లేదో రాయండి: supported / partially supported / unsupported.",
+        "question": "RAG system citation చూపిస్తే, ఆ citation అంటే ఏమి ధృవీకరించబడింది — మరియు ఏది ధృవీకరించబడలేదు?",
+        "answer": "ధృవీకరించబడింది: మోడల్ ఏ documents నుంచి సమాచారం తీసుకుందో (provenance). ధృవీకరించబడనిది: ఆ documents సరైనవా, current గా ఉన్నాయా, మరియు answer లోని ప్రతి claim ని నిజంగా support చేస్తున్నాయో — దీన్ని విడిగా తనిఖీ చేయాల్సి ఉంటుంది.",
+        "limits": "ఈ analogy పరిమితి: రాజు పుస్తకాలు చదివి రాసినట్టు కనిపిస్తాడు, కానీ RAG generator కొన్నిసార్లు parametric memory (దాని training knowledge) నుంచి కూడా రాస్తుంది — retrieved passage అసలు మూలం కాకపోవచ్చు. అలాగే citation 'correctness' అనేది binary కాదు; partial support, outdated sources, conflicting sources లాంటి cases ని ఈ కథ పూర్తిగా వివరించదు.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "RAG సంబంధిత తాజా అభివృద్ధులు",
+        "overview": "ఈ వారం మూడు వార్తలు: ఒక కంపెనీ AI assistant వాడిన ఫలితాల ప్రకటన, evaluation reproducibility మీద ఒక collaboration, మరియు logistics కోసం ఒక open-source benchmark generator. మూడింటిలోనూ 'claims ని ఎలా తనిఖీ చేయాలి' అనే థీమ్ కనిపిస్తుంది.",
+        "items": [
+          {
+            "headline": "The Den, ChatGPT Work తో వారానికి 10–15 గంటలు ఆదా చేసినట్టు OpenAI ప్రకటన",
+            "what_happened": "OpenAI ప్రచురించిన customer story ప్రకారం, The Den అనే social club ChatGPT Work ను వాడి grant applications ను 3 రోజుల నుంచి 2 గంటలకు, liquor-license materials ను 4 రోజుల నుంచి 3 గంటలకు తగ్గించినట్టు, వారానికి 10–15 గంటలు ఆదా అయినట్టు చెబుతోంది. ఇది publisher అయిన OpenAI చేతే ప్రచురించబడిన కేస్ స్టడీ; స్వతంత్ర verification లేదు.",
+            "why_it_matters": "Small teams కి ఇది ఒక ముఖ్యమైన అవకాశం లాగ కనిపిస్తుంది: grant writing, compliance paperwork లాంటి document-heavy tasks లో AI assistant సమయం ఆదా చేయగలదు. ఇది RAG-style workflow ను పోలి ఉంటుంది — మీ సొంత documents ఆధారంగా drafts తయారు చేయడం. అలాంటప్పుడు మునుపటి lesson గుర్తుంచుకోండి: drafts లోని facts ని మూల documents తో సరిపోల్చడం మీ బాధ్యతే.",
+            "takeaway": "ఇది vendor-ప్రచురించిన విజయగాథ; సాధారణ ఫలితం కాదు. ప్రయత్నించే ముందు: ఆ ఆదా అయిన గంటలు ఎలా కొలవబడ్డాయో, ఏ workflow లో, ఎలాంటి human review జరిగిందో తెలుసుకోండి. మీ సొంత pilot లో ఒక చిన్న task మీద baseline సమయాన్ని కొలిచి తేడాను చూడండి.",
+            "source_ids": [
+              "news-2167384f51e2"
+            ]
+          },
+          {
+            "headline": "UK AISI, EvalEval కలిసి benchmark ఫలితాలను reproducible చేస్తున్నాయి",
+            "what_happened": "Hugging Face blog (2026 సెప్టెంబర్ 22) ప్రకారం, UK AI Security Institute (AISI) EvalEval యొక్క Evaluation Cards platform పై తన evaluation ఫలితాలను open గా share చేస్తోంది. ఇందులో HealthBench, FrontierMath, Humanity's Last Exam, SWE-Bench Pro, Terminal-Bench 2.0 లాంటి benchmarks పై ఆరు frontier models ఫలితాలు, configuration, context వివరాలు ఉన్నాయి. Every Eval Ever (EEE) అనే shared schema ద్వారా ఫలితాలు ఒకే నిర్మాణంలో అందుబాటులోకి వస్తాయి.",
+            "why_it_matters": "Developer కోసం ఇది citations తనిఖీ అనే concept కి నేరుగా సంబంధించింది: 'Model A, Model B కంటే మెరుగు' అనే claim కి evaluation setup అనే citation అవసరం. Blog లో స్వయంగా చెప్పినట్టు, apparently similar scores meaningfully different conditions లో రావచ్చు — inference compute, feedback protocol మారితే ఫలితాలు మారతాయి. మీరు model ఎంపిక చేసేటప్పుడు ఇది నేరుగా పనికొస్తుంది: score మాత్రమే కాదు, setup కూడా చూడండి.",
+            "takeaway": "పరిమితి: ఇది ఒక ప్రారంభ collaboration; అన్ని benchmarks, అన్ని evaluators ఇంకా EEE వాడట్లేదు. ప్రయత్నించే ముందు Evaluation Cards లో ఏ fields ఉన్నాయి, ఏవి missing (seed, attempt budget, oracle feedback లాంటివి), verified results అంటే వారి నిర్వచనం ఏమిటో చూడండి. Missing field ను 'defaults ఉన్నాయి' అనుకోకూడదు.",
+            "source_ids": [
+              "news-e9f63aa1f7aa"
+            ]
+          },
+          {
+            "headline": "Google Research, middle-mile logistics కోసం MilleMiglia instance generator విడుదల",
+            "what_happened": "Google Research blog (2026 సెప్టెంబర్ 18) ప్రకారం, MilleMiglia అనేది C++ లో రాయబడిన open-source instance generator — distribution centers మధ్య జరిగే middle-mile freight movement కోసం realistic, privacy-preserving benchmark instances సృష్టిస్తుంది. ఇది fixed vehicle schedules, throughput limits, synchronization constraints కలిగిన multi-commodity flow problems ను model చేస్తుంది; సాధారణ VRP solvers ఈ structure కి నేరుగా పనిచేయవు అని వారి వివరణ.",
+            "why_it_matters": "Supply chain లో పనిచేసే developers కి ఇది ఉపయోగకరం: నిజమైన కంపెనీ data proprietary కావడంతో research ఆగిపోయింది; synthetic కానీ realistic instances తో routing/optimization algorithms ను test చేయవచ్చు. ఇది RAG కి ఒక analogy లా కూడా చూడవచ్చు — సొంత సమాచారం లేనప్పుడు realistic synthetic data తో evaluation చేయడం. కానీ synthetic data నిజమైన conditions ను ఎంతవరకు ప్రతిబింబిస్తుందో అనేది ఎప్పుడూ ఒక ప్రశ్నే.",
+            "takeaway": "పరిమితి: ఇది benchmark generator మాత్రమే, solver కాదు — specialized solver ఇంకా పనిలో ఉంది అని blog చెబుతోంది. ప్రయత్నించే ముందు GitHub లో code, documentation, data format (Protocol Buffers) చూసి, మీ use case constraints (schedules, throughput) ఈ format లో fit అవుతాయో ధృవీకరించండి.",
+            "source_ids": [
+              "news-a7f1f0b4928f"
+            ]
+          }
+        ],
+        "exercise": "రెండు నిమిషాల source-check: మొదటి వార్త (The Den) feed excerpt ఆధారంగా మాత్రమే రాయబడింది — పూర్తి article చదవలేదు. దీన్ని గుర్తుపెట్టుకుని, ఏ వార్తలో publisher claim vs స్వతంత్ర ఆధారం లేకపోవడం స్పష్టంగా కనిపిస్తుందో ఒక్కో వార్తకు ఒక వాక్యంలో రాయండి.",
+        "question": "The Den వార్తలో '10–15 గంటల ఆదా' claim ను ఎవరు చేసారు, దాన్ని ఎలాంటి ఆధారంతో అంగీకరించకూడదు?",
+        "answer": "Claim ను OpenAI చేసింది — product ను అమ్మే కంపెనే దీన్ని ప్రచురించింది కాబట్టి ఇది vendor claim. స్వతంత్ర verification లేకుండా, measurement methodology తెలియకుండా దీన్ని సాధారణ ఫలితంగా అంగీకరించకూడదు; మీ సొంత pilot లో కొలవాలి."
+      },
+      "usage": {
+        "prompt_tokens": 5043,
+        "total_tokens": 12660,
+        "completion_tokens": 7617,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 34
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 34
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-2167384f51e2",
+          "title": "The Den frees up 10-15 hours a week to grow with ChatGPT Work",
+          "url": "https://openai.com/index/the-den-family-social",
+          "publisher": "OpenAI",
+          "published_at": "2026-10-01T00:00:00+00:00",
+          "evidence_type": "feed_excerpt",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-e9f63aa1f7aa",
+          "title": "How UK AISI and EvalEval Are Making Benchmark Results Reproducible",
+          "url": "https://huggingface.co/blog/evaleval-aisi",
+          "publisher": "Hugging Face",
+          "published_at": "2026-09-22T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-a7f1f0b4928f",
+          "title": "MilleMiglia: A realistic instance generator for middle-mile logistics",
+          "url": "https://research.google/blog/millemiglia-a-realistic-instance-generator-for-middle-mile-logistics/",
+          "publisher": "Google Research",
+          "published_at": "2026-09-18T17:46:09+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "RAG"
+        }
+      ],
+      "id": "9ac8c7292b6f0d88"
     }
   ]
 }
