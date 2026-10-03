@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "task": "ai_headlines",
-  "checked_at": "2026-10-02T16:40:02.879250+00:00",
+  "checked_at": "2026-10-03T15:09:16.976306+00:00",
   "items": [
     {
       "id": "news-c38af6e5cae4",
@@ -16,6 +16,13 @@
       "url": "https://research.google/blog/toward-provably-private-learning-from-federated-data/",
       "publisher": "Google Research",
       "published_at": "2026-10-02T14:57:41+00:00"
+    },
+    {
+      "id": "news-882596cbc763",
+      "title": "Chatham scales its capital markets expertise with OpenAI",
+      "url": "https://openai.com/index/chatham-financial",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-02T00:00:00+00:00"
     },
     {
       "id": "news-b8087b88cb63",
@@ -37,6 +44,20 @@
       "url": "https://openai.com/index/the-den-family-social",
       "publisher": "OpenAI",
       "published_at": "2026-10-01T00:00:00+00:00"
+    },
+    {
+      "id": "news-ce56aa83d006",
+      "title": "Gemini 4 Argon: our next era of frontier intelligence",
+      "url": "https://deepmind.google/blog/gemini-4-argon-our-next-era-of-frontier-intelligence/",
+      "publisher": "Google DeepMind",
+      "published_at": "2026-09-30T20:01:45+00:00"
+    },
+    {
+      "id": "news-c696e8b1f342",
+      "title": "Introducing SynthID Bio",
+      "url": "https://deepmind.google/blog/introducing-synthid-bio/",
+      "publisher": "Google DeepMind",
+      "published_at": "2026-09-30T15:03:07+00:00"
     },
     {
       "id": "news-90249c2a3882",
@@ -65,27 +86,6 @@
       "url": "https://research.google/blog/how-diffusion-controller-unifies-and-simplifies-ai-image-generation/",
       "publisher": "Google Research",
       "published_at": "2026-09-29T18:38:27+00:00"
-    },
-    {
-      "id": "news-d6b9f5e651b1",
-      "title": "Introducing GPT-6.1 Sol",
-      "url": "https://openai.com/index/introducing-gpt-6-1-sol",
-      "publisher": "OpenAI",
-      "published_at": "2026-09-29T10:00:00+00:00"
-    },
-    {
-      "id": "news-6071f63e21f6",
-      "title": "DevDay 2026 Recap",
-      "url": "https://openai.com/index/devday-2026-recap",
-      "publisher": "OpenAI",
-      "published_at": "2026-09-29T10:00:00+00:00"
-    },
-    {
-      "id": "news-dec620cb7225",
-      "title": "Introducing dots",
-      "url": "https://openai.com/index/introducing-dots",
-      "publisher": "OpenAI",
-      "published_at": "2026-09-29T00:00:00+00:00"
     }
   ]
 }
