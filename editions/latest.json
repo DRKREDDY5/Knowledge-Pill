@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "task": "daily_pills_collection",
-  "updated_at": "2026-10-03T15:11:10.056351+00:00",
+  "updated_at": "2026-10-04T15:50:49.487725+00:00",
   "packets": [
     {
       "date": "2026-09-12",
@@ -2786,6 +2786,264 @@
         }
       ],
       "id": "eaed01a42f19bbae"
+    },
+    {
+      "date": "2026-10-04",
+      "timezone": "America/New_York",
+      "created_at": "2026-10-04T15:49:12.685089+00:00",
+      "topic": "RAG",
+      "language": "en",
+      "concept": "Writing a useful retrieval query",
+      "news_window": "recent",
+      "source_warnings": [],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "Writing a Useful Retrieval Query",
+        "summary": "RAG systems combine a pre-trained generator with a retriever that fetches passages from an external index, so the quality of what you get back depends heavily on the query you send. This pill teaches how to write retrieval queries that actually surface the documents you need.",
+        "story": "Maya runs a small hardware store with a huge, badly organised stockroom. Her assistant, Dev, is fast but only knows what is written on the boxes he is handed. When Maya shouts 'the thing for the leaky tap', Dev wanders the aisles and returns with a random box. When she says 'brass 15mm compression fitting for a bathroom faucet', he comes back in seconds with exactly the right part. The stockroom never changed — Maya's request did. One day Maya tried a different trick: instead of one vague shout, she sent Dev twice, once for 'compression fittings' and once for 'tap washers', then compared what he brought back. The combined haul was far better than either trip alone.",
+        "connection": "The stockroom is the document index; Dev is the retriever; Maya's phrasing is the query. A vague shout maps to a vague query that retrieves whatever is superficially similar. The specific description maps to a query that shares vocabulary and intent with the target documents. Sending Dev on two trips maps to issuing multiple query variants and merging results.",
+        "explanation": "In retrieval-augmented generation, a pre-trained seq2seq generator is paired with a non-parametric memory — a dense vector index of documents — accessed through a pre-trained neural retriever, as described in the original RAG paper (paper-2005.11401). REALM (paper-2002.08909) showed a similar idea: a latent knowledge retriever lets the model attend over documents from a large corpus during pre-training, fine-tuning, and inference, improving open-domain question answering while making knowledge more modular and interpretable. The retriever finds passages by similarity between the query embedding and document embeddings. That means your query is translated into a vector, and only passages whose vectors are nearby get returned. A useful retrieval query therefore: (1) contains the concrete nouns and terms the target document likely uses, not your paraphrase of them; (2) states the specific intent rather than the broad topic; (3) avoids conversational filler that dilutes the embedding; and (4) when one phrasing fails, tries variants or decompositions, since a single embedding is one point in a large space.",
+        "application": "When building a RAG feature over your own docs, treat query construction as part of the pipeline, not an afterthought. If users type 'it's not working', rewrite or expand that into queries containing product names, error codes, and feature terms before hitting the index. Log which retrieved passages actually got used by the generator, and use those logs to tune a query-rewriting step. This matters because the RAG paper found that grounding generation in retrieved passages produces more specific, diverse, and factual output than a parametric-only model — but only if the right passages are retrieved in the first place.",
+        "exercise": "Take one real question your users ask. Write three versions of the retrieval query for it: (1) the user's words verbatim, (2) a version using the vocabulary your documentation actually uses, and (3) a decomposed version splitting it into two narrower sub-queries. If you have an index handy, run all three and compare the top five passages. Two minutes.",
+        "question": "Why does a query that shares the target document's concrete terminology usually retrieve better results than a polite, paraphrased version of the same question?",
+        "answer": "Because the retriever matches embedding similarity between the query and documents; using the document's own nouns and intent-bearing terms places the query vector closer to the relevant passages, while filler and paraphrase dilute that signal.",
+        "limits": "The stockroom analogy suggests retrieval is a simple lookup, but dense retrievers match statistical similarity, not meaning guaranteed by definition — a well-phrased query can still miss if the document uses entirely different vocabulary, and a sloppy one can succeed by luck. The analogy also hides that RAG systems can retrieve different passages per generated token (paper-2005.11401), which no errand-running assistant models. Finally, better queries cannot fix a poor or stale index.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "Recent developments touching retrieval, evaluation, and private training",
+        "overview": "Three recent items: a customer story about ChatGPT-based document work at a social club, a Hugging Face article on reproducible benchmark reporting by UK AISI and EvalEval, and a Google Research post on a TEE-based federated learning system. Each is summarised from the supplied excerpts; the first is a feed excerpt, so details are limited to what it states.",
+        "items": [
+          {
+            "headline": "OpenAI describes a social club saving time on grant and licence paperwork with ChatGPT Work",
+            "what_happened": "An OpenAI customer story, published October 1, 2026, says The Den, a family social club opening a new location, now prepares grant applications in about 2 hours instead of 3 days and liquor-license materials in about 3 hours instead of 4 days using ChatGPT Work. This is a feed excerpt, so the full article was not reviewed and the workflow details behind those figures are not visible here.",
+            "why_it_matters": "For developers, this is a familiar pattern: an assistant grounded in the organisation's own documents — effectively a retrieval-plus-generation workflow — compressing repetitive document drafting. The analogy is a well-briefed intern with access to your filing cabinet: fast at drafting, but only as reliable as the files and instructions you supply.",
+            "takeaway": "The time savings are the publisher's claim from one customer, not an independent measurement. Before trying anything similar, inspect what source documents and review steps the workflow used, and treat the reported hours as anecdotal rather than a benchmark.",
+            "source_ids": [
+              "news-2167384f51e2"
+            ]
+          },
+          {
+            "headline": "UK AISI shares benchmark results via EvalEval's Evaluation Cards for reproducibility",
+            "what_happened": "A Hugging Face article published September 22, 2026 describes UK AI Security Institute (AISI) using EvalEval's infrastructure to publish evaluation results openly. AISI released verified results, context, and configuration for five benchmarks (HealthBench, FrontierMath, Humanity's Last Exam, SWE-Bench Pro, Terminal-Bench 2.0) across six frontier models, alongside its paper on how inference-time compute shapes evaluation. The shared Every Eval Ever schema and Evaluation Cards aim to make results interpretable and reproducible.",
+            "why_it_matters": "The article's key practitioner point is that apparently similar scores can come from meaningfully different conditions — evaluation protocol and inference compute changed results on Humanity's Last Exam in their data. For anyone comparing models or RAG setups, this is a reminder that a leaderboard number without configuration details is not a fair comparison.",
+            "takeaway": "The interpretation of what this means for practitioners comes partly from a commenter on the article, not only the authors. Before citing any benchmark delta, inspect whether setup fields — protocol, compute budget, feedback conditions — are reported, and be cautious comparing scores produced under different conditions.",
+            "source_ids": [
+              "news-e9f63aa1f7aa"
+            ]
+          },
+          {
+            "headline": "Google Research announces a TEE-based federated learning system with verifiable privacy guarantees",
+            "what_happened": "A Google Research post dated October 2, 2026 describes a next-generation federated learning system using Trusted Execution Environments (TEEs). Client devices upload encrypted training examples; only TEE workloads matching access policies published to a public transparency log (Rekor) can decrypt and process them; a TEE-based KMS controls keys; and only differentially private model weights and metrics are visible to operators. Google says Gboard has adopted the system for English and Japanese next-word prediction, with faster training by shifting computation to the server.",
+            "why_it_matters": "For developers, this shows a concrete pattern for 'prove what code runs on user data' rather than asking users to trust the operator — relevant to any system training on sensitive decentralised data. The analogy: instead of trusting a kitchen with your recipe, you watch the cooking through a sealed glass room whose equipment anyone can audit.",
+            "takeaway": "The guarantees are subject to current-generation TEE limitations, and Google notes ongoing work on side-channel mitigations and dynamically loaded proprietary logic. Before relying on similar designs, inspect the published whitepaper, the transparency log mechanism, and what exactly remains outside attestation.",
+            "source_ids": [
+              "news-a47750453f6e"
+            ]
+          }
+        ],
+        "exercise": "Pick one of the three items and spend two minutes finding the primary source (the OpenAI story, the Hugging Face article, or the Google whitepaper link). Note one claim that is the publisher's own and one detail the excerpt above did not include. This checks whether you can separate publisher claims from independent facts.",
+        "question": "The AISI/EvalEval item and the Google FL item both concern verifiability. What is the key difference in what is being verified?",
+        "answer": "EvalEval verifies that evaluation results are reported with enough configuration context to reproduce and compare them; Google's TEE system verifies that server-side code processing user data matches published, auditable policies. One is about reproducible measurement, the other about verifiable data handling."
+      },
+      "usage": {
+        "prompt_tokens": 5056,
+        "total_tokens": 7115,
+        "completion_tokens": 2059,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 24
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 24
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-2167384f51e2",
+          "title": "The Den frees up 10-15 hours a week to grow with ChatGPT Work",
+          "url": "https://openai.com/index/the-den-family-social",
+          "publisher": "OpenAI",
+          "published_at": "2026-10-01T00:00:00+00:00",
+          "evidence_type": "feed_excerpt",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-e9f63aa1f7aa",
+          "title": "How UK AISI and EvalEval Are Making Benchmark Results Reproducible",
+          "url": "https://huggingface.co/blog/evaleval-aisi",
+          "publisher": "Hugging Face",
+          "published_at": "2026-09-22T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-a47750453f6e",
+          "title": "Toward provably private learning from federated data",
+          "url": "https://research.google/blog/toward-provably-private-learning-from-federated-data/",
+          "publisher": "Google Research",
+          "published_at": "2026-10-02T14:57:41+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "Other"
+        }
+      ],
+      "id": "43cf474452347403"
+    },
+    {
+      "date": "2026-10-04",
+      "timezone": "America/New_York",
+      "created_at": "2026-10-04T15:49:12.685089+00:00",
+      "topic": "RAG",
+      "language": "te",
+      "concept": "Writing a useful retrieval query",
+      "news_window": "recent",
+      "source_warnings": [],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "RAG లో ఉపయోగకరమైన retrieval query రాయడం",
+        "summary": "Retrieval-Augmented Generation (RAG) systems లో, model సమాధానం కోసం బయటి knowledge source నుంచి documents ను వెతుకుతుంది. ఆ వెతుకులాట (retrieval) ఎంత బాగుంటే సమాధానం అంత ఖచ్చితంగా ఉంటుంది. ఈ పాఠంలో మంచి retrieval query ఎలా రాయాలో ఒక కథ ద్వారా నేర్చుకుంటాం.",
+        "story": "లక్ష్మి ఒక పెద్ద లైబ్రరీలో సహాయకురాలిగా పనిచేస్తోంది. ఒక రోజు ఒక పాఠకుడు వచ్చి 'ఆవిష్కరణల గురించి ఏదైనా ఇవ్వండి' అన్నాడు. లక్ష్మి తెలిసినన్ని పుస్తకాలు ఇచ్చింది — వంట పుస్తకం నుంచి చరిత్ర వరకు. పాఠకుడు నిరాశ చెందాడు. మరో పాఠకురాలు వచ్చి 'నాకు 1980ల భారత వ్యవసాయ సాంకేతికత గురించి, ప్రభుత్వ నివేదికల్లో, నీటి పారుదల పద్ధతులపై సమాచారం కావాలి' అని చెప్పింది. లక్ష్మి ఖచ్చితంగా సరైన మూడు పుస్తకాలు ఇవ్వగలిగింది. తేడా ప్రశ్నలో కాదు — ప్రశ్న వెనుక ఉన్న కీలక పదాలు, సందర్భం, పరిధిలో.",
+        "connection": "ఈ కథలో లక్ష్మి = retriever, లైబ్రరీ = vector index లేదా document corpus, పాఠకుల ప్రశ్నలు = retrieval queries. మొదటి పాఠకుడి ప్రశ్న వలె 'AI గురించి చెప్పు' లాంటి మసక query ఇచ్చినట్టయితే, retriever సంబంధం లేని documents తెస్తుంది. రెండో పాఠకురాలి ప్రశ్న వలె స్పష్టమైన, సందర్భం ఉన్న query ఇచ్చినట్టయితే, సరైన passages వస్తాయి.",
+        "explanation": "RAG అంటే రెండు భాగాల కలయిక: ఒకటి pre-trained seq2seq model (parametric memory — model తన parameters లో నేర్చుకున్న జ్ఞానం), రెండు dense vector index వంటి non-parametric memory — ఇది pre-trained neural retriever తో access చేయబడుతుంది. ఈ పద్ధతి knowledge-intensive tasks లో మెరుగైన ఫలితాలిచ్చింది, ఎందుకంటే model తన పరిమిత జ్ఞానంపై మాత్రమే ఆధారపడకుండా బయటి documents చూస్తుంది. REALM పరిశోధన కూడా ఇదే సూత్రాన్ని చూపింది: model కు ఒక latent knowledge retriever ను జోడిస్తే, పెద్ద corpus నుంచి documents ను retrieve చేసి attend చేయగలదు, దీనివల్ల interpretability మరియు modularity లాభిస్తాయి. ఇక్కడ ముఖ్యమైన పాయింట్: retriever అనేది neural search — ఇది query యొక్క semantic meaning ను బట్టి documents ను కనుగొంటుంది. కాబట్టి query లో ఉన్న పదాలు, సందర్భం, ప్రశ్న యొక్క పరిధి — ఇవన్నీ ఏ documents వస్తాయో నిర్ణయిస్తాయి. మసక query అంటే మసక retrieval.",
+        "application": "ఒక developer తన కంపెనీ support chatbot కోసం RAG ని నిర్మిస్తున్నారనుకోండి. వినియోగదారు 'ఇది పని చేయడం లేదు' అని అడిగితే, ఆ raw ప్రశ్నను నేరుగా retriever కి పంపితే సంబంధం లేని documents వస్తాయి. బదులుగా, వినియోగదారు సందర్భం (ఏ product, ఏ feature, ఏ error message) తో query ని పునఃరూపకల్పన (rewrite) చేయవచ్చు: 'Product X లో export feature వాడినప్పుడు error 502 వస్తోంది — troubleshooting steps ఏమిటి?' అని. ఇలా query ని స్పష్టీకరించడం వల్ల retriever సరైన knowledge base passages ను పట్టుకుంటుంది, తద్వారా generation దశ ఖచ్చితమైన సమాధానం ఇవ్వగలదు.",
+        "exercise": "రెండు నిమిషాల వ్యాయామం: మీ సొంత ప్రాజెక్ట్ లో ఒక సాధారణ ప్రశ్నను తీసుకోండి (ఉదా: 'billing ఎలా పని చేస్తుంది?'). దీన్ని మూడు మెరుగైన retrieval queries గా మార్చండి — ఒక్కోదానిలో (1) కీలక పదాలు స్పష్టంగా ఉండాలి, (2) సందర్భం (వినియోగదారు ఎవరు, ఏ పరిస్థితి) ఉండాలి, (3) పరిధి పరిమితంగా ఉండాలి. ఒరిగితే ఒక స్నేహితుడిని అడిగి ఏ query కి సరైన సమాధానం వస్తుందో పోల్చండి.",
+        "question": "RAG లో మసక (vague) query ఇచ్చినప్పుడు ఏమి జరుగుతుంది, ఎందుకు?",
+        "answer": "Retriever సంబంధం తక్కువ లేదా తప్పు documents ను తెస్తుంది. ఎందుకంటే neural retriever query యొక్క semantic meaning పై ఆధారపడి documents కనుగొంటుంది; query లో సందర్భం, కీలక పదాలు లేకపోతే, సరైన passages కనుగొనలేక generation దశ తప్పు లేదా అసంపూర్ణ సమాధానం ఇవ్వవచ్చు.",
+        "limits": "ఈ లైబ్రరీ కథానికకు పరిమితులున్నాయి: లక్ష్మి మాటల అర్థాన్ని మానవురాలిగా అర్థం చేసుకుంటుంది, కానీ neural retrievers కేవలం vector similarity పై ఆధారపడతాయి — అవి ప్రశ్న యొక్క 'ఉద్దేశం' ను నిజంగా అర్థం చేసుకోవు. అంతేకాదు, మంచి query రాయడం మాత్రమే సరిపోదు: corpus లో సమాచారమే లేకపోతే ఎంత మంచి query తోనూ సమాధానం రాదు. అలాగే పరిశోధనలు ప్రధానంగా open-domain QA వంటి tasks పై దృష్టి సారించాయి; మీ నిర్దిష్ట domain లో ఫలితాలు భిన్నంగా ఉండవచ్చు.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "ఇటీవలి AI వార్తలు — RAG దృక్కోణం నుంచి",
+        "overview": "ఈ వారం మూడు అంశాలు: ఒక social club యొక్క AI వాడకం గురించి OpenAI ప్రచురణ, evaluation results ను reproducible చేసే Hugging Face వ్యాసం, మరియు Google Research యొక్క federated learning ప్రకటన. మొదటి రెండు RAG కి సంబంధించిన విశ్లేషణకు ఉపయోగపడతాయి; మూడోది వేరే topic కి చెందినది, కానీ సమాచార పూర్తితత కోసం చేర్చబడింది.",
+        "items": [
+          {
+            "headline": "The Den: ChatGPT Work తో వారానికి 10–15 గంటలు ఆదా — OpenAI కేస్ స్టడీ ప్రకారం",
+            "what_happened": "OpenAI ప్రచురించిన feed excerpt ప్రకారం, The Den అనే family social club ChatGPT Work ను వాడి వారానికి 10–15 గంటల సమయం ఆదా చేసినట్టు చెప్పుకుంటోంది. కొత్త location తెరుచుకుంటున్న ఈ club, grant applications ను 3 రోజుల నుంచి 2 గంటలకు, liquor-license materials ను 4 రోజుల నుంచి 3 గంటలకు తగ్గించినట్లు ఆ ప్రచురణలో ఉంది. ఇది publisher యొక్క దావా; మేము పూర్తి కేస్ స్టడీని చదవలేదు — ఇది feed excerpt మాత్రమే.",
+            "why_it_matters": "ఇటువంటి సమయ ఆదాలు సాధారణంగా document-heavy workflows లో జరుగుతాయి — ఇక్కడ retrieval పాత్ర ముఖ్యం: సంస్థ యొక్క past applications, license documents వంటి knowledge base నుంచి సరైన material ను వేగంగా పొందగలిగితే, drafting వేగవుతుంది. ఒక developer లేదా చిన్న సంస్థ కోసం అర్థం: మీ documents ను బాగా organize చేసి, స్పష్టమైన queries తో retrieve చేస్తే drafting పనుల్లో గణనీయమైన వేగం వచ్చే అవకాశం ఉంది. ఇది 'ఒక చిన్న దుకాణదారుడికి అన్ని పనులు ఒకేసారి అయిపోయే జాతీయ విప్లవం' కాదు — ఒక సంస్థ యొక్క అనుభవం మాత్రమే.",
+            "takeaway": "ఇది publisher చేసిన marketing-adjacent కేస్ స్టడీ; స్వతంత్ర ధృవీకరణ లేదు. ప్రయత్నించే ముందు: ఆ సమయ ఆదాలు ఏ workflow లో, ఏ baseline తో పోల్చి కొలిచారో, మరియు మీ సంస్థ documents నాణ్యత ఆ ఫలితాలకు సరిపోతుందో తనిఖీ చేయండి. Excerpt మాత్రమే ఆధారంగా నిర్ణయాలు తీసుకోవద్దు.",
+            "source_ids": [
+              "news-2167384f51e2"
+            ]
+          },
+          {
+            "headline": "UK AISI మరియు EvalEval: benchmark ఫలితాలను reproducible చేయడం",
+            "what_happened": "Hugging Face వ్యాసం (2026 సెప్టెంబర్ 22 ప్రచురణ) ప్రకారం, UK AI Security Institute (AISI) EvalEval యొక్క infrastructure ను ఉపయోగించి evaluation ఫలితాలను బహిరంగంగా పంచుకోవడం ప్రారంభించింది. Every Eval Ever (EEE) అనే shared schema మరియు Evaluation Cards అనే open platform ద్వారా, ఫలితాలతో పాటు వాటిని అర్థం చేసుకోవడానికి కావలసిన configuration సమాచారం కూడా ఇవ్వబడుతోంది. AISI విడుదలలో HealthBench, FrontierMath, Humanity's Last Exam, SWE-Bench Pro, Terminal-Bench 2.0 వంటి benchmarks పై ఆరు frontier models ఫలితాలు ఉన్నాయి. వ్యాసంలోని ముఖ్యమైన అంశం: evaluation protocol మరియు inference-time compute మారితే ఒకే model యొక్క benchmark స్కోరు మారవచ్చు — అంటే setup వివరాలు లేకుండా స్కోర్లను పోల్చడం తప్పు.",
+            "why_it_matters": "RAG systems ని అంచనా వేసే developers కి ఇది నేరుగా పనికివస్తుంది: retrieval quality ని కొలిచేటప్పుడు కూడా, ఏ protocol, ఏ dataset version, ఏ parameters వాడారో document చేయకపోతే మీ ఫలితాలను ఎవరూ reproduce చేయలేరు. ఒక స్పష్టమైన analogy: ఇది ఒక వంట కావి — కేవలం 'రుచిగా ఉంది' అని చెప్పకుండా, ingredients మరియు పద్ధతి రాస్తే, ఎవరైనా అదే వంటకం మళ్లీ చేసి పోల్చగలరు. Evaluation Cards ఆ 'recipe' ను standardize చేస్తాయి.",
+            "takeaway": "ఇది విశ్వవ్యాప్త పరిష్కారం కాదు — ఇది ఒక సంస్థ యొక్క adoption మరియు ఒక ప్రారంభ infrastructure. ప్రయత్నించే ముందు: EEE schema లో ఏ fields మీ use case కి అవసరమో, మరియు AISI విడుదల చేసిన ఫలితాలు మీ పరిస్థితులకు సరిపోయే setup లో నడిచాయో (compute, feedback, protocol) వ్యాసంలోని Evaluation Cards ని చూసి ధృవీకరించండి.",
+            "source_ids": [
+              "news-e9f63aa1f7aa"
+            ]
+          },
+          {
+            "headline": "Google Research: TEE ఆధారిత Federated Learning తో ధృవీకరించదగిన privacy",
+            "what_happened": "Google Research (2026 అక్టోబర్ 2) కొత్త Federated Learning (FL) system ను ప్రకటించింది. ఇది Trusted Execution Environments (TEEs) ను ఉపయోగించి, data anonymization కి బాహ్యంగా ధృవీకరించదగిన (externally verifiable) privacy guarantees ఇస్తుంది. ముఖ్యమైన మార్పు: training computation ను devices నుంచి server కి మార్చారు — client devices locally encrypt చేసి data upload చేస్తాయి, access policies ఒక public transparency log (Rekor) లో ప్రచురించబడతాయి, మరియు differential privacy తో కూడిన model weights మాత్రమే బయటకు వస్తాయి. Gboard ఈ కొత్త system ను English మరియు Japanese next-word prediction models కోసం వాడుతున్నట్లు, దీనివల్ల training వేగంగా మరియు accuracy మెరుగుపడినట్లు ప్రకటనలో ఉంది. ఇది RAG topic కి సంబంధించినది కాదు — ఇది మా interpretation కోసం చేర్చిన సాధారణ AI అభివృద్ధి.",
+            "why_it_matters": "Developer కోసం అర్థం: మీరు user data తో పనిచేసే ML features నిర్మిస్తే, 'server ని నమ్మాలి' అనే పరిస్థితి నుంచి 'server ఏమి చేస్తున్నాదో బాహ్యంగా verify చేయవచ్చు' అనే దిశగా పరిశ్రమ కదులుతోంది. ఒక స్పష్టమైన analogy: ఇది ఒక తాళపు పెట్టెల గదిలా — గదిలో ఎవరు ఏం చేస్తున్నారో గది లోపల ఉన్నవారికి మాత్రమే తెలుసు, కానీ గది తలుపుపై ఒక బహిరంగ పట్టిక ఉంది, దానిలో ఎవరు ఏ పనికి అనుమతించబడ్డారో ఎవరైనా చూడవచ్చు.",
+            "takeaway": "ఇది Google యొక్క ప్రకటన; ఫలితాలు (వేగం, accuracy) వారి సొంత కొలతలు. TEE లకు current-generation పరిమితులు ఉన్నాయని ప్రకటనలోనే స్వయంగా గుర్తించారు — side-channel attacks వంటి సమస్యలపై పరిశోధన కొనసాగుతోంది. ప్రయత్నించే ముందు: whitepaper లో system design, మరియు Confidential Federated Compute GitHub repo లో reproducible builds ని సమీక్షించి, మీ threat model కి ఈ guarantees సరిపోతాయో చూడండి.",
+            "source_ids": [
+              "news-a47750453f6e"
+            ]
+          }
+        ],
+        "exercise": "రెండు నిమిషాల సోర్స్-చెక్: మొదటి వార్త (The Den) కోసం, source యొక్క evidence_type 'feed_excerpt' — అంటే మేము పూర్తి కేస్ స్టడీ చదవలేదు. ఇప్పుడు మీరు చేయాల్సింది: (1) '10–15 గంటలు' అనే సంఖ్య ఎవరు కొలిచారో మరియు ఏ baseline తో పోల్చారో అడగండి, (2) ఈ ఫలితం ఒక publisher యొక్క సొంత product గురించిన కేస్ స్టడీ అని గుర్తించండి, (3) మీ స్వంత ప్రాజెక్ట్ లో ఇటువంటి claim ను ధృవీకరించడానికి ఏ ఒక్క ప్రశ్న అడిగేవారో రాయండి.",
+        "question": "AISI/EvalEval వ్యాసం ప్రకారం, రెండు models యొక్క benchmark స్కోర్లను పోల్చే ముందు మీరు తనిఖీ చేయాల్సిన ముఖ్యమైన విషయం ఏమిటి, ఎందుకు?",
+        "answer": "రెండు ఫలితాలు ఒకే evaluation protocol, inference-time compute, మరియు setup configuration లో నడిచాయో తనిఖీ చేయాలి. ఎందుకంటే వ్యాసం ప్రకారం, protocol లేదా compute మారితే ఒకే model యొక్క స్కోరు గణనీయంగా మారవచ్చు — అంటే setup వివరాలు లేకుండా 'Model A beat Model B' అనే పోలిక నమ్మదగినది కాదు."
+      },
+      "usage": {
+        "prompt_tokens": 5056,
+        "total_tokens": 15857,
+        "completion_tokens": 10801,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 21
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 21
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-2167384f51e2",
+          "title": "The Den frees up 10-15 hours a week to grow with ChatGPT Work",
+          "url": "https://openai.com/index/the-den-family-social",
+          "publisher": "OpenAI",
+          "published_at": "2026-10-01T00:00:00+00:00",
+          "evidence_type": "feed_excerpt",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-e9f63aa1f7aa",
+          "title": "How UK AISI and EvalEval Are Making Benchmark Results Reproducible",
+          "url": "https://huggingface.co/blog/evaleval-aisi",
+          "publisher": "Hugging Face",
+          "published_at": "2026-09-22T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-a47750453f6e",
+          "title": "Toward provably private learning from federated data",
+          "url": "https://research.google/blog/toward-provably-private-learning-from-federated-data/",
+          "publisher": "Google Research",
+          "published_at": "2026-10-02T14:57:41+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "Other"
+        }
+      ],
+      "id": "edc788f2066e7c30"
     }
   ]
 }
