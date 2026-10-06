@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "task": "daily_pills_collection",
-  "updated_at": "2026-10-04T15:50:49.487725+00:00",
+  "updated_at": "2026-10-06T17:16:06.453155+00:00",
   "packets": [
     {
       "date": "2026-09-12",
@@ -3044,6 +3044,228 @@
         }
       ],
       "id": "edc788f2066e7c30"
+    },
+    {
+      "date": "2026-10-06",
+      "timezone": "America/New_York",
+      "created_at": "2026-10-06T17:14:26.422565+00:00",
+      "topic": "RAG",
+      "language": "en",
+      "concept": "Knowing when evidence is missing",
+      "news_window": "recent",
+      "source_warnings": [],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "Knowing When Evidence Is Missing: The RAG Skill Nobody Teaches",
+        "summary": "Retrieval-augmented generation (RAG) grounds a language model in documents you control, but the real skill is recognizing when the retriever came back empty or irrelevant — and teaching the system to say so instead of guessing.",
+        "story": "Priya is a librarian at a small reference desk. A visitor asks about a 1973 zoning ordinance. Priya walks to the archive, pulls three folders, and finds nothing relevant — only pamphlets about parking. She has two options: go back and say 'I couldn't find it, here's what I did check,' or improvise an answer from general knowledge and hope it sounds right. A good librarian does the first. Now imagine a librarian who never admits the shelf was empty — who always hands over *something* with a confident tone. Visitors would stop trusting the desk, because they'd never know which answers came from the archive and which were invented on the spot. Priya's value isn't just finding documents; it's her honesty about the boundary of what the archive contains.",
+        "connection": "That boundary-awareness is exactly what separates a useful RAG system from a confidently wrong one. The archive is your vector index or document store. Priya's walk to the shelves is the retriever. Her folders are the retrieved passages. And her choice to say 'I couldn't find it' is the part most developers forget to build: an evidence-sufficiency check between retrieval and generation.",
+        "explanation": "The original RAG paper (Lewis et al., 2020) describes combining a pre-trained seq2seq model (parametric memory) with a dense vector index of Wikipedia (non-parametric memory) accessed by a neural retriever, and shows this yields more specific, factual generation than a parametric-only baseline. REALM (Guu et al., 2020) similarly augments a language model with a latent knowledge retriever over a large corpus, improving open-domain QA while adding interpretability and modularity. Both papers highlight why retrieval matters: knowledge in model weights is hard to update and hard to trace. But notice what retrieval gives you — *provenance*, not truth. If the retriever surfaces passages that don't actually answer the question, the generator can still produce fluent text. The system has no built-in 'shelf was empty' signal. That check is your job: score retrieval quality (similarity thresholds, reranker judgments, or asking the model whether the passages entail an answer), and route to a refusal or clarification path when evidence is weak. The modularity REALM emphasizes is your leverage — because knowledge lives outside the weights, you can inspect what was retrieved and audit why the answer came out the way it did.",
+        "application": "In a support chatbot, add a gate after retrieval: if the top passages fall below a relevance score, or the generator judges they don't entail an answer, respond with 'I don't have documentation for that' and escalate. Log the retrieved chunk IDs with every answer so you can trace failures to missing or stale documents rather than blaming the model.",
+        "exercise": "Take any RAG demo you have (or imagine one). For two minutes, write down three questions a user could ask that your corpus genuinely cannot answer. Then decide: what should the system do for each — refuse, ask a clarifying question, or answer from general knowledge with a warning? If you can't name the refusal path, you don't have one.",
+        "question": "In a RAG system, why does retrieving low-relevance passages often still produce a confident, fluent answer?",
+        "answer": "Because the generator is trained to produce fluent text from whatever context it receives; it has no automatic signal that the retrieved passages fail to answer the question. Evidence-sufficiency checking must be added explicitly by the developer.",
+        "limits": "The librarian analogy understates the difficulty of the real problem: 'relevance' is graded, not binary. A passage can be topically related but factually insufficient, and threshold-based gates can both block good answers and pass bad ones. Retrieval scores also measure similarity, not truth — a confident wrong document can score highly. Treat the analogy as a starting point for designing refusal paths, not as a complete evaluation method.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "Recent developments touching retrieval-grounded AI",
+        "overview": "Two recent items: an OpenAI customer story about a social club using ChatGPT for document-heavy work, and a Google Research post on geospatial foundation models for public health. Both are publisher-reported; treat claims as vendor or researcher statements pending independent review.",
+        "items": [
+          {
+            "headline": "OpenAI says a social club saves 10–15 hours a week with ChatGPT Work",
+            "what_happened": "An OpenAI-published customer story describes The Den, a family social club, using ChatGPT Work while opening a new location. Per the story, grant applications that took three days now take two hours, and liquor-license materials that took four days now take three hours. This is a feed excerpt from a vendor case study, not an independent audit.",
+            "why_it_matters": "For developers, this is a familiar pattern: an assistant grounded in the organization's own documents (licenses, past grants, requirements) compressing document-heavy workflows. Think of it as a librarian who already knows where every folder is — the speedup comes from retrieval and drafting, not magic. The plausible use case for a small team is drafting repetitive, source-bound paperwork faster.",
+            "takeaway": "These are publisher claims about time savings with no methodology shown. Before trying something similar, inspect what documents the workflow depends on, whether outputs are human-reviewed before submission (regulatory filings like liquor licenses demand it), and whether the reported hours were measured or estimated.",
+            "source_ids": [
+              "news-2167384f51e2"
+            ]
+          },
+          {
+            "headline": "Google Research presents PDFM case studies for global public health",
+            "what_happened": "A Google Research blog post (October 6, 2026) describes five partner-driven case studies using Earth AI's Population Dynamics Foundation Model (PDFM), which compresses privacy-preserving search trends, mobility, built-environment density, and environmental data into monthly location embeddings. Reported results include a 36% relative gain in explained variance for cross-border MMR vaccination modeling, cardiovascular mortality nowcasting comparable to census inputs with lower outlier error, dengue forecast gains in up to 72% of active transmission municipalities, and small AUC gains for postpartum depression risk prediction.",
+            "why_it_matters": "The relevant idea for developers is 'plug-and-play context': pre-trained embeddings that enrich models you already have, instead of building new pipelines — analogous to swapping in a better feature store. The concrete use case is filling data gaps where official statistics lag by years, such as nowcasting county-level health metrics.",
+            "takeaway": "These are researcher-reported results from selected partner case studies, not independent validations, and several reported gains are small or not statistically significant (e.g., the PPD AUC deltas). Before applying this paradigm, inspect the validation matrix in the post, the geographic scope of each result, and whether the embedding refresh cadence and privacy guarantees fit your domain.",
+            "source_ids": [
+              "news-c02127d34967"
+            ]
+          }
+        ],
+        "exercise": "For two minutes, pick one news item and list three questions you'd need answered before trusting its numbers: Who measured the results? What was the baseline? Was the evaluation independent of the publisher?",
+        "question": "Why should you treat a vendor case study's time-savings claims differently from a peer-reviewed benchmark?",
+        "answer": "Vendor case studies are self-reported, often lack methodology, baselines, and independent verification, and may select favorable examples; peer-reviewed benchmarks at least expose methods for scrutiny — though neither should be accepted without checking how the measurement was done."
+      },
+      "usage": {
+        "prompt_tokens": 3648,
+        "total_tokens": 5344,
+        "completion_tokens": 1696,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 18
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 18
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-2167384f51e2",
+          "title": "The Den frees up 10-15 hours a week to grow with ChatGPT Work",
+          "url": "https://openai.com/index/the-den-family-social",
+          "publisher": "OpenAI",
+          "published_at": "2026-10-01T00:00:00+00:00",
+          "evidence_type": "feed_excerpt",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-c02127d34967",
+          "title": "Unlocking Earth AI’s planetary geospatial foundation models for global public health",
+          "url": "https://research.google/blog/earth-ais-planetary-geospatial-foundation-models-for-global-public-health/",
+          "publisher": "Google Research",
+          "published_at": "2026-10-06T15:05:11+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "Other"
+        }
+      ],
+      "id": "b7f2a2722a94ea09"
+    },
+    {
+      "date": "2026-10-06",
+      "timezone": "America/New_York",
+      "created_at": "2026-10-06T17:14:26.422565+00:00",
+      "topic": "RAG",
+      "language": "te",
+      "concept": "Knowing when evidence is missing",
+      "news_window": "recent",
+      "source_warnings": [],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "RAGలో సాక్ష్యం లేనప్పుడు గుర్తించడం",
+        "summary": "Retrieval-Augmented Generation (RAG) వ్యవస్థల్లో అత్యంత ముఖ్యమైన నైపుణ్యం ఏమిటంటే — మీ డాక్యుమెంట్ సేకరణలో సమాధానం నిజంగా లేకపోతే దాన్ని గుర్తించి, ఊహించి చెప్పకూడదు. ఈ పాఠంలో ఒక కల్పిత కథ ద్వారా ఈ భావనను నేర్చుకుంటారు, తర్వాత దాన్ని నిజమైన RAG ఆర్కిటెక్చర్‌కు అనుసంధానిస్తాము.",
+        "story": "లక్ష్మి ఒక పెద్ద లైబ్రరీలో సహాయకురాలు. ఒక రోజు ఒక పాఠకుడు వచ్చి అడిగాడు: \"నా ఊరిలో 1998లో ఎన్ని కొత్త షాపులు తెరిచారు?\" లక్ష్మి త్వరగా షెల్ఫ్‌లను చూసింది. ఆమెకు ఊరి పేరుతో ఒక పుస్తకం దొరికింది — కానీ అది 1995 నాటి గణాంకాల గురించి మాత్రమే మాట్లాడింది. రెండో పుస్తకం పొరుగు జిల్లా గురించి ఉంది. మూడో పుస్తకం షాపుల గురించే కాదు, రోడ్ల గురించి ఉంది. లక్ష్మికి రెండు మార్గాలు: ఈ అసంబద్ధ సమాచారాన్ని కలిపి ఒక నమ్మకమైన సమాధానం లాగా చెప్పడం, లేదా నిజంగా చెప్పడం — \"ఈ సమాచారం నా పుస్తకాల్లో లేదు; నేను దొరికిన దానికి, మీ ప్రశ్నకు సంబంధం తక్కువ.\" మొదటి మార్గం పాఠకుడిని ఒక్కసారి సంతోషపెడుతుంది, కానీ తప్పు సమాచారం ఇస్తుంది. రెండో మార్గం నిజాయితీది — సాక్ష్యం లేదని అంగీకరించడం.",
+        "connection": "ఈ కథలోని భాగాలు RAG వ్యవస్థకు ఇలా సరిపోతాయి: పాఠకుడి ప్రశ్న = user query; లక్ష్మి షెల్ఫ్‌లలో వెతకడం = retriever; లైబ్రరీ పుస్తకాలు = document index (non-parametric memory); లక్ష్మి సమాధానం తయారు చేయడం = generator (seq2seq model); ఆమె తప్పు సమాధానం చెప్పే ప్రలోభం = hallucination; ఆమె నిజాయితీగా \"సాక్ష్యం లేదు\" అనడం = abstention / evidence-gap detection.",
+        "explanation": "RAG అనే ఆలోచన Lewis తదితరుల 2020 పేపర్‌లో వివరించబడింది: ప్రీ-ట్రైన్డ్ seq2seq మోడల్ (parametric memory) తో ఒక dense vector index (non-parametric memory) ను neural retriever ద్వారా కలిపి జనరేషన్ చేయడం. ఇది knowledge-intensive tasks లో మెరుగైన ఫలితాలు, provenance (ఎక్కడి నుంచి సమాచారమో చూపడం), మరియు జ్ఞానాన్ని అప్‌డేట్ చేయగల సామర్థ్యం ఇస్తుంది. REALM పేపర్ ఇంకో వైపు — మోడల్ పారామిటర్లలో జ్ఞానం implicit గా దాచబడటం వల్ల పెద్ద నెట్‌వర్క్‌లు కావాలని, దీనికి బదులుగా ఒక latent knowledge retriever తో ప్రీ-ట్రైన్ చేస్తే interpretability మరియు modularity లాభాలు వస్తాయని చూపింది. కానీ రెండు విధానాల్లోనూ ఒకే ముఖ్యమైన బలహీనత ఉంది: retriever ఎప్పుడూ ఏదో డాక్యుమెంట్‌ను తిరిగి ఇస్తూనే ఉంటుంది. సేకరణలో సమాధానం లేకపోయినా, సంబంధం తక్కువగా ఉన్న డాక్యుమెంట్‌లు వస్తాయి. జనరేటర్ ఆ డాక్యుమెంట్‌లను చూసి \"ఏదైనా ఉంది, కట్టి చెప్పేయి\" అని భావించవచ్చు. అందుకే ప్రాక్టికల్ RAG సిస్టమ్‌ల్లో retrieval score threshold, relevance checking, మరియు \"సాక్ష్యం సరిపోదు\" అని చెప్పే మార్గం చేర్చడం చాలా అవసరం. ఇది మోడల్ పరిమాణం కంటే సిస్టమ్ డిజైన్ సమస్య.",
+        "application": "మీరు కంపెనీ HR పాలసీ chatbot నిర్మిస్తున్నారనుకోండి. వినియోగదారు \"నా వార్షిక సెలవులు ఎన్ని?\" అని అడిగితే retriever పాలసీ డాక్యుమెంట్‌ను ఇస్తుంది — బాగుంది. కానీ \"నా బోనస్ ఎప్పుడు వస్తుంది?\" అని అడిగితే, సేకరణలో బోనస్ షెడ్యూల్ లేకపోవచ్చు; retriever అయినా పాలసీ డాక్యుమెంట్‌నే ఇస్తుంది. సరైన డిజైన్: retrieval స్కోరు తక్కువగా ఉంటే, లేదా వచ్చిన డాక్యుమెంట్‌లలో ప్రశ్నకు సంబంధిత వాక్యం లేకపోతే, సిస్టమ్ \"ఈ సమాచారం డాక్యుమెంటేషన్‌లో లేదు; HR ని సంప్రదించండి\" అని చెప్పాలి. ఇది తప్పు వాగ్దానాల వల్ల వచ్చే నష్టాన్ని తగ్గిస్తుంది.",
+        "exercise": "రెండు నిమిషాల వ్యాయామం: మీ కంప్యూటర్‌లో లేదా నోట్‌లో ఒక చిన్న డాక్యుమెంట్ (ఒక పేరా) తీసుకోండి. ఆ పేరాలో లేని సమాచారం గురించి మూడు ప్రశ్నలు రాయండి — ఒకటి పేరాలో ఉన్న సమాచారంపై, ఒకటి పరోక్షంగా అనుమానించగలిగేది, ఒకటి పూర్తిగా లేనిది. ఇప్పుడు మీరు chatbot ఐతే ఏ ప్రశ్నకు \"సాక్ష్యం లేదు\" అనాలి? మూడో ప్రశ్నకు. ఇదే తీర్పును సిస్టమ్ ఆటోమేటిక్‌గా తీసుకోవడమే మన సవాలు.",
+        "question": "RAG సిస్టమ్‌లో retriever ఎల్లప్పుడైనా కొన్ని డాక్యుమెంట్‌లను తిరిగి ఇస్తే, \"సాక్ష్యం లేదు\" అని ఎప్పుడు చెప్పాలో ఎలా నిర్ణయిస్తారు?",
+        "answer": "రిట్రీవల్ స్కోర్‌లను (relevance threshold) తనిఖీ చేయడం, వచ్చిన డాక్యుమెంట్‌లలో ప్రశ్నకు నిజంగా సంబంధిత సమాచారం ఉందో లేదో చూడటం ద్వారా. స్కోరు తక్కువగా ఉండి, డాక్యుమెంట్‌లు ప్రశ్నకు సరిపోకపోతే, సిస్టమ్ ఊహించి చెప్పకుండా సమాచారం అందుబాటులో లేదని చెప్పాలి.",
+        "limits": "ఈ కథ ఒక ముఖ్యమైన అంశాన్ని దాచిపెడుతుంది: లక్ష్మికి \"ఈ పుస్తకం సంబంధం లేదు\" అని అర్థమవుతుంది, కానీ నిజమైన retriever లెక్కించిన similarity score కి, నిజమైన relevance కి మధ్య ఎప్పుడూ అంతరం ఉంటుంది. Threshold ఎక్కువ పెడితే సరైన సమాధానాలను కూడా తిరస్కరిస్తుంది; తక్కువ పెడితే తప్పులు తప్పించుకుంటాయి. అంతేకాదు, అనువదించిన సాక్ష్యం లేదని చెప్పడం కూడా ఎల్లప్పుడూ సరైనది కాదు — కొన్నిసార్లు పరోక్ష సాక్ష్యం నుంచి సహేతుకమైన అనుమితి ఉపయోగకరం. ఈ అంతరాన్ని తగ్గించడం ఇప్పటికీ ఓపెన్ రీసెర్చ్ సమస్యే.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "ఇటీవలి అభివృద్ధులు: పనిముద్ర AI సహాయం మరియు జియోస్పేషియల్ హెల్త్ మోడల్స్",
+        "overview": "ఈ వారం రెండు వార్తా మూలాలు ఉన్నాయి: OpenAI ప్రచురించిన ఒక కస్టమర్ కథనం, మరియు Google Research బ్లాగ్‌లో భూమి-పరిమాణ geospatial foundation models ను ప్రజారోగ్యానికి వాడిన కేస్ స్టడీలు. రెండూ వేర్వేరు రంగాలవి — ఒకటి చిన్న వ్యాపార ఉత్పాదకత, రెండోది శాస్త్రీయ పరిశోధన. రెండింటిలోనూ ప్రచురించిన సంస్థే కథనాన్ని అందించినదని గుర్తుంచుకోవాలి; అది స్వతంత్ర ధృవీకరణ కాదు.",
+        "items": [
+          {
+            "headline": "OpenAI: The Den సోషల్ క్లబ్ ChatGPT Work తో వారానికి 10–15 గంటలు ఆదా చేసినట్లు చెప్పింది",
+            "what_happened": "OpenAI తన సైట్‌లో The Den అనే సోషల్ క్లబ్ గురించి ఒక కథనం ప్రచురించింది. దీని ప్రకారం, కొత్త లొకేషన్ ప్రారంభిస్తున్న సమయంలో ఈ క్లబ్ ChatGPT Work ను ఉపయోగించి గ్రాంట్ అప్లికేషన్లను 3 రోజుల నుంచి 2 గంటలకు, లిక్కర్-లైసెన్స్ పత్రాలను 4 రోజుల నుంచి 3 గంటలకు తగ్గించుకున్నట్లు, వారానికి 10–15 గంటలు ఆదా అయినట్లు చెబుతోంది. ఇది feed excerpt ఆధారంగా ఉన్న కథనం — మేము పూర్తి వ్యాసాన్ని చదివినట్లు చెప్పలేము.",
+            "why_it_matters": "చిన్న వ్యాపారాలకు గ్రాంట్లు, లైసెన్స్‌ల వంటి పత్రాలు ఎక్కువ సమయం తీసుకునే పనులు. AI సహాయంతో డ్రాఫ్టింగ్, డాక్యుమెంట్ సిద్ధం చేయడం వంటి పనులు వేగవంతం కావడం ఒక సాధారణ, స్పష్టమైన వాడుక సందర్భం. ఒక అనువైన ఉపమానం: ఇది ఒక తెలివైన అసిస్టెంట్ లాంటిది — మొదటి డ్రాఫ్ట్ వేగంగా ఇస్తుంది, కానీ చివరి తనిఖీ మనదే. ఈ సంఖ్యలు (10–15 గంటలు) OpenAI ప్రచురించిన కస్టమర్ కథనంలోని వాదనలే; స్వతంత్రంగా ధృవీకరించబడిన కొలతలు కావు.",
+            "takeaway": "ఇది ఒక సింగిల్ కస్టమర్ కథనం — సార్వత్రిక ఫలితం కాదు. మీరు ఇలాంటి టూల్ ప్రయత్నించే ముందు: ఈ ఆదా ఎలా కొలిచారో, ఏ పనుల్లో వచ్చిందో, మానవ సమీక్ష ఎంత జరిగిందో తనిఖీ చేయండి. మీ స్వంత పనితో ఒక చిన్న pilot చేసి, మీ స్వంత సమయ కొలతలు చేయండి.",
+            "source_ids": [
+              "news-2167384f51e2"
+            ]
+          },
+          {
+            "headline": "Google Research: Earth AI PDFM location embeddings ను ప్రపంచ ప్రజారోగ్యానికి వాడిన ఐదు కేస్ స్టడీలు",
+            "what_happened": "Google Research బ్లాగ్ (అక్టోబర్ 6, 2026) లో Earth AI యొక్క Population Dynamics Foundation Model (PDFM) గురించి వివరించారు. PDFM సెర్చ్ ట్రెండ్స్, మానవ mobility, built-environment density, వాతావరణ/గాలి నాణ్యత వంటి privacy-preserving సిగ్నల్స్‌ను నెలవారీగా రిఫ్రెష్ అయ్యే location embeddings గా మారుస్తుంది. ఐదు భాగస్వామ్య కేస్ స్టడీల్లో — MMR టీకాలు (US–Canada సరిహద్దు), గుండె జబ్బుల nowcasting (US), డెంగ్యూ ఫోర్కాస్టింగ్ (మెక్సికో), ప్రసవానంతర నిరాశ (US), కలరా అవుట్‌బ్రేక్ ప్రెడిక్షన్ (DRC) — ఈ embeddings ను ఇప్పటికే ఉన్న epidemiological మోడల్స్‌కు plug-and-play ఇన్‌పుట్లుగా చేర్చి ఫలితాలు నివేదించారు. కొన్ని ఫలితాలు statistically significant (ఉదా: కలరాలో Precision@5 మెరుగుదలలు), కొన్ని కాదు (ఉదా: CVD nowcasting లో census డేటాతో తేడా గణనీయం కాలేదు).",
+            "why_it_matters": "డెవలపర్ దృష్టిలో ఇది ఒక ముఖ్యమైన డిజైన్ నమూనా: కొత్త pipeline నిర్మించకుండా, ప్రీ-ట్రైన్డ్ embeddings ను ఇప్పటికే ఉన్న మోడల్స్‌కు ఇన్‌పుట్‌గా చేర్చడం. ఇది RAG లో retrieval ద్వారా అదనపు సందర్భం ఇవ్వడం లాంటిది — మోడల్‌ను పూర్తిగా మార్చకుండా సమాచారాన్ని అందించడం. ప్రతిరోజూ వాడే ఉదాహరణ: పాత అధికారిక గణాంకాలు 1–2 ఏళ్లు ఆలస్యంగా వస్తే, నెలవారీ embeddings తాజా ప్రాక్సీగా పనిచేయవచ్చు.",
+            "takeaway": "ఇవి Google ప్రచురించిన, భాగస్వామ్య-ఆధారిత proof-of-concept కేస్ స్టడీలే; ఇది విశ్వవ్యాప్త పరిష్కారం అని చెప్పడానికి ఇంకా సాక్ష్యం సరిపోదు. ప్రయత్నించే ముందు: మీ ప్రాంతంలో PDFM కవరేజీ (17 దేశాలు అని చెప్పారు), ఏ కేస్ స్టడీలో ఫలితాలు statistically significant అయినదో, ఏది కాలేదో, మరియు అంతర్లీన డేటా privacy/పరిమితులను పరిశీలించండి. అసలు పేపర్‌ను చదవడం ఉత్తమం.",
+            "source_ids": [
+              "news-c02127d34967"
+            ]
+          }
+        ],
+        "exercise": "రెండు నిమిషాల source-check వ్యాయామం: రెండు వార్తా మూలాలను పక్కపక్కన పెట్టి అడగండి — (1) ఈ కథనాన్ని ప్రచురించిన సంస్థే ప్రయోజనం కలిగి ఉందా? (2) సంఖ్యలు (10–15 గంటలు; +36% explained variance) ఎవరు కొలిచారు, స్వతంత్ర ధృవీకరణ ఉందా? (3) ఏ ఫలితాలు statistically significant అని స్పష్టంగా చెప్పారు, ఏవి చెప్పలేదు? ఈ మూడు ప్రశ్నలు ఏ కథనాన్నైనా త్వరగా అంచనా వేయడానికి ఉపకరిస్తాయి.",
+        "question": "OpenAI కస్టమర్ కథనంలోని సమయ ఆదా సంఖ్యలను, Google కేస్ స్టడీలలోని ఫలితాలను వినడంలో ముఖ్యమైన తేడా ఏమిటి?",
+        "answer": "Google కథనం కొన్ని ఫలితాలకు statistical significance గురించి స్పష్టంగా చెబుతుంది (కొన్నిటికి లేదని కూడా అంగీకరిస్తుంది), అయితే OpenAI కథనం ఒక కస్టమర్ స్వయంగా చెప్పుకున్న సమయ ఆదా వాదన — రెండూ ప్రచురించిన సంస్థే అందించినవే, స్వతంత్ర ధృవీకరణ లేదు. రెండింటినీ మార్కెటింగ్-ప్రక్కన ఉన్న ఆధారాలుగానే చదవాలి."
+      },
+      "usage": {
+        "prompt_tokens": 3648,
+        "total_tokens": 15508,
+        "completion_tokens": 11860,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 34
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 34
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-2167384f51e2",
+          "title": "The Den frees up 10-15 hours a week to grow with ChatGPT Work",
+          "url": "https://openai.com/index/the-den-family-social",
+          "publisher": "OpenAI",
+          "published_at": "2026-10-01T00:00:00+00:00",
+          "evidence_type": "feed_excerpt",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-c02127d34967",
+          "title": "Unlocking Earth AI’s planetary geospatial foundation models for global public health",
+          "url": "https://research.google/blog/earth-ais-planetary-geospatial-foundation-models-for-global-public-health/",
+          "publisher": "Google Research",
+          "published_at": "2026-10-06T15:05:11+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "Other"
+        }
+      ],
+      "id": "0f4ba61c0596fe2b"
     }
   ]
 }

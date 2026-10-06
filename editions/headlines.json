@@ -1,8 +1,43 @@
 {
   "schema_version": 1,
   "task": "ai_headlines",
-  "checked_at": "2026-10-04T15:49:12.685089+00:00",
+  "checked_at": "2026-10-06T17:14:26.422565+00:00",
   "items": [
+    {
+      "id": "news-2896758265ce",
+      "title": "Atlassian and OpenAI expand partnership to turn enterprise knowledge into action",
+      "url": "https://openai.com/index/atlassian-partnership",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-06T16:00:00+00:00"
+    },
+    {
+      "id": "news-c02127d34967",
+      "title": "Unlocking Earth AI’s planetary geospatial foundation models for global public health",
+      "url": "https://research.google/blog/earth-ais-planetary-geospatial-foundation-models-for-global-public-health/",
+      "publisher": "Google Research",
+      "published_at": "2026-10-06T15:05:11+00:00"
+    },
+    {
+      "id": "news-7eeb0a9dde53",
+      "title": "Open and Emergent Problems in Agentic Privacy and Security: A Contextual Angle",
+      "url": "https://research.google/blog/open-and-emergent-problems-in-agentic-privacy-and-security-a-contextual-angle/",
+      "publisher": "Google Research",
+      "published_at": "2026-10-05T21:08:00+00:00"
+    },
+    {
+      "id": "news-d2b5b29b4c81",
+      "title": "Our approach to EU text provenance rules",
+      "url": "https://openai.com/index/eu-text-provenance",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-05T15:00:00+00:00"
+    },
+    {
+      "id": "news-2d8e70fb45ce",
+      "title": "Building advertising for the way people use AI",
+      "url": "https://openai.com/index/new-chatgpt-ads-format-and-measurement",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-05T10:00:00+00:00"
+    },
     {
       "id": "news-c38af6e5cae4",
       "title": "A model guide for the GPT-6 family",
@@ -51,41 +86,6 @@
       "url": "https://deepmind.google/blog/gemini-4-argon-our-next-era-of-frontier-intelligence/",
       "publisher": "Google DeepMind",
       "published_at": "2026-09-30T20:01:45+00:00"
-    },
-    {
-      "id": "news-c696e8b1f342",
-      "title": "Introducing SynthID Bio",
-      "url": "https://deepmind.google/blog/introducing-synthid-bio/",
-      "publisher": "Google DeepMind",
-      "published_at": "2026-09-30T15:03:07+00:00"
-    },
-    {
-      "id": "news-90249c2a3882",
-      "title": "Disrupting a coordinated model-distillation campaign",
-      "url": "https://openai.com/index/disrupting-a-coordinated-model-distillation-campaign",
-      "publisher": "OpenAI",
-      "published_at": "2026-09-30T10:30:00+00:00"
-    },
-    {
-      "id": "news-061338e668ed",
-      "title": "Helping small businesses put AI to work",
-      "url": "https://openai.com/index/helping-small-businesses-put-ai-to-work",
-      "publisher": "OpenAI",
-      "published_at": "2026-09-30T10:00:00+00:00"
-    },
-    {
-      "id": "news-74c2ff7e2707",
-      "title": "Open TTS Leaderboard: Scalable Evaluation for Multilingual Text-to-Speech and Voice Cloning",
-      "url": "https://huggingface.co/blog/open-tts-leaderboard",
-      "publisher": "Hugging Face",
-      "published_at": "2026-09-30T00:00:00+00:00"
-    },
-    {
-      "id": "news-5cc8f180d7d2",
-      "title": "How Diffusion Controller unifies and simplifies AI image generation",
-      "url": "https://research.google/blog/how-diffusion-controller-unifies-and-simplifies-ai-image-generation/",
-      "publisher": "Google Research",
-      "published_at": "2026-09-29T18:38:27+00:00"
     }
   ]
 }
