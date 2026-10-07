@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "task": "daily_pills_collection",
-  "updated_at": "2026-10-06T17:16:06.453155+00:00",
+  "updated_at": "2026-10-07T17:52:11.659870+00:00",
   "packets": [
     {
       "date": "2026-09-12",
@@ -3266,6 +3266,232 @@
         }
       ],
       "id": "0f4ba61c0596fe2b"
+    },
+    {
+      "date": "2026-10-07",
+      "timezone": "America/New_York",
+      "created_at": "2026-10-07T17:50:25.785492+00:00",
+      "topic": "RAG",
+      "language": "en",
+      "concept": "Why retrieve before answering?",
+      "news_window": "recent",
+      "source_warnings": [],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "Why Retrieve Before Answering?",
+        "summary": "Large language models store facts in their weights, but that memory is fuzzy, hard to update, and hard to trace. Retrieval-augmented generation (RAG) fixes this by letting the model look up documents from an external index and generate answers grounded in what it found. This pill explains, through an everyday story, why retrieving before answering improves factuality, provenance, and updatability.",
+        "story": "Imagine a seasoned bartender named Maya who has memorized thousands of cocktail recipes. Most nights she mixes drinks from memory, and she is fast. One evening a customer asks for a rare regional variation of a Negroni. Maya hesitates: her memory of the exact proportions is blurry, and she last read about it years ago. Behind her, though, is a well-organized recipe binder. Instead of guessing, she flips to the right page, skims the card, and answers confidently, even showing the customer the card so they can verify it themselves. A week later the recipe changes; she simply swaps the card in the binder. Her memory never needed retraining, only the binder needed updating.",
+        "connection": "Maya's memorized recipes are the parametric memory of a pre-trained language model: knowledge baked into weights during training. The binder is non-parametric memory: an explicit, searchable document index. Flipping to the right page is the retrieval step, and reading the card before answering is generation conditioned on retrieved passages. Updating the card without relearning every recipe is exactly why retrieval keeps knowledge fresh without retraining the model.",
+        "explanation": "The RAG paper (Lewis et al.) observes that pre-trained models store factual knowledge in their parameters but struggle to access and precisely manipulate it, which hurts knowledge-intensive tasks, and that providing provenance and updating world knowledge remain open problems. RAG combines a pre-trained seq2seq model (parametric memory) with a dense vector index of Wikipedia (non-parametric memory) accessed by a pre-trained neural retriever. The authors compare two formulations: one that conditions on the same retrieved passages for the whole generated sequence, and one that can consult different passages per token. On open-domain QA, RAG set state-of-the-art results, beating parametric-only seq2seq models and task-specific retrieve-and-extract architectures, and its generated text was more specific, diverse, and factual. The REALM paper takes a complementary angle: knowledge stored implicitly in network parameters requires ever-larger networks to cover more facts, so it adds a latent knowledge retriever used during pre-training, fine-tuning, and inference, trained unsupervised via masked language modeling with backpropagation through the retrieval step. REALM outperformed prior methods on three Open-QA benchmarks by 4-16% absolute accuracy while offering interpretability and modularity. Both papers converge on the same lesson: looking things up in an explicit corpus beats relying solely on compressed weights for factual work.",
+        "application": "In practice, you can build a RAG pipeline by chunking your documents, embedding them into a vector index, retrieving the top matches for a user query, and passing those passages as context to a generator. This is the standard recipe for question answering over private or fast-changing data, such as internal documentation, support tickets, or product catalogs, where retraining a model per update would be impractical. Retrieval also gives you citations: you can show which passages supported an answer, which matters for trust and debugging.",
+        "exercise": "Set a two-minute timer. Take any question a model might answer from memory, for example a policy detail at your workplace. Write down three risks of answering purely from weights (staleness, hallucination, no citation), then write one sentence describing what document you would want retrieved before answering. That sentence is your retrieval query design starting point.",
+        "question": "In RAG, what plays the role of Maya's recipe binder, and why is it easier to update than the model's weights?",
+        "answer": "The non-parametric memory: a dense vector index of documents (in the original paper, Wikipedia). You can add, remove, or edit indexed documents without retraining the model, whereas knowledge in the weights can only be changed through costly retraining or fine-tuning.",
+        "limits": "The analogy understates the hard parts. Retrieval is only as good as the index and the retriever: if the binder lacks the right card, or Maya flips to the wrong page, the answer fails confidently. Retrieved passages can also be misleading, and grounding in text does not guarantee the generator uses it faithfully. Finally, the papers' benchmarks are open-domain QA over Wikipedia; your domain's documents may need different chunking, embedding, and evaluation before the same results hold.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "Recent RAG-adjacent developments: on-device multimodal embeddings and a ChatGPT Work customer story",
+        "overview": "Two recent items are available. The first is a Google announcement of EmbeddingGemma 2, a lightweight multimodal embedding model relevant to retrieval pipelines. The second is an OpenAI feed excerpt about a social club using ChatGPT Work for document-heavy tasks. Note that the second item is a feed excerpt only, so details are limited to what the excerpt states.",
+        "items": [
+          {
+            "headline": "Google launches EmbeddingGemma 2, an open lightweight multimodal embedding model for on-device retrieval",
+            "what_happened": "Google announced EmbeddingGemma 2, a 740-million-parameter embedding model under the Apache 2.0 license that maps text, images, audio, and video into a unified embedding space. Publisher claims include: leading scores among sub-1B multimodal embedders on benchmarks like MTEB Code and MAEB, a 9.92-point MTEB Code improvement over its predecessor, modular encoders (text-only from 270M parameters, optional vision and audio encoders), Matryoshka-style truncation of vectors from 768 down to 128 dimensions for up to 6x storage reduction, an 8K token context window, and on-device RAM requirements of roughly 191MB for text-only weights on a Pixel 11 Pro with quantization. It shares a tokenizer and audio encoder with Gemma 4, enabling combined on-device RAG pipelines, and weights are available on Hugging Face and Kaggle.",
+            "why_it_matters": "For developers, embeddings are the retrieval half of RAG: they decide which documents or media get placed in the model's context. A small, permissively licensed multimodal embedder makes it practical to build privacy-first, offline retrieval, for example searching hours of meeting recordings by text query or finding a video clip from a voice memo, all on consumer hardware. Think of it as upgrading Maya's binder with a cross-modal index: you can now look up a recipe by humming it or showing a photo of the glass.",
+            "takeaway": "The benchmark numbers and RAM figures are publisher claims, not independent verification, and 'best-in-class for its size' is scoped to sub-1B multimodal embedders. Before trying it, inspect the model card for full evaluation metrics, verify the license terms fit your use, and test retrieval quality on your own data rather than trusting MTEB-style scores alone.",
+            "source_ids": [
+              "news-e6e1d2a9f0a4"
+            ]
+          },
+          {
+            "headline": "OpenAI case study: The Den social club reports large time savings with ChatGPT Work",
+            "what_happened": "An OpenAI feed excerpt describes The Den, a social club, using ChatGPT Work while opening a new location. The excerpt states the club prepares grant applications in 2 hours instead of 3 days and liquor-license materials in 3 hours instead of 4 days, and frames this as freeing 10-15 hours a week. Because this is a feed excerpt, the underlying article was not read in full, and no details about the workflow or tooling are available here.",
+            "why_it_matters": "Document-heavy tasks like grant and license applications are a common retrieval-augmented use case: pulling the right clauses, dates, and prior answers from an organization's own files into a drafting workflow. The analogy is a research assistant who fetches the right binder pages so you draft faster, though the assistant still needs checking. Treat the reported hours as a vendor-published customer story, useful as a signal of the category, not as a benchmark.",
+            "takeaway": "This is a marketing case study from the vendor, based on a feed excerpt, so the claimed time savings cannot be verified from the available material. Before expecting similar results, inspect what data and retrieval setup the workflow actually requires, and pilot on a low-stakes document with human review of every output.",
+            "source_ids": [
+              "news-2167384f51e2"
+            ]
+          }
+        ],
+        "exercise": "Set a two-minute timer. Open the EmbeddingGemma 2 model card linked from the announcement and find one evaluation metric and one hardware requirement. Then ask: does the announcement distinguish measured results from marketing framing? Write down one claim you would want to reproduce on your own data before adopting the model.",
+        "question": "Why should the time savings in The Den story be treated differently from the EmbeddingGemma 2 benchmark numbers?",
+        "answer": "Both are publisher claims, but the EmbeddingGemma 2 numbers come with named benchmarks and a model card you can inspect, while The Den figures are a vendor case study known only from a feed excerpt, with no methodology, workflow details, or independent verification available, so they are a discovery signal rather than evidence of typical results."
+      },
+      "usage": {
+        "prompt_tokens": 2970,
+        "total_tokens": 4999,
+        "completion_tokens": 2029,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-e6e1d2a9f0a4",
+          "title": "EmbeddingGemma 2: an open, lightweight multimodal embedding model",
+          "url": "https://blog.google/innovation-and-ai/technology/developers-tools/embeddinggemma-2/",
+          "publisher": "blog.google",
+          "published_at": "2026-10-06T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 407,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "Other"
+        },
+        {
+          "id": "news-2167384f51e2",
+          "title": "The Den frees up 10-15 hours a week to grow with ChatGPT Work",
+          "url": "https://openai.com/index/the-den-family-social",
+          "publisher": "OpenAI",
+          "published_at": "2026-10-01T00:00:00+00:00",
+          "evidence_type": "feed_excerpt",
+          "topic": "RAG"
+        }
+      ],
+      "id": "0aa924c746758f6a"
+    },
+    {
+      "date": "2026-10-07",
+      "timezone": "America/New_York",
+      "created_at": "2026-10-07T17:50:25.785492+00:00",
+      "topic": "RAG",
+      "language": "te",
+      "concept": "Why retrieve before answering?",
+      "news_window": "recent",
+      "source_warnings": [],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "సమాధానం చెప్పే ముందు ఎందుకు వెతకాలి? (RAG పునాది)",
+        "summary": "భాషా మోడల్స్ తమ పారామితుల్లో సత్యాలను నిల్వ చేస్తాయి, కానీ ఆ జ్ఞానాన్ని ఖచ్చితంగా యాక్సెస్ చేయడం, నవీకరించడం, మూలాలు చూపడం కష్టం. RAG (Retrieval-Augmented Generation) సమాధానం చెప్పే ముందు బాహ్య డాక్యుమెంట్లను వెతికి తెచ్చి మోడల్‌కు సందర్భంగా ఇస్తుంది. ఈ పాఠంలో రిట్రీవల్ ఎందుకు అవసరమో ఒక కథ ద్వారా నేర్చుకుంటాం.",
+        "story": "ఊహించండి, లక్ష్మి ఒక పెద్ద లైబ్రరీలో పనిచేసే అనుభవజ్ఞురాలైన సహాయకురాలు. ఆమె చాలా పుస్తకాలు చదివి, ఎన్నో విషయాలు తలలో గుర్తుంచుకున్నారు. ఒక రోజు ఒక విద్యార్థి వచ్చి, \"2019 తర్వాత ఈ ప్రభుత్వ పథకం నియమాలు ఏమిటి?\" అని అడిగాడు. లక్ష్మి తలలో ఉన్నది పాత సమాచారం — ఆమె చివరిసారి పుస్తకాలు చదివిన తర్వాత నియమాలు మారిపోయాయి. ఇంకో సమస్య: ఆమె గుర్తుంచుకున్న వివరాలు సరిగ్గా ఉన్నాయో లేదో చూపించే మూలం లేదు. ఇప్పుడు రెండో సన్నివేశం: లక్ష్మి అలవాటు మార్చుకుంది. ఎవరైనా అడిగితే, ముందుగా ఆమె లైబ్రరీ కేటలాగ్‌లో వెతికి, సరికొత్త డాక్యుమెంట్ పేజీలను తెరిచి, వాటిని చదివి, అప్పుడు సమాధానం చెప్తుంది — \"ఇదిగో, ఈ పేజీలో ఇలా ఉంది.\" ఇప్పుడు ఆమె సమాధానాలు తాజాగా ఉంటాయి, తప్పు జరిగితే ఏ పేజీ చూడాలో కూడా చూపిస్తుంది.",
+        "connection": "ఈ కథలోని భాగాలు RAG కి ఇలా సరిపోతాయి: లక్ష్మి తలలో నిల్వ ఉన్న జ్ఞానం = మోడల్ పారామితుల్లో (parametric memory) నిల్వ ఉన్న సమాచారం. లైబ్రరీ కేటలాగ్ = డాక్యుమెంట్ల డెన్స్ వెక్టర్ ఇండెక్స్ (non-parametric memory). వెతికి పేజీలు తెరవడం = neural retriever తో సంబంధిత passages ని retrieve చేయడం. పేజీలు చదివి సమాధానం చెప్పడం = retrieved passages ని సందర్భంగా తీసుకుని generation చేయడం. \"ఇదిగో, ఈ పేజీలో ఉంది\" అనడం = provenance, అంటే సమాధానానికి మూలం చూపడం.",
+        "explanation": "RAG పేపర్ (Lewis et al., 2020) ప్రకారం, పెద్ద pre-trained మోడల్స్ తమ పారామితుల్లో factual knowledge నిల్వ చేస్తాయి, కానీ knowledge-intensive tasks లో వాటి performance పరిమితం — ఎందుకంటే జ్ఞానాన్ని ఖచ్చితంగా యాక్సెస్ చేయడం, నిర్ణయాలకు provenance ఇవ్వడం, world knowledge ని అప్డేట్ చేయడం అనేవి open problems. RAG దీనికి పరిష్కారం: pre-trained seq2seq మోడల్ (parametric memory) + Wikipedia లాంటి corpus యొక్క dense vector index (non-parametric memory) + pre-trained neural retriever. రిట్రీవల్ ముఖ్యమైన మూడు కారణాలు: (1) తాజాతనం — ఇండెక్స్‌ని అప్డేట్ చేస్తే చాలా, మోడల్‌ని మళ్లీ train చేయాల్సిన అవసరం లేదు; (2) ఖచ్చితత్వం — మోడల్ గుర్తుంచుకున్న దానికి బదులు ముందు ఉన్న డాక్యుమెంట్ ఆధారంగా మాట్లాడగలదు; (3) విశ్వసనీయత — ఏ passages వాడారో చూపించవచ్చు. REALM పేపర్ (Guu et al., 2020) ఇదే ఆలోచనను pre-training సమయంలోనే తీసుకుంటుంది: latent knowledge retriever తో మోడల్‌ని pre-train చేస్తే, knowledge ని modular, interpretable పద్ధతిలో యాక్సెస్ చేయగలం — ఎక్కువ నిజాల కోసం నెట్‌వర్క్‌ని పెంచాల్సిన అవసరం లేకుండా. రెండు పేపర్లూ open-domain QA లో రిట్రీవల్-ఆధారిత విధానం parametric-only మోడల్స్ కంటి మెరుగ్గా పనిచేస్తుందని చూపించాయి; RAG పేపర్ generation tasks లో కూడా ఎక్కువ specific, factual అవుట్‌పుట్‌లు వస్తాయని నివేదించింది.",
+        "application": "మీరు ఒక కంపెనీ internal docs chatbot నిర్మిస్తున్నారని ఊహించండి. మోడల్‌ని fine-tune చేయకుండా, మీ HR పాలసీ డాక్యుమెంట్లను embeddings తో ఇండెక్స్ చేసి, వినియోగదారు ప్రశ్న వచ్చినప్పుడు సంబంధిత sections ని retrieve చేసి, prompt లో చేర్చి సమాధానం చెప్పించవచ్చు. పాలసీ మారితే డాక్యుమెంట్ అప్డేట్ చేస్తే చాలు — మోడల్ మార్చాల్సిన పని లేదు. సమాధానంతో పాటు మూల డాక్యుమెంట్ link కూడా చూపించవచ్చు. ఇదే రిట్రీవల్-ముందు-సమాధానం యొక్క ప్రాయోగిక విలువ.",
+        "exercise": "రెండు నిమిషాల వ్యాయామం: ఒక సాధారణ ప్రశ్నను తీసుకోండి (ఉదా: \"మా టీమ్ వేకేషన్ పాలసీ ఏమిటి?\"). ఒక నిమిషంలో ఈ మూడింటినీ రాయండి: (1) ఈ ప్రశ్నకు మోడల్ పారామితుల్లో ఉన్న జ్ఞానం సరిపోదా? (2) ఏ డాక్యుమెంట్ కలెక్షన్ నుంచి retrieve చేయాలి? (3) సమాధానానికి provenance గా ఏమి చూపించగలం? మీ ప్రశ్నలో తాజా సమాచారం అవసరమా అని ముఖ్యంగా ఆలోచించండి.",
+        "question": "మోడల్ పారామితుల్లో నిల్వ ఉన్న జ్ఞానం కంటే RAG లోని non-parametric memory ఎలాంటి మూడు ప్రధాన ప్రయోజనాలు కల్పిస్తుంది?",
+        "answer": "(1) తాజాతనం — ఇండెక్స్‌ని అప్డేట్ చేయడం ద్వారా మోడల్‌ని మళ్లీ train చేయకుండా world knowledge ని మార్చవచ్చు; (2) ఖచ్చితమైన knowledge యాక్సెస్ — మోడల్ గుర్తుంచుకున్న దానికి బదులు నిజమైన డాక్యుమెంట్లపై ఆధారపడగలదు; (3) provenance/interpretability — సమాధానానికి ఆధారమైన passages ని చూపించవచ్చు. RAG పేపర్ ప్రకారం provenance ఇవ్వడం, knowledge అప్డేట్ చేయడం parametric-only మోడల్స్‌కు open problems.",
+        "limits": "ఈ అనలాజీకి పరిమితులు: లక్ష్మి లైబ్రరీలో వెతికి సరైన పేజీని ఖచ్చితంగా గుర్తిస్తుంది, కానీ నిజమైన retrievers తప్పు లేదా సబంధం లేని passages ని కూడా తెచ్చుతాయి — retrieval quality చెడితే సమాధానం కూడా చెడుతుంది. అలాగే, డాక్యుమెంట్ ముందు ఉన్నందుకు మోడల్ దాన్ని ఎప్పుడూ సరిగ్గా వాడాలనే నిబద్ధత లేదు; మోడల్ ఇప్పటికీ తప్పుగా సమాధానం చెప్పవచ్చు. చివరగా, కథలో లక్ష్మి అర్థం చేసుకుంటుంది, కానీ మోడల్ కేవలం పదాల సారూప్యతపై ఆధారపడి వెతుకుతుంది — కేటలాగ్ అనుభవం లేని వ్యక్తి కంటే తెలివైనది కాదు, వేరే విధంగా పనిచేసే యంత్రం.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "తాజా వార్తలు: on-device embeddings మరియు RAG వాడుక కేసులు",
+        "overview": "ఈ వారం రెండు అంశాలు: Google యొక్క కొత్త multimodal embedding మోడల్ EmbeddingGemma 2, మరియు OpenAI ప్రచురించిన ఒక కస్టమర్ కేస్ స్టడీ. రెండూ retrieval ప్రపంచానికి సంబంధించినవే — ఒకటి embeddings తయారీకి, రెండో వాటి వ్యాపార వినియోగానికి ఉదాహరణ.",
+        "items": [
+          {
+            "headline": "Google, EmbeddingGemma 2 ని విడుదల చేసింది — text, images, audio, video అన్నింటినీ ఒకే embedding space లోకి తీసుకెళ్లే ఓపెన్, లైట్‌వెయిట్ మోడల్",
+            "what_happened": "Google DeepMind బ్లాగ్ ప్రకారం, EmbeddingGemma 2 అనేది 740M పారామితులు కలిగిన, Apache 2.0 లైసెన్స్‌తో విడుదలైన multimodal embedding మోడల్. ఇది text, images, audio, video కలయికలను ఒకే unified embedding space లోకి map చేస్తుంది. ముఖ్యమైన ఫీచర్లు: modular డిజైన్ (text-only కి 270M, vision కి 170M, audio కి 300M encoders విడివిడిగా), Matryoshka Representation Learning ద్వారా 768 నుంచి 128 dimensions వరకు vectors ని truncate చేసే సౌలభ్యం, 8K token context window, మరియు quantization తో Pixel 11 Pro పై text-only కి ~191MB RAM వినియోగం అని కంపెనీ చెప్పింది. ఇది Gemma 4 architecture పై నిర్మించబడిందని, MTEB Code మరియు MAEB benchmarks లో sub-1B multimodal embedders లో leading scores సాధించిందని Google చెప్పింది — ఇవి publisher చేసిన వాదనలే, స్వతంత్ర ధృవీకరణ కాదు.",
+            "why_it_matters": "డెవలపర్ దృష్టికోణంలో, ఇది privacy-first, offline పనిచేసే RAG pipelines నిర్మించడానికి ఉపయోగపడుతుంది. ఉదాహరణకు: మీ ఫోన్‌లోనే మీ వాయిస్ మెమో ఆధారంగా ఒక నిర్దిష్ట video clip ని వెతకడం, లేదా text query తో గంటల పాటు రికార్డింగ్‌లను search చేయడం — డేటా బయటకు వెళ్లకుండా. ఒక స్పష్టమైన అనలాజీ: ఇది ఒక universal translator లాంటిది — text, audio, video అన్నింటినీ ఒకే భాష (vectors) లోకి మార్చి, అవి పరస్పర సారూప్యతను కొలవగలం చేస్తుంది. మోడల్ weights Hugging Face మరియు Kaggle లో అందుబాటులో ఉన్నాయని బ్లాగ్ చెప్పింది.",
+            "takeaway": "ముఖ్యమైన పరిమితి: benchmark scores మరియు RAM figures అన్నీ Google చేసిన వాదనలు; మీ వర్క్‌లోడ్‌లో పనిచేస్తాయని హామీ కాదు. ప్రయత్నించే ముందు model card లోని full evaluation metrics, మీ డొమైన్ డేటాపై మీరే చిన్న retrieval quality test, మరియు మీ hardware పై నిజమైన memory footprint ని తనిఖీ చేయండి. అలాగే Apache 2.0 లైసెన్స్ నిబంధనలను సమీక్షించండి.",
+            "source_ids": [
+              "news-e6e1d2a9f0a4"
+            ]
+          },
+          {
+            "headline": "OpenAI కేస్ స్టడీ: The Den అనే సోషల్ క్లబ్ ChatGPT Work తో వారానికి 10-15 గంటలు ఆదా చేసినట్టు",
+            "what_happened": "OpenAI ప్రచురించిన ఈ కేస్ స్టడీ ప్రకారం, The Den అనే కుటుంబ-స్నేహితుల సోషల్ క్లబ్ కొత్త లొకేషన్ ప్రారంభిస్తున్న సమయంలో ChatGPT Work ని వాడి, grant applications ని 3 రోజుల నుంచి 2 గంటలకు, liquor-license materials ని 4 రోజుల నుంచి 3 గంటలకు తగ్గించుకున్నట్టు, వారానికి 10-15 గంటలు ఆదా అయినట్టు చెప్పబడింది. గమనిక: మా దగ్గర ఉన్నది feed excerpt మాత్రమే — పూర్తి వ్యాసాన్ని మేము చదవలేదు, కాబట్టి ఈ ఫలితాలు ఎలా సాధించబడ్డాయో అనే వివరాలు అందుబాటులో లేవు. ఇవి publisher చేసిన వాదనలే.",
+            "why_it_matters": "చిన్న వ్యాపారాలకు ఇది ఒక ప్రాతిపదిక: డాక్యుమెంట్-భారీ పనులు (applications, compliance materials) లో AI సహాయంతో drafting వేగవంతం కావచ్చు. ఇది మన కాన్సెప్ట్‌తో ఎలా ముడుస్తుందంటే — ఇలాంటి వర్క్‌ఫ్లోల్లో సాధారణంగా కంపెనీ డాక్యుమెంట్లను retrieve చేసి, ఆ సందర్భంతో సమాధానాలు రూపొందించే RAG పద్ధతి వాడతారు; సరైన retrieval లేకుంటే అవుట్‌పుట్ నాణ్యత తగ్గుతుంది.",
+            "takeaway": "ముఖ్యమైన పరిమితి: ఇది ఒక వెండర్ ప్రచురించిన ఒకే ఒక్క కస్టమర్ కథనం — పద్ధతి వివరాలు, స్వతంత్ర ధృవీకరణ లేవు, ఫలితాలు సాధారణీకరించదగినవి కాకపోవచ్చు. ప్రయత్నించే ముందు పూర్తి కేస్ స్టడీని చదవండి: ఏ డేటా వాడారు, retrieval ఎలా జరిగింది, మానవ రివ్యూ ఎక్కడ ఉంది, మరియు మీ డాక్యుమెంట్ల గోప్యతా అవసరాలకు సరిపోతుందో లేదో తనిఖీ చేయండి.",
+            "source_ids": [
+              "news-2167384f51e2"
+            ]
+          }
+        ],
+        "exercise": "రెండు నిమిషాల source-check వ్యాయామం: EmbeddingGemma 2 బ్లాగ్ పోస్ట్‌ని తెరవండి మరియు ఈ మూడింటిని వేరు చేయండి — (1) నేరుగా కొలవగల నిజాలు (ఉదా: పారామిటర్ సంఖ్య, లైసెన్స్), (2) publisher చేసిన performance వాదనలు (benchmark scores, RAM figures), (3) మీరు మీ ప్రాజెక్ట్‌లో ధృవీకరించాల్సినవి (మీ డేటాపై retrieval quality). అలాగే The Den కేస్ స్టడీలో ఏది కేవలం వాదనమో, ఏది ధృవీకరించదగిన వివరమో ఆలోచించండి.",
+        "question": "EmbeddingGemma 2 గురించి చెప్పబడిన benchmark scores మరియు RAM figures ని ఏ రకమైన సాక్ష్యంగా పరిగణించాలి, ఎందుకు?",
+        "answer": "అవి publisher (Google) చేసిన వాదనలుగా మాత్రమే పరిగణించాలి — attribution స్వతంత్ర ధృవీకరణ కాదు. మీ వర్క్‌లోడ్‌పై ఆధారపడే ముందు model card లోని evaluation metrics ని సమీక్షించి, మీ స్వంత డేటా మరియు hardware పై పరీక్షించాలి."
+      },
+      "usage": {
+        "prompt_tokens": 2970,
+        "total_tokens": 14175,
+        "completion_tokens": 11205,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-e6e1d2a9f0a4",
+          "title": "EmbeddingGemma 2: an open, lightweight multimodal embedding model",
+          "url": "https://blog.google/innovation-and-ai/technology/developers-tools/embeddinggemma-2/",
+          "publisher": "blog.google",
+          "published_at": "2026-10-06T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 407,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "Other"
+        },
+        {
+          "id": "news-2167384f51e2",
+          "title": "The Den frees up 10-15 hours a week to grow with ChatGPT Work",
+          "url": "https://openai.com/index/the-den-family-social",
+          "publisher": "OpenAI",
+          "published_at": "2026-10-01T00:00:00+00:00",
+          "evidence_type": "feed_excerpt",
+          "topic": "RAG"
+        }
+      ],
+      "id": "8233d35168dbfb92"
     }
   ]
 }

@@ -1,8 +1,36 @@
 {
   "schema_version": 1,
   "task": "ai_headlines",
-  "checked_at": "2026-10-06T17:14:26.422565+00:00",
+  "checked_at": "2026-10-07T17:50:25.785492+00:00",
   "items": [
+    {
+      "id": "news-e6e1d2a9f0a4",
+      "title": "EmbeddingGemma 2: an open, lightweight multimodal embedding model",
+      "url": "https://blog.google/innovation-and-ai/technology/developers-tools/embeddinggemma-2/",
+      "publisher": "blog.google",
+      "published_at": "2026-10-06T00:00:00+00:00"
+    },
+    {
+      "id": "news-661f64ddb5f4",
+      "title": "Helping teens learn, plan, and shape the future of AI",
+      "url": "https://openai.com/index/teens-learn-and-plan",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-07T12:00:00+00:00"
+    },
+    {
+      "id": "news-4e324623ab7c",
+      "title": "Radisson Hotel Group brings hotel discovery into ChatGPT",
+      "url": "https://openai.com/index/radisson",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-07T07:00:00+00:00"
+    },
+    {
+      "id": "news-c11a83f73b42",
+      "title": "EmbeddingGemma 2: an open, lightweight multimodal embedding model",
+      "url": "https://deepmind.google/blog/embeddinggemma-2-an-open-lightweight-multimodal-embedding-model/",
+      "publisher": "Google DeepMind",
+      "published_at": "2026-10-06T19:57:04+00:00"
+    },
     {
       "id": "news-2896758265ce",
       "title": "Atlassian and OpenAI expand partnership to turn enterprise knowledge into action",
@@ -16,6 +44,27 @@
       "url": "https://research.google/blog/earth-ais-planetary-geospatial-foundation-models-for-global-public-health/",
       "publisher": "Google Research",
       "published_at": "2026-10-06T15:05:11+00:00"
+    },
+    {
+      "id": "news-ebb413cc5359",
+      "title": "How Jump Trading is scaling quant research with ChatGPT",
+      "url": "https://openai.com/index/jump-trading",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-06T12:00:00+00:00"
+    },
+    {
+      "id": "news-00427e47df5e",
+      "title": "Sharing AI progress in mathematics",
+      "url": "https://openai.com/index/sharing-ai-progress-in-mathematics",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-06T12:00:00+00:00"
+    },
+    {
+      "id": "news-f57eff9c23a4",
+      "title": "Advancing computer use with Ironclad",
+      "url": "https://openai.com/index/advancing-computer-use-with-ironclad",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-06T10:00:00+00:00"
     },
     {
       "id": "news-7eeb0a9dde53",
@@ -37,55 +86,6 @@
       "url": "https://openai.com/index/new-chatgpt-ads-format-and-measurement",
       "publisher": "OpenAI",
       "published_at": "2026-10-05T10:00:00+00:00"
-    },
-    {
-      "id": "news-c38af6e5cae4",
-      "title": "A model guide for the GPT-6 family",
-      "url": "https://openai.com/index/practical-guide-building-gpt-6",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-02T16:15:00+00:00"
-    },
-    {
-      "id": "news-a47750453f6e",
-      "title": "Toward provably private learning from federated data",
-      "url": "https://research.google/blog/toward-provably-private-learning-from-federated-data/",
-      "publisher": "Google Research",
-      "published_at": "2026-10-02T14:57:41+00:00"
-    },
-    {
-      "id": "news-882596cbc763",
-      "title": "Chatham scales its capital markets expertise with OpenAI",
-      "url": "https://openai.com/index/chatham-financial",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-02T00:00:00+00:00"
-    },
-    {
-      "id": "news-b8087b88cb63",
-      "title": "The eternal complement",
-      "url": "https://openai.com/index/the-eternal-complement",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-01T17:00:00+00:00"
-    },
-    {
-      "id": "news-637d3dfa247f",
-      "title": "How Albertsons Companies is reimagining retail from the inside out",
-      "url": "https://openai.com/index/albertsons-reimagining-retail",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-01T16:00:00+00:00"
-    },
-    {
-      "id": "news-2167384f51e2",
-      "title": "The Den frees up 10-15 hours a week to grow with ChatGPT Work",
-      "url": "https://openai.com/index/the-den-family-social",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-01T00:00:00+00:00"
-    },
-    {
-      "id": "news-ce56aa83d006",
-      "title": "Gemini 4 Argon: our next era of frontier intelligence",
-      "url": "https://deepmind.google/blog/gemini-4-argon-our-next-era-of-frontier-intelligence/",
-      "publisher": "Google DeepMind",
-      "published_at": "2026-09-30T20:01:45+00:00"
     }
   ]
 }
