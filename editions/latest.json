@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "task": "daily_pills_collection",
-  "updated_at": "2026-10-07T17:52:11.659870+00:00",
+  "updated_at": "2026-10-08T17:56:20.292745+00:00",
   "packets": [
     {
       "date": "2026-09-12",
@@ -3492,6 +3492,232 @@
         }
       ],
       "id": "8233d35168dbfb92"
+    },
+    {
+      "date": "2026-10-08",
+      "timezone": "America/New_York",
+      "created_at": "2026-10-08T17:53:40.508469+00:00",
+      "topic": "RAG",
+      "language": "en",
+      "concept": "What makes a source relevant?",
+      "news_window": "recent",
+      "source_warnings": [],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "What Makes a Source Relevant? How Retrievers Decide What a RAG System Reads",
+        "summary": "In retrieval-augmented generation (RAG), relevance is not a human judgment made at query time — it is a similarity score computed by a retriever between a vector representing your question and vectors representing candidate documents. Understanding that 'relevant' means 'numerically close in an embedding space' explains both why RAG works and why it sometimes fetches the wrong thing.",
+        "story": "Imagine a librarian who never reads books. Instead, every book in the library has been summarized onto an index card, and each card is placed somewhere in a vast room based on what the book is about: cookbooks cluster in one corner, physics texts in another, with gardening-and-cooking hybrids sitting between the two clusters. When you ask a question, the librarian does not read your question either. She turns it into a point in the same room and simply fetches the cards nearest to that point. One day you ask, 'How do I keep basil alive indoors?' The nearest cards are a cookbook with a basil pesto recipe and a gardening manual — the cookbook is close because it mentions basil often, even though it won't answer your question. The librarian isn't wrong about similarity; she was never asked about usefulness. Later, the library hires a second worker who actually reads the fetched cards and writes the answer, and — crucially — the librarian starts learning from which cards led to good answers, adjusting where she places future cards.",
+        "connection": "Map the story to the real system. The index cards are embeddings: dense vectors produced by a neural encoder that compress a document's meaning into coordinates. The room is a dense vector index over a corpus — in the original RAG paper, a dense vector index of Wikipedia. The librarian is the pre-trained neural retriever, which scores queries against passages. The second worker is the pre-trained seq2seq generator that conditions on the retrieved passages. The librarian's learning loop is what made these systems novel: REALM showed that a knowledge retriever can be trained end-to-end in an unsupervised way, backpropagating through the retrieval step itself using masked language modeling as the signal, so the retriever learns which documents actually help. The RAG paper likewise fine-tuned retriever and generator together, comparing a variant that uses one set of passages for the whole answer against one that can consult different passages per token.",
+        "explanation": "So what makes a source relevant? Operationally, three things. First, representational alignment: the query and the document must land near each other in the embedding space, which depends on the encoder capturing the right semantics. Second, task alignment: a passage can be topically similar without containing the answer; end-to-end training pushes the retriever toward passages that improve generation, not just passages that share vocabulary. Third, corpus quality: the retriever can only rank what the index contains, and provenance — knowing which passage an answer came from — is one of the motivations the RAG authors cite for using explicit non-parametric memory instead of relying on parameters alone. Both papers note that purely parametric models store knowledge implicitly and struggle to update it or explain where it came from; retrieval makes the knowledge modular and inspectable.",
+        "application": "Practically, when your RAG system returns irrelevant chunks, debug in this order: check that queries and documents use the same embedding model and preprocessing; inspect the retrieved passages and their scores to see whether the failure is retrieval (nothing useful was close) or generation (useful passages were fetched but ignored); and consider whether your corpus simply lacks the answer. If you build a domain assistant — say, over internal engineering docs — start by manually writing ten real questions and checking whether the right passage ranks in the top few before tuning anything else.",
+        "exercise": "Two minutes: take any paragraph from a document you know well and write three questions about it — one using the paragraph's own vocabulary, one paraphrasing it in different words, and one requiring inference the paragraph only implies. Rank which would be easiest for a similarity-based retriever to match. Notice that the paraphrased question tests whether your embeddings capture meaning beyond keyword overlap.",
+        "question": "In a RAG system, what does 'relevant source' actually mean at retrieval time, and why can a highly relevant-looking passage still fail to answer the question?",
+        "answer": "It means the passage's embedding is numerically close to the query's embedding under the retriever's scoring function. Similarity is not usefulness: a passage can share topic and vocabulary with the query without containing the answer, which is why end-to-end training of the retriever against the generator's success matters.",
+        "limits": "The library analogy breaks down in important ways. A real librarian understands your intent; a retriever only computes similarity, and the 'room' has thousands of dimensions that no human can visualize. The analogy also hides scale — real indexes consider millions of documents — and the fact that the retriever is trained, not hand-arranged. Finally, both papers report benchmark results on open-domain QA and knowledge-intensive tasks; their findings do not guarantee similar retrieval quality on your domain, your languages, or your document formats.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "Recent RAG-Adjacent Developments: Multimodal On-Device Embeddings and a ChatGPT Work Case Study",
+        "overview": "Two recent items connect to this week's concept of source relevance: a new lightweight embedding model that computes the vectors retrievers rank, and a vendor-published customer story about retrieval-style workflows saving time. Both deserve a careful read before adoption.",
+        "items": [
+          {
+            "headline": "Google launches EmbeddingGemma 2, an open multimodal embedding model for on-device use",
+            "what_happened": "Google announced EmbeddingGemma 2, a 740-million-parameter embedding model released under the Apache 2.0 license, built on the Gemma 4 architecture. Per the blog post, it maps text, images, audio, and video into a unified embedding space, supports truncating output vectors from 768 down to 128 dimensions via Matryoshka Representation Learning for storage savings, and has an 8K token context window. Google reports leading scores among sub-1B multimodal embedders on benchmarks including MTEB Code and MAEB, and states that with quantization it needs roughly 191MB of active RAM for text-only weights on a Pixel 11 Pro. Weights are available on Hugging Face and Kaggle, with tooling via LiteRT, MediaPipe, and common serving libraries.",
+            "why_it_matters": "Embedding models are the component that decides which sources a RAG system considers relevant, so a small, permissively licensed multimodal embedder matters for developers building privacy-first or offline retrieval. Concrete use case: a mobile app that indexes a user's own photos, voice memos, and notes locally, letting them search across media with a text query without uploading anything. Analogy: if the retriever is the librarian placing index cards, EmbeddingGemma 2 is a compact card-writing machine that now handles photos and audio too, small enough to sit inside the phone.",
+            "takeaway": "The benchmark claims are Google's own and cover specific leaderboards, not your data. Before trying it, inspect the model card for evaluation details, verify the memory figures on your actual target hardware, and test retrieval quality on a small sample of your own multimodal content — especially for cross-modal queries, where similarity behavior is hardest to predict.",
+            "source_ids": [
+              "news-e6e1d2a9f0a4"
+            ]
+          },
+          {
+            "headline": "OpenAI case study: The Den social club reports large time savings with ChatGPT Work",
+            "what_happened": "An OpenAI-published customer story describes The Den, a social club, using ChatGPT Work while opening a new location. The post states that grant application preparation dropped from 3 days to 2 hours and liquor-license materials from 4 days to 3 hours, and the club reports freeing up 10–15 hours a week. Note: this summary is based on a feed excerpt, not the full article, so the underlying workflow details are not visible here.",
+            "why_it_matters": "For developers, the interesting question is what such workflows imply: likely document retrieval over the organization's own materials combined with generation — a RAG-style pattern applied to administrative paperwork. A small business preparing compliance or grant documents could plausibly reuse the pattern of grounding an assistant in its own files rather than asking a model from memory.",
+            "takeaway": "This is a vendor-published anecdote, not an independent measurement, and the time figures come from a single customer with unverified workflow details. Before drawing conclusions, read the full case study and look for specifics: what documents were involved, whether a human reviewed outputs, and whether the numbers were measured or estimated.",
+            "source_ids": [
+              "news-2167384f51e2"
+            ]
+          }
+        ],
+        "exercise": "Two minutes: pick either item and list three things the publisher claims versus three things you would need to verify yourself — for example, benchmark methodology, hardware used, or how the customer's workflow actually worked. This separates marketing claims from checkable facts.",
+        "question": "Why should you treat vendor-published benchmark scores and customer time savings differently from independently verified results?",
+        "answer": "Because publishers have an incentive to present favorable results, and their claims often omit methodology, baselines, and measurement conditions. Treat them as hypotheses to test on your own data and hardware, not as proof of performance in your context."
+      },
+      "usage": {
+        "prompt_tokens": 2971,
+        "total_tokens": 4997,
+        "completion_tokens": 2026,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-e6e1d2a9f0a4",
+          "title": "EmbeddingGemma 2: an open, lightweight multimodal embedding model",
+          "url": "https://blog.google/innovation-and-ai/technology/developers-tools/embeddinggemma-2/",
+          "publisher": "blog.google",
+          "published_at": "2026-10-06T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 427,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "Other"
+        },
+        {
+          "id": "news-2167384f51e2",
+          "title": "The Den frees up 10-15 hours a week to grow with ChatGPT Work",
+          "url": "https://openai.com/index/the-den-family-social",
+          "publisher": "OpenAI",
+          "published_at": "2026-10-01T00:00:00+00:00",
+          "evidence_type": "feed_excerpt",
+          "topic": "RAG"
+        }
+      ],
+      "id": "241a26404976344f"
+    },
+    {
+      "date": "2026-10-08",
+      "timezone": "America/New_York",
+      "created_at": "2026-10-08T17:53:40.508469+00:00",
+      "topic": "RAG",
+      "language": "te",
+      "concept": "What makes a source relevant?",
+      "news_window": "recent",
+      "source_warnings": [],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "సోర్స్ రిలవెన్స్ అంటే ఏమిటి? RAGలో సంబంధాన్ని అర్థం చేసుకోవడం",
+        "summary": "RAG (Retrieval-Augmented Generation) సిస్టమ్‌లో, మోడల్ సమాధానం ఇవ్వడానికి ముందు బాహ్య డాక్యుమెంట్‌లను వెతికి తెస్తుంది. ఇక్కడ అత్యంత ముఖ్యమైన ప్రశ్న: ఏ సోర్స్ 'రిలవెంట్' అంటే ఏమిటి? ఈ పిల్ల్‌లో, రిలవెన్స్ అనేది కేవలం కీవర్డ్ మ్యాచింగ్ కాదని, అది ప్రశ్న యొక్క అర్థాన్ని (semantic meaning) ఆధారం చేసిన ఒక స్కోరింగ్ ప్రక్రియ అని నేర్చుకుంటారు.",
+        "story": "ఊహించండి: మీరు ఒక పెద్ద లైబ్రరీలో ఉన్నారు, మీకు ఒక ప్రశ్న ఉంది — 'పక్షులు ఎలా వలస వెళ్తాయి?'. లైబ్రరీ సహాయకుడు (librarian) రెండు విధానాలు అనుసరించవచ్చు. మొదటి విధానం: 'పక్షులు' అనే పదం ఎక్కువగా ఉన్న పుస్తకాలను తీసుకురావడం — ఒక వంట పుస్తకంలో 'చికెన్ (పక్షి) ఎలా కాల్చాలి' అనే అధ్యాయం కూడా వచ్చే అవకాశం ఉంది. రెండవ విధానం: మీ ప్రశ్న యొక్క అర్థాన్ని అర్థం చేసుకుని — 'వలస', 'దిశానిర్దేశం', 'సీజనల్ ప్రయాణం' వంటి భావాలను గుర్తించి — ఆ అంశాన్ని వివరించే పుస్తకాలను తీసుకురావడం. మొదటి సహాయకుడు కీవర్డ్ మ్యాచింగ్ చేస్తున్నాడు; రెండో సహాయకుడు సిమాంటిక్ రిలవెన్స్ కొలుస్తున్నాడు. RAG సిస్టమ్‌లోని రిట్రీవర్ (retriever) ఆరో సహాయకుడి లాంటివాడు — ప్రశ్న మరియు డాక్యుమెంట్‌లను ఒకే అర్థ స్పేస్‌లోకి (embedding space) మ్యాప్ చేసి, దగ్గరగా ఉన్నవాటిని ఎంచుకుంటాడు.",
+        "connection": "ఈ కథలోని భాగాలను RAG భాగాలతో సరిపోల్చండి: (1) మీ ప్రశ్న = యూజర్ క్వెరీ; (2) లైబ్రరీ = డాక్యుమెంట్ కార్పస్ (ఉదా: Wikipedia యొక్క dense vector index); (3) సహాయకుడి అర్థం చేసుకునే తెలివి = pre-trained neural retriever; (4) తీసుకువచ్చిన పుస్తకాలు = retrieved passages; (5) ఆ పుస్తకాలు చదివి సమాధానం రాయడం = seq2seq జనరేటర్. Lewis et al. యొక్క RAG పేపర్‌లో ఇదే నిర్మాణం ఉంది: parametric memory (మోడల్ పారామీటర్లు) + non-parametric memory (dense vector index) కలిపి పనిచేస్తాయి. రిలవెన్స్ అంటే — క్వెరీ embedding మరియు డాక్యుమెంట్ embedding మధ్య సామీప్యత (similarity) ఎక్కువగా ఉండటం, అంటే రెండింటి అర్థం ఒకే దిశలో ఉండటం.",
+        "explanation": "సాంకేతికంగా, రిలవెన్స్‌ను కొలవడం ఎలా జరుగుతుంది? క్వెరీ మరియు డాక్యుమెంట్‌లను dense vectorsగా ఎన్కోడ్ చేస్తారు. రెండు vectors మధ్య dot product లేదా cosine similarity ఎంత ఎక్కువగా ఉంటే, అంత ఎక్కువ రిలవెంట్‌గా పరిగణిస్తారు. REALM పేపర్ ఇంకో ముఖ్యమైన ఆలోచనను చూపిస్తుంది: ఈ రిట్రీవర్‌ను unsupervised గా, masked language modeling నేర్చుకునే సిగ్నల్‌గా ఉపయోగించి ప్రీ-ట్రైన్ చేయవచ్చు — అంటే 'ఏ డాక్యుమెంట్ మిస్సింగ్ పదాన్ని అంచనా వేయడానికి సహాయపడుతుంది' అనే ప్రశ్న నుంచి రిలవెన్స్ నేర్చుకుంటారు. రెండు పేపర్లూ ఇదే సూత్రాన్ని నొక్కి చెబుతున్నాయి: రిలవెన్స్ అనేది లెర్న్డ్ (learned) స్కోర్, స్థిరమైన నియమం కాదు. RAG పేపర్‌లో రెండు రకాల ఫార్ములేషన్లు ఉన్నాయి — మొత్తం జనరేషన్ అంతటా ఒకే పాసేజీలను వాడటం, లేదా టోకెన్‌కు టోకెన్ వేర్వేరు పాసేజీలను ఎంచుకోవడం — రెండూ రిలవెన్స్‌ను వేర్వేరు గ్రాన్యులారిటీలో కొలుస్తాయి.",
+        "application": "ప్రాక్టికల్ అప్లికేషన్: మీరు ఒక కంపెనీ డాక్యుమెంటేషన్ కోసం RAG చాట్‌బాట్ బిల్డ్ చేస్తున్నారని ఊహించండి. యూజర్ అడిగినప్పుడు 'API rate limits ఎలా పెంచాలి?', రిట్రీవర్ అన్ని డాక్యుమెంట్‌లను స్కోర్ చేసి, టాప్-k పాసేజీలను జనరేటర్‌కు పంపుతుంది. రిలవెన్స్ స్కోరింగ్ సరిగా లేకపోతే — ఉదాహరణకు 'limits' అనే పదం ఉన్న ప్రైసింగ్ పేజీ టాప్‌లో నిలిచిపోతే — చాట్‌బాట్ తప్పు సమాధానం ఇస్తుంది. అందుకే ప్రొడక్షన్‌లో: (1) రిట్రీవల్ క్వాలిటీని విడిపోసి మెజర్ చేయండి (retrieval metrics); (2) టాప్-k లో ఏ పాసేజీలు వచ్చాయో లాగ్ చేయండి; (3) అవసరమైతే రిట్రీవర్‌ను మీ డొమైన్‌పై fine-tune చేయండి. రిలవెన్స్ అర్థం చేసుకోవడం అంటే — జనరేటర్ కంటే ముందు రిట్రీవర్‌ను డీబగ్ చేయడం నేర్చుకోవడం.",
+        "exercise": "రెండు నిమిషాల వ్యాయామం: ఒక చిన్న ప్రశ్న రాయండి (ఉదా: 'మా యాప్‌లో పాస్‌వర్డ్ రీసెట్ ఎలా పనిచేస్తుంది?'). ఇప్పుడు మూడు కాల్పనిక డాక్యుమెంట్ టైటిల్స్ రాయండి: ఒకటి నిజంగా రిలవెంట్, ఒకటి కీవర్డ్-మ్యాచ్ కానీ అర్థం వేరు, ఒకటి పూర్తిగా అసంబంధం. ప్రతి ఒక్కటి క్వెరీతో ఎంత సిమాంటిక్ సామీప్యత కలిగి ఉంటుందో ఊహించి, హై-మీడియం-లో ర్యాంక్ చేయండి. చివరగా: కీవర్డ్-మ్యాచ్ డాక్యుమెంట్ సిమాంటిక్ రిట్రీవర్‌లో ఎందుకు తక్కువ స్కోర్ పొందుతుందో ఒక వాక్యంలో రాయండి.",
+        "question": "సిమాంటిక్ రిట్రీవల్‌లో, 'పక్షి' అనే పదం చాలా ఉన్న వంట పుస్తక పేజీ, 'పక్షుల వలస' గురించిన సైన్స్ ఆర్టికల్ కంటే ఎందుకు తక్కువ రిలవెంట్‌గా స్కోర్ అవుతుంది?",
+        "answer": "ఎందుకంటే రిలవెన్స్ కీవర్డ్ ఓవర్‌ల్యాప్ మీద కాదు, అర్థ సామీప్యత మీద ఆధారపడి ఉంటుంది. Dense retriever క్వెరీ మరియు డాక్యుమెంట్‌లను embedding spaceలోకి మ్యాప్ చేస్తుంది; 'వలస', 'దిశానిర్దేశం' వంటి భావాలు క్వెరీ embedding కి దగ్గరగా ఉంటాయి, కానీ వంట పేజీ అర్థం (వంట విధానం) దూరంగా ఉంటుంది. అందుకే పదం మ్యాచ్ అయినా సిమాంటిక్ స్కోర్ తక్కువగా ఉంటుంది.",
+        "limits": "ఈ ఉపమానం యొక్క పరిమితి: లైబ్రరీ సహాయకుడు పుస్తకాలను చదివి అర్థం చేసుకుంటాడు, కానీ dense retriever వాస్తవానికి డాక్యుమెంట్‌ను 'అర్థం చేసుకోదు' — అది కేవలం వెక్టర్ దూరాన్ని కొలుస్తుంది. అందుకే అర్థపరంగా దగ్గరగా కానీ, సమాధానం ఇవ్వలేని పాసేజీలు (ఉదా: అదే టాపిక్ గురించి, కానీ తప్పు సమాచారం ఉన్నవి) కూడా అధిక రిలవెన్స్ స్కోర్ పొందవచ్చు. రిలవెన్స్ = సత్యత అని అనుకోవడం తప్పు; అది కేవలం అర్థ సామీప్యత. అలాగే, ఈ పేపర్లలోని బెంచ్‌మార్క్ ఫలితాలు ఆ సమయపు టాస్క్‌లకు మాత్రమే — మీ డొమైన్‌లో అదే పనితోచడం గ్యారెంటీ లేదు.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "ఇటీవలి అభివృద్ధులు: ఎంబెడింగ్ మోడల్స్ మరియు RAG వాడకం",
+        "overview": "ఈ వారం రెండు సోర్స్‌లు అందుబాటులో ఉన్నాయి: Google యొక్క EmbeddingGemma 2 ప్రకటన (బ్లాగ్ పోస్ట్ ఎక్స్‌ట్రాక్ట్), మరియు OpenAI కేస్ స్టడీ ఫీడ్ ఎక్స్‌ట్రాక్ట్. మొదటిది పూర్తి ఆర్టికల్ ఎక్స్‌ట్రాక్ట్ ఆధారంగా వివరించగలం; రెండోది కేవలం ఫీడ్ ఎక్స్‌ట్రాక్ట్ కాబట్టి పరిమితంగా మాత్రమే చెప్పగలం.",
+        "items": [
+          {
+            "headline": "Google, టెక్స్ట్, ఇమేజ్, ఆడియో, వీడియోలను ఒకే embedding space లోకి తీసుకొచ్చే EmbeddingGemma 2 ని విడుదల చేసినట్లు ప్రకటించింది",
+            "what_happened": "Google బ్లాగ్ పోస్ట్ (అక్టోబర్ 6, 2026) ప్రకారం, EmbeddingGemma 2 అనేది 740M పారామీటర్లు కలిగిన, Apache 2.0 లైసెన్స్‌తో విడుదలైన, ఓపెన్ మల్టీమోడల్ embedding మోడల్. ఇది టెక్స్ట్, ఇమేజ్‌లు, ఆడియో, వీడియో కలయికలను ఒకే unified embedding space లోకి మ్యాప్ చేస్తుందని, దీనివల్ల టెక్స్ట్ క్వెరీతో వీడియో క్లిప్ లేదా ఆడియో రికార్డింగ్‌లను సెర్చ్ చేయవచ్చని పేర్కొంది. పోస్ట్ ప్రకారం ఇది Matryoshka Representation Learning ద్వారా 768 నుంచి 128 డైమెన్షన్ల వరకు వెక్టర్లను ట్రంకేట్ చేయగలదు, 8K టోకెన్ కాంటెక్స్ట్ విండో కలదు, మరియు క్వాంటైజేషన్‌తో Pixel 11 Pro పై టెక్స్ట్-ఓన్లీ వెయిట్స్‌కు ~191MB RAM మాత్రమే కావాలట. మొదటి వెర్షన్ 20 మిలియన్లకు పైగా డౌన్‌లోడ్‌లు పొందిందని కూడా పోస్ట్ చెబుతుంది.",
+            "why_it_matters": "డెవలపర్ దృష్టికోణం నుంచి, ఇది ఓన్-డివైస్ (on-device) RAG మరియు సెమాంటిక్ సెర్చ్‌కు సంబంధించినది. ఉపయోగకరమైన ఉపమానం: embedding అనేది ఒక స్మార్ట్ కోఆర్డినేట్ సిస్టమ్ లాంటిది — ప్రతి ఫైల్ (టెక్స్ట్, ఇమేజ్, ఆడియో) ఒకే మ్యాప్‌లో ఒక చిరునామా పొందుతుంది, కాబట్టి 'అర్థం దగ్గరగా ఉన్న' అంశాలను వేగంగా కనుగొనవచ్చు. కాంక్రీట్ యూస్ కేస్: మీ యాప్‌లో యూజర్ వాయిస్ మెమోతో ఒక వీడియో క్లిప్‌ను, లేదా టెక్స్ట్ క్వెరీతో గంటల ఆడియోలో ఒక నిర్దిష్ట క్షణాన్ని వెతకడం — అన్నీ ఇంటర్నెట్‌కు డేటా పంపకుండా, లోకల్‌గా. ఇది ప్రైవసీ-ఫస్ట్ సెర్చ్ మరియు ఆఫ్‌లైన్ RAG పైప్‌లైన్‌లకు దారి తీస్తుంది. గమనిక: 'best-in-class', 'outperforms' వంటి నిర్వచనాలు Google యొక్క క్లెయిమ్‌లు; MTEB Code, MAEB వంటి బెంచ్‌మార్క్‌లలో sub-1B మోడల్స్‌లో లీడింగ్ స్కోర్లు ఉన్నాయని పోస్ట్ చెబుతోంది, కానీ అది అన్ని పరిస్థితుల్లో అన్ని మోడల్స్ కంటే మెరును అని కాదు.",
+            "takeaway": "ముఖ్యమైన పరిమితి: ఇవన్నీ పబ్లిషర్ (Google) క్లెయిమ్‌లు, స్వతంత్ర వెరిఫికేషన్ కాదు. దీన్ని ప్రయత్నించే ముందు: (1) మీ హార్డ్‌వేర్‌పై నిజమైన RAM అవసరాలు మరియు లేటెన్సీని మీరే బెంచ్‌మార్క్ చేయండి; (2) మీ డొమైన్ డేటాపై (ముఖ్యంగా తెలుగు లేదా మీ భాషలో) embedding క్వాలిటీని చిన్న ఎవాల్యుయేషన్‌తో పరీక్షించండి; (3) మల్టీమోడల్ ఎన్కోడర్ల (vision 170M, audio 300M) అదనపు మెమరీ ఖర్చును పరిగణించండి; (4) మోడల్ కార్డ్‌లోని పూర్తి ఎవాల్యుయేషన్ మెట్రిక్స్ చూడండి.",
+            "source_ids": [
+              "news-e6e1d2a9f0a4"
+            ]
+          },
+          {
+            "headline": "OpenAI కేస్ స్టడీ: ఒక సోషల్ క్లబ్ ChatGPT వాడి వారానికి 10-15 గంటలు సమయం ఆదా చేసినట్లు ఫీడ్ ఎక్స్‌ట్రాక్ట్",
+            "what_happened": "OpenAI వెబ్‌సైట్‌లోని ఒక ఫీడ్ ఎక్స్‌ట్రాక్ట్ (అక్టోబర్ 1, 2026 తేదీతో) ప్రకారం, 'The Den' అనే సోషల్ క్లబ్ ChatGPT Work ను ఉపయోగించి వారానికి 10-15 గంటల సమయం ఆదా చేసినట్లు, గ్రాంట్ అప్లికేషన్లను 3 రోజుల నుంచి 2 గంటలకు, లిక్కర్-లైసెన్స్ పత్రాలను 4 రోజుల నుంచి 3 గంటలకు తగ్గించుకున్నట్లు చెబుతోంది. ముఖ్యమైన గమనిక: ఇది ఫీడ్ ఎక్స్‌ట్రాక్ట్ మాత్రమే — పూర్తి కేస్ స్టడీని మేము చదవలేదు, కాబట్టి ఈ ఫలితాలు ఎలా సాధించబడ్డాయో (RAG వాడారా, ఇతర ఫీచర్లా) ధృవీకరించడానికి మాకు సమాచారం లేదు.",
+            "why_it_matters": "చిన్న వ్యాపారాలు మరియు లాభాపేక్ష లేని సంస్థల దృష్టికోణం నుంచి, ఇది డాక్యుమెంట్-హెవీ వర్క్‌ఫ్లోలలో (గ్రాంట్లు, లైసెన్సింగ్ పత్రాలు) AI సహాయం ఎంత సమయం ఆదా చేయగలదో చూపే ఒక ఉదాహరణగా ఉంటుంది. అయితే ఇది పబ్లిషర్ యొక్క స్వంత ఉత్పత్తిపై పబ్లిషర్ చేసిన కేస్ స్టడీ — అంటే మార్కెటింగ్ ప్రయోజనం కూడా ఉందని గుర్తించాలి. ఒకే సంస్థ ఫలితం మీ సంస్థలో పునరావృతమవుతుందని హామీ లేదు.",
+            "takeaway": "ముఖ్యమైన పరిమితి: ఇది ఒకే కస్టమర్ కథనం, పబ్లిషర్ ప్రచురించినది, మరియు మేము కేవలం ఫీడ్ ఎక్స్‌ట్రాక్ట్ ఆధారంగా మాత్రమే మాట్లాడుతున్నాం. దీన్ని ప్రయత్నించే ముందు: (1) పూర్తి కేస్ స్టడీ చదవండి — ఏ పనులు, ఏ విధానంలో, ఎవరు చేశారో తెలుసుకోండి; (2) సమయ ఆదా కొలత ఎలా జరిగిందో (స్వీయ-నివేదికా, కొలిచినదా) తనిఖీ చేయండి; (3) మీ డేటా ప్రైవసీ మరియు రివ్యూ ప్రక్రియలను ముందుగా ఏర్పాటు చేయండి.",
+            "source_ids": [
+              "news-2167384f51e2"
+            ]
+          }
+        ],
+        "exercise": "రెండు నిమిషాల సోర్స్-చెక్ వ్యాయామం: EmbeddingGemma 2 బ్లాగ్ పోస్ట్‌లో RAM వినియోగ సంఖ్యలు (~191MB టెక్స్ట్-ఓన్లీ, ~567MB పూర్తి మల్టీమోడల్) ఏ పరికరం, ఏ కాన్ఫిగరేషన్‌పై కొలవబడ్డాయో గుర్తించండి. తర్వాత మూడు ప్రశ్నలు అడగండి: (1) ఈ కొలత పబ్లిషర్ చేసిందా, స్వతంత్రంగానా? (2) మీ టార్గెట్ పరికరంలో ఇది పునరావృతమవుతుందా? (3) మోడల్ కార్డ్‌లో ఏ అదనపు మెట్రిక్స్ అందుబాటులో ఉన్నాయి? ఇదే విధానాన్ని OpenAI కేస్ స్టడీకి వర్తింపజేసి, ఫీడ్ ఎక్స్‌ట్రాక్ట్‌లో ఏ సమాచారం లేదో జాబితా చేయండి.",
+        "question": "ఒక పబ్లిషర్ తన స్వంత ఉత్పత్తిపై 'best-in-class' అని చెప్పుకున్నప్పుడు, దాన్ని ప్రయత్నించే ముందు డెవలపర్ మొదట ఏం చేయాలి?",
+        "answer": "మొదట, ఆ క్లెయిమ్‌ను పబ్లిషర్ క్లెయిమ్‌గా గుర్తించాలి — స్వతంత్ర ధృవీకరణగా కాదు. తర్వాత: క్లెయిమ్ ఏ బెంచ్‌మార్క్‌లు, ఏ పోటీదారులతో, ఏ పరిమితుల్లో (ఉదా: sub-1B వర్గం) చేయబడిందో తనిఖీ చేయాలి; మోడల్ కార్డ్ / పూర్తి డాక్యుమెంటేషన్ చదవాలి; మరియు మీ స్వంత డేటా, హార్డ్‌వేర్, భాషపై చిన్న పైలట్ ఎవాల్యుయేషన్ నడపాలి. కేస్ స్టడీల విషయంలో, కొలత పద్ధతి మరియు ప్రచురణ ప్రయోజనం కూడా పరిశీలించాలి."
+      },
+      "usage": {
+        "prompt_tokens": 2971,
+        "total_tokens": 17547,
+        "completion_tokens": 14576,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-e6e1d2a9f0a4",
+          "title": "EmbeddingGemma 2: an open, lightweight multimodal embedding model",
+          "url": "https://blog.google/innovation-and-ai/technology/developers-tools/embeddinggemma-2/",
+          "publisher": "blog.google",
+          "published_at": "2026-10-06T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 427,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "Other"
+        },
+        {
+          "id": "news-2167384f51e2",
+          "title": "The Den frees up 10-15 hours a week to grow with ChatGPT Work",
+          "url": "https://openai.com/index/the-den-family-social",
+          "publisher": "OpenAI",
+          "published_at": "2026-10-01T00:00:00+00:00",
+          "evidence_type": "feed_excerpt",
+          "topic": "RAG"
+        }
+      ],
+      "id": "730ace2781eb257a"
     }
   ]
 }

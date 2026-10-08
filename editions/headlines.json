@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "task": "ai_headlines",
-  "checked_at": "2026-10-07T17:50:25.785492+00:00",
+  "checked_at": "2026-10-08T17:53:40.508469+00:00",
   "items": [
     {
       "id": "news-e6e1d2a9f0a4",
@@ -9,6 +9,34 @@
       "url": "https://blog.google/innovation-and-ai/technology/developers-tools/embeddinggemma-2/",
       "publisher": "blog.google",
       "published_at": "2026-10-06T00:00:00+00:00"
+    },
+    {
+      "id": "news-db7b9e6fe248",
+      "title": "How Oracle turns days of work into minutes with ChatGPT and Codex",
+      "url": "https://openai.com/index/oracle",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-08T16:00:00+00:00"
+    },
+    {
+      "id": "news-855092fba1df",
+      "title": "Pollo AI turns creative ideas into campaigns with OpenAI",
+      "url": "https://openai.com/index/pollo-ai",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-08T12:00:00+00:00"
+    },
+    {
+      "id": "news-d9e485b409fe",
+      "title": "Disrupting AI-enabled “false front” operations",
+      "url": "https://openai.com/index/disrupting-ai-enabled-false-front-operations",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-08T00:00:00+00:00"
+    },
+    {
+      "id": "news-b96cc914fffc",
+      "title": "Does better work always mean better workers?",
+      "url": "https://research.google/blog/does-better-work-always-mean-better-workers/",
+      "publisher": "Google Research",
+      "published_at": "2026-10-07T20:19:57+00:00"
     },
     {
       "id": "news-661f64ddb5f4",
@@ -23,6 +51,13 @@
       "url": "https://openai.com/index/radisson",
       "publisher": "OpenAI",
       "published_at": "2026-10-07T07:00:00+00:00"
+    },
+    {
+      "id": "news-a097ef0d441a",
+      "title": "GPT-6 and Intelligent UI for everyone",
+      "url": "https://openai.com/index/gpt-6-for-everyone",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-07T00:00:00+00:00"
     },
     {
       "id": "news-c11a83f73b42",
@@ -51,41 +86,6 @@
       "url": "https://openai.com/index/jump-trading",
       "publisher": "OpenAI",
       "published_at": "2026-10-06T12:00:00+00:00"
-    },
-    {
-      "id": "news-00427e47df5e",
-      "title": "Sharing AI progress in mathematics",
-      "url": "https://openai.com/index/sharing-ai-progress-in-mathematics",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-06T12:00:00+00:00"
-    },
-    {
-      "id": "news-f57eff9c23a4",
-      "title": "Advancing computer use with Ironclad",
-      "url": "https://openai.com/index/advancing-computer-use-with-ironclad",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-06T10:00:00+00:00"
-    },
-    {
-      "id": "news-7eeb0a9dde53",
-      "title": "Open and Emergent Problems in Agentic Privacy and Security: A Contextual Angle",
-      "url": "https://research.google/blog/open-and-emergent-problems-in-agentic-privacy-and-security-a-contextual-angle/",
-      "publisher": "Google Research",
-      "published_at": "2026-10-05T21:08:00+00:00"
-    },
-    {
-      "id": "news-d2b5b29b4c81",
-      "title": "Our approach to EU text provenance rules",
-      "url": "https://openai.com/index/eu-text-provenance",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-05T15:00:00+00:00"
-    },
-    {
-      "id": "news-2d8e70fb45ce",
-      "title": "Building advertising for the way people use AI",
-      "url": "https://openai.com/index/new-chatgpt-ads-format-and-measurement",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-05T10:00:00+00:00"
     }
   ]
 }
