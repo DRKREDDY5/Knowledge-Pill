@@ -1,254 +1,8 @@
 {
   "schema_version": 1,
   "task": "daily_pills_collection",
-  "updated_at": "2026-10-08T17:56:20.292745+00:00",
+  "updated_at": "2026-10-09T17:29:16.030988+00:00",
   "packets": [
-    {
-      "date": "2026-09-12",
-      "timezone": "America/New_York",
-      "created_at": "2026-09-12T23:31:01.725601+00:00",
-      "topic": "RAG",
-      "language": "en",
-      "concept": "Knowing when evidence is missing",
-      "news_window": "recent",
-      "source_warnings": [],
-      "router_engine": "TF-IDF + logistic regression",
-      "schema_version": 1,
-      "task": "daily_pills",
-      "status": "draft",
-      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
-      "generation_method": "fireworks",
-      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
-      "knowledge": {
-        "title": "Knowing When Evidence Is Missing: The Librarian Who Says 'I Don't Have That Book'",
-        "summary": "Retrieval-augmented generation (RAG) grounds a language model in external documents, but a critical and often overlooked skill is detecting when the retrieved evidence simply does not answer the question. This pill teaches why 'no evidence found' is a valid and valuable output, using a fictional everyday story, and maps it to the design of RAG systems described in the foundational papers. The evidence-checking steps below are proposed design choices, not a method evaluated in the supplied abstracts.",
-        "story": "Meera works the reference desk at a small public library. A visitor asks, 'What was the exact rainfall in the town of Kavali on March 3rd, 1998?' Meera walks to the weather archive shelf. She finds rainfall records for the district, but they only begin in 2004. She could guess, she could extrapolate from nearby years, or she could confidently invent a plausible-sounding number. Instead, she returns and says: 'Our records don't go back that far, so I can't answer that from what we have. You'd need the national meteorological office.' The visitor is mildly disappointed but trusts the library more, not less, because Meera was honest about the gap. The next visitor asks about rainfall in 2010, and Meera finds the exact page and reads the number aloud, pointing to the source. Two very different interactions, one librarian.",
-        "connection": "Meera's archive shelf is the non-parametric memory: an explicit, external knowledge store the system can consult. In the RAG paper, this is a dense vector index of Wikipedia accessed through a pre-trained neural retriever, combined with a pre-trained seq2seq model that serves as parametric memory. REALM takes a related view, adding a latent knowledge retriever to language model pre-training so the model retrieves and attends over documents from a large corpus during pre-training, fine-tuning, and inference. Both papers motivate this design the same way: knowledge stored only in network parameters is hard to update, hard to trace, and limited in precision. Meera pointing to the exact archive page is provenance; her ability to say 'our records start in 2004' is the system knowing the boundary of its evidence.",
-        "explanation": "For this lesson, consider two possible response paths in a RAG application. Mode one: evidence exists and is relevant, so the generator conditions on the retrieved passages and produces an answer traceable to them. Mode two: the retriever returns passages that are topically nearby but do not actually contain the answer, and the system should say so. The RAG paper notes that parametric-only models struggle to access and precisely manipulate knowledge, and that provenance and knowledge updating remain open problems, which is exactly why the external memory matters. But retrieval is similarity-based, not truth-based. A dense retriever will happily return documents that share vocabulary with the question without answering it. A well-designed pipeline therefore needs an explicit evidence-sufficiency check between retrieval and generation: does any retrieved passage actually support an answer, or would the answer add claims that the retrieved material does not support? RAG combines parameter knowledge with external evidence; using parameter knowledge is not itself proof of an error.",
-        "application": "In practice, add a verification step to your RAG pipeline. After retrieval, have the generator (or a separate judge pass) check each candidate passage for whether it entails an answer to the specific question, not merely whether it mentions the topic. If no passage passes, return a structured 'insufficient evidence' response that names what was searched and what was missing, the way Meera names the national meteorological office as the right next step. Log these events: repeated missing-evidence responses can reveal absent documents or failures to retrieve existing ones. Inspect both corpus coverage and retrieval before choosing a fix. These are design suggestions; a model acting as a judge can also make mistakes.",
-        "exercise": "Take any RAG demo you have access to and ask it three questions: one it can answer, one about something just outside your corpus, and one that uses words from your corpus but asks something the corpus never states. For the third, watch whether the system confuses topical similarity with actual evidence. Two minutes, no code required.",
-        "question": "Why is a dense vector retriever returning documents a poor guarantee that those documents contain the answer?",
-        "answer": "Because retrieval optimizes for similarity between the query and document embeddings, not for entailment. Documents can share vocabulary or topic with the question while lacking the specific fact requested, so an explicit evidence-sufficiency check is needed before generation.",
-        "limits": "The library analogy breaks down in one important way: Meera knows the shelf is empty because she can see the whole archive. A retriever has no such global view; it only knows what similarity search surfaced. 'No relevant passage found' in a RAG system means 'nothing retrieved was relevant', which is weaker than 'the corpus contains nothing relevant'. The analogy also hides the fact that the generator in RAG still has parametric memory and can blend it with retrieved text, so the boundary between 'answered from evidence' and 'answered from parameters' is blurrier than shelf versus empty shelf.",
-        "source_ids": [
-          "paper-2005.11401",
-          "paper-2002.08909"
-        ]
-      },
-      "news": {
-        "title": "Recent Developments: AI-Assisted Antimicrobial Discovery and Answer-First Tool-Use Data Generation",
-        "overview": "Two recent items from research labs illustrate different sides of applied AI: one uses coding assistants and chat models to accelerate scientific search, the other rethinks how training data for tool-using agents is produced. Both are publisher-reported; treat the details as claims from the organizations involved.",
-        "items": [
-          {
-            "headline": "Researchers use Codex and ChatGPT to hunt for antimicrobial molecules",
-            "what_happened": "OpenAI published a piece on September 10, 2026 describing how César de la Fuente's lab uses Codex and ChatGPT to search living and extinct genomes for antimicrobial candidates aimed at drug-resistant infections. Note this is a feed excerpt, so this summary reflects the publisher's description rather than a full reading of the article.",
-            "why_it_matters": "Drug-resistant infections are a major health challenge, and genome-scale search is exactly the kind of knowledge-intensive task where external evidence and model assistance can widen the search space for researchers.",
-            "takeaway": "LLMs as research assistants can accelerate hypothesis generation in biology, but publisher claims about discovery workflows should be checked against the underlying scientific publications.",
-            "source_ids": [
-              "news-39842fa0b34b"
-            ]
-          },
-          {
-            "headline": "Google Research introduces ToolGrad, an answer-first method for generating tool-use training data",
-            "what_happened": "A Google Research blog post dated September 10, 2026 describes ToolGrad, presented at ACL 2026. Instead of generating a user query first and searching for a tool-use solution, ToolGrad first constructs a verified tool-use chain and then annotates the corresponding user prompt, iterating with textual 'gradients' (LLM critic feedback) across four modules: proposer, executors, selector, and updater. The post reports a high pass rate (99.8% in one comparison), lower generation cost than a query-first DFS baseline on ToolBench's 16k+ APIs, and that Gemma-3 models fine-tuned on the resulting ToolGrad-500 dataset improved on the Berkeley Function Calling Leaderboard, with the 12B variant scoring 83.1, close to the reported proprietary figures.",
-            "why_it_matters": "Tool-using agents need large, verified training datasets, and the traditional query-first search approach is expensive and low-yield. Reversing the order so the answer exists before the question is a simple structural idea with significant efficiency implications for anyone building agent training pipelines.",
-            "takeaway": "My interpretation, separate from the publisher's claims: the benchmark comparisons come from Google's own evaluation, and the fine-tuned model nearly matching proprietary frontier models on one benchmark is encouraging but narrow evidence. The durable lesson is the paradigm, answer-first data generation yielding verified trajectories by construction, which is worth testing in your own agent data workflows rather than taking the leaderboard numbers at face value.",
-            "source_ids": [
-              "news-aa8533b1c5b4"
-            ]
-          }
-        ],
-        "exercise": "Spend two minutes locating the primary sources: for the OpenAI item, check whether the page links to peer-reviewed publications about the antimicrobial work; for ToolGrad, find the ACL 2026 paper link on the Google Research blog and skim its abstract. Note one claim in each that is the publisher's own characterization versus one backed by an external artifact.",
-        "question": "What is the key structural difference between ToolGrad and prior query-first tool-use dataset generation methods?",
-        "answer": "ToolGrad generates a verified tool-use chain first and then annotates the user query, whereas prior methods like ToolBench's DFS generate a query first and search for a solution, distilling trajectories from exploratory search with a lower pass rate and higher cost."
-      },
-      "usage": {
-        "prompt_tokens": 3530,
-        "total_tokens": 5404,
-        "completion_tokens": 1874,
-        "prompt_tokens_details": {
-          "cached_tokens": 0
-        },
-        "completion_tokens_details": {
-          "reasoning_tokens": 0
-        },
-        "output_tokens_details": {
-          "reasoning_tokens": 0
-        }
-      },
-      "sources": [
-        {
-          "id": "paper-2005.11401",
-          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
-          "url": "https://arxiv.org/abs/2005.11401",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "paper-2002.08909",
-          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
-          "url": "https://arxiv.org/abs/2002.08909",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "news-39842fa0b34b",
-          "title": "How a researcher uses Codex and ChatGPT to search for new antimicrobial molecules",
-          "url": "https://openai.com/index/using-codex-chatgpt-to-search-for-new-antimicrobials",
-          "publisher": "OpenAI",
-          "published_at": "2026-09-10T16:00:00+00:00",
-          "evidence_type": "feed_excerpt",
-          "topic": "RAG"
-        },
-        {
-          "id": "news-aa8533b1c5b4",
-          "title": "ToolGrad: Efficient tool-use dataset generation with textual \"gradients\"",
-          "url": "https://research.google/blog/toolgrad-efficient-tool-use-dataset-generation-with-textual-gradients/",
-          "publisher": "Google Research",
-          "published_at": "2026-09-10T22:50:22+00:00",
-          "evidence_type": "article_excerpt",
-          "topic": "Agents"
-        }
-      ],
-      "id": "3c7da074c5b08d7e",
-      "editorial_review": {
-        "status": "wording_corrected",
-        "reviewer": "assistant",
-        "reviewed_at": "2026-09-12T23:45:52.005712+00:00",
-        "original_collection_url": "https://github.com/DRKREDDY5/Knowledge-Pill/blob/88fa31b72e3df66fbdf8aca64280483b2b70d88e/editions/latest.json",
-        "changes": [
-          "Labelled evidence checks as design suggestions",
-          "Distinguished missing documents from retrieval failures"
-        ],
-        "human_approval": false
-      }
-    },
-    {
-      "date": "2026-09-12",
-      "timezone": "America/New_York",
-      "created_at": "2026-09-12T23:31:01.725601+00:00",
-      "topic": "RAG",
-      "language": "te",
-      "concept": "Knowing when evidence is missing",
-      "news_window": "recent",
-      "source_warnings": [],
-      "router_engine": "TF-IDF + logistic regression",
-      "schema_version": 1,
-      "task": "daily_pills",
-      "status": "draft",
-      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
-      "generation_method": "fireworks",
-      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
-      "knowledge": {
-        "title": "RAGలో సాక్ష్యం లేనప్పుడు గుర్తించడం",
-        "summary": "Retrieval-Augmented Generation (RAG) సిస్టమ్‌లు మోడల్ పారామీటర్లలో ఉన్న జ్ఞానంతో పాటు, బాహ్య డాక్యుమెంట్ల నుంచి వెతికి తెచ్చిన సమాచారాన్ని ఉపయోగిస్తాయి. అయితే దొరికిన డాక్యుమెంట్‌లో మన ప్రశ్నకు సమాధానం లేకపోవచ్చు. అలాంటప్పుడు ఊహించి చెప్పకుండా, తగిన ఆధారం దొరకలేదని ఎలా చెప్పాలో ఈ పాఠంలో నేర్చుకుందాం.",
-        "story": "ఊహించండి: మీరు ఒక పెద్ద లైబ్రరీలో పనిచేసే సహాయకుడి వద్ద ఉన్న ఇంటర్న్. ఒక రోజు ఒక పాఠకుడు వచ్చి '1962లో చిన్న పట్టణమైన కోవెల్ట్‌లో జన్మించిన కవి ఎవరు?' అని అడిగారు. మీరు క్యాటలాగ్‌లో 'కోవెల్ట్' అని వెతికారు — ఒక పాత పంచాంగం ఒక్కటి దొరికింది, అందులో ఆ పట్టణం పేరు ఉంది కానీ ఎలాంటి కవి పేరు లేదు. ఇప్పుడు రెండు మార్గాలున్నాయి: (1) పంచాంగం చూసినందుకు సంతోషించి, మీ అంచనాతో 'అది రామేశ్ అయి ఉండొచ్చు' అని చెప్పడం, లేదా (2) 'నేను వెతికి తెచ్చిన ఈ పంచాంగంలో ఆ ప్రశ్నకు సమాధానం లేదు — నేను చెప్పగలిగింది ఏమిటంటే, కోవెల్ట్ అనే పట్టణం గురించి ఈ పంచాంగంలో ప్రస్తావించారు, కానీ కవుల గురించి ఏమీ లేదు' అని నిజాయితీగా చెప్పడం. మొదటి మార్గం వేగంగా అనిపించినా, పాఠకుడు ఆ పేరును నిజంగా నమ్మే ప్రమాదం ఉంది. రెండో మార్గంలో మీరు రెట్రీవల్ ఫలితాన్ని ('ఏదో దొరికింది') తో 'సమాధానం దొరికింది' ('అన్సర్ ఉంది') అనే దానిని వేరు చేసి చూస్తున్నారు. ఈ వ్యత్యాసమే ఈ పాఠం మొత్తం.",
-        "connection": "ఈ కథలోని భాగాలు RAG భాగాలకు సరిపోతాయి: లైబ్రరీ = డాక్యుమెంట్ ఇండెక్స్ (non-parametric memory); మీ వెతుకులాట = neural retriever; పాఠకుడి ప్రశ్న = user query; మీ తుది జవాబు = generated answer; 'దొరికిన పంచాంగం' = retrieved passage; 'పంచాంగంలో అన్సర్ లేదు' = missing evidence. మీ మెదడులో ఉన్న సాధారణ జ్ఞానం = parametric memory — అది ఉపయోగకరమే, కానీ ప్రశ్నకు సంబంధించిన నిర్దిష్ట వాస్తవం అక్కడ లేకపోవచ్చు.",
-        "explanation": "RAG అనే ఆలోచన మూలం: పెద్ద pre-trained మోడల్స్ వాస్తవాలను పారామీటర్లలో నిల్వ చేస్తాయి, కానీ ఆ జ్ఞానాన్ని ఖచ్చితంగా యాక్సెస్ చేయడం, provenance (ఏ మూలం నుంచి వచ్చిందో చూపడం), మరియు కొత్త జ్ఞానాన్ని అప్‌డేట్ చేయడం కష్టం. Lewis et al. ప్రతిపాదించిన RAG మోడల్స్ pre-trained seq2seq మోడల్‌ను (parametric memory) Wikipedia యొక్క dense vector index (non-parametric memory) తో కలిపి, pre-trained neural retriever ద్వారా యాక్సెస్ చేస్తాయి. ఇది knowledge-intensive tasks లో మెరుగైన ఫలితాలు, మరియు ఎక్కువ factual అవుట్‌పుట్‌ను చూపింది. అదేవిధంగా REALM, language model pre-training సమయంలోనే latent knowledge retriever ను చేర్చి, మిలియన్ల డాక్యుమెంట్లలో retrieval step ద్వారా backpropagate చేసే పద్ధతిని నేర్పింది; ఇది interpretability మరియు modularity వంటి ప్రయోజనాలను ఇస్తుంది. ఇప్పుడు ముఖ్యమైన పాయింట్: ఈ ఆర్కిటెక్చర్లు 'సంబంధిత డాక్యుమెంట్ దొరికింది' అని చెబుతాయి, 'డాక్యుమెంట్‌లో అన్సర్ ఉంది' అని కాదు. top-k retrieval వాడే సిస్టమ్‌లో retriever కొన్ని దగ్గరగా సరిపోలే passages ను ఇస్తుంది — అవి సంబంధం ఉన్నవి కావచ్చు, కానీ ఖచ్చితమైన వాస్తవం అందులో లేకపోవచ్చు. అందుకే 'సాక్ష్యం లేదు' అని గుర్తించడం ఒక ప్రత్యేక డిజైన్ నిర్ణయం: జనరేషన్ సమయంలో మోడల్‌కు 'తగినంత ఆధారం లేదు' అనే అవుట్‌పుట్ ఎంపిక ఉండాలి, retrieval స్కోర్లు లేదా passage-content తనిఖీ ద్వారా దాన్ని ట్రిగ్గర్ చేయాలి. ఇక్కడ సూచిస్తున్న ఆధారాల తనిఖీ ఒక ప్రాయోగిక డిజైన్ ఆలోచన; ఇచ్చిన paper abstracts ఈ ప్రత్యేక తనిఖీని పరీక్షించాయని చెప్పడం లేదు. Retrieval score ఎక్కువగా ఉన్నంత మాత్రాన సమాధానం నిజమని నిర్ధారణ కాదు.",
-        "application": "ఒక కంపెనీ డాక్యుమెంటేషన్ చాట్‌బాట్‌ను ఉదాహరణగా తీసుకుందాం. ముందుగా దొరికిన passages లో ప్రశ్నకు సమాధానం ఇచ్చే వాక్యం ఉందో చూడండి. టాపిక్‌కు సంబంధం ఉండటం మాత్రమే సరిపోదు. తగిన ఆధారం లేకపోతే, “దొరికిన డాక్యుమెంట్ల ఆధారంగా ఈ ప్రశ్నకు సమాధానం చెప్పలేను” అని చెప్పేలా రూపొందించవచ్చు. Similarity score ఆధారంగా threshold పెట్టాలనుకుంటే, నిజమైన ఉదాహరణలపై దాన్ని పరీక్షించాలి; అది వాస్తవాన్ని నిర్ధారించే పరీక్ష కాదు. మరో మోడల్‌తో సమాధానాన్ని తనిఖీ చేయించినా, ఆ మోడల్ కూడా తప్పు చేయవచ్చు. ఆధారం దొరకని సందర్భాలను నమోదు చేసి, అసలు డాక్యుమెంట్ లేదా, ఉన్న డాక్యుమెంట్‌ను retrieval కనుగొనలేకపోయిందా అని పరిశీలించండి. అవసరాన్ని బట్టి డాక్యుమెంట్లను లేదా శోధన పద్ధతిని మెరుగుపరచండి. ఇవి ప్రయత్నించదగిన డిజైన్ సూచనలు; సరైన సమాధానానికి హామీలు కావు.",
-        "exercise": "రెండు నిమిషాల వ్యాయామం: మీ చుట్టూ ఉన్న ఏదైనా ఒక డాక్యుమెంట్ (ఒక README లేదా వార్తాకథనం) తీసుకోండి. దాని ఆధారంగా రెండు ప్రశ్నలు మీరే రాయండి — ఒకటి డాక్యుమెంట్‌లో అన్సర్ నిజంగా ఉన్నది, మరొకటి అన్సర్ లేనిది (కానీ టాపిక్‌కి సంబంధించినది). ఇప్పుడు రెండింటికీ డాక్యుమెంట్ మాత్రమే చూసి జవాబు రాయండి. రెండో ప్రశ్నకు మీ మెదడు ఏదో ఊహించి చెప్పడానికి ప్రయత్నిస్తుందని గమనించండి — ఆ టెంప్టేషన్‌నే మేము RAG సిస్టమ్‌లలో అరికట్టాలి.",
-        "question": "Retriever ప్రశ్నకు సంబంధించిన passage ను ఇచ్చినంత మాత్రాన, అందులో ప్రశ్నకు సమాధానం ఉందని ఎందుకు అనుకోకూడదు? ఒక వాక్యంలో చెప్పండి.",
-        "answer": "Retriever ప్రశ్నకు సంబంధించిన (relevant) passages ను top-k గా ఇస్తుంది తప్ప అందులో ఖచ్చితమైన వాస్తవం (answer) ఉందో లేదో ధృవీకరించదు; కాబట్టి passage-content ని తనిఖీ చేసి, ఆధారం లేకపోతే 'సాక్ష్యం లేదు' అని స్పష్టంగా చెప్పే ప్రత్యేక మెకానిజం అవసరం.",
-        "limits": "ఈ ఉపమానం పరిమితులు: ఇంటర్న్‌కు 'అన్సర్ లేదు' అని గుర్తించడం సహజంగా వస్తుంది, కానీ LLM లలో అది స్వయంగా వాటిలో లేదు — ప్రాంప్టింగ్, థ్రెషోల్డింగ్, verification ద్వారా మనం బలవంతంగా కట్టిన నడవడి. అంతేకాదు, threshold పెద్దగా ఉంటే సిస్టమ్ ఎక్కువగా 'తెలియదు' అని చెబుతుంది (over-refusal); తక్కువగా ఉంటే తప్పు ధైర్యంతో జవాబిస్తుంది. అలాగే లైబ్రరీ ఉపమానంలో డాక్యుమెంట్‌లు స్థిరంగా ఉంటాయి, కానీ నిజమైన ఇండెక్స్‌లో కంటెంట్ మారుతూ ఉంటుంది — 'లేదు' అనే నిర్ణయం ఎప్పుడైనా పాతది కావచ్చు. చివరగా, సాక్ష్యం ఉన్నా అది తప్పు మూలం నుంచి వచ్చి ఉండొచ్చు; 'లేదు' గుర్తించడం 'ఉన్నది నిజం' అని ధృవీకరించడం కాదు.",
-        "source_ids": [
-          "paper-2005.11401",
-          "paper-2002.08909"
-        ]
-      },
-      "news": {
-        "title": "RAG మరియు ఏజెంట్ల చుట్టూ తాజా అభివృద్ధులు",
-        "overview": "ఈ వారం రెండు వార్తా అంశాలు: ఒకటి జీవసంబంధ పరిశోధనలో LLM సాధనాల వాడకం, రెండో టూల్-యూజ్ డేటాసెట్ జనరేషన్‌లో కొత్త పద్ధతి. రెండూ ఈ వారం కోర్స్ కాన్సెప్ట్‌తో — మోడల్ దగ్గర ఉన్న దానికీ, బాహ్య ఆధారాలకీ మధ్య ఉన్న వ్యత్యాసానికీ — సంబంధం కలిగి ఉంటాయి.",
-        "items": [
-          {
-            "headline": "యాంటీమైక్రోబయల్ అభ్యర్థుల కోసం జీనోమ్‌లను వెతకడానికి Codex మరియు ChatGPT వాడకం",
-            "what_happened": "OpenAI ప్రచురించిన ఒక పోస్ట్ ప్రకారం, César de la Fuente ల్యాబ్ డ్రగ్-రెసిస్టెంట్ ఇన్ఫెక్షన్లపై పోరాటానికి యాంటీమైక్రోబయల్ అభ్యర్థులను వెతకడానికి Codex మరియు ChatGPT ను ఉపయోగిస్తోంది — ప్రస్తుతం జీవిస్తున్న, అంతరించిపోయిన జీవుల జీనోమ్‌లలో శోధిస్తోంది. ఈ సమాచారం feed excerpt ఆధారంగా ఉంది; మేము పూర్తి వ్యాసాన్ని చదవలేదు.",
-            "why_it_matters": "ఇది ఈ వారం కాన్సెప్ట్‌కు సరిగ్గా సరిపోతుంది: మోడల్ పారామీటర్లలో ఉన్న సాధారణ జ్ఞానం చాలదు — పరిశోధనకు అవసరమైన నిర్దిష్ట జీనోమ్ డేటా బాహ్య మూలాల్లో ఉంటుంది, దాన్ని వెతికి పనిముట్లతో ప్రాసెస్ చేయడమే విలువ. అదేవిధంగా, ఏ మూలం నుంచి అభ్యర్థి వచ్చిందో (provenance) తెలుసుకోవడం శాస్త్రీయ పరిశోధనలో కీలకం.",
-            "takeaway": "LLM సాధనాలు డొమైన్-స్పెసిఫిక్ డేటాను యాక్సెస్ చేయడంలో సహాయపడతాయి, కానీ ఫలితాల నాణ్యత ఆధారపడి ఉంటుంది మూల డేటా మరియు పరిశోధనా పద్ధతిపై — ప్రచురణ పూర్తి పద్ధతులను చూసిన తర్వాతే తీర్పు ఇవ్వాలి.",
-            "source_ids": [
-              "news-39842fa0b34b"
-            ]
-          },
-          {
-            "headline": "ToolGrad: టూల్-యూజ్ డేటాను 'answer-first' పద్ధతిలో జనరేట్ చేయడం",
-            "what_happened": "Google Research బ్లాగ్ ప్రకారం, ACL 2026లో సమర్పించిన ToolGrad అనే ఫ్రేమ్‌వర్క్ సాంప్రదాయ పద్ధతిని తలకిందులు చేస్తుంది: ముందు user query జనరేట్ చేసి దానికి టూల్-యూజ్ పరిష్కారం వెతకడం కాకుండా, ముందు ధృవీకరించిన (verified) టూల్-యూజ్ చైన్ జనరేట్ చేసి, ఆ తర్వాత దానికి సరిపోయే user prompt రాయిస్తుంది. ఇది TextGrad శైలిలో 'textual gradients' (ప్లెయిన్ టెక్స్ట్ ఫీడ్‌బ్యాక్) తో API వర్క్‌ఫ్లోలను ఇటరేటివ్‌గా నిర్మిస్తుంది — propose, execute, select, update అనే నాలుగు మాడ్యూల్స్‌తో. బ్లాగ్ ప్రకారం ఇది ఎక్కువ pass rate, తక్కువ ఖరీదుతో కాంప్లెక్స్ డేటా ఇచ్చింది; ToolGrad-500 డేటాతో fine-tune చేసిన Gemma-3 మోడల్స్ Berkeley Function Calling Leaderboard లో మెరుగైన స్కోర్లు చూపాయి, ToolGrad-12B 83.1 స్కోరుతో ప్రముఖ ప్రొప్రైటరీ మోడల్స్ స్కోర్లతో పోటీపడింది.",
-            "why_it_matters": "ఏజెంటిక్ వర్క్‌ఫ్లోలకు నాణ్యమైన ట్రైనింగ్ డేటా పెద్ద అడ్డంకి. ఈ పద్ధతిలో ముఖ్యమైన అంశం: జనరేటెడ్ డేటాలోని ప్రతి సాల్యూషన్ నిజంగా execute అయి ధృవీకరించబడుతుంది — అంటే 'సాక్ష్యం' (విజయవంతమైన execution report) ఆధారం లేకుండా క్లెయిమ్ చేయబడదు. ఇది మన కాన్సెప్ట్‌తో ప్రతిధ్వనిస్తుంది: ధృవీకరించని అవుట్‌పుట్‌ను గ్రౌండ్ ట్రూత్‌గా తీసుకోకూడదు.",
-            "takeaway": "డేటా జనరేషన్ పైప్‌లైన్‌లలో, అన్సర్‌ను ముందు ధృవీకరించి ప్రశ్నను తర్వాత రాయడం వంటి ఆర్డర్ మార్పులు నాణ్యతను పెంచగలవు — అయితే ఇవి ప్రచురణకర్త చెప్పిన ఫలితాలు; స్వతంత్ర పునఃపరిశీలన అవసరం.",
-            "source_ids": [
-              "news-aa8533b1c5b4"
-            ]
-          }
-        ],
-        "exercise": "రెండు నిమిషాల సోర్స్-చెక్ వ్యాయామం: రెండు వార్తా అంశాలకూ ఒక్కొక్కటి చేయండి — (1) ఈ డ్రాఫ్ట్‌లో ఏ వాదనలు ప్రచురణకర్త (OpenAI / Google Research) చెప్పినవో, ఏవి మా వివరణో గుర్తించండి; (2) ToolGrad అంశంలో '83.1 స్కోరు' వంటి సంఖ్యలు ఏ benchmark లో, ఏ పరిస్థితుల్లో కొలిచారో ఒక వాక్యంలో రాయండి. మొదటి అంశానికి feed excerpt మాత్రమే ఆధారం కావడం గమనించండి — పూర్తి వ్యాసం చదివే ముందు మీరు ఏ నిర్ణయాలు తీసుకోలేరు?",
-        "question": "ToolGrad యొక్క 'answer-first' పద్ధతి మన కాన్సెప్ట్ (సాక్ష్యం లేని సందర్భాలను గుర్తించడం) తో ఎలా ముడిపడి ఉంది?",
-        "answer": "ToolGrad ముందుగా టూల్-యూజ్ చైన్‌ను అమలు చేసి, అది పనిచేసిన ఫలితాన్ని తనిఖీ చేస్తుంది. ఆ తర్వాత దానికి సరిపోయే ప్రశ్నను రూపొందిస్తుంది. కేవలం ఊహించిన సమాధానాన్ని అంగీకరించకుండా, తనిఖీ చేయగల ఫలితాన్ని ఆధారంగా తీసుకోవడం అనే సాధారణ ఆలోచనతో దీనిని పోల్చవచ్చు. అయితే టూల్ విజయవంతంగా నడవడం, దాని ఫలితంలోని ప్రతి విషయం నిజమని నిరూపించదు."
-      },
-      "usage": {
-        "prompt_tokens": 3530,
-        "total_tokens": 15671,
-        "completion_tokens": 12141,
-        "prompt_tokens_details": {
-          "cached_tokens": 0
-        },
-        "completion_tokens_details": {
-          "reasoning_tokens": 24
-        },
-        "output_tokens_details": {
-          "reasoning_tokens": 24
-        }
-      },
-      "sources": [
-        {
-          "id": "paper-2005.11401",
-          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
-          "url": "https://arxiv.org/abs/2005.11401",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "paper-2002.08909",
-          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
-          "url": "https://arxiv.org/abs/2002.08909",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "news-39842fa0b34b",
-          "title": "How a researcher uses Codex and ChatGPT to search for new antimicrobial molecules",
-          "url": "https://openai.com/index/using-codex-chatgpt-to-search-for-new-antimicrobials",
-          "publisher": "OpenAI",
-          "published_at": "2026-09-10T16:00:00+00:00",
-          "evidence_type": "feed_excerpt",
-          "topic": "RAG"
-        },
-        {
-          "id": "news-aa8533b1c5b4",
-          "title": "ToolGrad: Efficient tool-use dataset generation with textual \"gradients\"",
-          "url": "https://research.google/blog/toolgrad-efficient-tool-use-dataset-generation-with-textual-gradients/",
-          "publisher": "Google Research",
-          "published_at": "2026-09-10T22:50:22+00:00",
-          "evidence_type": "article_excerpt",
-          "topic": "Agents"
-        }
-      ],
-      "id": "fecfc443d411377c",
-      "editorial_review": {
-        "status": "wording_corrected",
-        "reviewer": "assistant",
-        "reviewed_at": "2026-09-12T23:45:52.005712+00:00",
-        "original_collection_url": "https://github.com/DRKREDDY5/Knowledge-Pill/blob/88fa31b72e3df66fbdf8aca64280483b2b70d88e/editions/latest.json",
-        "changes": [
-          "Clarified RAG combines model knowledge with retrieval",
-          "Limited missing-evidence claims to retrieved material",
-          "Labelled verification and threshold suggestions as design choices",
-          "Improved Telugu recall and news wording"
-        ],
-        "human_approval": false
-      }
-    },
     {
       "date": "2026-09-24",
       "timezone": "America/New_York",
@@ -3718,6 +3472,232 @@
         }
       ],
       "id": "730ace2781eb257a"
+    },
+    {
+      "date": "2026-10-09",
+      "timezone": "America/New_York",
+      "created_at": "2026-10-09T17:27:32.745081+00:00",
+      "topic": "RAG",
+      "language": "en",
+      "concept": "When retrieval finds the wrong evidence",
+      "news_window": "recent",
+      "source_warnings": [],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "When Retrieval Finds the Wrong Evidence",
+        "summary": "Retrieval-augmented generation (RAG) grounds a language model in external documents, but the retriever can fetch passages that are topically similar yet factually wrong. This pill explains why wrong evidence happens, how to spot it, and what to do about it.",
+        "story": "Priya is a librarian at a small office. Whenever a colleague asks a question, she walks to the shelves, pulls the three folders whose covers most resemble the question's wording, and hands them over. One day a colleague asks, \"What's our refund policy for damaged items?\" Priya returns three folders: one on refunds, one on damaged shipments, and one on warranty claims. The colleague reads the warranty folder, which describes a completely different policy, and confidently quotes it in a customer email. The problem was never Priya's speed or effort; her matching rule (cover similarity) was a proxy for relevance, and the proxy failed. The fix wasn't a smarter librarian but a better check: the colleague now skims each folder's first page, confirms it actually addresses the question, and discards the rest before writing anything.",
+        "connection": "Priya is the retriever: she selects documents based on similarity, not verified truth. The folders are the passages in your vector index or document store. The colleague is the generator (the language model), which reads whatever it is handed and tends to trust it. The warranty folder is the classic failure mode: a passage that shares vocabulary with the query (\"damaged,\" \"item\") but answers a different question. The first-page skim is evidence verification, the step most pipelines skip.",
+        "explanation": "The foundational RAG papers describe models that combine a parametric memory (the pre-trained seq2seq model's weights) with a non-parametric memory (a dense vector index of documents, accessed by a neural retriever). The retriever scores passages by embedding similarity to the query and hands the top ones to the generator. Two properties of this design make wrong evidence likely. First, dense similarity measures surface and semantic relatedness, not factual correctness: a passage about warranty claims is genuinely close in embedding space to a question about damaged-item refunds. Second, the generator has no independent way to know a passage is wrong; it conditions on what it receives. The REALM paper highlights why retrieval is still worth it: knowledge stored in an external index is modular and interpretable, so you can update it and inspect what was retrieved, unlike facts baked into weights. That inspectability is exactly your tool for catching wrong evidence: log the retrieved passages, read them, and compare them against the query's actual intent. Practical mitigations include retrieving more candidates and re-ranking them, adding a verification step that checks whether a passage actually answers the question (not just whether it shares words), writing queries that name the specific policy or entity, and designing the generator to say \"the retrieved documents don't answer this\" when they don't.",
+        "application": "In a support chatbot over your company docs, add a cheap post-retrieval check: ask the model, for each retrieved chunk, \"Does this passage answer the user's question, yes or no?\" and drop the noes before generation. Also log every retrieved chunk ID with each answer so that when a wrong answer surfaces, you can immediately see which folder Priya pulled.",
+        "exercise": "Take any RAG demo you have (or imagine one). Write three questions: one the index can answer, one about a topic adjacent to indexed content, and one the index cannot answer at all. Run retrieval for each and read the top three chunks. For the adjacent question, note how plausible-but-wrong the chunks look. Two minutes.",
+        "question": "Why can a retriever return a passage that is highly similar to the query yet factually irrelevant, and what is the simplest defense?",
+        "answer": "Because retrieval ranks by embedding similarity, which captures relatedness of wording and topic rather than whether the passage answers the question. The simplest defense is human or model verification of retrieved passages against the query's intent before generation, plus logging retrievals so failures can be traced.",
+        "limits": "The librarian analogy understates the scale problem: Priya reads folder covers, but a real retriever compares dense vectors where 'similar' is a geometric judgment no human can eyeball. It also implies the retriever and generator are separate people, when in end-to-end RAG systems the retriever can be trained jointly with the generator, blurring who is responsible for a bad pick. Finally, the analogy suggests verification is cheap; in practice, verifying every chunk adds latency and cost, so pipelines must trade thoroughness against speed.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "Recent RAG-adjacent developments: on-device multimodal embeddings and a ChatGPT Work case study",
+        "overview": "Two recent items relevant to retrieval pipelines: Google's EmbeddingGemma 2, a lightweight multimodal embedding model for on-device retrieval, and an OpenAI customer story about a social club using ChatGPT Work for document-heavy tasks. Publisher claims below are not independently verified.",
+        "items": [
+          {
+            "headline": "Google launches EmbeddingGemma 2, a lightweight multimodal embedding model for on-device retrieval",
+            "what_happened": "Google announced EmbeddingGemma 2, a 740M-parameter embedding model under an Apache 2.0 license that maps text, images, audio, and video into a shared embedding space. Google claims leading scores among sub-1B multimodal embedders on benchmarks like MTEB Code and MAEB, a modular design where text-only workloads can run with as little as 270M parameters plus optional vision and audio encoders, Matryoshka-style truncation of output vectors from 768 down to 128 dimensions for storage savings, an 8K token context window, and on-device RAM requirements of roughly 191MB for text-only weights (quantized, on a Pixel 11 Pro). Weights are on Hugging Face and Kaggle, with tooling via LiteRT, MediaPipe, and common serving libraries.",
+            "why_it_matters": "For RAG developers, embeddings are the retriever's matching rule, and this post is essentially a new librarian for edge devices. A concrete use case: a privacy-sensitive app that indexes a user's photos, voice memos, and notes locally, so a text query can retrieve the right media without any data leaving the phone. The truncated embedding dimensions also matter for local vector databases, where storage is the binding constraint.",
+            "takeaway": "These are publisher benchmarks and RAM figures, not independent measurements, and 'best-in-class for its size' is a size-bounded claim. Before adopting, read the model card, run the model on your own retrieval queries, and compare retrieval quality and latency against your current embedder; also note the source is an article excerpt, so full evaluation details were not reviewed here.",
+            "source_ids": [
+              "news-e6e1d2a9f0a4"
+            ]
+          },
+          {
+            "headline": "OpenAI case study: The Den social club reports large time savings with ChatGPT Work",
+            "what_happened": "An OpenAI customer story describes The Den, a family social club, using ChatGPT Work while opening a new location. OpenAI states the club now prepares grant applications in about 2 hours instead of 3 days and liquor-license materials in about 3 hours instead of 4 days, freeing a reported 10-15 hours per week.",
+            "why_it_matters": "This is the pattern behind many RAG-adjacent deployments: an assistant grounded in an organization's own documents (licenses, applications, policies) drafts materials that previously required slow manual lookup. The analogy from this pill: the assistant is a fast librarian, and the risk is the same, plausible-looking folders that don't actually answer the question. Grant and licensing documents are exactly where a confidently wrong answer is costly.",
+            "takeaway": "These figures are OpenAI's claims about its own customer, based on a feed excerpt, not an audited study; the time savings likely reflect the whole workflow, not retrieval quality alone. Before expecting similar results, inspect what documents ground the assistant, who reviews its drafts, and whether licensing or grant submissions get human verification.",
+            "source_ids": [
+              "news-2167384f51e2"
+            ]
+          }
+        ],
+        "exercise": "Pick either item and open the primary source. Find one quantitative claim (a benchmark score, RAM figure, or time saving) and identify what evidence the publisher offers for it. Note whether the claim would apply unchanged to your own workload. Two minutes.",
+        "question": "The Den case study claims grant applications dropped from 3 days to 2 hours. Why should you treat that number cautiously before pitching a similar deployment?",
+        "answer": "It is a vendor's claim about its own customer, based on a feed excerpt with no methodology, baseline, or verification described, and the savings may come from workflow changes rather than the model's retrieval accuracy. You would need to inspect what documents ground the system and whether outputs are human-reviewed before generalizing the result."
+      },
+      "usage": {
+        "prompt_tokens": 2972,
+        "total_tokens": 4901,
+        "completion_tokens": 1929,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-e6e1d2a9f0a4",
+          "title": "EmbeddingGemma 2: an open, lightweight multimodal embedding model",
+          "url": "https://blog.google/innovation-and-ai/technology/developers-tools/embeddinggemma-2/",
+          "publisher": "blog.google",
+          "published_at": "2026-10-06T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 435,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "Other"
+        },
+        {
+          "id": "news-2167384f51e2",
+          "title": "The Den frees up 10-15 hours a week to grow with ChatGPT Work",
+          "url": "https://openai.com/index/the-den-family-social",
+          "publisher": "OpenAI",
+          "published_at": "2026-10-01T00:00:00+00:00",
+          "evidence_type": "feed_excerpt",
+          "topic": "RAG"
+        }
+      ],
+      "id": "e164bdb0e57b78cb"
+    },
+    {
+      "date": "2026-10-09",
+      "timezone": "America/New_York",
+      "created_at": "2026-10-09T17:27:32.745081+00:00",
+      "topic": "RAG",
+      "language": "te",
+      "concept": "When retrieval finds the wrong evidence",
+      "news_window": "recent",
+      "source_warnings": [],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "రిట్రీవల్ తప్పు ఆధారాలను కనుగునప్పుడు (When retrieval finds the wrong evidence)",
+        "summary": "RAG సిస్టమ్‌లో retriever తప్పు లేదా సరిపోని documents ను తెచ్చినప్పుడు, generator ఆ తప్పు ఆధారాల ఆధారంగా నమ్మకంగా తప్పు సమాధానం ఇవ్వవచ్చు. ఈ పిల్ ద్వారా retrieval quality ఎందుకు ముఖ్యమో, దాన్ని ఎలా గుర్తించాలో నేర్చుకుంటారు.",
+        "story": "ఊహించండి: లక్ష్మి ఒక పెద్ద లైబ్రరీలో పనిచేసే సహాయకురాలు. ఒక రోజు విద్యార్థి వచ్చి 'భారతదేశంలో 2019లో GST రేట్లు ఎలా మారాయి?' అని అడిగాడు. లక్ష్మి త్వరగా షెల్ఫ్‌ల వెనుక పరుగెత్తి, 'GST' అనే పదం కనిపించిన మొదటి పుస్తకం తీసుకొచ్చింది — అది 2017 వార్తాపత్రిక కత్తినట్టు. విద్యార్థి ఆ పేజీలను చదివి, నిశ్చయంగా 'ఇదిగో, ఇదే జరిగింది' అని ఒక సమాధానం రాసుకున్నాడు. సమాధానం సరిగ్గా లేదు — కానీ అతనికి తెలియదు, ఎందుకంటే అతను చూసిన పుస్తకం నిజమైన పుస్తకమే, కేవలం తప్పు సంవత్సరం ది. లక్ష్మి చెడ్డది కాదు; ఆమె వేగంగా, keyword ఆధారంగా వెతికింది. సమస్య ఏమిటంటే, ఆమె ఎంపిక చేసిన ఆధారం ప్రశ్నకు సరిపోలేదు — కానీ విద్యార్థి దాన్ని పూర్తి సత్యంగా నమ్మేశాడు.",
+        "connection": "ఈ కథలో లక్ష్మి = retriever (ప్రశ్న ఆధారంగా documents వెతికే భాగం). విద్యార్థి = generator (LLM), అతను చేతిలో పెట్టిన ఆధారాలను మాత్రమే చూసి సమాధానం ఇస్తాడు. తప్పు సంవత్సరం పుస్తకం = సిమాంటిక్‌గా దగ్గరగా ఉన్నా, ప్రశ్నకు సరిపోని retrieved document. విద్యార్థి నమ్మడం = hallucination అనిపించే విశ్వాసంతో కూడిన తప్పు సమాధానం.",
+        "explanation": "RAG (Retrieval-Augmented Generation) లో రెండు భాగాలుంటాయి: ఒకటి బాహ్య జ్ఞానాన్ని (non-parametric memory, ఉదా: document index) వెతికే retriever, రెండు ఆ ఆధారాలను చదివి సమాధానం రాసే generator (parametric memory). Lewis et al. (2020) చూపినట్టు, ఈ కలయిక జ్ఞానం-ఆధారిత పనుల్లో మరింత నిఖరమైన, వాస్తవిక అవుట్‌పుట్‌లు ఇస్తుంది; REALM (Guu et al., 2020) కూడా retriever ద్వారా interpretability, modularity లాభాలను చూపింది. కానీ ఈ నాణ్యత పూర్తిగా retrieval quality మీద ఆధారపడి ఉంటుంది. Retriever సాధారణంగా embedding similarity ఆధారంగా పనిచేస్తుంది — అంటే పదాలు లేదా అర్థం దగ్గరగా ఉన్న documents ను తెస్తుంది. 'దగ్గరగా ఉండటం' ≠ 'సరైన సమాధానం కలిగి ఉండటం'. తేదీ తప్పిన పాత document, వేరే entity గురించిన document, లేదా ప్రశ్నలోని ఒకే ఒక్క keyword మీద సరిపోయే document — అన్నీ top results లో నెట్టుకొచ్చేస్తాయి. Generator కి వేరే మార్గం లేకుండా ఆ ఆధారాలనే నమ్మి, ధ్వని కలిగిన సమాధానం ఇస్తుంది. అందుకే RAG లో తప్పు సమాధానం అనేకప్పుడు generation కాదు, retrieval వైపు మొదలవుతుంది.",
+        "application": "మీ RAG pipeline లో ప్రాక్టికల్‌గా ఇలా చేయండి: (1) ప్రతి సమాధానంతో దాని ఆధారంగా వాడిన source chunks ను citations గా చూపించండి — ఇది provenance ఇస్తుంది, యూజర్ సొంతంగా verify చేయగలరు. (2) Retrieval evaluation చేయండి: ఒక చిన్న test question set తయారుచేసి, ప్రతి ప్రశ్నకు సరైన document తెచ్చారో లేదో manually తనిఖీ చేయండి (recall@k). (3) Retrieved chunk యొక్క metadata — తేదీ, source, version — ను చూసి పాత సమాచారాన్ని filter చేయండి. (4) Generator కి 'ఇచ్చిన ఆధారాల్లో సమాధానం లేకపోతే అందుబాటు చేయకండి' అని సూచించండి.",
+        "exercise": "రెండు నిమిషాల వ్యాయామం: మీ ఫోన్‌లో లేదా కంప్యూటర్‌లో ఏదైనా search box తీసుకోండి (మీ ఇన్‌బాక్స్ search అయినా చాలు). ఒక నిర్దిష్ట ప్రశ్న టైప్ చేయండి, ఉదా: 'గత నెల రెండో వారం రేఖ పంపిన invoice ఎంత?'. ఫలితాల్లో మొదటి మూడింటిని చూడండి: అవి ప్రశ్నలోని పదాలకు సరిపోయాయా, లేదా నిజంగా అడిగిన విషయానికి సమాధానం ఉందా? ఒక ఫలితం 'పదాలు సరిపోయాయి కానీ అర్థం తప్పు' అయితే — అదే retrieval error యొక్క అనుభవం.",
+        "question": "RAG సిస్టమ్ తప్పు సమాధానం ఇచ్చినప్పుడు, మొదట దేన్ని తనిఖీ చేయాలి: generator నా, retrieved documents నా? ఎందుకు?",
+        "answer": "Retrieved documents ను మొదట తనిఖీ చేయాలి. Generator చేతిలో పెట్టిన ఆధారాలకే పరిమితం అవుతుంది; ఆధారాలే తప్పు లేదా సరిపోకపోతే, generator ని మార్చడం వల్ల లాభం లేదు. సరైన document retrieve అవుతున్నా తప్పు వస్తేనే generation వైపు చూడాలి.",
+        "limits": "ఈ లైబ్రరీ కథ ఒకే తప్పు document అనే సులభమైన సందర్భాన్ని చూపిస్తుంది. వాస్తవంలో retrieval failure ఇంకా సూటిగా లేదు: కొన్నిసార్లు సరైన document తెచ్చినా generator దాన్ని విస్మరిస్తుంది, కొన్నిసార్లు ప్రశ్నే అస్పష్టంగా ఉంటుంది, కొన్నిసార్లు సత్యం ఎటువంటి document లోనూ లేదు. అంతేకాదు, 'similarity' అనేది ఒకే ఒక్క కొలత కాదు — embedding model మారితే ఏది 'దగ్గర' అనే నిర్వచనమూ మారుతుంది. కథలో లక్ష్మి తప్పు పుస్తకం తీసుకున్నది కనిపిస్తుంది; నిజమైన సిస్టమ్‌లో అది కనిపించకపోవడమే ప్రధాన సవాలు.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "ఈ వారం RAG చుట్టూ: on-device embeddings మరియు వ్యాపార కేస్ స్టడీ",
+        "overview": "ఈ రెండు అంశాలూ retrieval నాణ్యత మీద ప్రభావం చూపే అంశాలకు సంబంధించినవి: ఒకటి పరికరంపై పనిచేసే నూతన embedding model, రెండో ఒక సంస్థ ప్రచురించిన వినియోగ కథనం. రెండింటిలోనూ publisher చెప్పిన వివరాలు, మా విశ్లేషణ వేరు చేసి చూపిస్తున్నాం.",
+        "items": [
+          {
+            "headline": "Google, on-device multimodal embeddings కోసం EmbeddingGemma 2 విడుదల చేసింది",
+            "what_happened": "Google DeepMind బ్లాగ్ ప్రకారం (అక్టోబర్ 6, 2026), EmbeddingGemma 2 అనేది 740M parameters కలిగిన, Apache 2.0 లైసెన్స్‌తో విడుదలైన open embedding model. ఇది text, images, audio, video లను ఒకే unified embedding space లోకి map చేస్తుంది. Matryoshka Representation Learning ద్వారా vectors ను 768 నుంచి 128 dimensions వరకు truncate చేయవచ్చని, quantization తో text-only వాడకానికి సుమారు 191MB RAM చాలని బ్లాగ్ చెబుతోంది. MTEB Code, MAEB వంటి benchmarks లో sub-1B multimodal models లో మంచి స్కోర్లు సాధించినట్టు publisher చెబుతోంది — ఇది publisher చేసిన కొలత, స్వతంత్ర ధృవీకరణ కాదు.",
+            "why_it_matters": "RAG పైప్‌లైన్ నాణ్యత retrieval మీద ఆధారపడుతుంది, embedding model ఆ retrieval యొక్క పునాది. ఈ model యొక్క ప్రత్యేకత ఏమిటంటే, ఇది పరికరంపై (on-device) పనిచేస్తుంది — అంటే మీ డేటా క్లౌడ్‌కు వెళ్ళదు. ఒక స్పష్టమైన analogy: ఇది మీ ఇంట్లోనే ఉండే వ్యక్తిగత లైబ్రరీ సూచీకర్త లాంటిది; పుస్తకాలు (మీ ఫైళ్ళు) ఇంటి నుంచి బయటకు వెళ్ళకుండానే వాటికి index తయారవుతుంది. Developer కి దీని అర్థం: offline పనిచేసే, privacy-first semantic search లేదా RAG app ను మొబైల్/edge hardware పై నిర్మించవచ్చు — ఉదాహరణకు, text query తో వీడియో clips వెతకడం.",
+            "takeaway": "ముఖ్యమైన పరిమితి: benchmark స్కోర్లు publisher నివేదికలే; మీ డొమైన్‌లో ఎలా పనిచేస్తుందో ఊహించడానికి అవి సరిపోవు. దీన్ని ప్రయత్నించే ముందు model card లోని పూర్తి evaluation metrics, license నిబంధనలు, మీ లక్ష్య hardware పై నిజమైన RAM/latency అవసరాలు, మరియు మీ సొంత డేటాతో చిన్న retrieval quality test (మీ ప్రశ్నలకు సరైన chunks తెస్తుందో లేదో) చూడండి.",
+            "source_ids": [
+              "news-e6e1d2a9f0a4"
+            ]
+          },
+          {
+            "headline": "OpenAI, ChatGPT Work వాడుతున్న సోషల్ క్లబ్ కేస్ స్టడీని ప్రచురించింది",
+            "what_happened": "OpenAI వెబ్‌సైట్‌లో (అక్టోబర్ 1, 2026) 'The Den' అనే సోషల్ క్లబ్ ChatGPT Work వాడకంతో వారానికి 10–15 గంటలు ఆదా చేసినట్టు, grant applications ఇప్పుడు 2 గంటల్లో (పూర్వం 3 రోజులు), liquor-license పత్రాలు 3 గంటల్లో (పూర్వం 4 రోజులు) సిద్ధమవుతున్నట్టు పేర్కొన్నారు. మేము చూసినది feed excerpt మాత్రమే — పూర్తి కథనాన్ని చదవలేదు, కాబట్టి ఈ సంఖ్యలు ఎలా కొలవబడ్డాయో మాకు తెలియదు.",
+            "why_it_matters": "ఇటువంటి కేస్ స్టడీలు RAG వంటి techniques యొక్క వ్యాపార విలువను చూపిస్తాయి: grant applications, legal/compliance పత్రాలు వంటి document-heavy పనుల్లో, సంస్థ యొక్క పాత templates, నియమాలు, గత applications ను retrieve చేసి మళ్ళీ వాడగలిగితే సమయం గణనీయంగా ఆదా అవుతుంది. ఇది ఒక స్పష్టమైన analogy తో చెప్పాలంటే: ప్రతిసారి అర్రే పెట్టుకుని వంట చేయడం కంటే, పాత వంటకాల పుస్తకం చేతిలో ఉండటం లాంటిది — పుస్తకం సరైనది కావాలి, లేదంటే వంట తప్పు అవుతుంది. అదే ముఖ్యమైన పాయింట్: ఈ ఆదా అయిన సమయం retrieval quality మీద ఆధారపడి ఉంటుంది.",
+            "takeaway": "ముఖ్యమైన పరిమితి: ఇది vendor ప్రచురించిన కేస్ స్టడీ — సమయ ఆదా గణనలు ఎలా జరిగాయో, ఏ పనుల్లో human review జరిగిందో తెలియదు. దీన్ని మీ సంస్థలో ప్రయత్నించే ముందు: పూర్తి కథనం చదవండి, ఆ పనుల్లో ఎటువంటి డేటా/documents వాడారో, ఫలితాలను ఎవరు verify చేశారో, మరియు మీ సొంత పనుల స్వభావం (నకిలీ కాదు, ప్రత్యేకమైనదా) పరిశీలించండి. ఒక్క కేసు స్టడీ సార్వత్రిక ఫలితం కాదు.",
+            "source_ids": [
+              "news-2167384f51e2"
+            ]
+          }
+        ],
+        "exercise": "రెండు నిమిషాల source-check వ్యాయామం: EmbeddingGemma 2 బ్లాగ్‌ను తెరవండి మరియు 'best-in-class' వంటి వాదనల పక్కన benchmark పేర్లు (MTEB Code, MAEB) కనిపిస్తాయో లేదో గమనించండి. తర్వాత మూల పేజీలో model card కి link ఉందో చూడండి — publisher వాదనను స్వతంత్రంగా తనిఖీ చేయగల ఆధారానికి link చేస్తున్నారా లేదా అనేది మూల విశ్వసనీయతకు మొదటి పరీక్ష. The Den కథనం విషయంలో, సమయ ఆదా సంఖ్యల వెనుక ఏమైనా methodology వివరణ ఉందో వెతకండి.",
+        "question": "Publisher చెప్పిన benchmark స్కోర్లు లేదా సమయ ఆదా సంఖ్యలు మీ ప్రాజెక్ట్‌లో పునరావృతమవుతాయని ఎలా ధృవీకరించగలరు?",
+        "answer": "Publisher వాదనలను attribution గా మాత్రమే పరిగణించాలి. ధృవీకరణకు: (1) వారి పేర్కొన్న benchmark methodology/model card వివరాలు చదవండి, (2) మీ సొంత డేటాతో చిన్న pilot test నడపండి — ఉదా: మీ ప్రశ్నలకు సరైన documents retrieve అవుతున్నాయో లెక్కించండి, (3) సమయ ఆదా వంటి వాటిని మీ సొంత baseline తో పోల్చి కొలవండి. స్వతంత్ర ధృవీకరణ లేని వరకు ఇవి publisher చెప్పిన వాదనలే."
+      },
+      "usage": {
+        "prompt_tokens": 2972,
+        "total_tokens": 13329,
+        "completion_tokens": 10357,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 33
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 33
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-e6e1d2a9f0a4",
+          "title": "EmbeddingGemma 2: an open, lightweight multimodal embedding model",
+          "url": "https://blog.google/innovation-and-ai/technology/developers-tools/embeddinggemma-2/",
+          "publisher": "blog.google",
+          "published_at": "2026-10-06T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 435,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "Other"
+        },
+        {
+          "id": "news-2167384f51e2",
+          "title": "The Den frees up 10-15 hours a week to grow with ChatGPT Work",
+          "url": "https://openai.com/index/the-den-family-social",
+          "publisher": "OpenAI",
+          "published_at": "2026-10-01T00:00:00+00:00",
+          "evidence_type": "feed_excerpt",
+          "topic": "RAG"
+        }
+      ],
+      "id": "169f9a7d9684b888"
     }
   ]
 }
