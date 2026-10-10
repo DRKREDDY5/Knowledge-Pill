@@ -1,156 +1,8 @@
 {
   "schema_version": 1,
   "task": "daily_pills_collection",
-  "updated_at": "2026-10-09T17:29:16.030988+00:00",
+  "updated_at": "2026-10-10T16:16:38.625192+00:00",
   "packets": [
-    {
-      "date": "2026-09-24",
-      "timezone": "America/New_York",
-      "created_at": "2026-09-24T18:58:13.820411+00:00",
-      "topic": "RAG",
-      "language": "en",
-      "concept": "Why citations need checking",
-      "news_window": "none",
-      "source_warnings": [],
-      "router_engine": "TF-IDF + logistic regression",
-      "schema_version": 1,
-      "task": "daily_pills",
-      "status": "draft",
-      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
-      "generation_method": "fireworks",
-      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
-      "knowledge": {
-        "title": "Why Citations Need Checking: RAG, Provenance, and the Librarian's Slip",
-        "summary": "Retrieval-augmented generation (RAG) grounds a language model's answers in external documents, which makes provenance possible — but a cited source is not the same as a verified claim. This pill explains why retrieval improves factuality and why human checking of citations remains essential.",
-        "story": "Imagine a busy reference librarian named Priya. For years, she answered every question from memory — impressive, but occasionally she mixed up dates or blended two similar events. Her manager introduced a new rule: before answering, Priya must walk to the archive room, pull the two or three most relevant folders, and base her answer on them, handing the asker the folder numbers as citations. Her answers immediately became more specific and more accurate. But one afternoon a colleague noticed something: Priya had grabbed a folder because its cover looked relevant, skimmed the first page, and cited it for a claim that was actually on a page she never read — and slightly misread the one she did. The citation was real. The claim attached to it was not. The archive system made Priya more reliable, but it did not make her infallible; it just moved where the errors could happen.",
-        "connection": "Priya's memory-only days map to a pre-trained language model storing facts implicitly in its parameters. The archive room is the non-parametric memory: a dense vector index of documents. Walking to the shelves is the retrieval step, and handing over folder numbers is provenance — the model showing which passages supported its answer. The colleague's discovery is the core lesson: retrieval narrows the model's attention to relevant documents, but the model still generates the answer, and generation can misread, over-extrapolate, or attach a claim to a passage that only partially supports it.",
-        "explanation": "The RAG paper (Lewis et al.) argues that large pre-trained models store factual knowledge in their parameters but have a limited ability to access and precisely manipulate it, and that providing provenance and updating world knowledge remain open research problems. RAG addresses this by combining a pre-trained seq2seq model (parametric memory) with a dense vector index of Wikipedia accessed through a pre-trained neural retriever (non-parametric memory). The authors found that RAG models generate more specific, diverse, and factual language than a parametric-only baseline, and set state-of-the-art results on open-domain QA tasks. Similarly, REALM shows that augmenting a language model with a latent knowledge retriever — retrieving and attending over documents during pre-training, fine-tuning, and inference — improves open-domain QA accuracy while offering qualitative benefits such as interpretability and modularity. Interpretability here means you can inspect which documents the model retrieved and attended over. That is exactly what makes citation-checking feasible: the retrieved passages are visible and auditable. But neither paper claims the retrieved passage fully justifies every generated token. Retrieval constrains and grounds generation; it does not guarantee that the generated text is a faithful rendering of the source. A retrieved document can be stale, the retriever can surface a superficially similar passage, and the generator can still paraphrase beyond what the passage supports. So the citation is evidence to verify, not proof.",
-        "application": "In practice, when you build or review a RAG system, treat the citation pipeline as a first-class feature: log the retrieved passages alongside each generated answer, surface them in the UI so users can click through to the actual source text, and add automated checks where feasible — for example, verifying that key entities and numbers in the answer appear in the cited passages. When evaluating answers manually, do not just confirm the source exists; read the passage and ask whether it actually supports the specific claim. This matters most in high-stakes domains like legal, medical, or financial assistants, where a plausible answer with a hollow citation is more dangerous than an honest 'I don't know.'",
-        "exercise": "Set a two-minute timer. Take any AI-generated answer with a citation you can access (or a search result snippet). First, confirm the source exists and is about the right topic. Second, find the one sentence that would have to support the main claim — and check whether it truly does. Note which of the two checks was more informative. That gap is why existence checks are not enough.",
-        "question": "In a RAG system, why does a real, relevant citation still not guarantee the answer is correct?",
-        "answer": "Because the generator, not the source, produces the final text. Retrieval grounds the model in relevant passages and makes provenance inspectable, but the model can still misread, over-generalize, or attach claims to passages that only partially support them. The citation must be verified against the actual claim, not just confirmed to exist.",
-        "limits": "This analogy simplifies several things. Priya consciously reads her folders; a RAG model's 'attention' over retrieved passages is a numerical operation, not comprehension, and formulations like per-token retrieval mean different parts of one answer may rest on different passages. The papers' findings come from specific benchmarks (open-domain QA, generation tasks on Wikipedia-derived data); real-world corpora are messier, and retrieval quality depends heavily on the index and retriever. Finally, 'more factual than a parametric-only baseline' is a relative claim, not a guarantee of correctness.",
-        "source_ids": [
-          "paper-2005.11401",
-          "paper-2002.08909"
-        ]
-      },
-      "news": {
-        "title": "No news items available for this window",
-        "overview": "No news sources were supplied for this RAG topic pack, so there are no news items to summarize today. Instead of inventing coverage, this slot is left empty; the knowledge pill above stands alone for this session. When fresh, well-sourced RAG news items are provided, they will appear here with a development summary, its significance, and a restrained takeaway that separates publisher claims from interpretation.",
-        "items": [],
-        "exercise": "Two-minute practice for a no-news day: pick one of the two paper abstracts cited in the knowledge pill and re-read it closely. Note one claim the authors make explicitly and one thing they do not claim — for example, that retrieval improves factuality relative to a baseline, versus any guarantee of correctness. Practicing this distinction on real abstracts is the same skill you would use to check news coverage of AI research.",
-        "question": "Why is it better to leave the news section empty than to fill it with general commentary about RAG?",
-        "answer": "Because factual claims must come from supplied sources. Without a dated, attributable news item, anything written here would be invention or stale generalization dressed up as news; an explicit availability note keeps the output honest and reviewable."
-      },
-      "usage": {
-        "prompt_tokens": 1296,
-        "total_tokens": 2743,
-        "completion_tokens": 1447,
-        "prompt_tokens_details": {
-          "cached_tokens": 0
-        },
-        "completion_tokens_details": {
-          "reasoning_tokens": 30
-        },
-        "output_tokens_details": {
-          "reasoning_tokens": 30
-        }
-      },
-      "sources": [
-        {
-          "id": "paper-2005.11401",
-          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
-          "url": "https://arxiv.org/abs/2005.11401",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "paper-2002.08909",
-          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
-          "url": "https://arxiv.org/abs/2002.08909",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        }
-      ],
-      "id": "72d2fceea788d000"
-    },
-    {
-      "date": "2026-09-24",
-      "timezone": "America/New_York",
-      "created_at": "2026-09-24T18:58:13.820411+00:00",
-      "topic": "RAG",
-      "language": "te",
-      "concept": "Why citations need checking",
-      "news_window": "none",
-      "source_warnings": [],
-      "router_engine": "TF-IDF + logistic regression",
-      "schema_version": 1,
-      "task": "daily_pills",
-      "status": "draft",
-      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
-      "generation_method": "fireworks",
-      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
-      "knowledge": {
-        "title": "RAG లో citations ఎందుకు తనిఖీ చేయాలి",
-        "summary": "RAG (Retrieval-Augmented Generation) మోడల్స్ సమాధానాలను బయటి documents ఆధారంగా ఇస్తాయి, కానీ retrieval జరిగిందనేది సమాధానం సరైనదని అంటే కాదు. Citations ఒక మెరుగైన provenance అవకాశం మాత్రమే — వాటిని ఎప్పుడూ మనం వేరుగా verify చేయాలి.",
-        "story": "ఊహించండి: లక్ష్మి అనే లైబ్రరీ అసిస్టెంట్ చాలా పుస్తకాలు తెలుసు. ఒక రోజు కస్టమర్ ఒక క్లిష్టమైన ప్రశ్న అడిగారు. లక్ష్మి వెనక్కి వెళ్లి మూడు పుస్తకాలు తెచ్చి, వాటిలోని సమాచారం కలిపి ఒక సమాధానం చెప్పింది. కస్టమర్ సంతోషించారు — కానీ ఆ మూడు పుస్తకాలు నిజంగానే సరైన పుస్తకాలేనా? ఒకటి పాత ఎడిషన్ అయి ఉండొచ్చు, మరొకటి వేరే టాపిక్ గురించి అయి ఉండొచ్చు. లక్ష్మి పుస్తకాలు చూపినా, ఆమె చెప్పిన మాటలు ఆ పుస్తకాల్లో నిజంగా ఉన్నాయో లేదో కస్టమర్ తనిఖీ చేయకపోతే తెలియదు. పుస్తకాలు చూపడం = retrieval; చెప్పిన మాటలు ఆ పుస్తకాల్లో ఉన్నాయో లేదో = citation verification.",
-        "connection": "ఈ కథలో లక్ష్మి = RAG మోడల్. లైబ్రరీ = vector index లేదా document corpus. పుస్తకాలు తెచ్చడం = retriever ద్వారా passages రిట్రీవ్ చేయడం. సమాధానం చెప్పడం = generator ఆ passages ఆధారంగా text రాయడం. కస్టమర్ చేసే తనిఖీ = మనం citations ను విడిగా verify చేయాల్సిన అవసరం.",
-        "explanation": "RAG పేపర్ (Lewis et al.) ప్రకారం, RAG మోడల్స్ pre-trained seq2seq మోడల్ (parametric memory) మరియు dense vector index (non-parametric memory, ఉదా: Wikipedia) ను neural retriever తో కలుపుతాయి. ఇది knowledge-intensive tasks లో మెరుగైన ఫలితాలు, ఎక్కువ factual అవుట్‌పుట్లు ఇస్తుంది. REALM పేపర్ కూడా retrieval వల్ల interpretability మరియు modularity లాంటి ప్రయోజనాలు వస్తాయని చెబుతుంది. కానీ ముఖ్యమైన పాయింట్: retrieval జరిగింది అంటే మోడల్ ఆ documents ను చూసింది, కానీ generator ఆ సమాచారాన్ని ఎలా వాడాడో హామీ లేదు. మోడల్ parametric memory (దాని సొంత జ్ఞానం) మరియు retrieved passages రెండింటినీ కలిపి రాస్తుంది కాబట్టి, సమాధానంలోని ప్రతి claim నిజంగా citation చూపిన passage లో ఉందో లేదో వేరుగా పరిశీలించాలి. అంతేకాదు, retriever తప్పు లేదా పాత documents తెచ్చినా మోడల్ confident గా రాయగలదు.",
-        "application": "ప్రాక్టికల్‌గా: మీ RAG అప్లికేషన్‌లో యూజర్‌కి సమాధానంతో పాటు source passages చూపిస్తున్నారంటే, అది provenance కి మంచి మొదటి అడుగు. దానితో పాటు (1) సమాధానంలోని ముఖ్య claims ను retrieved passages తో సరిపోల్చే automated check (faithfulness/groundedness evaluation) పెట్టండి, (2) retriever తెచ్చే documents తాజాగా ఉన్నాయో అనే freshness policy ఉంచండి, (3) ఏ passage కూడా support చేయని claims ను flag చేసే logging ఉంచండి. ఇది మోడల్ hallucinations ను పూర్తిగా ఆపదు, కానీ తప్పులను పట్టుకోవడం సులభతరం చేస్తుంది.",
-        "exercise": "రెండు నిమిషాల వ్యాయామం: మీరు వాడే ఏదైనా AI chatbot నుంచి ఒక factual ప్రశ్న అడిగి, అది చూపిన ఏదైనా citation ను తెరవండి. సమాధానంలోని ఒక నిర్దిష్ట claim ను ఎంచుకుని, ఆ passage లో అది నిజంగా ఉందో లేదో కనిపెట్టండి. ఉందా, లేదా? ఉంటే — passage పూర్తిగా support చేస్తున్నాదా, లేదా కొంత మాత్రమే? మీ పరిశీలనను ఒక వాక్యంలో రాయండి.",
-        "question": "RAG మోడల్ సమాధానంతో ఒక source document చూపిస్తే, ఆ సమాధానంలోని ప్రతి claim ఆ document లో ఉందని అనుమానించకూడదా? ఎందుకు?",
-        "answer": "అనుమానించాలి. Retrieval అంటే మోడల్ ఆ document ను చూసింది అని మాత్రమే; generator దానిని సరిగ్గా వాడాడని హామీ లేదు. మోడల్ దాని parametric memory నుంచి వచ్చిన సమాచారాన్ని కలపవచ్చు, లేదా passage ను తప్పుగా అర్థం చేసుకోవచ్చు. అందుకే citations ను విడిగా verify చేయడం అవసరం.",
-        "limits": "ఈ analogy కి పరిమితులు: లక్ష్మి లాగా కాకుండా, RAG మోడల్ తనకు వచ్చిన passages లో ఏమీ లేదో గానీ ఏది తప్పు అనో స్వయంగా గుర్తించలేదు — అది కేవలం ప్రాసెసింగ్ చేస్తుంది. అంతేకాదు, ఈ పేపర్లు ప్రతి token కి వేరే passage వాడే వంటి variants ను చర్చిస్తాయి; అప్పుడు ఒకే సమాధానానికి బహుళ sources మధ్య సంబంధం గుర్తించడం మరింత క్లిష్టం. అలాగే 'citation చూపడం' అనేది interpretability కి ఒక సహాయం మాత్రమే — అది మోడల్ నిజంగా ఆ source ఆధారంగానే తయారైందని నిరూపించదు.",
-        "source_ids": [
-          "paper-2005.11401",
-          "paper-2002.08909"
-        ]
-      },
-      "news": {
-        "title": "ఈ వారం RAG వార్తలు లేవు",
-        "overview": "ఈ రోజు సరఫరా చేసిన news sources ఏవీ లేవు, కాబట్టి వార్తా విభాగం ఖాళీగా ఉంది. దీని బదులుగా మీ సమయాన్ని knowledge pill లోని వ్యాయామంపై గడపవచ్చు: ఏదైనా AI సమాధానంలోని ఒక citation ను తెరిచి, ఆ claim నిజంగా ఆ source లో ఉందో తనిఖీ చేయడం. ఇదే నైపుణ్యం — sources ను విశ్వసించకముందు వాటిని నేరుగా పరిశీలించడం — ఏ వార్తా విశ్లేషణకైనా పునాది.",
-        "items": [],
-        "exercise": "రెండు నిమిషాల source-check వ్యాయామం: ఈ knowledge pill లో ఉదహరించిన రెండు arXiv abstracts లో ఒకదాన్ని తెరవండి. పైన చెప్పిన వివరణలోని ఒక వాక్యాన్ని ఎంచుకుని, అది abstract లోని ఏ భాగానికి అనుగుణంగా ఉందో గుర్తించండి. ఇది మీరు చదివే ఏ సారాంశాన్నైనా దాని original source తో సరిపోల్చే అలవాటును ఏర్పరుస్తుంది.",
-        "question": "ఒక సారాంశం (abstract) చదివినప్పుడు, దాన్ని పూర్తి పేపర్ చదివినట్టు ఎలా భ్రమింపజేయకూడదు?",
-        "answer": "Abstract అనేది పేపర్ చేసిన ప్రకటనల సారాంశం మాత్రమే — పద్ధతులు, పరిమితులు, పూర్తి ఫలితాల వివరాలు అందులో ఉండవు. అందుకే 'నేను abstract చదివాను' అని స్పష్టంగా చెప్పి, పూర్తి పేపర్ ఆధారంగా మాత్రమే లోతైన ముగింపులకు రావాలి."
-      },
-      "usage": {
-        "prompt_tokens": 1296,
-        "total_tokens": 7139,
-        "completion_tokens": 5843,
-        "prompt_tokens_details": {
-          "cached_tokens": 0
-        },
-        "completion_tokens_details": {
-          "reasoning_tokens": 17
-        },
-        "output_tokens_details": {
-          "reasoning_tokens": 17
-        }
-      },
-      "sources": [
-        {
-          "id": "paper-2005.11401",
-          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
-          "url": "https://arxiv.org/abs/2005.11401",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "paper-2002.08909",
-          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
-          "url": "https://arxiv.org/abs/2002.08909",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        }
-      ],
-      "id": "ac7f59bcafda45ca"
-    },
     {
       "date": "2026-09-25",
       "timezone": "America/New_York",
@@ -3698,6 +3550,232 @@
         }
       ],
       "id": "169f9a7d9684b888"
+    },
+    {
+      "date": "2026-10-10",
+      "timezone": "America/New_York",
+      "created_at": "2026-10-10T16:15:03.485081+00:00",
+      "topic": "RAG",
+      "language": "en",
+      "concept": "Why citations need checking",
+      "news_window": "recent",
+      "source_warnings": [],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "Why citations need checking",
+        "summary": "RAG systems ground a language model's answers in retrieved documents, but retrieval and generation are separate steps: the model can still misread, misquote, or overstate what a source says. A citation is a pointer, not a proof, so every citation in a RAG pipeline should be verified against the underlying document before it reaches a user.",
+        "story": "Imagine a library assistant named Priya. A visitor asks a detailed question about local housing rules. Priya doesn't memorize the rulebook; instead, she walks to the shelves, pulls three binders that look relevant, and writes an answer on a sticky note, stapling a photocopy of one page to it. The visitor sees the stapled page and assumes the answer is correct — after all, there's a source attached. But Priya was in a hurry: she skimmed binder two, mixed up a clause from binder one, and the photocopy is from a page she never actually used. The citation looks authoritative, yet the answer and the evidence don't fully match. Her manager institutes a rule: every sticky note gets a second person who reads the answer side by side with the cited page before it goes out. Errors drop, not because Priya got smarter, but because the citation stopped being treated as a guarantee.",
+        "connection": "In this story, the shelves are a document corpus, Priya's search is the retriever, her sticky note is the generated answer, and the stapled photocopy is the citation. The manager's second-person check is the verification step that many production systems skip.",
+        "explanation": "The RAG papers behind this pattern are explicit about why grounding matters. The Retrieval-Augmented Generation paper (Lewis et al., 2020) describes RAG models that combine a pre-trained seq2seq model (parametric memory) with a dense vector index of Wikipedia accessed by a neural retriever (non-parametric memory), and notes that providing provenance for decisions and updating world knowledge were open research problems that this architecture helps address. The REALM paper (Guu et al., 2020) similarly argues that knowledge stored implicitly in network parameters is hard to inspect, and that adding a latent knowledge retriever brings interpretability and modularity. Both papers show that retrieval improves factuality and lets you see which documents influenced an answer. But notice what retrieval does and does not give you: it gives you the documents the model attended over, not a verified mapping between each sentence of the answer and a specific passage. The generator is still a language model; it can blend two sources, paraphrase imprecisely, or lean on its parametric memory when the retrieved text is thin. That's why a citation in a RAG system is best understood as 'here is where the answer probably came from', not 'here is proof this is true'. Verification — checking the cited span actually supports the claim — is a separate step, whether done by a human reviewer, a second model doing entailment checking, or structured extraction that forces answers to quote spans directly.",
+        "application": "In practice, treat citations as a debugging surface. When your RAG app answers a question, log the retrieved chunks alongside the response. If a user reports a wrong answer, first compare the answer to the cited chunks: was the right document retrieved but misread (a generation problem), or was the wrong document retrieved (a retrieval problem)? These have different fixes — better chunking, query rewriting, or a stronger generator. For high-stakes outputs, add an automated check that asks whether each cited passage entails the corresponding claim, and route failures to human review.",
+        "exercise": "Take any RAG-style answer with a citation (or generate one with a small demo). Spend two minutes: read only the cited passage, then ask whether it alone would let you reconstruct the answer's key claim. Mark each claim as supported, partially supported, or unsupported by the citation. Note which category dominates — that's your pipeline's real verification gap.",
+        "question": "In a RAG system, what does a citation actually guarantee, and what does it not guarantee?",
+        "answer": "It guarantees (at most) which retrieved documents the system surfaced and possibly attended over; it does not guarantee that the generated answer accurately reflects those documents. Verifying that the cited text supports the claim is a separate step.",
+        "limits": "The library analogy understates the scale problem: Priya reads three binders, while real retrievers score millions of documents and generators read many chunks at once, so 'checking by hand' doesn't scale without automation. The analogy also implies a single correct answer, whereas many queries have genuinely ambiguous or conflicting sources — verification then becomes a judgment call, not a checkbox.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "Recent developments touching retrieval and grounded answers",
+        "overview": "Two recent items are relevant to RAG builders: a new lightweight multimodal embedding model from Google, and a vendor case study about using ChatGPT for document-heavy work. Both are publisher claims; treat benchmarks and time savings as claims to verify, not established facts.",
+        "items": [
+          {
+            "headline": "Google launches EmbeddingGemma 2, a lightweight open multimodal embedding model",
+            "what_happened": "Google's blog announces EmbeddingGemma 2, a 740-million-parameter embedding model under the Apache 2.0 license that maps text, images, audio, and video into a shared embedding space. Publisher claims include: modular encoders (a 270M text core with optional vision and audio encoders), Matryoshka-style truncation of output vectors from 768 down to 128 dimensions for storage savings, an 8K token context window, and on-device RAM figures of roughly 191MB for text-only weights and 567MB for the full multimodal model on a Pixel 11 Pro with quantization. It also cites a 9.92-point improvement on MTEB Code over the previous EmbeddingGemma. These are the publisher's own benchmark numbers and have not been independently verified here.",
+            "why_it_matters": "Embedding models are the retrieval half of a RAG pipeline: they turn documents and queries into vectors so a system can find relevant chunks to cite. A small, permissively licensed, multimodal embedder makes it practical to run retrieval fully on-device — useful for privacy-sensitive apps like searching personal photos, voice memos, or a local codebase without sending data to a server. As an analogy: if the generator is the librarian writing the answer, the embedder is the shelving system deciding which books land within arm's reach.",
+            "takeaway": "Benchmark leadership 'for its size' is a vendor claim, and on-device RAM figures depend on quantization choices and hardware. Before adopting, inspect the published model card, run the MTEB/MAEB-style evaluations on your own domain's data, and measure real latency and memory on your target device — sub-1B multimodal quality claims may not hold for your workload.",
+            "source_ids": [
+              "news-e6e1d2a9f0a4"
+            ]
+          },
+          {
+            "headline": "OpenAI case study: The Den reports large time savings using ChatGPT for document work",
+            "what_happened": "An OpenAI-published case study describes The Den, a social club, using ChatGPT (in a 'ChatGPT Work' context) to prepare grant applications and liquor-license materials. The publisher claims the club cut grant application preparation from three days to two hours and liquor-license materials from four days to three hours, freeing a reported 10–15 hours per week. This is a feed excerpt from a vendor's own customer story, not an independent audit.",
+            "why_it_matters": "This is the pattern this lesson is about in the wild: document-heavy tasks where a model drafts outputs grounded in the organization's own files — effectively a RAG-style workflow. The everyday use case is familiar to any developer building internal tools: drafting repetitive, source-bound documents. The risk is also familiar: time savings are easy to measure, but correctness of the grounded content is not, and licensing or grant documents have real consequences if a citation or figure is wrong.",
+            "takeaway": "The headline numbers are the publisher's claims from a single customer, based on a feed excerpt rather than a full read of the case study. Before generalizing, inspect the full case study for details on what workflow was used, what human review existed, and whether accuracy of the produced documents was checked — not just the hours saved.",
+            "source_ids": [
+              "news-2167384f51e2"
+            ]
+          }
+        ],
+        "exercise": "Pick one of the two items and spend two minutes finding the primary source. For EmbeddingGemma 2, open the model card and check which benchmarks are reported and on what data. For the OpenAI case study, check whether the page describes any accuracy verification of the generated documents, or only time savings. Write down one claim you could test yourself.",
+        "question": "Why should a vendor-reported time saving or benchmark score not be treated as verified evidence?",
+        "answer": "Because publishers have incentives to present favorable results, benchmarks may not match your data or hardware, and case studies often measure effort saved rather than output correctness. Independent inspection — the model card, your own evaluation, or the full case study — is needed before relying on the claim."
+      },
+      "usage": {
+        "prompt_tokens": 2970,
+        "total_tokens": 4945,
+        "completion_tokens": 1975,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-e6e1d2a9f0a4",
+          "title": "EmbeddingGemma 2: an open, lightweight multimodal embedding model",
+          "url": "https://blog.google/innovation-and-ai/technology/developers-tools/embeddinggemma-2/",
+          "publisher": "blog.google",
+          "published_at": "2026-10-06T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 435,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "Other"
+        },
+        {
+          "id": "news-2167384f51e2",
+          "title": "The Den frees up 10-15 hours a week to grow with ChatGPT Work",
+          "url": "https://openai.com/index/the-den-family-social",
+          "publisher": "OpenAI",
+          "published_at": "2026-10-01T00:00:00+00:00",
+          "evidence_type": "feed_excerpt",
+          "topic": "RAG"
+        }
+      ],
+      "id": "ac9eaded913cb6f4"
+    },
+    {
+      "date": "2026-10-10",
+      "timezone": "America/New_York",
+      "created_at": "2026-10-10T16:15:03.485081+00:00",
+      "topic": "RAG",
+      "language": "te",
+      "concept": "Why citations need checking",
+      "news_window": "recent",
+      "source_warnings": [],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "RAGలో citations ఎందుకు తనిఖీ చేయాలి",
+        "summary": "Retrieval-Augmented Generation (RAG) అనేది language model కి external documents నుంచి సమాచారాన్ని తెచ్చి, ఆధారాలతో సమాధానాలు ఇవ్వడానికి ఉపయోగిస్తారు. కానీ retrieval జరిగిందని, citation చూపించారని సమాధానం సరైనదే అవ్వదు. Citations ఎందుకు మనం చేతితో verify చేయాలో ఈ పాఠంలో నేర్చుకుంటాం.",
+        "story": "ఊహించండి: లక్ష్మీ ఒక చిన్న లైబ్రరీ అసిస్టెంట్. ఒక రోజు ప్రొఫెసర్ వచ్చి 'భారతదేశ తీర ప్రాంత చరిత్ర గురించి ఒక పేరా ఇవ్వండి, ఏ పుస్తకం నుంచి తీసుకున్నారో కూడా చెప్పండి' అన్నారు. లక్ష్మీ త్వరగా షెల్ఫ్ దగ్గరకెళ్లి, టైటిల్ చూసి రెండు పుస్తకాలు తీసుకొచ్చింది — టైటిల్స్ సరిపోలిపోయాయి కాబట్టి. ఆమె ఒక పేరా రాసి, 'ఈ పుస్తకంలో ఉంది' అని పేజీ నంబర్ కూడా రాసింది. ప్రొఫెసర్ సంతృప్తిగా వెళ్లిపోయారు. వారం తర్వాత మరొక విద్యార్థి ఆ పేజీని తెరిచి చూసినప్పుడు అక్కడ పూర్తీగా వేరే విషయమే ఉంది — లక్ష్మీ పుస్తకాన్ని నిజంగా చదవలేదు, టైటిల్ దగ్గర పదాలు సరిపోలడం వల్ల ఆ పుస్తకమే తీసుకుంది, తర్వాత తన జ్ఞాపకాల్లో ఉన్న సమాచారాన్ని రాసి, ఆ పుస్తకపు పేరు పెట్టేసింది. ఆమె అబద్ధం చెప్పలేదు — కానీ citation అనేది పుస్తకం చదివాక రావాలి, చదవకముందు అతికించకూడదు.",
+        "connection": "ఇదే సంగతి RAG సిస్టమ్స్‌లో జరుగుతుంది. లక్ష్మీ షెల్ఫ్ దగ్గర టైటిల్స్ చూడటం = retriever ద్వారా documents వెతకడం. పుస్తకాలు తెచ్చుకోవడం = top-k passages retrieve చేయడం. పేరా రాయడం = generator model సమాధానం produce చేయడం. Citation అతికించడం = సమాధానం దగ్గర source పేరు చూపడం. సమస్య ఏమిటంటే: generator నిజంగా retrieved passage చదివి పాటించారో లేదో మనకు తెలియదు. Model తన parametric memory (శిక్షణలో నేర్చుకున్న జ్ఞానం) నుంచి వచ్చిన సమాచారాన్ని, retrieval తెచ్చిన సమాచారంతో కలిపేసి, ఒకే citation కింద చూపించవచ్చు.",
+        "explanation": "RAG అనే ఆలోచన ఎందుకు వచ్చిందంటే — పెద్ద language models తమ parameters లో వాస్తవ జ్ఞానాన్ని నిల్వ చేస్తాయి, కానీ ఆ జ్ఞానాన్ని ఖచ్చితంగా access చేయడం, ఎక్కడనుంచి వచ్చిందో (provenance) చూపడం, కొత్త సమాచారంతో update చేయడం వంటివి కష్టం. దీనికి పరిష్కారంగా, model కి explicit, non-parametric memory — అంటే వేరే document index — కి differentiable access ఇచ్చే RAG models ని ప్రతిపాదించారు. ఇక్కడ parametric memory అంటే pre-trained seq2seq model, non-parametric memory అంటే dense vector index (ఉదాహరణకు Wikipedia), దీన్ని pre-trained neural retriever తో access చేస్తారు. ఇలా చేస్తే knowledge-intensive tasks లో మెరుగైన ఫలితాలు వస్తాయి, generation కూడా ఎక్కువ factual అవుతుంది. REALM అనే సంబంధిత పనిలో, retriever ని unsupervised గా pre-train చేసి, interpretability మరియు modularity వంటి ప్రయోజనాలను చూపించారు — అంటే model ఏ documents ను చూసిందో మనం చూడగలం. కానీ 'చూసింది' అనేది 'దాని మీద ఆధారపడి సమాధానం ఇచ్చింది' అని కాదు. Retrieval అనేది ఒక అవకాశం — model ఆ passages ను ఎంతవరకు పాటించిందో ప్రతి సమాధానానికీ ప్రత్యేకంగా పరిశీలించాల్సి ఉంటుంది. అందుకే citations అనేవి పూర్తి నిర్ధారణ కాదు, తనిఖీ ప్రారంభించడానికి ఒక చిన్న సూచిక మాత్రమే.",
+        "application": "మీరు ఒక కంపెనీ internal docs మీద RAG chatbot నిర్మిస్తున్నారనుకోండి. సమాధానం దగ్గర source document చూపిస్తుంది. Practical అలవాటు: (1) సమాధానంలోని ప్రతి ముఖ్యమైన claim కి ఒక citation ఉందో లేదో చూడండి — లేకపోతే అది model తన memory నుంచి వచ్చి ఉండవచ్చు. (2) Citation చూపిన passage ని తెరిచి, claim నిజంగా అందులో ఉందో సరిచూడండి — ముఖ్యంగా సంఖ్యలు, తేదీలు, పేర్లు. (3) ఒకే claim కి రెండు sources విభేదిస్తే, model ఏది ఎన్నుకుందో ఎందుకో విప్పుకోవడం విలువైన debugging సమాచారం. ఇది production లో sampling-based evaluation కి కూడా పునాది: కొన్ని సమాధానాలను random గా తీసుకుని citations ని manually verify చేయడం.",
+        "exercise": "మీ సమీపంలోని ఏదైనా RAG demo లేదా AI search tool తీసుకోండి (లేదా ఒక సాధారణ ప్రశ్న అడిగి citations చూపించే ఏ సాధనాన్నైనా). రెండు నిమిషాల్లో: ఒక సమాధానం తీసుకుని, దానిలోని ఒక నిర్దిష్టమైన claim (సంఖ్య లేదా తేదీ) ఎంచుకుని, ఆ citation చూపిన source లో ఆ claim నిజంగా ఉందో లేదో సరిచూడండి. ఉందా, లేదా? పాక్షికంగా ఉందా? మీ ఫలితాన్ని ఒక వాక్యంలో రాయండి.",
+        "question": "RAG సిస్టమ్ సమాధానం దగ్గర source document చూపిస్తే, ఆ సమాధానంలోని ప్రతి వాక్యం ఆ document ఆధారంగానే ఉందని భద్రంగా అనుకోవచ్చా? ఎందుకు లేదు?",
+        "answer": "అనుకోకూడదు. Citation అనేది model ఆ documents ను retrieve చేసిందని మాత్రమే చూపుతుంది; generator అందులోని సమాచారాన్ని ఖచ్చితంగా పాటించిందో లేదో హామీ ఇవ్వదు. Model తన parametric memory నుంచి వచ్చిన సమాచారాన్ని కలపవచ్చు, లేదా passage ని తప్పుగా అర్థం చేసుకోవచ్చు. అందుకే ముఖ్యమైన claims ని source తో సరిపోల్చి తనిఖీ చేయాలి.",
+        "limits": "ఈ analogy కి పరిమితులున్నాయి. లక్ష్మీ ఒక వ్యక్తి — ఆమెకు ఉద్దేశపూర్వక ఆలోచన ఉంది; RAG model అందులో లేదు, దాని 'తప్పు' అనేది సిస్టమ్ డిజైన్ పరిమితి. అలాగే, నిజమైన RAG architectures లో retrieved passages అనేవి generation సమయంలో model కి input గా ఇస్తారు — అంటే కొన్ని సందర్భాల్లో model నిజంగానే వాటిపై ఎక్కువగా ఆధారపడుతుంది. ఈ analogy 'model ఎప్పుడూ అబద్ధపు citations అతికిస్తుంది' అని చెప్పడం కాదు; 'citation ఉండటం చాలదు, verify చేయాలి' అనేదే పాఠం. చివరగా, provenance చూపడం అనేది ఇప్పటికీ పరిశోధనా విషయమే — పూర్తిగా పరిష్కరించబడిన సమస్య కాదు.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "ఈ వారం RAG సంబంధిత వార్తలు",
+        "overview": "ఈ వారం రెండు అంశాలు: Google యొక్క కొత్త on-device multimodal embedding model, మరియు OpenAI ప్రచురించిన ఒక customer story. రెండూ retrieval ప్రపంచానికి సంబంధించినవే, కానీ రెండింటి స్వభావం భిన్నం — ఒకటి కొత్త model release, రెండో ఒక ఉపయోగ కథనం.",
+        "items": [
+          {
+            "headline": "Google, on-device multimodal embeddings కోసం EmbeddingGemma 2 విడుదల చేసింది",
+            "what_happened": "Google DeepMind బ్లాగ్ ప్రకారం, EmbeddingGemma 2 అనేది 740M parameters కలిగిన, Apache 2.0 license కింద విడుదలైన open embedding model. ఇది text, images, audio, video లను ఒకే unified embedding space లోకి map చేస్తుంది. బ్లాగ్ ప్రకారం ముఖ్యమైన అంశాలు: Matryoshka Representation Learning ద్వారా vectors ను 768 నుంచి 128 dimensions వరకు truncate చేసే సౌలభ్యం, 8K token context window, quantization తో Pixel 11 Pro పై text-only కి ~191MB active RAM అని పేర్కొనడం, మరియు MTEB Code లో మెరుగుదల. Weights Hugging Face మరియు Kaggle లో అందుబాటులో ఉన్నాయి.",
+            "why_it_matters": "Embeddings అనేవి RAG pipelines యొక్క retrieval భాగానికి పుష్కలం. ఈ model ముఖ్య ఆకర్షణ — retrieval ని పూర్తీగా device పైనే చేయగలగడం. ఉదాహరణకు: మీ ఫోన్‌లోని వ్యక్తిగత photos, voice memos, notes లను క్లౌడ్‌కి పంపకుండా semantic search చేయడం, లేదా offline గా పనిచేసే చిన్న RAG assistant నిర్మించడం. ఒకే model అన్ని modalities ను ఒకే space లోకి పంపితే, 'ఈ voice memo లో చెప్పిన ఆలోచనను గుర్తుంచుకున్న photo చూపించు' లాంటి cross-modal searches సాధ్యమవుతాయి. ఇది ఒక స్విస్ నైఫ్ లాంటిది — ఒకే tool తో అన్ని రకాల మీడియాను వెతకగలగడం, పెద్ద ప్రత్యేక tools అవసరం లేకుండా.",
+            "takeaway": "ఇది ఏదైనా సార్వత్రిక విప్లవం కాదు — ఇది Google తమ బెంచ్‌మార్క్‌లలో చేసిన claims తో వచ్చిన ఒక product release. ప్రయత్నించే ముందు: model card లో పూర్తి evaluation metrics చూడండి, మీ ప్రత్యేక use case (మీ భాష, మీ data type) కి సరిపోలుతుందో మీ సొంత queries తో పరీక్షించండి, మరియు మీ hardware పై నిజమైన RAM/latency అవసరాలను కొలవండి — బ్లాగ్‌లోని సంఖ్యలు ఒక నిర్దిష్ట device, నిర్దిష్ట settings కి చెందినవి.",
+            "source_ids": [
+              "news-e6e1d2a9f0a4"
+            ]
+          },
+          {
+            "headline": "OpenAI, ChatGPT Work తో సమయం ఆదా చేసుకున్న సోషల్ క్లబ్ కథనాన్ని ప్రచురించింది",
+            "what_happened": "OpenAI వెబ్‌సైట్‌లో 'The Den' అనే సోషల్ క్లబ్ గురించి ఒక customer story వచ్చింది. Feed excerpt ప్రకారం, కొత్త location ను ప్రారంభిస్తున్న ఈ క్లబ్, grant applications ను 3 రోజుల నుంచి 2 గంటలకు, liquor-license materials ను 4 రోజుల నుంచి 3 గంటలకు తగ్గించుకుంది అని, వారంకి 10-15 గంటలు ఆదా అవుతున్నట్టు చెబుతోంది. గమనిక: మా దగ్గర ఈ కథనం యొక్క సంక్షిప్త feed excerpt మాత్రమే ఉంది — పూర్తి వ్యాసం చదివినట్టు చెప్పలేం, కాబట్టి ఈ సంఖ్యలు ఎలా కొలిచారో లేదా ఏ tools వాడారో వివరంగా తెలుసుకోవడానికి అసలు వ్యాసం చదవాలి.",
+            "why_it_matters": "ఇలాంటి stories చిన్న వ్యాపారాలకు ఉపయోగకరమైన సూచనలు: legal, licensing, grant writing లాంటి document-heavy పనుల్లో AI assistance — తరచుగా retrieval తో — ఎలా సమయాన్ని ఆదా చేస్తుందో చూపుతాయి. ఒక స్పష్టమైన analogy: ఇది ఒక అనుభవజ్ఞుడైన junior assistant ని నియమించుకోవడం లాంటిది — డ్రాఫ్టింగ్, సమాచార సేకరణలో వేగంగా సహాయం చేస్తారు, కానీ చివరి legal filing బాధ్యత ఇంకా మీదే. అయితే ఇది vendor ప్రచురించిన కథనం — స్వతంత్ర ఆధారం కాదు, మరియు ఇది ఈ వారం వచ్చిన breaking news కాదు, ఇటీవల ప్రచురించబడిన ఒక case study.",
+            "takeaway": "ముఖ్య పరిమితి: ఇది ఒక విక్రేత యొక్క సొంత విజయగాథ, స్వతంత్ర ఆడిట్ కాదు. సమయ ఆదా సంఖ్యలు ఎలా లెక్కించారో, ఏ కార్మికులు పాల్గొన్నారో, ఏ పనుల్లో AI నిజంగానే ఉపయోగపడిందో తెలుసుకోవడానికి అసలు వ్యాసాన్ని చదవండి. మీ సొంత workflow లో ప్రయత్నించే ముందు, ఒక చిన్న, తక్కువ ప్రమాదకరమైన పనితో పైలట్ చేసి, ఫలితాలను మీరే కొలవండి.",
+            "source_ids": [
+              "news-2167384f51e2"
+            ]
+          }
+        ],
+        "exercise": "రెండు నిమిషాల source-check: మొదటి వార్త కోసం, Google బ్లాగ్‌లోని model card link ని తెరిచి, MTEB Code స్కోర్లు ఏ బెంచ్‌మార్క్ settings లో కొలిచారో మరియు పోటీ చేసిన models ఎవరో సరిచూడండి. రెండో వార్త కోసం, OpenAI వ్యాసంలో సమయ ఆదా సంఖ్యలు ఎవరు ఇచ్చారో (కస్టమర్ quote ఆ, vendor లెక్క ఆ) మరియు ఏ పనులకు సంబంధించినవో గుర్తించండి. రెండు సందర్భాల్లోనూ ఒకే ప్రశ్న అడగండి: ఈ claim ని నేను నా పనిలో నమ్మడానికి ముందు ఏమి స్వతంత్రంగా verify చేయాలి?",
+        "question": "EmbeddingGemma 2 గురించిన బెంచ్‌మార్క్ claims మరియు The Den సమయ ఆదా సంఖ్యలు — రెండింటికీ ఒకే రకమైన జాగ్రత్త ఎందుకు అవసరం?",
+        "answer": "రెండూ ఆయా కంపెనీలే ప్రచురించిన claims — attribution స్వతంత్ర ధృవీకరణ కాదు. బెంచ్‌మార్క్ స్కోర్లు నిర్దిష్ట settings, నిర్దిష్ట datasets కి పరిమితం; సమయ ఆదా సంఖ్యలు ఒక కేస్ స్టడీ నుంచి వచ్చినవి, కొలత పద్ధతి స్పష్టంగా లేదు. రెండింటినీ మీ సొంత use case లో పరీక్షించకుండా నేరుగా నమ్మకూడదు."
+      },
+      "usage": {
+        "prompt_tokens": 2970,
+        "total_tokens": 13952,
+        "completion_tokens": 10982,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 29
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 29
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-e6e1d2a9f0a4",
+          "title": "EmbeddingGemma 2: an open, lightweight multimodal embedding model",
+          "url": "https://blog.google/innovation-and-ai/technology/developers-tools/embeddinggemma-2/",
+          "publisher": "blog.google",
+          "published_at": "2026-10-06T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 435,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "Other"
+        },
+        {
+          "id": "news-2167384f51e2",
+          "title": "The Den frees up 10-15 hours a week to grow with ChatGPT Work",
+          "url": "https://openai.com/index/the-den-family-social",
+          "publisher": "OpenAI",
+          "published_at": "2026-10-01T00:00:00+00:00",
+          "evidence_type": "feed_excerpt",
+          "topic": "RAG"
+        }
+      ],
+      "id": "c86648c661bad0cf"
     }
   ]
 }

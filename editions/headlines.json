@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "task": "ai_headlines",
-  "checked_at": "2026-10-09T17:27:32.745081+00:00",
+  "checked_at": "2026-10-10T16:15:03.485081+00:00",
   "items": [
     {
       "id": "news-e6e1d2a9f0a4",
@@ -14,6 +14,13 @@
       "id": "news-570fe3204556",
       "title": "Sophos cuts threat investigation time by 96% with OpenAI Daybreak",
       "url": "https://openai.com/index/sophos",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-09T07:00:00+00:00"
+    },
+    {
+      "id": "news-9bf93d58cc35",
+      "title": "Asana cuts model costs 76x in browser tests with GPT-6.1 Sol",
+      "url": "https://openai.com/index/asana-browser-agent",
       "publisher": "OpenAI",
       "published_at": "2026-10-09T07:00:00+00:00"
     },
@@ -79,13 +86,6 @@
       "url": "https://openai.com/index/gpt-6-for-everyone",
       "publisher": "OpenAI",
       "published_at": "2026-10-07T00:00:00+00:00"
-    },
-    {
-      "id": "news-c11a83f73b42",
-      "title": "EmbeddingGemma 2: an open, lightweight multimodal embedding model",
-      "url": "https://deepmind.google/blog/embeddinggemma-2-an-open-lightweight-multimodal-embedding-model/",
-      "publisher": "Google DeepMind",
-      "published_at": "2026-10-06T19:57:04+00:00"
     }
   ]
 }
