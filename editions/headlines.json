@@ -1,8 +1,15 @@
 {
   "schema_version": 1,
   "task": "ai_headlines",
-  "checked_at": "2026-10-10T16:15:03.485081+00:00",
+  "checked_at": "2026-10-12T20:18:52.126844+00:00",
   "items": [
+    {
+      "id": "news-c044b31b2af1",
+      "title": "AI models may be capable of self-replicating without access to a datacenter",
+      "url": "https://www.anthropic.com/research/self-replicating-ai",
+      "publisher": "www.anthropic.com",
+      "published_at": "2026-10-12T19:30:00+00:00"
+    },
     {
       "id": "news-e6e1d2a9f0a4",
       "title": "EmbeddingGemma 2: an open, lightweight multimodal embedding model",
@@ -79,13 +86,6 @@
       "url": "https://openai.com/index/radisson",
       "publisher": "OpenAI",
       "published_at": "2026-10-07T07:00:00+00:00"
-    },
-    {
-      "id": "news-a097ef0d441a",
-      "title": "GPT-6 and Intelligent UI for everyone",
-      "url": "https://openai.com/index/gpt-6-for-everyone",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-07T00:00:00+00:00"
     }
   ]
 }
