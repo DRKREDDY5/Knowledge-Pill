@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "task": "ai_headlines",
-  "checked_at": "2026-10-15T15:37:14.861663+00:00",
+  "checked_at": "2026-10-16T15:23:22.012155+00:00",
   "items": [
     {
       "id": "news-c044b31b2af1",
@@ -18,11 +18,39 @@
       "published_at": "2026-10-06T00:00:00+00:00"
     },
     {
+      "id": "news-c9a6184923cc",
+      "title": "Welcome Beam: a 501B open model you can own, customize, and scale",
+      "url": "https://huggingface.co/blog/reflection-beam",
+      "publisher": "Hugging Face",
+      "published_at": "2026-10-16T00:00:00+00:00"
+    },
+    {
+      "id": "news-32165ee6af89",
+      "title": "Bringing GPT-Rosalind to academic research labs",
+      "url": "https://openai.com/index/introducing-the-rosalind-academic-plan",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-15T19:00:00+00:00"
+    },
+    {
+      "id": "news-ad09b0946a60",
+      "title": "Accelerating the search for antimicrobial peptides with Google Antigravity",
+      "url": "https://deepmind.google/blog/accelerating-antimicrobial-discovery/",
+      "publisher": "Google DeepMind",
+      "published_at": "2026-10-15T16:08:03+00:00"
+    },
+    {
       "id": "news-a60f4a701f88",
       "title": "Teaching students to think and learn through questions",
       "url": "https://openai.com/index/teaching-students-to-think-and-learn-through-questions",
       "publisher": "OpenAI",
       "published_at": "2026-10-15T13:00:00+00:00"
+    },
+    {
+      "id": "news-ff0cf28c5d75",
+      "title": "Welcome Muse Spark Open: open-weight frontier multimodal mixture-of-experts model from Meta",
+      "url": "https://huggingface.co/blog/meta-muse-spark-open",
+      "publisher": "Hugging Face",
+      "published_at": "2026-10-15T00:00:00+00:00"
     },
     {
       "id": "news-eb67409897ed",
@@ -32,11 +60,11 @@
       "published_at": "2026-10-15T00:00:00+00:00"
     },
     {
-      "id": "news-f366508f9685",
-      "title": "Research@ 2026: 10 ways we're amplifying human ingenuity",
-      "url": "https://research.google/blog/research-2026-10-ways-were-amplifying-human-ingenuity/",
-      "publisher": "Google Research",
-      "published_at": "2026-10-14T16:14:34+00:00"
+      "id": "news-94eadcab22c4",
+      "title": "Sullivan & Cromwell brings legal expertise into agreement review",
+      "url": "https://openai.com/index/sullivan-cromwell",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-15T00:00:00+00:00"
     },
     {
       "id": "news-4c456e668ef4",
@@ -53,39 +81,11 @@
       "published_at": "2026-10-14T16:14:00+00:00"
     },
     {
-      "id": "news-57c3309db5be",
-      "title": "Amp puts AI agents to work beyond code with OpenAI models",
-      "url": "https://openai.com/index/amp-beyond-coding",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-14T12:00:00+00:00"
-    },
-    {
-      "id": "news-004cd593adab",
-      "title": "SentinelOne cuts malware analysis from weeks to hours",
-      "url": "https://openai.com/index/sentinelone",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-14T12:00:00+00:00"
-    },
-    {
-      "id": "news-a8b8c31de898",
-      "title": "How Third Moment Research runs 10,000 agents for 36+ hours",
-      "url": "https://openai.com/index/third-moment-research",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-14T07:00:00+00:00"
-    },
-    {
-      "id": "news-94ee28b93f9d",
-      "title": "How Block is building AI-powered security with OpenAI technology",
-      "url": "https://openai.com/index/block-ai-powered-security",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-14T07:00:00+00:00"
-    },
-    {
-      "id": "news-36a7e1c23fbb",
-      "title": "Google DeepMind and Singapore Government collaborate to build fine-tuned AI model for scam detection",
-      "url": "https://deepmind.google/blog/on-device-ai-scam-detection-mddi/",
-      "publisher": "Google DeepMind",
-      "published_at": "2026-10-14T02:00:14+00:00"
+      "id": "news-f366508f9685",
+      "title": "Research@ 2026: 10 ways we're amplifying human ingenuity",
+      "url": "https://research.google/blog/research-2026-10-ways-were-amplifying-human-ingenuity/",
+      "publisher": "Google Research",
+      "published_at": "2026-10-14T16:14:00+00:00"
     }
   ]
 }
