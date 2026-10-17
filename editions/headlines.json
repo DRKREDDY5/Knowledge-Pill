@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "task": "ai_headlines",
-  "checked_at": "2026-10-16T15:23:22.012155+00:00",
+  "checked_at": "2026-10-17T14:13:55.109848+00:00",
   "items": [
     {
       "id": "news-c044b31b2af1",
@@ -18,10 +18,38 @@
       "published_at": "2026-10-06T00:00:00+00:00"
     },
     {
+      "id": "news-9732b2763df5",
+      "title": "How Itaú is building generative AI for its entire customer base",
+      "url": "https://openai.com/index/itau-generative-ai",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-16T19:00:00+00:00"
+    },
+    {
+      "id": "news-dd1029b4b030",
+      "title": "Grounding AI agents in biological reality: Building blocks for autonomous wet labs",
+      "url": "https://research.google/blog/grounding-ai-agents-in-biological-reality-building-blocks-for-autonomous-wet-labs/",
+      "publisher": "Google Research",
+      "published_at": "2026-10-16T18:11:34+00:00"
+    },
+    {
       "id": "news-c9a6184923cc",
       "title": "Welcome Beam: a 501B open model you can own, customize, and scale",
       "url": "https://huggingface.co/blog/reflection-beam",
       "publisher": "Hugging Face",
+      "published_at": "2026-10-16T00:00:00+00:00"
+    },
+    {
+      "id": "news-9e63539289a3",
+      "title": "Stack Overflow for Agents triples signups with ChatGPT plugin",
+      "url": "https://openai.com/index/stack-overflow-chatgpt-plugin",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-16T00:00:00+00:00"
+    },
+    {
+      "id": "news-b6756c0a180e",
+      "title": "Benefit Street Partners answers questions faster with Codex",
+      "url": "https://openai.com/index/benefit-street-partners",
+      "publisher": "OpenAI",
       "published_at": "2026-10-16T00:00:00+00:00"
     },
     {
@@ -58,34 +86,6 @@
       "url": "https://huggingface.co/blog/flux-3",
       "publisher": "Hugging Face",
       "published_at": "2026-10-15T00:00:00+00:00"
-    },
-    {
-      "id": "news-94eadcab22c4",
-      "title": "Sullivan & Cromwell brings legal expertise into agreement review",
-      "url": "https://openai.com/index/sullivan-cromwell",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-15T00:00:00+00:00"
-    },
-    {
-      "id": "news-4c456e668ef4",
-      "title": "Putting Earth AI to work: Geospatial agents for our planet's biggest challenges",
-      "url": "https://research.google/blog/putting-earth-ai-to-work-geospatial-agents-for-our-planets-biggest-challenges/",
-      "publisher": "Google Research",
-      "published_at": "2026-10-14T16:14:00+00:00"
-    },
-    {
-      "id": "news-6c3fa003d587",
-      "title": "Analyzing technical documents with Deep Review",
-      "url": "https://research.google/blog/analyzing-technical-documents-with-deep-review/",
-      "publisher": "Google Research",
-      "published_at": "2026-10-14T16:14:00+00:00"
-    },
-    {
-      "id": "news-f366508f9685",
-      "title": "Research@ 2026: 10 ways we're amplifying human ingenuity",
-      "url": "https://research.google/blog/research-2026-10-ways-were-amplifying-human-ingenuity/",
-      "publisher": "Google Research",
-      "published_at": "2026-10-14T16:14:00+00:00"
     }
   ]
 }
