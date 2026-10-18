@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "task": "ai_headlines",
-  "checked_at": "2026-10-17T14:13:55.109848+00:00",
+  "checked_at": "2026-10-18T14:37:54.843455+00:00",
   "items": [
     {
       "id": "news-c044b31b2af1",
@@ -39,16 +39,16 @@
       "published_at": "2026-10-16T00:00:00+00:00"
     },
     {
-      "id": "news-9e63539289a3",
-      "title": "Stack Overflow for Agents triples signups with ChatGPT plugin",
-      "url": "https://openai.com/index/stack-overflow-chatgpt-plugin",
+      "id": "news-b6756c0a180e",
+      "title": "Benefit Street Partners answers questions faster with Codex",
+      "url": "https://openai.com/index/benefit-street-partners",
       "publisher": "OpenAI",
       "published_at": "2026-10-16T00:00:00+00:00"
     },
     {
-      "id": "news-b6756c0a180e",
-      "title": "Benefit Street Partners answers questions faster with Codex",
-      "url": "https://openai.com/index/benefit-street-partners",
+      "id": "news-9e63539289a3",
+      "title": "Stack Overflow for Agents triples signups with ChatGPT plugin",
+      "url": "https://openai.com/index/stack-overflow-chatgpt-plugin",
       "publisher": "OpenAI",
       "published_at": "2026-10-16T00:00:00+00:00"
     },
