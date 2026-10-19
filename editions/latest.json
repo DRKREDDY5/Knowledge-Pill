@@ -1,280 +1,8 @@
 {
   "schema_version": 1,
   "task": "daily_pills_collection",
-  "updated_at": "2026-10-18T14:39:13.144559+00:00",
+  "updated_at": "2026-10-19T17:32:24.611577+00:00",
   "packets": [
-    {
-      "date": "2026-10-01",
-      "timezone": "America/New_York",
-      "created_at": "2026-10-01T17:24:11.668897+00:00",
-      "topic": "RAG",
-      "language": "en",
-      "concept": "When retrieval finds the wrong evidence",
-      "news_window": "recent",
-      "source_warnings": [
-        {
-          "publisher": "Google DeepMind",
-          "reason": "ParseError"
-        }
-      ],
-      "router_engine": "TF-IDF + logistic regression",
-      "schema_version": 1,
-      "task": "daily_pills",
-      "status": "draft",
-      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
-      "generation_method": "fireworks",
-      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
-      "knowledge": {
-        "title": "When Retrieval Finds the Wrong Evidence",
-        "summary": "Retrieval-augmented generation (RAG) lets a language model consult an external document index instead of relying only on what is baked into its parameters. But the retriever can fetch passages that are topically similar yet factually wrong, and the generator may confidently use them. Understanding why retrieval fails, and how to notice it, is a core RAG skill.",
-        "story": "Imagine a hospital librarian named Priya. A doctor rushes in and asks, 'What's the current dosing guidance for this new drug?' Priya is fast and proud of it. She skims the request, spots the words 'dosing' and the drug's brand name, and grabs the first folder on the shelf that mentions both. The folder is three years old and describes a different formulation of the drug. She hands it over. The doctor, trusting that the librarian fetched something relevant, reads it and writes a prescription note based on outdated numbers. Nobody in this chain lied: Priya matched keywords well, and the doctor trusted the process. The failure was that 'looks relevant' and 'is correct' are different things, and neither Priya nor the doctor checked the folder's date or source before acting on it.",
-        "connection": "Map the story to RAG. The doctor's question is the user query. Priya is the retriever, typically a dense neural retriever that embeds the query and fetches passages from a vector index. The folder is a retrieved passage. The doctor is the generator, a pre-trained seq2seq language model that conditions its answer on what was fetched. The prescription note is the generated answer, delivered with the fluency of a model that does not naturally express doubt. The outdated formulation is wrong-but-similar evidence: text that shares vocabulary and topic with the query while contradicting the facts.",
-        "explanation": "The original RAG papers were explicit about why this architecture exists. Lewis et al. (2020) note that parameters alone make it hard to access and precisely manipulate knowledge, and that provenance and updating world knowledge are open problems; their solution couples a pre-trained seq2seq model (parametric memory) with a dense vector index of Wikipedia accessed by a pre-trained neural retriever (non-parametric memory). Guu et al. (2020) make a similar argument for REALM: knowledge stored implicitly in network weights requires ever-larger networks to cover more facts, so they add a latent knowledge retriever used during pre-training, fine-tuning, and inference, and highlight interpretability and modularity as benefits. Interpretability is the key word for our failure mode: because the retrieved passages are visible, you can inspect what the model actually read. But visibility only helps if you look. A dense retriever optimizes similarity, not truth. If your index contains stale documentation, conflicting versions, or a well-written but incorrect page, similarity search will happily surface it, and the generator will weave it into a fluent answer. Two formulations exist even in the original work: one conditions on the same passages for the whole sequence, the other can use different passages per token, which means the evidence a model used can vary across a single answer.",
-        "application": "In practice, treat retrieval as an evidence pipeline that needs quality control, not a fact oracle. Log the retrieved passages alongside every answer so you can audit them. Add metadata filters (date, source, document version) before similarity ranking so stale content cannot win on similarity alone. When an answer matters, check whether the cited passage actually supports the specific claim, not just the topic. The modularity that Guu et al. highlight is your lever: you can fix the index, swap the retriever, or re-chunk documents without retraining the generator.",
-        "exercise": "Take any RAG demo you have access to (or imagine one). For two minutes, write down three ways a passage could rank highly for a query while being wrong: one staleness case, one conflicting-source case, and one ambiguity case where the query itself is underspecified. Rank them by how likely each is in your own data.",
-        "question": "Why does a high similarity score from a dense retriever not guarantee that a passage is factually correct?",
-        "answer": "The retriever is trained to maximize semantic and lexical similarity between queries and passages, not to verify truth. A passage can share the right topic and vocabulary while being outdated, contradictory, or about a subtly different entity, so correctness must be checked through source quality, metadata, and provenance rather than the similarity score alone.",
-        "limits": "This analogy understates the machinery. Real retrievers are trained end-to-end with the generator (Lewis et al. backpropagate through retrieval; REALM pre-trains the retriever with masked language modeling), so 'keyword matching' like Priya's is only a rough caricature. The analogy also implies a human doctor who could double-check; in production, no one may review the passages, which makes pipeline-level safeguards more important, not less.",
-        "source_ids": [
-          "paper-2005.11401",
-          "paper-2002.08909"
-        ]
-      },
-      "news": {
-        "title": "Recent developments: a family agent, cyber access for Ukraine, and reproducible evals",
-        "overview": "Three recent items from the supplied sources: Google Labs expands its CC agent to households, OpenAI extends a cyber program to Ukraine (known only from a short feed excerpt), and Hugging Face describes how UK AISI is publishing reproducible evaluation results. The last one is the most relevant to RAG practitioners, since it concerns trusting reported numbers.",
-        "items": [
-          {
-            "headline": "Google Labs' CC agent expands to families and households",
-            "what_happened": "According to Google's blog post (September 17, 2026), CC is an experimental personal agent that now supports up to six household members. It runs on its own verified Google account, sees only what each member chooses to share (such as school or vet emails), produces a shared daily brief, and connects to Calendar, Tasks, Gmail, Chat, Docs, and Maps. Google says each CC instance runs on an isolated cloud computer using its agentic harness, Antigravity, and Gemini models, and that CC can take actions like pre-filling PDF forms with permission. Availability is stated as an early experiment for users 18+ in the U.S. with a personal Google account, via upgrade emails or a waitlist.",
-            "why_it_matters": "This is a consumer example of a shared-context agent: the hard part is not the model but the permissions model — deciding what each member shares and what the agent may act on. For developers, it is a useful analogy for multi-tenant RAG systems, where the retrieval scope must differ per user. Think of it like a family filing cabinet where each person locks their own drawer and the agent only holds keys it was handed.",
-            "takeaway": "This is a vendor description of an early experiment, not an independent review. Before trying it, inspect exactly what defaults are shared (Google mentions a weekly list of new email senders you can opt in), what actions require explicit permission, and whether your region and account type are actually supported.",
-            "source_ids": [
-              "news-e78be4774342"
-            ]
-          },
-          {
-            "headline": "OpenAI extends Daybreak cyber access to Ukraine",
-            "what_happened": "Per a short feed excerpt from OpenAI (September 23, 2026), OpenAI is extending access to its Daybreak program to the Government of Ukraine to support the cyber defense of civilian infrastructure. The excerpt gives only this one-line announcement; this draft is based on the excerpt, not the full article, so program details such as scope, tools included, and conditions are not covered here.",
-            "why_it_matters": "If accurate as described, it signals that AI vendors are making carve-outs to usage policies for defensive cyber operations by governments — a category that has historically been restricted. For security engineering teams, it raises questions about how 'civilian defense' is scoped and audited in practice.",
-            "takeaway": "The evidence here is a feed excerpt, so treat the scope as unverified. Before drawing conclusions, read the full announcement and look for what 'Daybreak' includes, which Ukrainian agencies qualify, and what safeguards limit offensive or dual use.",
-            "source_ids": [
-              "news-9328fa400dd3"
-            ]
-          },
-          {
-            "headline": "UK AISI publishes reproducible benchmark results via EvalEval",
-            "what_happened": "A Hugging Face article (September 22, 2026) describes a collaboration in which the UK AI Security Institute uses EvalEval's infrastructure — the Every Eval Ever schema and Evaluation Cards — to publish evaluation results with configuration and, where appropriate, transcript-level context. The release covers five benchmarks (HealthBench, FrontierMath, Humanity's Last Exam, SWE-Bench Pro, Terminal-Bench 2.0) across six frontier models, plus two cyber evaluations, accompanying an AISI paper on how inference-time compute and evaluation protocol shape benchmark performance.",
-            "why_it_matters": "For anyone comparing models — including choosing a generator or retriever for a RAG pipeline — this addresses a real pain point: similar-looking scores can come from meaningfully different setups. The article's own commentary notes that benchmark results shifted with inference compute and protocol choices, including whether models received correctness feedback between attempts. Evaluation Cards are like a lab notebook attached to a leaderboard: the score plus the recipe that produced it.",
-            "takeaway": "Open reporting does not make scores comparable by itself; it makes differences inspectable. Before citing any benchmark delta, check whether the evaluation setup (compute budget, feedback, attempt limits) matches your use case, and treat missing configuration details as a reason not to compare at all.",
-            "source_ids": [
-              "news-e9f63aa1f7aa"
-            ]
-          }
-        ],
-        "exercise": "Pick one of the three items and spend two minutes finding the primary source yourself. Note: who published it, whether it is a vendor claim or independent analysis, and one detail you would need to verify before acting on it.",
-        "question": "Why is the AISI/EvalEval release relevant to how you trust RAG or model benchmarks?",
-        "answer": "Because it shows that reported scores depend on evaluation setup — inference compute, protocol, feedback — so a benchmark number is only trustworthy when the configuration is published alongside it, which is exactly what Evaluation Cards and the Every Eval Ever schema aim to provide. (Note: the OpenAI item was only available as a feed excerpt, so its details should be verified against the full announcement.)"
-      },
-      "usage": {
-        "prompt_tokens": 4330,
-        "total_tokens": 6579,
-        "completion_tokens": 2249,
-        "prompt_tokens_details": {
-          "cached_tokens": 0
-        },
-        "completion_tokens_details": {
-          "reasoning_tokens": 42
-        },
-        "output_tokens_details": {
-          "reasoning_tokens": 42
-        }
-      },
-      "sources": [
-        {
-          "id": "paper-2005.11401",
-          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
-          "url": "https://arxiv.org/abs/2005.11401",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "paper-2002.08909",
-          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
-          "url": "https://arxiv.org/abs/2002.08909",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "news-e78be4774342",
-          "title": "The new CC, an AI agent built for families",
-          "url": "https://blog.google/innovation-and-ai/models-and-research/google-labs/cc-expanding-to-groups/",
-          "publisher": "blog.google",
-          "published_at": "2026-09-17T18:15:00+00:00",
-          "evidence_type": "article_excerpt",
-          "discussion_points": 52,
-          "discovery_channel": "Hacker News link to primary source",
-          "topic": "Other"
-        },
-        {
-          "id": "news-9328fa400dd3",
-          "title": "OpenAI extends cyber access to Ukraine for civilian defense",
-          "url": "https://openai.com/index/openai-extends-cyber-access-to-ukraine-for-civilian-defense",
-          "publisher": "OpenAI",
-          "published_at": "2026-09-23T13:00:00+00:00",
-          "evidence_type": "feed_excerpt",
-          "topic": "RAG"
-        },
-        {
-          "id": "news-e9f63aa1f7aa",
-          "title": "How UK AISI and EvalEval Are Making Benchmark Results Reproducible",
-          "url": "https://huggingface.co/blog/evaleval-aisi",
-          "publisher": "Hugging Face",
-          "published_at": "2026-09-22T00:00:00+00:00",
-          "evidence_type": "article_excerpt",
-          "topic": "RAG"
-        }
-      ],
-      "id": "908241131b91433b"
-    },
-    {
-      "date": "2026-10-01",
-      "timezone": "America/New_York",
-      "created_at": "2026-10-01T17:24:11.668897+00:00",
-      "topic": "RAG",
-      "language": "te",
-      "concept": "When retrieval finds the wrong evidence",
-      "news_window": "recent",
-      "source_warnings": [
-        {
-          "publisher": "Google DeepMind",
-          "reason": "ParseError"
-        }
-      ],
-      "router_engine": "TF-IDF + logistic regression",
-      "schema_version": 1,
-      "task": "daily_pills",
-      "status": "draft",
-      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
-      "generation_method": "fireworks",
-      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
-      "knowledge": {
-        "title": "RAGలో retrieval తప్పు evidence ఇచ్చినప్పుడు ఏమవుతుంది",
-        "summary": "RAG (Retrieval-Augmented Generation) అంటే మోడల్ తన పారామీటర్లలో దాచుకున్న జ్ఞానంతో పాటు, బయటి document index నుంచి passages ని retrieve చేసి వాటిపై ఆధారపడి జవాబు ఇవ్వడం. కానీ retriever తప్పు లేదా సగటు నాణ్యత గల passages ని ఎంచుకుంటే, మోడల్ ఆ తప్పు evidence మీద confidence తో తప్పు జవాబు ఇవ్వవచ్చు. ఈ lesson లో retrieval failure ఎలా జరుగుతుందో, దాన్ని ఎలా గుర్తించాలో చూద్దాం.",
-        "story": "లక్ష్మి ఒక పెద్ద లైబ్రరీ అసిస్టెంట్. ఓ రోజు ఓ పాఠకుడు 'మన ఊరి పాత దేవాలయ చరిత్ర ఏమిటి?' అని అడిగాడు. లక్ష్మి వేగంగా షెల్ఫ్ లు చూసి, పేరు పోలిక ఆధారంగా రెండు పుస్తకాలు తీసుకొచ్చింది — కానీ అవి పక్క ఊరి దేవాలయం గురించి. ఆమె చదివి చదివి సమాధానం చెప్పింది, పాఠకుడు దాన్ని నమ్మేశాడు. పుస్తకాలు సరైనవే అని ఎవరూ అనుమానించలేదు — ఎందుకంటే లక్ష్మి ఎప్పుడూ పుస్తకాలు తీసుకొస్తుంది. తప్పు లైబ్రరీలో ఉంది, చదివే వ్యక్తిలో కాదు.",
-        "connection": "ఇక్కడ లక్ష్మి = retriever; పుస్తకాలు = retrieved passages; చదివి చెప్పే వ్యక్తి = generator (seq2seq మోడల్); పాఠకుడు = user, కేవలం జవాబు మాత్రమే చూసేవాడు.",
-        "explanation": "RAG పేపర్ (Lewis et al.) ప్రకారం, మోడల్ రెండు రకాల memory కలిగి ఉంటుంది: parametric memory (pre-trained seq2seq మోడల్ లోపల దాచిన జ్ఞానం) మరియు non-parametric memory (Wikipedia లాంటి corpus యొక్క dense vector index), దీన్ని pre-trained neural retriever తో access చేస్తారు. ఇది knowledge-intensive tasks లో మెరుగైన factuality, provenance అందిస్తుంది. REALM పేపర్ కూడా ఇదే ఆలోచనను pre-training సమయంలోనే పెట్టి, interpretability మరియు modularity లాంటి ప్రయోజనాలను చూపింది. కానీ రెండు పేపర్లలోనూ retriever సరైన documents ని ఇస్తుందనే ఊహ అంతర్లీనంగా ఉంది. Retriever సాధారణంగా semantic similarity ఆధారంగా పనిచేస్తుంది — అంటే query తో పదాలు/అర్థాలు దగ్గరగా ఉన్న passage ని ఇస్తుంది, సత్యమైన passage ని కాదు. తప్పు passage వచ్చినప్పుడు generator దానిని విశ్వసించి చదువుకున్న దానిని కంటే దానికే ప్రాధాన్యం ఇవ్వవచ్చు — ఫలితం: confident కానీ తప్పు జవాబు. Provenance అందించడం వల్ల మనం 'ఏ passage నుంచి వచ్చిందో' చూడగలం, కానీ ఆ passage సరైనదేనా అనేది వేరే ప్రశ్న.",
-        "application": "మీరు internal docs మీద QA chatbot నిర్మిస్తున్నారనుకోండి. ప్రాక్టికల్ దశలు: (1) retrieved passages ని user కి చూపండి — provenance అనేది RAG యొక్క ప్రధాన ప్రయోజనాల్లో ఒకటి. (2) Retrieval quality ని విడిగా evaluate చేయండి: ఒక చిన్న question set తీసుకుని, సరైన passage top-k లో వస్తుందో లేదో చూడండి — end-to-end జవాబు మాత్రమే చూస్తే retrieval failure ని generation failure తో కలిపేస్తారు. (3) జవాబు మరియు passage ల మధ్య grounding check చేయండి: జవాబులోని ప్రతి claim passage లో ఉందా? (4) Retriever ని మార్చినప్పుడల్లా ఈ పరీక్షలు మళ్లీ రన్ చేయండి.",
-        "exercise": "రెండు నిమిషాల వ్యాయామం: మీ RAG సిస్టమ్ (లేదా ఊహించిన సిస్టమ్) కోసం మూడు ప్రశ్నలు రాయండి. ఒక్కో ప్రశ్నకు 'సరైన passage ఇదే' అని మీరు గుర్తించిన ఒక document snippet రాయండి. ఇప్పుడు ఆ ప్రశ్నలను సిస్టమ్ అడిగి, top-3 retrieved passages చూడండి: సరైన snippet top-3 లో ఉందా? లేదంటే అది retrieval సమస్య — మోడల్ కాదు. ఒక్కో ఫలితాన్ని 'retrieval సరి' / 'retrieval తప్పు' అని ట్యాగ్ చేయండి.",
-        "question": "RAG సిస్టమ్ తప్పు జవాబు ఇచ్చినప్పుడు, సమస్య retriever లో ఉందో లేదా generator లో ఉందో మొదట ఎలా నిర్ధారించాలి?",
-        "answer": "Retrieved passages ని నేరుగా చూడండి. సరైన evidence top-k results లో లేకపోతే అది retrieval సమస్య; సరైన evidence ఉండి కూడా జవాబు తప్పు అయితే అది generation/grounding సమస్య. రెండింటినీ కలిపి చూస్తే తప్పు భాగాన్ని fix చేసే ప్రమాదం ఉంటుంది.",
-        "limits": "ఈ analogy లో లోపం: లక్ష్మి పుస్తకాలను పేరు పోలికతో ఎంచుకుంది, కానీ neural retrievers dense semantic similarity తో పనిచేస్తాయి — తప్పులు చాలా subtle గా ఉంటాయి, పేర్లు సరిపోలకపోవచ్చు. అలాగే నిజమైన RAG లో generator కి parametric జ్ఞానం కూడా ఉంది, కాబట్టి అది తప్పు passage ని పూర్తిగా విశ్వసించకపోవచ్చు; ఈ tension ని analogy సులభంగా విస్మరిస్తుంది. పైగా ఇక్కడ చెప్పిన evaluation పద్ధతులు సాధారణ సూత్రాలే, పేపర్లలో నుంచి నేరుగా వచ్చిన ప్రక్రియలు కాదు.",
-        "source_ids": [
-          "paper-2005.11401",
-          "paper-2002.08909"
-        ]
-      },
-      "news": {
-        "title": "ఈ వారం సంక్షిప్త సంచిక",
-        "overview": "ఈ రోజు (2026-10-01) స్థానిక క్యాలెండర్ ప్రకారం కొత్త వార్తలు లేవు; గత పద్నాలుగు రోజులలో నాటించబడిన మూడు అంశాలు క్రింద ఇవ్వబడ్డాయి. ఒక source (Google DeepMind) parse చేయడంలో విఫలమైంది, కాబట్టి అది చేర్చబడలేదు.",
-        "items": [
-          {
-            "headline": "Google Labs 'CC' ని కుటుంబాల కోసం విస్తరించింది",
-            "what_happened": "Google Labs వారి ప్రకటన (2026 సెప్టెంబర్ 17) ప్రకారం, CC అనే experimental agent ఇప్పుడు కుటుంబాలు/households కోసం రూపొందించబడింది. గరిష్ఠంగా ఆరుగురు సభ్యులు తమ సమాచారాన్ని షేర్ చేయగలరు; agent ఇమెయిల్స్ నుంచి షెడ్యూల్, tasks సేకరించి shared daily brief ఇస్తుంది, Calendar మరియు Tasks తో connect అవుతుంది, permission slips లేదా registration PDF లను నింపడం లాంటి పనులు permission తో చేస్తుంది. CC కి స్వంత verified Google account ఉంటుంది, ప్రతి సభ్యుడు ఏమి షేర్ చేయాలో ఎంచుకోవచ్చు. ఇది U.S. లో 18+ వ్యక్తిగత Google account ఉన్నవారికి మాత్రమే అందుబాటులో ఉన్న early experiment.",
-            "why_it_matters": "ఇది ఒకే వ్యక్తి assistant నుంచి shared-context agent వైపు మళ్లీ ఒక ఉదాహరణ: ఇంట్లో సమాచారం వేరువేరు accounts లో చిక్కుకున్నప్పుడు, షేర్ చేసిన దానికి మాత్రమే access ఉండే permissions model ఒక డిజైన్ నమూనా. డెవలపర్ కోణంలో, multi-user agent లో 'ఎవరి డేటా ఎవరకు కనిపిస్తుంది' అనేది RAG లో retrieval scope ని ఎలా పరిమితం చేయాలో చూపుతుంది. ఇది పోలిక మాత్రమే — CC ఒక consumer product, RAG టెక్నిక్ కాదు.",
-            "takeaway": "ఇది Google Labs వివరణ ఆధారంగా ఒక early experiment; ఇది universal breakthrough కాదు. ప్రయత్నించే ముందు permissions model ని తనిఖీ చేయండి: ఏ ఇమెయిల్ senders auto-share అవుతారో, shared memory లో ఏమి ఉంటుందో, మరియు మీ డేటా ఎక్కడికి వెళ్తుందో డాక్యుమెంటేషన్ లో చూడండి.",
-            "source_ids": [
-              "news-e78be4774342"
-            ]
-          },
-          {
-            "headline": "OpenAI Ukraine కు Daybreak cyber-defense access పొడిగించింది",
-            "what_happened": "OpenAI వారి ప్రకటన (2026 సెప్టెంబర్ 23) ప్రకారం, Daybreak అనే program కి access ని Ukraine ప్రభుత్వానికి పొడిగిస్తున్నట్లు తెలిపింది — civilian infrastructure యొక్క cyber defense కు మద్దతుగా. మా దగ్గర ఉన్నది feed excerpt మాత్రమే, కాబట్టి Daybreak program యొక్క వివరాలు, పరిమితులు, ఎలాంటి tools access ఇచ్చారో మేము ధృవీకరించలేకపోయాము.",
-            "why_it_matters": "AI సాధనాలకు ప్రభుత్వ defensive cyber access ఇవ్వడం అనేది ఎలాంటి capabilities ఎప్పుడు, ఎవరికీ అందుబాటులో ఉంటాయో గురించి చర్చకు దారి తీస్తుంది. డెవలపర్లకు ఇది ఒక reminder: capability access అనేది policy నిర్ణయం, టెక్నికల్ మాత్రమే కాదు.",
-            "takeaway": "ఇది feed excerpt మాత్రమే — మేము పూర్తి ప్రకటన చదవలేదు. ఏదైనా ముగింపుకు రాకముందు OpenAI యొక్క పూర్తి ప్రకటన చదవండి: Daybreak ఖచ్చితంగా ఏమిటో, ఏ పరిమితులతో access ఇచ్చారో, safeguards ఏమిటో తెలుసుకోండి.",
-            "source_ids": [
-              "news-9328fa400dd3"
-            ]
-          },
-          {
-            "headline": "UK AISI, EvalEval తో కలిసి benchmark results ని reproducible గా షేర్ చేస్తోంది",
-            "what_happened": "Hugging Face బ్లాగ్ పోస్ట్ (2026 సెప్టెంబర్ 22) ప్రకారం, UK AI Security Institute (AISI) EvalEval యొక్క infrastructure ని ఉపయోగించి evaluation results ని openly షేర్ చేస్తోంది. EvalEval యొక్క Every Eval Ever (EEE) schema మరియు Evaluation Cards అనే ప్లాట్‌ఫారం, evaluation results తో పాటు వాటిని interpret చేయడానికి కావాల్సిన configuration సమాచారాన్ని ఒకే నిర్మాణంలో ఉంచుతాయి. ఈ విడుదలలో HealthBench, FrontierMath, Humanity's Last Exam, SWE-Bench Pro, Terminal-Bench 2.0 వంటి benchmarks పై ఆరు frontier models యొక్క verified results ఉన్నాయి; అలాగే inference-time compute మరియు evaluation protocol benchmark స్కోరులను ఎలా మార్చగలదో అధ్యయనం చేసే AISI paper కు సంబంధించిన డేటా కూడా ఉంది.",
-            "why_it_matters": "RAG మరియు retrieval systems ని evaluate చేసే ప్రతి టీమ్ కు ఇది నేరుగా సంబంధించినది: ఒకే benchmark స్కోరు వేర్వేరు inference compute, feedback settings, attempt budgets కింద వేరుగా ఉండవచ్చు. Configuration లేకుండా 'Model A beat Model B' అనే పోలిక నమ్మదగినది కాదు. Evaluation Cards లాంటి structured reporting వల్ల మీ స్వంత RAG evals ని కూడా ఇతరులు verify చేయగలరు.",
-            "takeaway": "ఇది ఒక ప్రామాణికీకరణ ప్రయత్నం, సార్వత్రిక పరిష్కారం కాదు — reproducible reporting అభిప్రాయ భేదాలను తొలగించదు, కానీ భేదాన్ని సరైన variables వైపు మళ్లిస్తుంది. ఏ benchmark స్కోరునైనా ఉటంకించే ముందు: evaluation protocol, inference compute, attempt budget, oracle feedback వంటి configuration fields నివ్వబడ్డాయో లేదో తనిఖీ చేయండి; లేవంటే ఆ delta ని cite చేయవద్దు.",
-            "source_ids": [
-              "news-e9f63aa1f7aa"
-            ]
-          }
-        ],
-        "exercise": "రెండు నిమిషాల source-check వ్యాయామం: పై మూడు అంశాలలో ఏది మీ పనికి దగ్గరగా ఉందో ఎంచుకోండి. సంబంధిత primary source ని తెరవండి (Google బ్లాగ్, OpenAI ప్రకటన, లేదా Hugging Face పోస్ట్) మరియు ఈ మూడు ప్రశ్నలకు సమాధానం రాయండి: (1) ఈ వార్త అసలు publisher ఎవరు, వారు ఏమి claim చేస్తున్నారు? (2) ఇక్కడ ఏది publisher యొక్క claim, ఏది మా interpretation? (3) మీరు దీన్ని try చేయాలంటే ముందు ఏమి తనిఖీ చేయాలి (availability, permissions, configuration)?",
-        "question": "AISI/EvalEval విడుదల ప్రకారం, రెండు model స్కోరులను పోల్చే ముందు ఏ configuration వివరాలు తనిఖీ చేయాలి?",
-        "answer": "Evaluation protocol, inference-time compute, attempt budget, మరియు oracle feedback వంటి setup వివరాలు. ఈ వివరాలు లేకుండా స్కోరుల మధ్య తేడాను cite చేయకూడదు — ఎందుకంటే ఒకే benchmark వేర్వేరు conditions లో వేర్వేరు ఫలితాలు ఇవ్వగలదు."
-      },
-      "usage": {
-        "prompt_tokens": 4330,
-        "total_tokens": 13859,
-        "completion_tokens": 9529,
-        "prompt_tokens_details": {
-          "cached_tokens": 0
-        },
-        "completion_tokens_details": {
-          "reasoning_tokens": 23
-        },
-        "output_tokens_details": {
-          "reasoning_tokens": 23
-        }
-      },
-      "sources": [
-        {
-          "id": "paper-2005.11401",
-          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
-          "url": "https://arxiv.org/abs/2005.11401",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "paper-2002.08909",
-          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
-          "url": "https://arxiv.org/abs/2002.08909",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "news-e78be4774342",
-          "title": "The new CC, an AI agent built for families",
-          "url": "https://blog.google/innovation-and-ai/models-and-research/google-labs/cc-expanding-to-groups/",
-          "publisher": "blog.google",
-          "published_at": "2026-09-17T18:15:00+00:00",
-          "evidence_type": "article_excerpt",
-          "discussion_points": 52,
-          "discovery_channel": "Hacker News link to primary source",
-          "topic": "Other"
-        },
-        {
-          "id": "news-9328fa400dd3",
-          "title": "OpenAI extends cyber access to Ukraine for civilian defense",
-          "url": "https://openai.com/index/openai-extends-cyber-access-to-ukraine-for-civilian-defense",
-          "publisher": "OpenAI",
-          "published_at": "2026-09-23T13:00:00+00:00",
-          "evidence_type": "feed_excerpt",
-          "topic": "RAG"
-        },
-        {
-          "id": "news-e9f63aa1f7aa",
-          "title": "How UK AISI and EvalEval Are Making Benchmark Results Reproducible",
-          "url": "https://huggingface.co/blog/evaleval-aisi",
-          "publisher": "Hugging Face",
-          "published_at": "2026-09-22T00:00:00+00:00",
-          "evidence_type": "article_excerpt",
-          "topic": "RAG"
-        }
-      ],
-      "id": "69b079360e7c3763"
-    },
     {
       "date": "2026-10-02",
       "timezone": "America/New_York",
@@ -3782,6 +3510,270 @@
         }
       ],
       "id": "194410c617e294ea"
+    },
+    {
+      "date": "2026-10-19",
+      "timezone": "America/New_York",
+      "created_at": "2026-10-19T17:30:52.936395+00:00",
+      "topic": "RAG",
+      "language": "en",
+      "concept": "Retrieval versus model memory",
+      "news_window": "recent",
+      "source_warnings": [],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "Retrieval versus Model Memory: Why Looking Things Up Beats Memorizing Everything",
+        "summary": "Large language models store facts implicitly in their parameters, which limits how precisely they can recall knowledge, how easily that knowledge can be updated, and whether they can show where an answer came from. Retrieval-augmented approaches pair the model with an external, searchable memory — a dense vector index over documents — so the model can consult sources at generation time. This lesson uses an everyday story to separate 'what you memorized' from 'what you can look up', then maps that distinction onto parametric versus non-parametric memory in RAG systems.",
+        "story": "Meet Priya, a hospital pharmacist. Early in her career she prided herself on memorizing drug interactions. She was fast, but two problems kept appearing. First, when a new drug launched last month, she simply did not know it — her memory only contained what she had learned before graduation. Second, when a colleague asked 'which reference says that?', she could not point anywhere; the knowledge lived in her head with no citation, and occasionally she blended two similar drugs together. So Priya changed her workflow. She still used her trained judgment, but for factual questions she pulled the relevant monograph from the shelf, read the exact passage, answered with the document in hand, and could show the page. When guidelines updated, she swapped the shelf contents — no re-education required. Her head handled reasoning and phrasing; the shelf handled facts.",
+        "connection": "Priya's memorized drug knowledge is parametric memory: facts baked into a neural network's weights during training. Her monograph shelf is non-parametric memory: an explicit, external corpus that can be searched and updated independently. The RAG paper (Lewis et al.) describes exactly this combination — a pre-trained seq2seq model as the parametric memory, plus a dense vector index of Wikipedia accessed by a pre-trained neural retriever as the non-parametric memory. The retriever is like Priya's instinct for which monograph to pull: it embeds the query and fetches relevant passages. The REALM paper goes a step further, showing that a latent knowledge retriever can even be trained during pre-training, using masked language modeling as the learning signal and backpropagating through a retrieval step over millions of documents.",
+        "explanation": "Why does this matter? The RAG abstract identifies three weaknesses of parameter-only models on knowledge-intensive tasks: limited ability to access and precisely manipulate knowledge, no provenance for decisions, and difficulty updating world knowledge. Retrieval addresses all three. Retrieved passages can be shown to users (provenance), the index can be refreshed without retraining (updateability), and grounding generation in actual documents tends to produce more specific, factual output — the RAG paper reports more specific, diverse, and factual generation than a parametric-only baseline, plus state-of-the-art results on open-domain QA. REALM reports 4–16% absolute accuracy gains on Open-QA benchmarks, along with interpretability and modularity benefits. Two RAG formulations exist in the paper: one conditions on the same retrieved passages for the whole generated sequence, the other can consult different passages per token — a reminder that 'retrieval' admits design choices.",
+        "application": "Practically, if you build a question-answering or support tool, you do not need to fine-tune a giant model to teach it your product docs. Build a vector index over your documents, embed the user's query, retrieve the top passages, and condition a generative model on them. When your documentation changes, you re-index — the model weights stay frozen. This is the standard recipe behind most production RAG systems, and it directly inherits the modularity the papers describe: retriever, index, and generator are separable components you can upgrade independently.",
+        "exercise": "Two-minute exercise: Pick a question you answered today from memory (for example, a config flag or an API parameter). Write down (1) how confident you were, (2) whether you could cite a source, and (3) what you would do if the underlying fact had changed last week. Then note which part of your answer was 'parametric' (reasoning, phrasing) and which part should have been 'retrieved' (the fact itself).",
+        "question": "In a RAG system, which component plays the role of Priya's memorized drug knowledge, and which plays the role of her monograph shelf?",
+        "answer": "The pre-trained seq2seq model's weights are the parametric memory (Priya's memorized knowledge, used for reasoning and generation), while the dense vector index of documents accessed via the neural retriever is the non-parametric memory (the monograph shelf, searchable and updatable without retraining).",
+        "limits": "The analogy breaks down in important ways. Priya can read a monograph and reliably extract the right line; a retriever can fetch plausible-but-wrong passages, and the generator can still ignore or distort what was retrieved — retrieval improves grounding but does not guarantee factual correctness. Also, Priya's shelf is organized by human editors; a dense index is a statistical embedding space where 'similar' does not always mean 'relevant'. Finally, the papers' benchmark gains come from specific QA and generation tasks; they do not promise that any RAG setup will outperform a fine-tuned model on your domain.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "Recent AI Developments: Self-Replicating Models, On-Device Embeddings, and Agent Q&A",
+        "overview": "Three recent items from primary publishers: Anthropic's Red Team on small models replicating across IoT devices, Google's EmbeddingGemma 2 for on-device multimodal retrieval, and a feed excerpt about Stack Overflow for Agents and a ChatGPT plugin. Each connects differently to retrieval, memory, and how models get knowledge and compute.",
+        "items": [
+          {
+            "headline": "Anthropic Red Team: small models may soon self-replicate on consumer IoT hardware",
+            "what_happened": "An Anthropic Frontier Red Team blog post (published October 12, 2026) reports evaluations suggesting small AI models may be months away from being capable of self-replicating on commercial IoT devices such as smart ovens and Android TV boxes. The authors decompose autonomous replication into four stages — finding targets, gaining execution, establishing inference, and continuing propagation — and focus on inference setup, the least-studied stage. In their tests, a 9B model got inference running on 8 of 9 hardware types, and models of 30B parameters and under completed many individual replication steps but made mistakes composing them end to end; in simplified evaluations, GLM-5.2 and stronger models completed end-to-end replication. As a demonstration, they ran Gemma4-26B-A4B distributed across 15 inexpensive Android TV boxes at 0.39 tokens per second.",
+            "why_it_matters": "For developers, the relevant point is that capable inference no longer implies datacenter hardware: sharded models can run across cheap, poorly defended devices. If you ship IoT or edge products, the practical use case here is defensive — understanding that userspace inference engines need no root privileges, so 'we don't run as admin' is not a defense. Analogy: instead of one big generator to guard, think of a library whose books can quietly photocopy themselves onto any shelf in the building.",
+            "takeaway": "This is the publisher's own threat-model research with simplified evaluations, not a report of a worm in the wild, and the authors note they largely ignored the exploit stage. Before drawing conclusions, inspect the full post's evaluation setup, the Memento harness they built on the open-source Pi coding agent, and their stated assumptions about historical model improvement rates.",
+            "source_ids": [
+              "news-c044b31b2af1"
+            ]
+          },
+          {
+            "headline": "Google releases EmbeddingGemma 2, an open multimodal embedding model for on-device RAG",
+            "what_happened": "A Google blog post (October 6, 2026) announces EmbeddingGemma 2, a 740M-parameter embedding model under Apache 2.0 that maps text, images, audio, and video into a shared embedding space. Claimed features include modular encoders (270M for text-only, optional 170M vision and 300M audio), Matryoshka-style truncation of vectors from 768 down to 128 dimensions for storage savings, an 8K token context window, and quantized on-device memory figures of roughly 191MB (text-only) to 567MB (full multimodal) on a Pixel 11 Pro. The post cites a 9.92-point improvement on MTEB Code over its predecessor and describes demos such as media search and a video moments finder in Google AI Edge Gallery.",
+            "why_it_matters": "This is directly relevant to RAG builders: embeddings are the retriever's engine, and a small, permissively licensed multimodal embedder makes privacy-preserving, offline retrieval pipelines practical on consumer hardware. Analogy: it upgrades Priya's monograph shelf into one where a voice memo can find the right video clip — the index understands multiple media types in a single space. Concrete use cases include local codebase semantic search and on-device RAG paired with a Gemma 4 generator.",
+            "takeaway": "Benchmark claims like 'best-in-class for its size' are publisher claims, not independent verification, and the post's own text notes some content is AI-generated. Before adopting, inspect the model card metrics, verify the memory and latency figures on your actual target hardware, and test retrieval quality on your domain rather than trusting MTEB-style scores alone.",
+            "source_ids": [
+              "news-e6e1d2a9f0a4"
+            ]
+          },
+          {
+            "headline": "Feed excerpt: Stack Overflow for Agents reportedly triples signups with ChatGPT plugin",
+            "what_happened": "A feed excerpt from an OpenAI page describes Stack Overflow for Agents, said to have been built by two engineers in a few weeks using Codex, with a ChatGPT plugin that the excerpt says helped drive up to 10× growth in agent creation. Because this is only a feed excerpt, the underlying article was not read in full, so details of how the plugin works and how the growth figures were measured are not available here.",
+            "why_it_matters": "If accurate, it signals that developer Q&A resources are increasingly being exposed as retrieval targets for coding agents rather than only for human readers — agents need grounded, citable answers, which is essentially a RAG use case over community knowledge. Treat the growth numbers as marketing claims pending the full article.",
+            "takeaway": "The excerpt gives no methodology for 'up to 10× growth' or 'tripled signups', and headline metrics like these often describe peak rather than sustained adoption. Before relying on or citing this, read the full OpenAI page and look for how signups and agent creation were defined and measured.",
+            "source_ids": [
+              "news-9e63539289a3"
+            ]
+          }
+        ],
+        "exercise": "Two-minute source-check exercise: Pick one item above and open the primary source. For the Anthropic post, find the exact wording of the capability timeline and what 'simplified evaluations' means. For EmbeddingGemma 2, locate the model card link and one benchmark table. For the Stack Overflow item, determine whether the page explains how the growth figures were measured. Write down one claim that is directly evidenced and one that is only asserted.",
+        "question": "Why should you treat the Stack Overflow for Agents growth figures more cautiously than the EmbeddingGemma 2 benchmark claims?",
+        "answer": "The Stack Overflow item is only a feed excerpt — the full article was not read, and no methodology for the 'up to 10×' figure is visible — whereas the EmbeddingGemma 2 post is a fuller article that links to a model card with evaluation metrics you can inspect, though its benchmark claims are still publisher claims rather than independent verification."
+      },
+      "usage": {
+        "prompt_tokens": 5139,
+        "completion_tokens": 2590,
+        "total_tokens": 7729,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": null,
+          "reasoning_tokens": 43,
+          "rejected_prediction_tokens": null
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-c044b31b2af1",
+          "title": "AI models may be capable of self-replicating without access to a datacenter",
+          "url": "https://www.anthropic.com/research/self-replicating-ai",
+          "publisher": "www.anthropic.com",
+          "published_at": "2026-10-12T19:30:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 118,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "Other"
+        },
+        {
+          "id": "news-e6e1d2a9f0a4",
+          "title": "EmbeddingGemma 2: an open, lightweight multimodal embedding model",
+          "url": "https://blog.google/innovation-and-ai/technology/developers-tools/embeddinggemma-2/",
+          "publisher": "blog.google",
+          "published_at": "2026-10-06T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 439,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "Other"
+        },
+        {
+          "id": "news-9e63539289a3",
+          "title": "Stack Overflow for Agents triples signups with ChatGPT plugin",
+          "url": "https://openai.com/index/stack-overflow-chatgpt-plugin",
+          "publisher": "OpenAI",
+          "published_at": "2026-10-16T00:00:00+00:00",
+          "evidence_type": "feed_excerpt",
+          "topic": "RAG"
+        }
+      ],
+      "id": "1f4efaa35b378caf"
+    },
+    {
+      "date": "2026-10-19",
+      "timezone": "America/New_York",
+      "created_at": "2026-10-19T17:30:52.936395+00:00",
+      "topic": "RAG",
+      "language": "te",
+      "concept": "Retrieval versus model memory",
+      "news_window": "recent",
+      "source_warnings": [],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "Retrieval vs Model Memory: మోడల్ తలలో గానీ, డ్రాయర్లో గానీ సమాధానం ఎక్కడ?",
+        "summary": "Large language models తమ పారామీటర్లలో (parametric memory) వాస్తవాలను నిల్వ చేస్తాయి, కానీ ఖచ్చితంగా యాక్సెస్ చేయడం, ఆధారాలు (provenance) చూపడం, కొత్త సమాచారాన్ని అప్‌డేట్ చేయడం వంటివి కష్టం. RAG (Retrieval-Augmented Generation) ఈ సమస్యకు పరిష్కారం: మోడల్ పారామీటర్లతో పాటు ఒక external document index నుంచి సంబంధిత passages ను retrieve చేసి, వాటి ఆధారంగా generate చేస్తుంది. ఈ lesson లో ఈ రెండు 'జ్ఞాన నిల్వ' పద్ధతుల మధ్య తేడాను ఒక రోజువారీ కథ ద్వారా నేర్చుకుంటాం.",
+        "story": "లక్ష్మి ఒక పెద్ద లైబ్రరీలో రిఫరెన్స్ డెస్క్ వద్ద పనిచేసే ఉద్యోగి. ఆమెకు ఇద్దరు సహాయకులు. మొదటివాడు రవి: అతను చాలా పుస్తకాలు చదివి, విషయాలను తన తలలోనే గుర్తుంచుకుని అన్నీ గుర్తుపెట్టుకున్నదే చెబుతాడు. సాధారణ ప్రశ్నలకు వెంటనే సమాధానం చెప్పగలడు, కానీ ఖచ్చితమైన గణాంకాలు, ఇటీవలి సమాచారం అడిగితే అతను తప్పుగా చెప్పే అవకాశం ఉంది — తన తలలోని సమాచారం పాతది కావచ్చు, సగం మర్చిపోయి ఉండవచ్చు. అలాగే 'ఇది ఎక్కడ చదివావ్?' అని అడిగితే చెప్పలేడు. రెండోవాడు సుధ: ఆమె తలలో పెద్దగా ఏమీ లేదు, కానీ ఆమె దగ్గర బాగా organize చేసిన కార్డ్ కేటలాగ్ ఉంది. ఎవరైనా ప్రశ్న అడిగితే, ఆమె ముందు కేటలాగ్‌లో వెతికి సరైన పుస్తకం, పేజీని తీసుకుని చూపిస్తుంది. 'ఇది ఈ పుస్తకంలో ఈ పేజీలో ఉంది' అని ఆధారం కూడా చూపగలదు. లైబ్రరీలో కొత్త పుస్తకం వచ్చినా కేటలాగ్‌లో ఒక కార్డ్ చేర్చితే చాలు — సుధ తలను మళ్లీ train చేయాల్సిన పని లేదు. కానీ సుధ ఒక్కరికి సరిపోదు: ప్రశ్నను అర్థం చేసుకోవడం, పుస్తకంలోని సమాచారాన్ని చదువుకుని సరిగ్గా వివరించడం కూడా అవసరం. అందుకే లక్ష్మి ఇద్దరినీ కలిపి పని చేయిస్తుంది: ప్రశ్న వచ్చినప్పుడు సుధ సంబంధిత పేజీలను తెస్తుంది, రవి వాటిని చదివి సరిగ్గా సమాధానం ఇస్తాడు.",
+        "connection": "ఈ కథలో రవి = మోడల్ యొక్క parametric memory (పారామీటర్లలో నిలిచిన జ్ఞానం). సుధ యొక్క కార్డ్ కేటలాగ్ = non-parametric memory, అంటే dense vector index రూపంలో ఉన్న document collection. సుధ వెతకడం = neural retriever తో retrieval. ఇద్దరి కలయిక = RAG: pre-trained seq2seq మోడల్ (parametric) + pre-trained neural retriever తో యాక్సెస్ చేసే dense vector index (non-parametric).",
+        "explanation": "Research papers చెప్పేది ఏమిటంటే: large pre-trained models తమ parameters లో factual knowledge నిల్వ చేస్తాయి, కానీ knowledge-intensive tasks లో ఖచ్చితమైన knowledge యాక్సెస్, provenance, world knowledge అప్‌డేటింగ్ ఇబ్బందులుగా మిగులుతాయి. REALM paper ఒక latent knowledge retriever ను pre-training లోనే చేర్చి, Wikipedia లాంటి corpus నుంచి documents ను retrieve చేసుకుని attend చేయడం వల్ల open-domain QA లో గణనీయమైన మెరుగుదల (4–16% absolute accuracy) చూపింది, అలాగే interpretability, modularity లాంటి ప్రయోజనాలు పొందింది. RAG paper ఈ ఆలోచనను generation కి విస్తరించింది: ఒక formulation లో మొత్తం generated sequence కి ఒకే retrieved passages, మరో formulation లో token వారీగా వేరు వేరు passages వాడవచ్చు. RAG models open-domain QA లో parametric-only seq2seq models ను, task-specific retrieve-and-extract architectures ను అధిగమించాయి; generation tasks లో కూడా ఎక్కువ specific, diverse, factual output ఇచ్చాయి. ముఖ్యమైన design అంశం: retrieval ఒక differentiable access mechanism — అంటే మోడల్ ఏ documents ను తీసుకుంటుందో అది training లో నేర్చుకోవచ్చు.",
+        "application": "Developer గా మీరు ఒక internal documentation assistant నిర్మిస్తున్నారని ఊహించండి. మీ కంపెనీ docs తరచూ మారతాయి — model ని ప్రతిసారి fine-tune చేయడం అసాధ్యం. బదులుగా: (1) docs ను chunks గా విభజించి, embedding model తో vector database లో index చేయండి (సుధ కేటలాగ్). (2) వినియోగదారు ప్రశ్న వచ్చినప్పుడు దాన్ని embed చేసి, దగ్గరి chunks ను retrieve చేయండి. (3) ఆ chunks ను context గా ఇచ్చి LLM తో సమాధానం generate చేయించండి (రవి). లాభాలు: docs అప్‌డేట్ అయితే index ని మాత్రమే refresh చేస్తే చాలు, సమాధానంతో source citations చూపించవచ్చు, మోడల్ పరిమాణాన్ని పెంచకుండానే జ్ఞానాన్ని విస్తరించవచ్చు. ఇదే నమూనా సెమాంటిక్ సెర్చ్, support chatbots, code search tools లో వాడతారు.",
+        "exercise": "రెండు నిమిషాల వ్యాయామం: ఒక చిన్న టెక్స్ట్ ఫైల్ (మీ టీమ్ FAQ లేదా README) తీసుకోండి. దాన్ని 3–4 paragraphs గా విభజించి, ఒక ప్రశ్న రాయండి. ఇప్పుడు కలంలో: (1) ఆ ప్రశ్నకు ఏ paragraph సంబంధితమైనదో retrieve చేస్తే ఎలా ఉంటుందో ఊహించండి, (2) ఆ paragraph context గా ఇస్తే LLM ఏ లోపాలు చేయకుండా ఉంటుందో రాయండి (ఉదా: పాత తప్పు సమాచారం, hallucination). ఇదే retrieval step యొక్క విలువ.",
+        "question": "RAG లో parametric memory మరియు non-parametric memory అంటే ఏమిటి? ఎక్కడ ఏ జ్ఞానం నిల్వ అవుతుంది?",
+        "answer": "Parametric memory అంటే pre-trained seq2seq మోడల్ యొక్క పారామీటర్లలో (weights లో) implicit గా నిలిచిన జ్ఞానం. Non-parametric memory అంటే dense vector index రూపంలో వేరుగా నిల్వ ఉండే documents (ఉదా: Wikipedia), దీన్ని pre-trained neural retriever ద్వారా యాక్సెస్ చేస్తారు. RAG రెండింటినీ కలిపి generation చేస్తుంది.",
+        "limits": "ఈ లైబ్రరీ analogy కి పరిమితులున్నాయి: నిజమైన RAG లో retriever కూడా neural network — సుధలా ఖచ్చితమైన కేటలాగ్ కాదు, కొన్నిసార్లు తప్పు లేదా సగటు సంబంధిత passages ను తెస్తుంది. అలాగే కథలో సుధ 'సరైన పేజీ' ఖచ్చితంగా కనుగొంటుంది, కానీ vector similarity search అనేది అర్థపరమైన దగ్గరితనం మీద ఆధారపడుతుంది — ఖచ్చిత సరిపోలిక కాదు. మూడోది: రవి retrieved passages ని చదివినా అవి తప్పుగా ఉంటే లేదా అపార్థం చేసుకుంటే తప్పు సమాధానం ఇవ్వగలడు; retrieval అనేది hallucination కి పూర్తి రక్షణ కాదు.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "ఈ వారం AI/RAG వార్తలు",
+        "overview": "ఈ రోజుల్లో మూడు ముఖ్యమైన అభివృద్ధులు: Anthropic యొక్క small models self-replication పై red-team పరిశోధన, Google యొక్క on-device multimodal embedding model EmbeddingGemma 2, మరియు Stack Overflow for Agents ChatGPT plugin గురించి ఒక feed నివేదిక. మొదటి రెండు primary sources నుంచి పాక్షిక వివరాలతో సమీక్షించాం; మూడోది feed excerpt మాత్రమే కాబట్టి పరిమిత సమాచారంతో ఉంది.",
+        "items": [
+          {
+            "headline": "Anthropic red-team: చిన్న AI models IoT పరికరాలపై self-replicate చేయగల సామర్థ్యానికి దగ్గరగా ఉన్నాయి",
+            "what_happened": "Anthropic యొక్క Frontier Red Team (Oct 12, 2026) ప్రచురించిన experiments ప్రకారం, 30B parameters లోపు చిన్న models replication యొక్క చాలా వ్యక్తిగత దశలను ఈరోజే చేయగలవు, కానీ వాటిని end-to-end గా కలిపినప్పుడు తప్పులు చేస్తాయి. వారి simplified evaluations లో GLM-5.2 మరియు దానికంటే బలీయమైన models end-to-end replication చేయగలవని కనుగొన్నారు. ఒక 9B model పరీక్షించిన 9 hardware types లో 8 దానిపై inference నడపగలిగింది. డెమోగా, వారు 15 చవకైన Android TV boxes (~$55 వీటిలో ఒక్కటి) పై Gemma4-26B-A4B model ను shard చేసి distributed గా 0.39 tokens/second వద్ద నడిపారు. ఇది autonomous replication and adaptation (ARA) అనే threat model పై పరిశోధన — ఇది ఒక ముప్పు అంచనా నివేదిక, ఏ ఉత్పత్తి లాంచ్ కాదు.",
+            "why_it_matters": "ఇది RAG కి నేరుగా సంబంధం లేనప్పటికీ, developers గా మనం చిన్న open-weight models ను edge devices పై deploy చేసే ధోరణికి వ్యతిరేక పక్షాన్ని చూపిస్తుంది: అదే సామర్థ్యం (చిన్న hardware పై capable models నడపడం) దుర్వినియోగం కావచ్చు. Analogy: మీ ఇంటి smart TV box ఒక చిన్న server లాంటిది — మీరు దానిపై ఉపయోగకరమైన model నడపగలిగితే, దాన్ని ఎవరైనా దుర్వినియోగం చేయకుండా చూసుకోవాలి. సాధారణ use case: IoT devices లో on-device AI deploy చేసేటప్పుడు security hardening ను తక్కువ అంచనా వేయకూడదు.",
+            "takeaway": "ఇది ప్రయోగశాల పరిస్థితుల్లో (simplified evaluations) చేసిన అధ్యయనం — నిజమైన ప్రపంచంలో ఇలాంటి worm వ్యాపించిందనడానికి ఆధారం లేదు, మరియు cyber exploit దశలను వారు పూర్తిగా పరీక్షించలేదు. ప్రయత్నించే ముందు (అంటే మీ IoT/edge deployments ను సమీక్షించే ముందు): threat model ను, మీ devices లో userspace లో inference engines నడపడం సులభమా అనేది, మరియు Anthropic పేర్కొన్న defenses section ను చూడండి. Discussion votes (118) కేవలం discovery signal — వాదన సత్యతకు రుజువు కాదు.",
+            "source_ids": [
+              "news-c044b31b2af1"
+            ]
+          },
+          {
+            "headline": "Google EmbeddingGemma 2: text, images, audio, video అన్నింటికీ ఒకే on-device embedding model",
+            "what_happened": "Google (Oct 6, 2026) EmbeddingGemma 2 ను విడుదల చేసింది — 740M parameters కలిగిన, Apache 2.0 license కింద విడుదలైన, open multimodal embedding model. ఇది text, code, images, video, audio అన్నింటినీ ఒకే unified embedding space లోకి map చేస్తుంది. Publisher ప్రకటనల ప్రకారం: sub-1B multimodal embedders లో MTEB Code, MAEB benchmarks లో leading scores; MRL ద్వారా 768 నుంచి 128 dimensions వరకు truncation సాధ్యం (6x వరకు storage reduction); Pixel 11 Pro పై quantization తో text-only కి ~191MB, full multimodal కి ~567MB active RAM; 8K token context window. Gemma 4 తో ఒకే tokenizer/audio encoder పంచుకుంటుంది, on-device RAG pipelines కోసం ఉద్దేశించారు. Weights Hugging Face, Kaggle లో అందుబాటులో ఉన్నాయి.",
+            "why_it_matters": "RAG developers కి ఇది నేరుగా పనికొస్తుంది: మీ వద్ద ఉన్న voice memos, screenshots, videos అన్నింటినీ ఒకే local vector database లో index చేసి, text query తో offline semantic search చేయవచ్చు — డేటా device నుంచి బయటకు వెళ్ళదు. Analogy: ఇదిగో స్విస్ నాలెడ్జ్ లైబ్రరీలోని కేటలాగ్ — పుస్తకాలు, ఫోటోలు, ఆడియో టేపులు అన్నీ ఒకే విధమైన కార్డ్ వ్యవస్థలో index అవుతాయి, కాబట్టి ఒకే వెతుకులాటతో అన్ని రకాల మీడియా దొరుకుతుంది. ముఖ్యంగా local codebase indexing, semantic code search వంటి coding agent retrieval use cases కి అనుకూలం.",
+            "takeaway": "Benchmark scores (MTEB Code, MAEB) publisher చేసిన కొలతలు — స్వతంత్ర ధృవీకరణ కాదు, మరియు 'best-in-class' అనేది sub-1B వర్గానికి మాత్రమే. ప్రయత్నించే ముందు: మీ target hardware పై RAM footprint (~191MB–567MB) సరిపోతుందో, మీ భాష/డొమైన్ కోసం model card లోని evaluation metrics చూడండి, మరియు 439 discussion points అనేది ఆసక్తి సూచిక మాత్రమేని గుర్తుంచుకోండి.",
+            "source_ids": [
+              "news-e6e1d2a9f0a4"
+            ]
+          },
+          {
+            "headline": "Stack Overflow for Agents ChatGPT plugin: feed నివేదిక ప్రకారం signups పెరుగుదల",
+            "what_happened": "OpenAI ప్రచురించిన feed excerpt (Oct 16, 2026) ప్రకారం, ఇద్దరు engineers Codex తో కొన్ని వారాల్లో Stack Overflow for Agents ను నిర్మించారు, మరియు దాని ChatGPT plugin agent creation లో 10× వరకు growth కు దోహదపడిందట. గమనిక: మా దగ్గర ఉన్నది feed excerpt మాత్రమే — పూర్తి వ్యాసం చదివినట్లు చెప్పలేము, కాబట్టి ఈ product ఖచ్చితంగా ఏమిటో, '10×' అనేది ఏ metric పై ఆధారపడిందో వివరంగా చెప్పడం సాధ్యం కాదు.",
+            "why_it_matters": "AI agents కోసం ప్రత్యేకమైన developer knowledge retrieval అనేది RAG యొక్క పెద్ద practical use case: agents కు నాణ్యమైన, సరియైన సాంకేతిక సమాచారం retrieve చేయడం వాటి output quality ని నిర్ణయిస్తుంది. Stack Overflow లాంటి curated corpus ను agents కు అందించడం అంటే మనం ఈ lesson లో నేర్చుకున్న non-parametric memory ఆలోచననే product స్థాయిలో చూడడం. మీ సొంత coding agents కు documentation retrieval ఎలా జోడించాలో ఆలోచించడానికి ఇది ఒక ఉదాహరణ.",
+            "takeaway": "ఇది publisher యొక్క ప్రకటన — growth సంఖ్యలు ('up to 10×') వారి సొంత కొలత, స్వతంత్రంగా ధృవీకరించబడలేదు, మరియు 'up to' అనే పదం సాధారణ పరిస్థితిని సూచించకపోవచ్చు. ప్రయత్నించే ముందు: పూర్తి వ్యాసం చదవండి, plugin ఏ డేటాను యాక్సెస్ చేస్తుందో, ఏ అనుమతులు అడుగుతుందో, మరియు agent creation growth అంటే ఖచ్చితంగా ఏమిటో తెలుసుకోండి.",
+            "source_ids": [
+              "news-9e63539289a3"
+            ]
+          }
+        ],
+        "exercise": "రెండు నిమిషాల source-check వ్యాయామం: EmbeddingGemma 2 model card (Hugging Face లో) తెరవండి. ఈ మూడింటినీ గుర్తించండి: (1) benchmark scores ఎవరు కొలిచారు — publisher చేతనా, స్వతంత్ర evaluation ఆ, (2) మీ target device కి RAM requirements సరిపోతాయా, (3) license (Apache 2.0) మీ వాణిజ్య ఉపయోగానికి అనుమతిస్తుందా. ఇదే పద్ధతిని ఏ AI వార్తను చూసినా వర్తింపచేయండి.",
+        "question": "Publisher ప్రకటించిన benchmark score (ఉదా: MTEB Code లో EmbeddingGemma 2 యొక్క 78.68) ఎందుకు స్వతంత్ర ధృవీకరణగా పరిగణించకూడదు? దీన్ని ప్రయత్నించే ముందు మీరు ఏమి తనిఖీ చేస్తారు?",
+        "answer": "Benchmark scores ను model ను విడుదల చేసిన సంస్థే ఎంపిక చేసిన datasets, settings లో కొలుస్తుంది — అది attribution మాత్రమే, స్వతంత్ర ధృవీకరణ కాదు; వారికి అనుకూలమైన కొలత పద్ధతులు లేదా వర్గాలు (ఉదా: sub-1B మాత్రమే) ఉండవచ్చు. ప్రయత్నించే ముందు: model card లో evaluation methodology, మీ భాష/డొమైన్ కు సంబంధిత మెట్రిక్స్, hardware requirements, license పరిమితులు తనిఖీ చేయాలి, వీలైతే మీ సొంత డేటాపై చిన్న పరీక్ష నడపాలి."
+      },
+      "usage": {
+        "prompt_tokens": 5139,
+        "completion_tokens": 12002,
+        "total_tokens": 17141,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": null,
+          "reasoning_tokens": 33,
+          "rejected_prediction_tokens": null
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-c044b31b2af1",
+          "title": "AI models may be capable of self-replicating without access to a datacenter",
+          "url": "https://www.anthropic.com/research/self-replicating-ai",
+          "publisher": "www.anthropic.com",
+          "published_at": "2026-10-12T19:30:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 118,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "Other"
+        },
+        {
+          "id": "news-e6e1d2a9f0a4",
+          "title": "EmbeddingGemma 2: an open, lightweight multimodal embedding model",
+          "url": "https://blog.google/innovation-and-ai/technology/developers-tools/embeddinggemma-2/",
+          "publisher": "blog.google",
+          "published_at": "2026-10-06T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 439,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "Other"
+        },
+        {
+          "id": "news-9e63539289a3",
+          "title": "Stack Overflow for Agents triples signups with ChatGPT plugin",
+          "url": "https://openai.com/index/stack-overflow-chatgpt-plugin",
+          "publisher": "OpenAI",
+          "published_at": "2026-10-16T00:00:00+00:00",
+          "evidence_type": "feed_excerpt",
+          "topic": "RAG"
+        }
+      ],
+      "id": "08d3c032864d6b17"
     }
   ]
 }
