@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "task": "ai_headlines",
-  "checked_at": "2026-10-19T17:30:52.936395+00:00",
+  "checked_at": "2026-10-20T15:40:04.538703+00:00",
   "items": [
     {
       "id": "news-c044b31b2af1",
@@ -15,7 +15,42 @@
       "title": "EmbeddingGemma 2: an open, lightweight multimodal embedding model",
       "url": "https://blog.google/innovation-and-ai/technology/developers-tools/embeddinggemma-2/",
       "publisher": "blog.google",
-      "published_at": "2026-10-06T00:00:00+00:00"
+      "published_at": "2026-10-06T16:00:00+00:00"
+    },
+    {
+      "id": "news-39e60f901a73",
+      "title": "Hugging Face ❤️ TorchTPU: TPUs, Natively",
+      "url": "https://huggingface.co/blog/hf-torchtpu",
+      "publisher": "Hugging Face",
+      "published_at": "2026-10-20T00:00:00+00:00"
+    },
+    {
+      "id": "news-41fb25a47d12",
+      "title": "AnyLanguageModel 1.0: One Year of Local Models on Apple Platforms",
+      "url": "https://huggingface.co/blog/anylanguagemodel-1-0",
+      "publisher": "Hugging Face",
+      "published_at": "2026-10-20T00:00:00+00:00"
+    },
+    {
+      "id": "news-c2b4b68d7e00",
+      "title": "MPS in PyTorch 2.15",
+      "url": "https://huggingface.co/blog/mps-pytorch-2-15",
+      "publisher": "Hugging Face",
+      "published_at": "2026-10-20T00:00:00+00:00"
+    },
+    {
+      "id": "news-1dbe22633003",
+      "title": "Advancing coding in low‑resource programming languages",
+      "url": "https://openai.com/index/low-resource-programming-languages",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-19T12:00:00+00:00"
+    },
+    {
+      "id": "news-5c52b7d34bec",
+      "title": "TorchNeuron: running HF models on AWS Trainium is easier than ever",
+      "url": "https://huggingface.co/blog/hf-torchneuron",
+      "publisher": "Hugging Face",
+      "published_at": "2026-10-19T00:00:00+00:00"
     },
     {
       "id": "news-9732b2763df5",
@@ -51,41 +86,6 @@
       "url": "https://openai.com/index/stack-overflow-chatgpt-plugin",
       "publisher": "OpenAI",
       "published_at": "2026-10-16T00:00:00+00:00"
-    },
-    {
-      "id": "news-32165ee6af89",
-      "title": "Bringing GPT-Rosalind to academic research labs",
-      "url": "https://openai.com/index/introducing-the-rosalind-academic-plan",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-15T19:00:00+00:00"
-    },
-    {
-      "id": "news-ad09b0946a60",
-      "title": "Accelerating the search for antimicrobial peptides with Google Antigravity",
-      "url": "https://deepmind.google/blog/accelerating-antimicrobial-discovery/",
-      "publisher": "Google DeepMind",
-      "published_at": "2026-10-15T16:08:03+00:00"
-    },
-    {
-      "id": "news-a60f4a701f88",
-      "title": "Teaching students to think and learn through questions",
-      "url": "https://openai.com/index/teaching-students-to-think-and-learn-through-questions",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-15T13:00:00+00:00"
-    },
-    {
-      "id": "news-ff0cf28c5d75",
-      "title": "Welcome Muse Spark Open: open-weight frontier multimodal mixture-of-experts model from Meta",
-      "url": "https://huggingface.co/blog/meta-muse-spark-open",
-      "publisher": "Hugging Face",
-      "published_at": "2026-10-15T00:00:00+00:00"
-    },
-    {
-      "id": "news-eb67409897ed",
-      "title": "Welcome FLUX.3 Image Klein in Diffusers",
-      "url": "https://huggingface.co/blog/flux-3",
-      "publisher": "Hugging Face",
-      "published_at": "2026-10-15T00:00:00+00:00"
     }
   ]
 }
