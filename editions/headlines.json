@@ -1,21 +1,63 @@
 {
   "schema_version": 1,
   "task": "ai_headlines",
-  "checked_at": "2026-10-20T15:40:04.538703+00:00",
+  "checked_at": "2026-10-21T15:58:32.377943+00:00",
   "items": [
     {
       "id": "news-c044b31b2af1",
       "title": "AI models may be capable of self-replicating without access to a datacenter",
       "url": "https://www.anthropic.com/research/self-replicating-ai",
       "publisher": "www.anthropic.com",
-      "published_at": "2026-10-12T19:30:00+00:00"
+      "published_at": "2026-10-12T00:00:00+00:00"
     },
     {
-      "id": "news-e6e1d2a9f0a4",
-      "title": "EmbeddingGemma 2: an open, lightweight multimodal embedding model",
-      "url": "https://blog.google/innovation-and-ai/technology/developers-tools/embeddinggemma-2/",
-      "publisher": "blog.google",
-      "published_at": "2026-10-06T16:00:00+00:00"
+      "id": "news-b1215e1aefc0",
+      "title": "ChatGPT Ads expands to 26 new countries as over 100,000 advertisers have used the platform",
+      "url": "https://openai.com/index/chatgpt-ads-expands-26-new-countries",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-21T13:00:00+00:00"
+    },
+    {
+      "id": "news-95dedf578de7",
+      "title": "OpenAI models are coming to Google Cloud",
+      "url": "https://openai.com/index/openai-models-google-cloud",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-21T12:00:00+00:00"
+    },
+    {
+      "id": "news-de9db6f384cb",
+      "title": "Patch the Planet: global response coordination as agents uncover critical vulnerabilities",
+      "url": "https://openai.com/index/coordinated-disclosure-of-critical-vulnerabilities",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-21T07:00:00+00:00"
+    },
+    {
+      "id": "news-ea92da5c121e",
+      "title": "How we built ChatGPT’s novel ad stack for user trust and relevance",
+      "url": "https://openai.com/index/building-chatgpt-ad-stack",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-21T07:00:00+00:00"
+    },
+    {
+      "id": "news-64ddfb139fec",
+      "title": "Using thousands of AI agents to uncover new leads in biological data",
+      "url": "https://openai.com/index/scaling-ai-research-for-complex-biological-data",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-21T04:50:00+00:00"
+    },
+    {
+      "id": "news-1725d137aa3d",
+      "title": "Franchisee reconciles cash in 94% less time with ChatGPT Work",
+      "url": "https://openai.com/index/ted-taylor-restaurant",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-20T10:00:00+00:00"
+    },
+    {
+      "id": "news-aa8847d44cba",
+      "title": "Terminal X matches senior investor judgment 88.6% with GPT-6.1",
+      "url": "https://openai.com/index/terminal-x",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-20T07:00:00+00:00"
     },
     {
       "id": "news-39e60f901a73",
@@ -39,53 +81,11 @@
       "published_at": "2026-10-20T00:00:00+00:00"
     },
     {
-      "id": "news-1dbe22633003",
-      "title": "Advancing coding in low‑resource programming languages",
-      "url": "https://openai.com/index/low-resource-programming-languages",
+      "id": "news-1cfb6291fa15",
+      "title": "OpenAI acquires Orchestra Bio",
+      "url": "https://openai.com/index/openai-to-acquire-orchestra-bio",
       "publisher": "OpenAI",
-      "published_at": "2026-10-19T12:00:00+00:00"
-    },
-    {
-      "id": "news-5c52b7d34bec",
-      "title": "TorchNeuron: running HF models on AWS Trainium is easier than ever",
-      "url": "https://huggingface.co/blog/hf-torchneuron",
-      "publisher": "Hugging Face",
-      "published_at": "2026-10-19T00:00:00+00:00"
-    },
-    {
-      "id": "news-9732b2763df5",
-      "title": "How Itaú is building generative AI for its entire customer base",
-      "url": "https://openai.com/index/itau-generative-ai",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-16T19:00:00+00:00"
-    },
-    {
-      "id": "news-dd1029b4b030",
-      "title": "Grounding AI agents in biological reality: Building blocks for autonomous wet labs",
-      "url": "https://research.google/blog/grounding-ai-agents-in-biological-reality-building-blocks-for-autonomous-wet-labs/",
-      "publisher": "Google Research",
-      "published_at": "2026-10-16T18:11:34+00:00"
-    },
-    {
-      "id": "news-c9a6184923cc",
-      "title": "Welcome Beam: a 501B open model you can own, customize, and scale",
-      "url": "https://huggingface.co/blog/reflection-beam",
-      "publisher": "Hugging Face",
-      "published_at": "2026-10-16T00:00:00+00:00"
-    },
-    {
-      "id": "news-b6756c0a180e",
-      "title": "Benefit Street Partners answers questions faster with Codex",
-      "url": "https://openai.com/index/benefit-street-partners",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-16T00:00:00+00:00"
-    },
-    {
-      "id": "news-9e63539289a3",
-      "title": "Stack Overflow for Agents triples signups with ChatGPT plugin",
-      "url": "https://openai.com/index/stack-overflow-chatgpt-plugin",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-16T00:00:00+00:00"
+      "published_at": "2026-10-20T00:00:00+00:00"
     }
   ]
 }
