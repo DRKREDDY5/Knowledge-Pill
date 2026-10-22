@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "task": "ai_headlines",
-  "checked_at": "2026-10-21T15:58:32.377943+00:00",
+  "checked_at": "2026-10-22T15:54:08.536102+00:00",
   "items": [
     {
       "id": "news-c044b31b2af1",
@@ -9,6 +9,41 @@
       "url": "https://www.anthropic.com/research/self-replicating-ai",
       "publisher": "www.anthropic.com",
       "published_at": "2026-10-12T00:00:00+00:00"
+    },
+    {
+      "id": "news-301925b8adfc",
+      "title": "Beyond tree cover: mapping the world’s forest types",
+      "url": "https://deepmind.google/blog/beyond-tree-cover-mapping-the-worlds-forest-types/",
+      "publisher": "Google DeepMind",
+      "published_at": "2026-10-22T14:30:24+00:00"
+    },
+    {
+      "id": "news-6400feb68147",
+      "title": "What FDE means at OpenAI",
+      "url": "https://openai.com/index/forward-deployed-engineering-means",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-22T06:00:00+00:00"
+    },
+    {
+      "id": "news-3f1a11956436",
+      "title": "Broad access through consistent standards",
+      "url": "https://openai.com/index/broad-access-through-consistent-standards",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-21T21:00:00+00:00"
+    },
+    {
+      "id": "news-39cad894cdd2",
+      "title": "How AT&T is rethinking in-house legal work with OpenAI",
+      "url": "https://openai.com/index/att-legal",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-21T17:00:00+00:00"
+    },
+    {
+      "id": "news-3bfcd79e09f1",
+      "title": "Empowering frontline maternal care with AI-assisted ultrasound",
+      "url": "https://research.google/blog/empowering-frontline-maternal-care-with-ai-assisted-ultrasound/",
+      "publisher": "Google Research",
+      "published_at": "2026-10-21T16:23:53+00:00"
     },
     {
       "id": "news-b1215e1aefc0",
@@ -46,46 +81,11 @@
       "published_at": "2026-10-21T04:50:00+00:00"
     },
     {
-      "id": "news-1725d137aa3d",
-      "title": "Franchisee reconciles cash in 94% less time with ChatGPT Work",
-      "url": "https://openai.com/index/ted-taylor-restaurant",
+      "id": "news-3fe372fb2e81",
+      "title": "Cloudflare links vulnerability discovery to defense with OpenAI",
+      "url": "https://openai.com/index/cloudflare-cyber",
       "publisher": "OpenAI",
-      "published_at": "2026-10-20T10:00:00+00:00"
-    },
-    {
-      "id": "news-aa8847d44cba",
-      "title": "Terminal X matches senior investor judgment 88.6% with GPT-6.1",
-      "url": "https://openai.com/index/terminal-x",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-20T07:00:00+00:00"
-    },
-    {
-      "id": "news-39e60f901a73",
-      "title": "Hugging Face ❤️ TorchTPU: TPUs, Natively",
-      "url": "https://huggingface.co/blog/hf-torchtpu",
-      "publisher": "Hugging Face",
-      "published_at": "2026-10-20T00:00:00+00:00"
-    },
-    {
-      "id": "news-41fb25a47d12",
-      "title": "AnyLanguageModel 1.0: One Year of Local Models on Apple Platforms",
-      "url": "https://huggingface.co/blog/anylanguagemodel-1-0",
-      "publisher": "Hugging Face",
-      "published_at": "2026-10-20T00:00:00+00:00"
-    },
-    {
-      "id": "news-c2b4b68d7e00",
-      "title": "MPS in PyTorch 2.15",
-      "url": "https://huggingface.co/blog/mps-pytorch-2-15",
-      "publisher": "Hugging Face",
-      "published_at": "2026-10-20T00:00:00+00:00"
-    },
-    {
-      "id": "news-1cfb6291fa15",
-      "title": "OpenAI acquires Orchestra Bio",
-      "url": "https://openai.com/index/openai-to-acquire-orchestra-bio",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-20T00:00:00+00:00"
+      "published_at": "2026-10-21T00:00:00+00:00"
     }
   ]
 }
