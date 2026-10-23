@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "task": "ai_headlines",
-  "checked_at": "2026-10-22T15:54:08.536102+00:00",
+  "checked_at": "2026-10-23T15:45:57.138547+00:00",
   "items": [
     {
       "id": "news-c044b31b2af1",
@@ -9,6 +9,27 @@
       "url": "https://www.anthropic.com/research/self-replicating-ai",
       "publisher": "www.anthropic.com",
       "published_at": "2026-10-12T00:00:00+00:00"
+    },
+    {
+      "id": "news-2b3f616d26d3",
+      "title": "Does Your Model Run on AWS Trainium? Look It Up",
+      "url": "https://huggingface.co/blog/torch-neuronx-model-support",
+      "publisher": "Hugging Face",
+      "published_at": "2026-10-23T00:00:00+00:00"
+    },
+    {
+      "id": "news-1a543055a02f",
+      "title": "OpenAI and Poland’s NASK partner to advance AI safety and security",
+      "url": "https://openai.com/index/openai-nask-ai-safety-security-partnership",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-23T00:00:00+00:00"
+    },
+    {
+      "id": "news-891b7e0bbf66",
+      "title": "Build more responsive apps with the Decisions API",
+      "url": "https://openai.com/index/decisions-api",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-22T19:00:00+00:00"
     },
     {
       "id": "news-301925b8adfc",
@@ -23,6 +44,13 @@
       "url": "https://openai.com/index/forward-deployed-engineering-means",
       "publisher": "OpenAI",
       "published_at": "2026-10-22T06:00:00+00:00"
+    },
+    {
+      "id": "news-eda525050cea",
+      "title": "Uber brings ChatGPT Work to all employees with OpenAI",
+      "url": "https://openai.com/index/uber-chatgpt-work-rollout",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-22T00:00:00+00:00"
     },
     {
       "id": "news-3f1a11956436",
@@ -58,34 +86,6 @@
       "url": "https://openai.com/index/openai-models-google-cloud",
       "publisher": "OpenAI",
       "published_at": "2026-10-21T12:00:00+00:00"
-    },
-    {
-      "id": "news-de9db6f384cb",
-      "title": "Patch the Planet: global response coordination as agents uncover critical vulnerabilities",
-      "url": "https://openai.com/index/coordinated-disclosure-of-critical-vulnerabilities",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-21T07:00:00+00:00"
-    },
-    {
-      "id": "news-ea92da5c121e",
-      "title": "How we built ChatGPT’s novel ad stack for user trust and relevance",
-      "url": "https://openai.com/index/building-chatgpt-ad-stack",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-21T07:00:00+00:00"
-    },
-    {
-      "id": "news-64ddfb139fec",
-      "title": "Using thousands of AI agents to uncover new leads in biological data",
-      "url": "https://openai.com/index/scaling-ai-research-for-complex-biological-data",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-21T04:50:00+00:00"
-    },
-    {
-      "id": "news-3fe372fb2e81",
-      "title": "Cloudflare links vulnerability discovery to defense with OpenAI",
-      "url": "https://openai.com/index/cloudflare-cyber",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-21T00:00:00+00:00"
     }
   ]
 }
