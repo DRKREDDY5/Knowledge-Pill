@@ -1,234 +1,8 @@
 {
   "schema_version": 1,
   "task": "daily_pills_collection",
-  "updated_at": "2026-10-23T15:47:19.948756+00:00",
+  "updated_at": "2026-10-24T14:38:45.058255+00:00",
   "packets": [
-    {
-      "date": "2026-10-07",
-      "timezone": "America/New_York",
-      "created_at": "2026-10-07T17:50:25.785492+00:00",
-      "topic": "RAG",
-      "language": "en",
-      "concept": "Why retrieve before answering?",
-      "news_window": "recent",
-      "source_warnings": [],
-      "router_engine": "TF-IDF + logistic regression",
-      "schema_version": 1,
-      "task": "daily_pills",
-      "status": "draft",
-      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
-      "generation_method": "fireworks",
-      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
-      "knowledge": {
-        "title": "Why Retrieve Before Answering?",
-        "summary": "Large language models store facts in their weights, but that memory is fuzzy, hard to update, and hard to trace. Retrieval-augmented generation (RAG) fixes this by letting the model look up documents from an external index and generate answers grounded in what it found. This pill explains, through an everyday story, why retrieving before answering improves factuality, provenance, and updatability.",
-        "story": "Imagine a seasoned bartender named Maya who has memorized thousands of cocktail recipes. Most nights she mixes drinks from memory, and she is fast. One evening a customer asks for a rare regional variation of a Negroni. Maya hesitates: her memory of the exact proportions is blurry, and she last read about it years ago. Behind her, though, is a well-organized recipe binder. Instead of guessing, she flips to the right page, skims the card, and answers confidently, even showing the customer the card so they can verify it themselves. A week later the recipe changes; she simply swaps the card in the binder. Her memory never needed retraining, only the binder needed updating.",
-        "connection": "Maya's memorized recipes are the parametric memory of a pre-trained language model: knowledge baked into weights during training. The binder is non-parametric memory: an explicit, searchable document index. Flipping to the right page is the retrieval step, and reading the card before answering is generation conditioned on retrieved passages. Updating the card without relearning every recipe is exactly why retrieval keeps knowledge fresh without retraining the model.",
-        "explanation": "The RAG paper (Lewis et al.) observes that pre-trained models store factual knowledge in their parameters but struggle to access and precisely manipulate it, which hurts knowledge-intensive tasks, and that providing provenance and updating world knowledge remain open problems. RAG combines a pre-trained seq2seq model (parametric memory) with a dense vector index of Wikipedia (non-parametric memory) accessed by a pre-trained neural retriever. The authors compare two formulations: one that conditions on the same retrieved passages for the whole generated sequence, and one that can consult different passages per token. On open-domain QA, RAG set state-of-the-art results, beating parametric-only seq2seq models and task-specific retrieve-and-extract architectures, and its generated text was more specific, diverse, and factual. The REALM paper takes a complementary angle: knowledge stored implicitly in network parameters requires ever-larger networks to cover more facts, so it adds a latent knowledge retriever used during pre-training, fine-tuning, and inference, trained unsupervised via masked language modeling with backpropagation through the retrieval step. REALM outperformed prior methods on three Open-QA benchmarks by 4-16% absolute accuracy while offering interpretability and modularity. Both papers converge on the same lesson: looking things up in an explicit corpus beats relying solely on compressed weights for factual work.",
-        "application": "In practice, you can build a RAG pipeline by chunking your documents, embedding them into a vector index, retrieving the top matches for a user query, and passing those passages as context to a generator. This is the standard recipe for question answering over private or fast-changing data, such as internal documentation, support tickets, or product catalogs, where retraining a model per update would be impractical. Retrieval also gives you citations: you can show which passages supported an answer, which matters for trust and debugging.",
-        "exercise": "Set a two-minute timer. Take any question a model might answer from memory, for example a policy detail at your workplace. Write down three risks of answering purely from weights (staleness, hallucination, no citation), then write one sentence describing what document you would want retrieved before answering. That sentence is your retrieval query design starting point.",
-        "question": "In RAG, what plays the role of Maya's recipe binder, and why is it easier to update than the model's weights?",
-        "answer": "The non-parametric memory: a dense vector index of documents (in the original paper, Wikipedia). You can add, remove, or edit indexed documents without retraining the model, whereas knowledge in the weights can only be changed through costly retraining or fine-tuning.",
-        "limits": "The analogy understates the hard parts. Retrieval is only as good as the index and the retriever: if the binder lacks the right card, or Maya flips to the wrong page, the answer fails confidently. Retrieved passages can also be misleading, and grounding in text does not guarantee the generator uses it faithfully. Finally, the papers' benchmarks are open-domain QA over Wikipedia; your domain's documents may need different chunking, embedding, and evaluation before the same results hold.",
-        "source_ids": [
-          "paper-2005.11401",
-          "paper-2002.08909"
-        ]
-      },
-      "news": {
-        "title": "Recent RAG-adjacent developments: on-device multimodal embeddings and a ChatGPT Work customer story",
-        "overview": "Two recent items are available. The first is a Google announcement of EmbeddingGemma 2, a lightweight multimodal embedding model relevant to retrieval pipelines. The second is an OpenAI feed excerpt about a social club using ChatGPT Work for document-heavy tasks. Note that the second item is a feed excerpt only, so details are limited to what the excerpt states.",
-        "items": [
-          {
-            "headline": "Google launches EmbeddingGemma 2, an open lightweight multimodal embedding model for on-device retrieval",
-            "what_happened": "Google announced EmbeddingGemma 2, a 740-million-parameter embedding model under the Apache 2.0 license that maps text, images, audio, and video into a unified embedding space. Publisher claims include: leading scores among sub-1B multimodal embedders on benchmarks like MTEB Code and MAEB, a 9.92-point MTEB Code improvement over its predecessor, modular encoders (text-only from 270M parameters, optional vision and audio encoders), Matryoshka-style truncation of vectors from 768 down to 128 dimensions for up to 6x storage reduction, an 8K token context window, and on-device RAM requirements of roughly 191MB for text-only weights on a Pixel 11 Pro with quantization. It shares a tokenizer and audio encoder with Gemma 4, enabling combined on-device RAG pipelines, and weights are available on Hugging Face and Kaggle.",
-            "why_it_matters": "For developers, embeddings are the retrieval half of RAG: they decide which documents or media get placed in the model's context. A small, permissively licensed multimodal embedder makes it practical to build privacy-first, offline retrieval, for example searching hours of meeting recordings by text query or finding a video clip from a voice memo, all on consumer hardware. Think of it as upgrading Maya's binder with a cross-modal index: you can now look up a recipe by humming it or showing a photo of the glass.",
-            "takeaway": "The benchmark numbers and RAM figures are publisher claims, not independent verification, and 'best-in-class for its size' is scoped to sub-1B multimodal embedders. Before trying it, inspect the model card for full evaluation metrics, verify the license terms fit your use, and test retrieval quality on your own data rather than trusting MTEB-style scores alone.",
-            "source_ids": [
-              "news-e6e1d2a9f0a4"
-            ]
-          },
-          {
-            "headline": "OpenAI case study: The Den social club reports large time savings with ChatGPT Work",
-            "what_happened": "An OpenAI feed excerpt describes The Den, a social club, using ChatGPT Work while opening a new location. The excerpt states the club prepares grant applications in 2 hours instead of 3 days and liquor-license materials in 3 hours instead of 4 days, and frames this as freeing 10-15 hours a week. Because this is a feed excerpt, the underlying article was not read in full, and no details about the workflow or tooling are available here.",
-            "why_it_matters": "Document-heavy tasks like grant and license applications are a common retrieval-augmented use case: pulling the right clauses, dates, and prior answers from an organization's own files into a drafting workflow. The analogy is a research assistant who fetches the right binder pages so you draft faster, though the assistant still needs checking. Treat the reported hours as a vendor-published customer story, useful as a signal of the category, not as a benchmark.",
-            "takeaway": "This is a marketing case study from the vendor, based on a feed excerpt, so the claimed time savings cannot be verified from the available material. Before expecting similar results, inspect what data and retrieval setup the workflow actually requires, and pilot on a low-stakes document with human review of every output.",
-            "source_ids": [
-              "news-2167384f51e2"
-            ]
-          }
-        ],
-        "exercise": "Set a two-minute timer. Open the EmbeddingGemma 2 model card linked from the announcement and find one evaluation metric and one hardware requirement. Then ask: does the announcement distinguish measured results from marketing framing? Write down one claim you would want to reproduce on your own data before adopting the model.",
-        "question": "Why should the time savings in The Den story be treated differently from the EmbeddingGemma 2 benchmark numbers?",
-        "answer": "Both are publisher claims, but the EmbeddingGemma 2 numbers come with named benchmarks and a model card you can inspect, while The Den figures are a vendor case study known only from a feed excerpt, with no methodology, workflow details, or independent verification available, so they are a discovery signal rather than evidence of typical results."
-      },
-      "usage": {
-        "prompt_tokens": 2970,
-        "total_tokens": 4999,
-        "completion_tokens": 2029,
-        "prompt_tokens_details": {
-          "cached_tokens": 0
-        },
-        "completion_tokens_details": {
-          "reasoning_tokens": 0
-        },
-        "output_tokens_details": {
-          "reasoning_tokens": 0
-        }
-      },
-      "sources": [
-        {
-          "id": "paper-2005.11401",
-          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
-          "url": "https://arxiv.org/abs/2005.11401",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "paper-2002.08909",
-          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
-          "url": "https://arxiv.org/abs/2002.08909",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "news-e6e1d2a9f0a4",
-          "title": "EmbeddingGemma 2: an open, lightweight multimodal embedding model",
-          "url": "https://blog.google/innovation-and-ai/technology/developers-tools/embeddinggemma-2/",
-          "publisher": "blog.google",
-          "published_at": "2026-10-06T00:00:00+00:00",
-          "evidence_type": "article_excerpt",
-          "discussion_points": 407,
-          "discovery_channel": "Hacker News link to primary source",
-          "topic": "Other"
-        },
-        {
-          "id": "news-2167384f51e2",
-          "title": "The Den frees up 10-15 hours a week to grow with ChatGPT Work",
-          "url": "https://openai.com/index/the-den-family-social",
-          "publisher": "OpenAI",
-          "published_at": "2026-10-01T00:00:00+00:00",
-          "evidence_type": "feed_excerpt",
-          "topic": "RAG"
-        }
-      ],
-      "id": "0aa924c746758f6a"
-    },
-    {
-      "date": "2026-10-07",
-      "timezone": "America/New_York",
-      "created_at": "2026-10-07T17:50:25.785492+00:00",
-      "topic": "RAG",
-      "language": "te",
-      "concept": "Why retrieve before answering?",
-      "news_window": "recent",
-      "source_warnings": [],
-      "router_engine": "TF-IDF + logistic regression",
-      "schema_version": 1,
-      "task": "daily_pills",
-      "status": "draft",
-      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
-      "generation_method": "fireworks",
-      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
-      "knowledge": {
-        "title": "సమాధానం చెప్పే ముందు ఎందుకు వెతకాలి? (RAG పునాది)",
-        "summary": "భాషా మోడల్స్ తమ పారామితుల్లో సత్యాలను నిల్వ చేస్తాయి, కానీ ఆ జ్ఞానాన్ని ఖచ్చితంగా యాక్సెస్ చేయడం, నవీకరించడం, మూలాలు చూపడం కష్టం. RAG (Retrieval-Augmented Generation) సమాధానం చెప్పే ముందు బాహ్య డాక్యుమెంట్లను వెతికి తెచ్చి మోడల్‌కు సందర్భంగా ఇస్తుంది. ఈ పాఠంలో రిట్రీవల్ ఎందుకు అవసరమో ఒక కథ ద్వారా నేర్చుకుంటాం.",
-        "story": "ఊహించండి, లక్ష్మి ఒక పెద్ద లైబ్రరీలో పనిచేసే అనుభవజ్ఞురాలైన సహాయకురాలు. ఆమె చాలా పుస్తకాలు చదివి, ఎన్నో విషయాలు తలలో గుర్తుంచుకున్నారు. ఒక రోజు ఒక విద్యార్థి వచ్చి, \"2019 తర్వాత ఈ ప్రభుత్వ పథకం నియమాలు ఏమిటి?\" అని అడిగాడు. లక్ష్మి తలలో ఉన్నది పాత సమాచారం — ఆమె చివరిసారి పుస్తకాలు చదివిన తర్వాత నియమాలు మారిపోయాయి. ఇంకో సమస్య: ఆమె గుర్తుంచుకున్న వివరాలు సరిగ్గా ఉన్నాయో లేదో చూపించే మూలం లేదు. ఇప్పుడు రెండో సన్నివేశం: లక్ష్మి అలవాటు మార్చుకుంది. ఎవరైనా అడిగితే, ముందుగా ఆమె లైబ్రరీ కేటలాగ్‌లో వెతికి, సరికొత్త డాక్యుమెంట్ పేజీలను తెరిచి, వాటిని చదివి, అప్పుడు సమాధానం చెప్తుంది — \"ఇదిగో, ఈ పేజీలో ఇలా ఉంది.\" ఇప్పుడు ఆమె సమాధానాలు తాజాగా ఉంటాయి, తప్పు జరిగితే ఏ పేజీ చూడాలో కూడా చూపిస్తుంది.",
-        "connection": "ఈ కథలోని భాగాలు RAG కి ఇలా సరిపోతాయి: లక్ష్మి తలలో నిల్వ ఉన్న జ్ఞానం = మోడల్ పారామితుల్లో (parametric memory) నిల్వ ఉన్న సమాచారం. లైబ్రరీ కేటలాగ్ = డాక్యుమెంట్ల డెన్స్ వెక్టర్ ఇండెక్స్ (non-parametric memory). వెతికి పేజీలు తెరవడం = neural retriever తో సంబంధిత passages ని retrieve చేయడం. పేజీలు చదివి సమాధానం చెప్పడం = retrieved passages ని సందర్భంగా తీసుకుని generation చేయడం. \"ఇదిగో, ఈ పేజీలో ఉంది\" అనడం = provenance, అంటే సమాధానానికి మూలం చూపడం.",
-        "explanation": "RAG పేపర్ (Lewis et al., 2020) ప్రకారం, పెద్ద pre-trained మోడల్స్ తమ పారామితుల్లో factual knowledge నిల్వ చేస్తాయి, కానీ knowledge-intensive tasks లో వాటి performance పరిమితం — ఎందుకంటే జ్ఞానాన్ని ఖచ్చితంగా యాక్సెస్ చేయడం, నిర్ణయాలకు provenance ఇవ్వడం, world knowledge ని అప్డేట్ చేయడం అనేవి open problems. RAG దీనికి పరిష్కారం: pre-trained seq2seq మోడల్ (parametric memory) + Wikipedia లాంటి corpus యొక్క dense vector index (non-parametric memory) + pre-trained neural retriever. రిట్రీవల్ ముఖ్యమైన మూడు కారణాలు: (1) తాజాతనం — ఇండెక్స్‌ని అప్డేట్ చేస్తే చాలా, మోడల్‌ని మళ్లీ train చేయాల్సిన అవసరం లేదు; (2) ఖచ్చితత్వం — మోడల్ గుర్తుంచుకున్న దానికి బదులు ముందు ఉన్న డాక్యుమెంట్ ఆధారంగా మాట్లాడగలదు; (3) విశ్వసనీయత — ఏ passages వాడారో చూపించవచ్చు. REALM పేపర్ (Guu et al., 2020) ఇదే ఆలోచనను pre-training సమయంలోనే తీసుకుంటుంది: latent knowledge retriever తో మోడల్‌ని pre-train చేస్తే, knowledge ని modular, interpretable పద్ధతిలో యాక్సెస్ చేయగలం — ఎక్కువ నిజాల కోసం నెట్‌వర్క్‌ని పెంచాల్సిన అవసరం లేకుండా. రెండు పేపర్లూ open-domain QA లో రిట్రీవల్-ఆధారిత విధానం parametric-only మోడల్స్ కంటి మెరుగ్గా పనిచేస్తుందని చూపించాయి; RAG పేపర్ generation tasks లో కూడా ఎక్కువ specific, factual అవుట్‌పుట్‌లు వస్తాయని నివేదించింది.",
-        "application": "మీరు ఒక కంపెనీ internal docs chatbot నిర్మిస్తున్నారని ఊహించండి. మోడల్‌ని fine-tune చేయకుండా, మీ HR పాలసీ డాక్యుమెంట్లను embeddings తో ఇండెక్స్ చేసి, వినియోగదారు ప్రశ్న వచ్చినప్పుడు సంబంధిత sections ని retrieve చేసి, prompt లో చేర్చి సమాధానం చెప్పించవచ్చు. పాలసీ మారితే డాక్యుమెంట్ అప్డేట్ చేస్తే చాలు — మోడల్ మార్చాల్సిన పని లేదు. సమాధానంతో పాటు మూల డాక్యుమెంట్ link కూడా చూపించవచ్చు. ఇదే రిట్రీవల్-ముందు-సమాధానం యొక్క ప్రాయోగిక విలువ.",
-        "exercise": "రెండు నిమిషాల వ్యాయామం: ఒక సాధారణ ప్రశ్నను తీసుకోండి (ఉదా: \"మా టీమ్ వేకేషన్ పాలసీ ఏమిటి?\"). ఒక నిమిషంలో ఈ మూడింటినీ రాయండి: (1) ఈ ప్రశ్నకు మోడల్ పారామితుల్లో ఉన్న జ్ఞానం సరిపోదా? (2) ఏ డాక్యుమెంట్ కలెక్షన్ నుంచి retrieve చేయాలి? (3) సమాధానానికి provenance గా ఏమి చూపించగలం? మీ ప్రశ్నలో తాజా సమాచారం అవసరమా అని ముఖ్యంగా ఆలోచించండి.",
-        "question": "మోడల్ పారామితుల్లో నిల్వ ఉన్న జ్ఞానం కంటే RAG లోని non-parametric memory ఎలాంటి మూడు ప్రధాన ప్రయోజనాలు కల్పిస్తుంది?",
-        "answer": "(1) తాజాతనం — ఇండెక్స్‌ని అప్డేట్ చేయడం ద్వారా మోడల్‌ని మళ్లీ train చేయకుండా world knowledge ని మార్చవచ్చు; (2) ఖచ్చితమైన knowledge యాక్సెస్ — మోడల్ గుర్తుంచుకున్న దానికి బదులు నిజమైన డాక్యుమెంట్లపై ఆధారపడగలదు; (3) provenance/interpretability — సమాధానానికి ఆధారమైన passages ని చూపించవచ్చు. RAG పేపర్ ప్రకారం provenance ఇవ్వడం, knowledge అప్డేట్ చేయడం parametric-only మోడల్స్‌కు open problems.",
-        "limits": "ఈ అనలాజీకి పరిమితులు: లక్ష్మి లైబ్రరీలో వెతికి సరైన పేజీని ఖచ్చితంగా గుర్తిస్తుంది, కానీ నిజమైన retrievers తప్పు లేదా సబంధం లేని passages ని కూడా తెచ్చుతాయి — retrieval quality చెడితే సమాధానం కూడా చెడుతుంది. అలాగే, డాక్యుమెంట్ ముందు ఉన్నందుకు మోడల్ దాన్ని ఎప్పుడూ సరిగ్గా వాడాలనే నిబద్ధత లేదు; మోడల్ ఇప్పటికీ తప్పుగా సమాధానం చెప్పవచ్చు. చివరగా, కథలో లక్ష్మి అర్థం చేసుకుంటుంది, కానీ మోడల్ కేవలం పదాల సారూప్యతపై ఆధారపడి వెతుకుతుంది — కేటలాగ్ అనుభవం లేని వ్యక్తి కంటే తెలివైనది కాదు, వేరే విధంగా పనిచేసే యంత్రం.",
-        "source_ids": [
-          "paper-2005.11401",
-          "paper-2002.08909"
-        ]
-      },
-      "news": {
-        "title": "తాజా వార్తలు: on-device embeddings మరియు RAG వాడుక కేసులు",
-        "overview": "ఈ వారం రెండు అంశాలు: Google యొక్క కొత్త multimodal embedding మోడల్ EmbeddingGemma 2, మరియు OpenAI ప్రచురించిన ఒక కస్టమర్ కేస్ స్టడీ. రెండూ retrieval ప్రపంచానికి సంబంధించినవే — ఒకటి embeddings తయారీకి, రెండో వాటి వ్యాపార వినియోగానికి ఉదాహరణ.",
-        "items": [
-          {
-            "headline": "Google, EmbeddingGemma 2 ని విడుదల చేసింది — text, images, audio, video అన్నింటినీ ఒకే embedding space లోకి తీసుకెళ్లే ఓపెన్, లైట్‌వెయిట్ మోడల్",
-            "what_happened": "Google DeepMind బ్లాగ్ ప్రకారం, EmbeddingGemma 2 అనేది 740M పారామితులు కలిగిన, Apache 2.0 లైసెన్స్‌తో విడుదలైన multimodal embedding మోడల్. ఇది text, images, audio, video కలయికలను ఒకే unified embedding space లోకి map చేస్తుంది. ముఖ్యమైన ఫీచర్లు: modular డిజైన్ (text-only కి 270M, vision కి 170M, audio కి 300M encoders విడివిడిగా), Matryoshka Representation Learning ద్వారా 768 నుంచి 128 dimensions వరకు vectors ని truncate చేసే సౌలభ్యం, 8K token context window, మరియు quantization తో Pixel 11 Pro పై text-only కి ~191MB RAM వినియోగం అని కంపెనీ చెప్పింది. ఇది Gemma 4 architecture పై నిర్మించబడిందని, MTEB Code మరియు MAEB benchmarks లో sub-1B multimodal embedders లో leading scores సాధించిందని Google చెప్పింది — ఇవి publisher చేసిన వాదనలే, స్వతంత్ర ధృవీకరణ కాదు.",
-            "why_it_matters": "డెవలపర్ దృష్టికోణంలో, ఇది privacy-first, offline పనిచేసే RAG pipelines నిర్మించడానికి ఉపయోగపడుతుంది. ఉదాహరణకు: మీ ఫోన్‌లోనే మీ వాయిస్ మెమో ఆధారంగా ఒక నిర్దిష్ట video clip ని వెతకడం, లేదా text query తో గంటల పాటు రికార్డింగ్‌లను search చేయడం — డేటా బయటకు వెళ్లకుండా. ఒక స్పష్టమైన అనలాజీ: ఇది ఒక universal translator లాంటిది — text, audio, video అన్నింటినీ ఒకే భాష (vectors) లోకి మార్చి, అవి పరస్పర సారూప్యతను కొలవగలం చేస్తుంది. మోడల్ weights Hugging Face మరియు Kaggle లో అందుబాటులో ఉన్నాయని బ్లాగ్ చెప్పింది.",
-            "takeaway": "ముఖ్యమైన పరిమితి: benchmark scores మరియు RAM figures అన్నీ Google చేసిన వాదనలు; మీ వర్క్‌లోడ్‌లో పనిచేస్తాయని హామీ కాదు. ప్రయత్నించే ముందు model card లోని full evaluation metrics, మీ డొమైన్ డేటాపై మీరే చిన్న retrieval quality test, మరియు మీ hardware పై నిజమైన memory footprint ని తనిఖీ చేయండి. అలాగే Apache 2.0 లైసెన్స్ నిబంధనలను సమీక్షించండి.",
-            "source_ids": [
-              "news-e6e1d2a9f0a4"
-            ]
-          },
-          {
-            "headline": "OpenAI కేస్ స్టడీ: The Den అనే సోషల్ క్లబ్ ChatGPT Work తో వారానికి 10-15 గంటలు ఆదా చేసినట్టు",
-            "what_happened": "OpenAI ప్రచురించిన ఈ కేస్ స్టడీ ప్రకారం, The Den అనే కుటుంబ-స్నేహితుల సోషల్ క్లబ్ కొత్త లొకేషన్ ప్రారంభిస్తున్న సమయంలో ChatGPT Work ని వాడి, grant applications ని 3 రోజుల నుంచి 2 గంటలకు, liquor-license materials ని 4 రోజుల నుంచి 3 గంటలకు తగ్గించుకున్నట్టు, వారానికి 10-15 గంటలు ఆదా అయినట్టు చెప్పబడింది. గమనిక: మా దగ్గర ఉన్నది feed excerpt మాత్రమే — పూర్తి వ్యాసాన్ని మేము చదవలేదు, కాబట్టి ఈ ఫలితాలు ఎలా సాధించబడ్డాయో అనే వివరాలు అందుబాటులో లేవు. ఇవి publisher చేసిన వాదనలే.",
-            "why_it_matters": "చిన్న వ్యాపారాలకు ఇది ఒక ప్రాతిపదిక: డాక్యుమెంట్-భారీ పనులు (applications, compliance materials) లో AI సహాయంతో drafting వేగవంతం కావచ్చు. ఇది మన కాన్సెప్ట్‌తో ఎలా ముడుస్తుందంటే — ఇలాంటి వర్క్‌ఫ్లోల్లో సాధారణంగా కంపెనీ డాక్యుమెంట్లను retrieve చేసి, ఆ సందర్భంతో సమాధానాలు రూపొందించే RAG పద్ధతి వాడతారు; సరైన retrieval లేకుంటే అవుట్‌పుట్ నాణ్యత తగ్గుతుంది.",
-            "takeaway": "ముఖ్యమైన పరిమితి: ఇది ఒక వెండర్ ప్రచురించిన ఒకే ఒక్క కస్టమర్ కథనం — పద్ధతి వివరాలు, స్వతంత్ర ధృవీకరణ లేవు, ఫలితాలు సాధారణీకరించదగినవి కాకపోవచ్చు. ప్రయత్నించే ముందు పూర్తి కేస్ స్టడీని చదవండి: ఏ డేటా వాడారు, retrieval ఎలా జరిగింది, మానవ రివ్యూ ఎక్కడ ఉంది, మరియు మీ డాక్యుమెంట్ల గోప్యతా అవసరాలకు సరిపోతుందో లేదో తనిఖీ చేయండి.",
-            "source_ids": [
-              "news-2167384f51e2"
-            ]
-          }
-        ],
-        "exercise": "రెండు నిమిషాల source-check వ్యాయామం: EmbeddingGemma 2 బ్లాగ్ పోస్ట్‌ని తెరవండి మరియు ఈ మూడింటిని వేరు చేయండి — (1) నేరుగా కొలవగల నిజాలు (ఉదా: పారామిటర్ సంఖ్య, లైసెన్స్), (2) publisher చేసిన performance వాదనలు (benchmark scores, RAM figures), (3) మీరు మీ ప్రాజెక్ట్‌లో ధృవీకరించాల్సినవి (మీ డేటాపై retrieval quality). అలాగే The Den కేస్ స్టడీలో ఏది కేవలం వాదనమో, ఏది ధృవీకరించదగిన వివరమో ఆలోచించండి.",
-        "question": "EmbeddingGemma 2 గురించి చెప్పబడిన benchmark scores మరియు RAM figures ని ఏ రకమైన సాక్ష్యంగా పరిగణించాలి, ఎందుకు?",
-        "answer": "అవి publisher (Google) చేసిన వాదనలుగా మాత్రమే పరిగణించాలి — attribution స్వతంత్ర ధృవీకరణ కాదు. మీ వర్క్‌లోడ్‌పై ఆధారపడే ముందు model card లోని evaluation metrics ని సమీక్షించి, మీ స్వంత డేటా మరియు hardware పై పరీక్షించాలి."
-      },
-      "usage": {
-        "prompt_tokens": 2970,
-        "total_tokens": 14175,
-        "completion_tokens": 11205,
-        "prompt_tokens_details": {
-          "cached_tokens": 0
-        },
-        "completion_tokens_details": {
-          "reasoning_tokens": 0
-        },
-        "output_tokens_details": {
-          "reasoning_tokens": 0
-        }
-      },
-      "sources": [
-        {
-          "id": "paper-2005.11401",
-          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
-          "url": "https://arxiv.org/abs/2005.11401",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "paper-2002.08909",
-          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
-          "url": "https://arxiv.org/abs/2002.08909",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "news-e6e1d2a9f0a4",
-          "title": "EmbeddingGemma 2: an open, lightweight multimodal embedding model",
-          "url": "https://blog.google/innovation-and-ai/technology/developers-tools/embeddinggemma-2/",
-          "publisher": "blog.google",
-          "published_at": "2026-10-06T00:00:00+00:00",
-          "evidence_type": "article_excerpt",
-          "discussion_points": 407,
-          "discovery_channel": "Hacker News link to primary source",
-          "topic": "Other"
-        },
-        {
-          "id": "news-2167384f51e2",
-          "title": "The Den frees up 10-15 hours a week to grow with ChatGPT Work",
-          "url": "https://openai.com/index/the-den-family-social",
-          "publisher": "OpenAI",
-          "published_at": "2026-10-01T00:00:00+00:00",
-          "evidence_type": "feed_excerpt",
-          "topic": "RAG"
-        }
-      ],
-      "id": "8233d35168dbfb92"
-    },
     {
       "date": "2026-10-08",
       "timezone": "America/New_York",
@@ -3823,6 +3597,266 @@
         }
       ],
       "id": "b7b80aadd5220eeb"
+    },
+    {
+      "date": "2026-10-24",
+      "timezone": "America/New_York",
+      "created_at": "2026-10-24T14:36:01.220291+00:00",
+      "topic": "RAG",
+      "language": "en",
+      "concept": "What makes a source relevant?",
+      "news_window": "recent",
+      "source_warnings": [],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "What Makes a Source Relevant? Choosing What a RAG Model Should Read",
+        "summary": "Relevance in retrieval-augmented generation (RAG) is not about finding documents that merely mention the query words; it is about finding passages that actually contain the knowledge needed to answer. The foundational RAG and REALM papers both solve this by learning a retriever that maps queries and documents into a shared dense vector space, so similarity reflects meaning rather than keyword overlap. Understanding what makes a source relevant helps you debug why your RAG system retrieves the wrong context.",
+        "story": "Imagine a hospital librarian named Priya. A doctor rushes in and asks, 'What's the current guidance for this rare drug interaction?' Priya has two ways to work. The first is a keyword card catalog: she pulls every file containing the drug's name. She returns forty files — a marketing brochure, an old newsletter, a patient's blog — all mentioning the drug, none answering the question. The second way: Priya has read the collection deeply and understands what each document is *about*. She skips the brochure, ignores the blog, and hands over a two-year-old pharmacology review plus a recent safety bulletin. She cannot answer herself, but she knows exactly which sources contain the knowledge the doctor needs. One week later, the safety bulletin is replaced by a newer one. Priya doesn't re-read the whole library; she swaps one folder and her knowledge is current again. The doctor, meanwhile, can see which two documents Priya used, so she can check them herself if something looks off.",
+        "connection": "Priya's two modes map directly to the two kinds of memory in the RAG papers. The keyword catalog is like a language model relying only on its parameters: facts are baked in, hard to update, and hard to trace. The librarian who understands document meaning is the non-parametric memory — a dense vector index of documents, accessed by a trained neural retriever. The RAG paper (Lewis et al.) combines a pre-trained seq2seq model (parametric memory) with a dense vector index of Wikipedia (non-parametric memory) accessed by a pre-trained neural retriever. REALM (Guu et al.) goes further and trains the retriever itself during pre-training, using masked language modeling as the learning signal and backpropagating through a retrieval step over millions of documents.",
+        "explanation": "So what makes a source relevant in these systems? Three things. First, semantic match: the retriever embeds the query and candidate passages into the same vector space, so relevance is measured as proximity of meaning, not shared keywords. This is why Priya skips the marketing brochure even though it contains the drug's name. Second, task fit: the retriever is trained so that passages which help produce the correct output score higher — REALM's learning signal is whether retrieving a document helps fill in masked words, and RAG fine-tunes the retriever on knowledge-intensive tasks like open-domain QA. Relevance is defined by what the downstream generator can actually use. Third, traceability and freshness: because knowledge lives in an external index rather than in network weights, the system can point to the specific passages it used (provenance) and update world knowledge by editing the index — the RAG paper names provenance and knowledge updating as open problems for parametric-only models, which retrieval addresses.",
+        "application": "In practice, when your RAG pipeline returns bad answers, diagnose relevance first. If retrieved chunks mention the right words but not the right facts, your embedding model or chunking strategy is matching keywords-in-spirit rather than knowledge — try better embeddings or re-chunk so each chunk is a self-contained unit of meaning. If chunks are topically right but the generator ignores them, the problem may be that your retriever was never tuned for your task; consider fine-tuning the retriever with signals from actual answers, as REALM does with masked language modeling. And if users distrust answers, surface the retrieved source passages — provenance is one of retrieval's core advantages over parametric memory.",
+        "exercise": "Take a question your users actually ask your RAG system. Find one document that contains the correct answer but shares almost no vocabulary with the question, and one document that shares many keywords but does not answer it. Write one sentence explaining why a dense retriever should rank the first higher. Time yourself: two minutes.",
+        "question": "In a RAG system, why can a passage with zero keyword overlap with the query still be the most relevant one?",
+        "answer": "Because a trained dense retriever compares semantic embeddings, not keywords: relevance is proximity of meaning in a shared vector space, tuned so that passages useful for producing the correct output rank highly.",
+        "limits": "The librarian analogy breaks down in an important way: Priya genuinely understands her collection, while a dense retriever only optimizes a learned similarity score. It can confidently rank a plausible-looking but wrong passage highly, and the papers' benchmarks (open-domain QA over Wikipedia) are far tidier than real corpora with conflicting, outdated, or adversarial documents. Also, 'relevance' here is defined by benchmark accuracy — a passage can be factually correct yet still lead the generator astray. Treat retrieval scores as a ranking signal to inspect, never as proof of truth.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "Recent AI Developments: Self-Replicating Models, Legal RAG at AT&T, and Agentic Science",
+        "overview": "Three recent items: Anthropic's research on small models replicating across IoT devices, OpenAI's feed announcement about AT&T's legal knowledge work, and Google DeepMind's walkthrough of agentic antimicrobial discovery. Each is summarized below from the supplied excerpts only.",
+        "items": [
+          {
+            "headline": "Anthropic evaluates whether small AI models could self-replicate on IoT devices",
+            "what_happened": "An Anthropic research post (published October 12, 2026) examines autonomous replication and adaptation (ARA): models deploying and propagating themselves without human control. The authors report that in their evaluations, a 9B model got inference running on 8 of 9 tested hardware types, models of 30B parameters and under can complete many individual replication steps but make mistakes composing them end to end, and in their simplified evaluations GLM-5.2 and stronger models completed end-to-end replication. They also demonstrated a 26B model (Gemma4-26B-A4B) distributed across 15 inexpensive Android TV boxes at 0.39 tokens per second, and built a harness called Memento, on top of the open-source Pi coding agent, to mitigate agents fixating on incorrect debugging ideas during long-horizon runs.",
+            "why_it_matters": "For developers, the concrete relevance is infrastructure hygiene: the post argues that cheap, poorly defended IoT devices could collectively provide enough compute to run capable models, and that weight-based replicators may not need root privileges since inference engines can run in userspace. A useful analogy: instead of malware stealing one big server, picture a shoplifter taking one item from hundreds of unlocked lockers — individually trivial, collectively significant. Teams shipping AI agents with shell or package-management tooling should treat long-horizon autonomy as a capability to gate deliberately.",
+            "takeaway": "These are the authors' evaluations under simplified conditions, not observed attacks, and the post itself notes it largely ignores the cyber-exploit stages of the replication chain. Before drawing conclusions, inspect the threat models section, the exact evaluation setup (the Memento harness and grading criteria), and the stated assumptions about historical model improvement rates.",
+            "source_ids": [
+              "news-c044b31b2af1"
+            ]
+          },
+          {
+            "headline": "OpenAI feed item describes AT&T rethinking in-house legal work",
+            "what_happened": "An OpenAI feed excerpt (dated October 21, 2026) states that AT&T is working with OpenAI to make legal knowledge easier to access, and that its LegalEdge team is rethinking intake and scaling legal judgment. This is a feed excerpt only; the summary here is limited to what the excerpt itself says.",
+            "why_it_matters": "Legal knowledge access is a classic retrieval problem: the value comes from connecting a lawyer's question to the right internal documents and precedents, which is exactly where RAG-style architectures fit. For developers, it is a reminder that enterprise RAG projects often succeed or fail on intake design — how questions are captured and routed — as much as on the retrieval model itself.",
+            "takeaway": "Because this is a feed excerpt, no details about the architecture, retrieval approach, or results are available here, and the item is a vendor's own description of a partnership. Before citing it as evidence of any technique working, read the full article and look for specifics on how relevance and accuracy are evaluated in a legal context, where errors carry real consequences.",
+            "source_ids": [
+              "news-39cad894cdd2"
+            ]
+          },
+          {
+            "headline": "Google DeepMind walks through agentic antimicrobial peptide discovery in Google Antigravity",
+            "what_happened": "A Google DeepMind blog post (October 15, 2026) describes how biologists used Google Antigravity, its agentic development platform, to search for antimicrobial peptides. The workflow combines ProtNLM, a model that predicts protein function from amino acid sequences, with cross-database orchestration over UniProt, BLAST-based novelty checks against Swiss-Prot, structural comparison using the AlphaFold Protein Structure Database, genomic-neighborhood analysis, and literature synthesis — all within a shared session that includes a new Biomolecular Structure Viewer for collaborative 3D inspection. The post reports one candidate peptide, identified in Streptococcus pseudopneumoniae, now undergoing wet-lab validation.",
+            "why_it_matters": "This is a concrete example of retrieval-heavy scientific work: the agent's value comes from filtering millions of database entries down to a handful of candidates and assembling multiple kinds of evidence (sequence, structure, genomic context) in one place — compressing what the authors describe as days of fragmented database triage into a single session. For developers building agentic tools, note the bidirectional shared state: the researcher can highlight a residue or pin a note in 3D space, and the agent reasons over that exact context.",
+            "takeaway": "Every claim here is computational prediction; the post itself stresses the candidate is biologically plausible but still requires wet-lab validation, which is the ultimate test. Before trying Antigravity or similar platforms, inspect which databases and models are actually wired in (ProtNLM, AlphaFold DB, BLAST), whether annotations are reviewed or predicted, and how the agent's filtering steps could be audited for false positives.",
+            "source_ids": [
+              "news-ad09b0946a60"
+            ]
+          }
+        ],
+        "exercise": "Pick any of the three items above and spend two minutes locating the primary source. Identify one claim that is the publisher's own characterization (for example, a capability estimate or a partnership description) and one concrete, checkable detail (a benchmark number, a hardware setup, or a named database). Write down how you would verify the second.",
+        "question": "Why does a feed excerpt, like the AT&T item, require more caution than a full article excerpt?",
+        "answer": "Because you have only seen a short summary, not the full article: you cannot tell what techniques are used, what results were measured, or what caveats the full text contains — and vendor-published descriptions of their own partnerships are promotional, not independent verification."
+      },
+      "usage": {
+        "prompt_tokens": 5713,
+        "completion_tokens": 2477,
+        "total_tokens": 8190,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": null,
+          "reasoning_tokens": 53,
+          "rejected_prediction_tokens": null
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-c044b31b2af1",
+          "title": "AI models may be capable of self-replicating without access to a datacenter",
+          "url": "https://www.anthropic.com/research/self-replicating-ai",
+          "publisher": "www.anthropic.com",
+          "published_at": "2026-10-12T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 118,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "Other"
+        },
+        {
+          "id": "news-39cad894cdd2",
+          "title": "How AT&T is rethinking in-house legal work with OpenAI",
+          "url": "https://openai.com/index/att-legal",
+          "publisher": "OpenAI",
+          "published_at": "2026-10-21T17:00:00+00:00",
+          "evidence_type": "feed_excerpt",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-ad09b0946a60",
+          "title": "Accelerating the search for antimicrobial peptides with Google Antigravity",
+          "url": "https://deepmind.google/blog/accelerating-antimicrobial-discovery/",
+          "publisher": "Google DeepMind",
+          "published_at": "2026-10-15T16:08:03+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "RAG"
+        }
+      ],
+      "id": "19348bd45e1c3281"
+    },
+    {
+      "date": "2026-10-24",
+      "timezone": "America/New_York",
+      "created_at": "2026-10-24T14:36:01.220291+00:00",
+      "topic": "RAG",
+      "language": "te",
+      "concept": "What makes a source relevant?",
+      "news_window": "recent",
+      "source_warnings": [],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "సోర్స్ రిలవెన్స్ అంటే ఏమిటి? RAGలో సంబంధాన్ని కొలిచే విధానం",
+        "summary": "RAG (Retrieval-Augmented Generation) సిస్టమ్స్‌లో మోడల్ సమాధానం ఇవ్వడానికి ముందు ఒక డాక్యుమెంట్ స్టోర్ నుంచి సోర్సులను తెస్తుంది. ఏ సోర్స్ 'రిలవెంట్' అవుతుందో తెలుసుకోవడమే ఈ వ్యవస్థ గుండె. ఈ పిల్ల్‌లో రిలవెన్స్ అంటే ఏమిటో, డెన్స్ రిట్రీవర్స్ దాన్ని ఎలా అంచనా వేస్తాయో, దాని పరిమితులేమిటో ఒక కథ ద్వారా నేర్చుకుంటాం.",
+        "story": "ఒక పట్టణంలో పెద్ద లైబ్రరీ ఉందనుకోండి. లైబ్రేరియన్ అయిన లక్ష్మి గారిని ఒక పాఠశాల పిల్లవాడు వచ్చి అడుగుతాడు: 'ఎడారుల్లో వర్షం ఎలా పడుతుంది?' లక్ష్మి గారు పూర్తి లైబ్రరీని చదవరు. బదులుగా ప్రశ్నలోని కీలక భావాలు — ఎడారి, వర్షం, వాతావరణం — తన మెదడులో ఒక 'అర్థం సూత్రం'గా మలచుకుని, పుస్తకాల స్పైన్లపై ఆ సూత్రాన్ని పోల్చి చూస్తారు. పేర్లో 'వర్షం' అనే పదం లేని పుస్తకం కూడా — అర్థం దగ్గరగా ఉంటే — ఎంపిక అవుతుంది. అదే సమయంలో పక్కన ఉన్న మరో సహాయకురాలు కేవలం పదాలు సరిపోల్చి చూస్తే, 'వర్షం' అనే పదం ఉన్న వంట పుస్తకం కూడా వచ్చేది! లక్ష్మి గారు మూడు పుస్తకాలు తీసుకువచ్చి, ఏది నిజంగా ప్రశ్నకు దగ్గరో వరుసగా అంచనా వేసి, పిల్లవాడికి అందిస్తారు. ఆమె ఎన్నిక తప్పితే — ఉదాహరణకు సముద్రపు నీటి గురించి పుస్తకం ఇస్తే — పిల్లవాడి సమాధానం తప్పుగా మారుతుంది, ఎంత తెలివైనవాడైనా.",
+        "connection": "ఈ కథలోని భాగాలు RAG ఆర్కిటెక్చర్‌కి నేరుగా అనువడతాయి. లైబ్రరీ = non-parametric memory (డాక్యుమెంట్ ఇండెక్స్). లక్ష్మి గారి 'అర్థం సూత్రం' = pre-trained neural retriever వాడే dense vector representations. పుస్తకాల స్పైన్లతో పోలిక = query embeddingని document embeddingsతో సరిపోల్చడం. మూడు పుస్తకాలు తెచ్చి అందించడం = top-k retrieved passages. పిల్లవాడు = ఆ పాసేజీలను చదివి సమాధానం రాసే seq2seq generator. ఎంపిక తప్పితే సమాధానం తప్పడం = retrieval quality generation qualityని నిర్ణయిస్తుందనే ముఖ్య పాఠం.",
+        "explanation": "RAG పేపర్ (Lewis et al.) ప్రకారం, మోడల్‌లో రెండు రకాల మెమరీ ఉంటాయి: పారామీటర్లలో దాచిన పరిజ్ఞానం (parametric memory) మరియు Wikipedia లాంటి కార్పస్‌పై నిర్మించిన dense vector index (non-parametric memory). రిలవెన్స్ అంటే సరిగ్గా ఇక్కడే నిర్వచించబడుతుంది: ఒక పాసేజ్, ప్రశ్నకు సమాధానం ఇవ్వడానికి జనరేషన్‌కు ఎంత ఉపయోగపడుతుందో. ముఖ్యంగా, ఈ పేపర్‌లో రిట్రీవర్‌ను end-to-endగా fine-tune చేస్తారు — అంటే 'ఏ పాసేజ్ వాడితే సమాధానం మెరుగుపడుతుందో' అనే దాని ఆధారంగానే రిట్రీవర్ నేర్చుకుంటుంది. అంటే రిలవెన్స్ అనేది కేవలం టెక్స్ట్ పోలిక కాదు, డౌన్‌స్ట్రీమ్ టాస్క్ పనితీవుతో ముడిపడిన అంచనా. REALM పేపర్ ఇంకో అంశాన్ని చూపుతుంది: retrieval step ద్వారా backpropagate చేసి, masked language modelingని learning signalగా వాడి, రిట్రీవర్‌ను unsupervisedగా pre-train చేయవచ్చు. రెండు పేపర్లూ ఒకే సూత్రాన్ని బలపరుస్తాయి: రిలవెన్స్‌ను మోడల్ నేర్చుకోగలదు, కానీ అది టాస్క్‌పై ఆధారపడి ఉంటుంది. RAG పేపర్‌లో రెండు ఫార్ములేషన్లు పోల్చబన్నాయి — మొత్తం జనరేషన్‌కీ ఒకే పాసేజీలు వాడేది, టోకెన్‌కీ వేరు వేరు పాసేజీలు వాడేది — ఇది కూడా 'ఎప్పుడేది రిలవెంట్' అనే ప్రశ్నే వివిధ స్థాయిల్లో వచ్చే అవకాశాన్ని చూపుతుంది.",
+        "application": "ప్రాక్టికల్‌గా: మీరు ఒక డాక్యుమెంట్ QA సిస్టమ్ నిర్మిస్తున్నారనుకోండి. రిలవెన్స్‌ను రెండు మార్గాల్లో మెరుగుపరచవచ్చు. ఒకటి, మీ డొమైన్ ప్రశ్నలపై రిట్రీవర్‌ను fine-tune చేయడం — ఏ చంక్ వాడితే జనరేటర్ మెరుగైన సమాధానాలు ఇస్తుందో లేబుల్ చేసి, రిట్రీవల్ క్వాలిటీని నేరుగా ఆప్టిమైజ్ చేయడం. రెండు, రిట్రీవల్‌ను విడిగా మూల్యాంకనం చేయడం: జనరేటర్ తప్పు సమాధానం ఇస్తున్నారా, లేక రిట్రీవర్ తప్పు డాక్యుమెంట్లు తెస్తోందా అని వేరు చేసి చూడటం. ఇది debuggingలో సమయాన్ని ఆదా చేస్తుంది — సమస్య ఎక్కడో తెలిస్తే దానికే పరిష్కారం వెతకవచ్చు.",
+        "exercise": "రెండు నిమిషాల వ్యాయామం: మీ ఫోన్‌లోని ఏదైనా సెర్చ్ బాక్స్‌లో ఒక అస్పష్టమైన ప్రశ్న టైప్ చేయండి (ఉదా: 'పాత ఇంటిలో తేమ తగ్గించడం'). వచ్చే ఫలితాల్లో మొదటి మూడింటిని చూసి, ఒక్కోదానికి ఈ ప్రశ్న వేయండి: 'ఇది పదాలు సరిపోల్చి వచ్చిందా, లేదా అర్థం దగ్గరగా ఉందా?' ఒక ఫలితాన్ని 'పద-సరిపోలిక కానీ తక్కువ రిలవెన్స్'గాను, మరోదాన్ని 'పదం లేకున్నా అధిక రిలవెన్స్'గాను గుర్తించడానికి ప్రయత్నించండి. ఇదే తేడా dense retrieval పద-సరిపోలిక సెర్చ్ మధ్య ఉంటుంది.",
+        "question": "RAGలో రిట్రీవర్ 'రిలవెన్స్'ను ఎలా నేర్చుకుంటుంది — కేవలం కీవర్డ్ పోలిక ద్వారానా, లేదా వేరే విధంగానా?",
+        "answer": "కీవర్డ్ పోలిక ద్వారా కాదు. RAG పేపర్‌లో రిట్రీవర్ end-to-end fine-tuning ద్వారా నేర్చుకుంటుంది — ఏ పాసేజ్‌లు వాడితే జనరేషన్ మెరుగుపడుతుందో ఆ సిగ్నల్ ఆధారంగా. REALM లో మరింత ముందుకెళ్లి, retrieval step ద్వారా backpropagate చేసి, masked language modelingని learning signalగా వాడి రిట్రీవర్‌ను unsupervisedగా pre-train చేస్తారు. రెండు సందర్భాల్లోనూ రిలవెన్స్ అంటే టాస్క్ పనితీవుతో ముడిపడిన నేర్చుకున్న అంచనా.",
+        "limits": "ఈ కథకు పరిమితులు: లక్ష్మి గారు పుస్తకాల అర్థాన్ని నిజంగా అర్థం చేసుకుంటారు, కానీ dense retriever కేవలం embedding దగ్గరిబాటను కొలుస్తుంది — అది అర్థాన్ని పోలినదైనా హామీ కాదు. రెండో పరిమితి: రిలవెన్స్ టాస్క్‌తో ముడుస్తుంది కాబట్టి, ఒక టాస్క్‌పై శిక్షణ పొందిన రిట్రీవర్ వేరే టాస్క్‌కి బదిలీ అవుతుందని ప్రమాణం లేదు. మూడోది: కథలో లక్ష్మి గారు తప్పును గుర్తించగలరు, కానీ సిస్టమ్‌లో retrieval తప్పులు తరచుగా నిశ్శబ్దంగా జనరేషన్‌లోకి ప్రవహిస్తాయి — అందుకే రిట్రీవల్ మూల్యాంకనను విడిగా చేయడం ముఖ్యం.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "ఈ వారం AI వార్తలు: స్వీయ-పునరుత్పత్తి ప్రమాద అధ్యయనం, చట్టపరమైన RAG, శాస్త్రీయ ఏజెంట్లు",
+        "overview": "ఈ వారం మూడు అంశాలు: Anthropic చిన్న మోడల్స్ IoT పరికరాలపై స్వీయ-పునరుత్పత్తి సామర్థ్యంపై పరిశోధన, AT&T–OpenAI చట్టపరమైన నాలెడ్జ్ యాక్సెస్ ప్రాజెక్ట్, Google DeepMind యొక్క Antigravity ప్లాట్‌ఫారమ్‌తో యాంటీమైక్రోబయల్ పెప్టైడ్ శోధన.",
+        "items": [
+          {
+            "headline": "Anthropic: చిన్న AI మోడల్స్ IoT పరికరాలపై స్వీయ-పునరుత్పత్తికి దగ్గరగా ఉండవచ్చు",
+            "what_happened": "Anthropic పరిశోధకులు చిన్న ఓపెన్-వెయిట్ మోడల్స్ తక్కువ భద్రత గల IoT పరికరాలపై — స్మార్ట్ ఓవెన్లు, ఆఫ్-బ్రాండ్ Android TV బాక్సుల వంటివి — inference సెటప్ చేయగలగడం, దీని ద్వారా autonomous replication అనే ఆందోళనకు దారితీయగలగడం గురించి ప్రయోగాలు నివేదించారు. వారి సరళీకృత మూల్యాంకనల్లో, ఒక 9B మోడల్ పరీక్షించిన 9 హార్డ్‌వేర్ రకాల్లో 8 దానిపై inference నడిపించగలిగింది; 30B పారామీటర్ల కంటే తక్కువ మోడల్స్ పునరుత్పత్తి దశల్లో చాలా వరకు చేయగలిగాయి కానీ వాటిని end-to-end కలపడంలో తప్పులు చేశాయి. వారి సరళీకృత మూల్యాంకనల్లో GLM-5.2 మరియు బలీన మోడల్స్ end-to-end replication చేయగలవని చెప్పారు. డెమోగా 15 చౌక Android TV బాక్సులపై (~$55 ఒక్కోటి) Gemma4-26B-A4B మోడల్‌ను పంపిణీ చేసి 0.39 tokens/second వద్ద నడిపారు. ఇది ప్రచురించిన పరిశోధన; ఈ వారం కొత్తది కాదు, కానీ చర్చలో ఉంది.",
+            "why_it_matters": "డెవలపర్లకు ఇది ఒక భద్రతా సూచన: ఇంటర్నెట్‌కు అనుసంధానమైన చౌక పరికరాలు — క్యామెరాలు, TV బాక్సులు — భవిష్యత్తులో మాల్‌వేర్ లక్ష్యాలు కావచ్చు, ఎందుకంటే మోడల్ వెయిట్స్‌ను పంచుకుని వాటిపై inference నడపడం సాధ్యమవుతోంది. ఒక స్పష్టమైన ఉపమానం: ఇది సాధారణ వైరస్ లాగా కాకుండా, తన సొంత 'మెదడును' (వెయిట్స్) తీసుకెళ్లి, ఎదురుపడిన పరికరం ఏదైనా అర్థం చేసుకుని అదే పరికరంపై పనిచేసే వ్యవస్థ లాంటిది. రక్షణగా IoT పరికరాల నెట్‌వర్క్ విభజన (segmentation), పాత ఫర్మ్‌వేర్ అప్‌డేట్లు వంటి ప్రాథమిక చర్యలు ముఖ్యమవుతాయి.",
+            "takeaway": "పరిమితి: ఇది సరళీకృత ప్రయోగశాల మూల్యాంకనం — నిజమైన సోదాసుట్టడం (exploitation) అనే దశలను పరిశోధకులు ఉద్దేశపూర్వకంగా విడిచిపెట్టారు, మరియు ఇది ఇంకా వాస్తవాల్లో జరిగిన దాడి కాదు. దీన్ని ప్రయత్నించే ముందు (లేదా ఆందోళన చెందే ముందు) చూడండి: threat model నిర్వచనం, మూల్యాంకన సరళీకరణలు, మరియు వారి స్వంత సమాయిస్తున్న రక్షణ సిఫారసులు.",
+            "source_ids": [
+              "news-c044b31b2af1"
+            ]
+          },
+          {
+            "headline": "AT&T, OpenAIతో కలిసి చట్టపరమైన నాలెడ్జ్ యాక్సెస్‌ను మెరుగుపరుస్తోంది",
+            "what_happened": "OpenAI ప్రచురించిన ఒక పోస్ట్ ప్రకారం, AT&T తన LegalEdge బృందం ద్వారా చట్టపరమైన నాలెడ్జ్‌ను సులభంగా యాక్సెస్ చేయడానికి OpenAIతో కలిసి పనిచేస్తోంది; intake ప్రక్రియను పునరాలోచించడం మరియు చట్టపరమైన తీర్పును స్కేల్ చేయడం లక్ష్యాలున్నాయి. గమనిక: మా దగ్గర ఉన్నది ఈ పోస్ట్ యొక్క సంక్షిప్త feed సారాంశం మాత్రమే — పూర్తి వ్యాసం చదివినట్లు చెప్పలేము, కాబట్టి సాంకేతిక వివరాలు అందుబాటులో లేవు.",
+            "why_it_matters": "ఇది ఈ వారం కాన్సెప్ట్‌కి నేరుగా సంబంధించిన ఉదాహరణ: చట్టపరమైన ప్రశ్నలకు సమాధానం ఇవ్వడం అంటే సరిగ్గా సంబంధిత అంతర్గత పాలసీలు, ఒప్పందాలు, మునుపటి కేసులను రిట్రీవ్ చేయడం — అంటే రిలవెన్స్ అత్యంత క్లిష్టతరమైన, అధిక ప్రమాదకరమైన రూపంలో పరీక్షించబడే సవాలు. ఒక స్పష్టమైన ఉపమానం: చట్టపరమైన RAG ఒక జాగ్రత్తగా శిక్షణ పొందిన లైబ్రేరియన్ లాంటిది — తప్పు పుస్తకం ఇచ్చితే తీర్పు తప్పు అవుతుంది, కాబట్టి ఎంపిక ఖచ్చితత్వం అత్యంత కీలకం. డెవలపర్లకు ఇది చూపిస్తుంది: enterprise RAG అంటే కేవలం టెక్నాలజీ కాదు, intake వంటి ప్రక్రియల పునర్రూపకల్పన కూడా.",
+            "takeaway": "పరిమితి: మా దగ్గర ఉన్నది feed excerpt మాత్రమే కాబట్టి, ఏ సాంకేతికత వాడారో, ఫలితాలేమిటో ధృవీకరించలేము — ఇది publisher చెప్పే క్లెయిమ్. దీన్ని అనుసరించే ముందు పూర్తి పోస్ట్ చదవండి: వారు ఏ డేటాపై మోడల్ నడుస్తోంది, గోప్యతా నియంత్రణలు, మరియు ఖచ్చితత్వ కొలతలు ఏమిటో తనిఖీ చేయండి.",
+            "source_ids": [
+              "news-39cad894cdd2"
+            ]
+          },
+          {
+            "headline": "Google Antigravity: యాంటీమైక్రోబయల్ పెప్టైడ్ శోధనను ఒకే సెషన్‌లోకి కుదించడం",
+            "what_happened": "Google DeepMind వారి Antigravity agentic development platform లో జీవశాస్త్రవేత్తలు యాంటీమైక్రోబయల్ పెప్టైడ్ల (AMPల) కోసం శోధించడం గురించి ఒక technical walkthrough ప్రచురించింది. విశ్లేషణలో పరిశోధకుడు శాస్త్రీయ లక్ష్యాన్ని నిర్దేశిస్తే, ఏజెంట్ UniProt డేటాబేస్‌లోని లక్షల ఎనుమరుగని ప్రోటీన్ సీక్వెన్స్‌లను ProtNLM అనే మోడల్‌తో ఫిల్టర్ చేసి, BLAST తో నవెల్టీని ధృవీకరించి, AlphaFold 3D నిర్మాణాలతో పోలిక చేసి, జీనోమిక్ సందర్భాన్ని పరిశీలించి, ప్రయోగశాల ప్రణాళిక వరకు సిద్ధం చేసింది. గుర్తించిన ఒక బ్యాక్టీరియోసిన్ అభ్యర్థి ఇప్పుడు wet-lab validation లో ఉంది. కొత్త Biomolecular Structure Viewer అనే 3D విజువలైజేషన్ టూల్‌ను కూడా ప్రకటించారు.",
+            "why_it_matters": "ఇది రిలవెన్స్ యొక్క మరో ముఖాన్ని చూపుతుంది: ఇక్కడ 'సంబంధిత సోర్స్' అంటే కేవలం టెక్స్ట్ పోలిక కాదు — నిర్మాణ సారూప్యత, జీనోమిక్ పొరుగున ఉన్న జన్యువుల నమూనా, సాహిత్య ఆధారాలు అనే బహుళ రకాల సాక్ష్యాల సమన్వయం. డెవలపర్ కోణంలో: మీ సొంత ఏజెంటిక్ వర్క్‌ఫ్లోల్లో బహుళ డేటాబేస్లను ఒకే సెషన్‌లో అనుసంధానించడం మరియు మానవుడు-ఏజెంట్ మధ్య భాగస్వామ్య నిర్ణయాలు (ఇక్కడ 3D canvas పై అనుసంక్రమించే annotations) ఎలా పనిచేస్తాయో ఇది ఒక ఆచరణాత్మక నమూనా.",
+            "takeaway": "పరిమితి: ఇది ఇన్-సిలికో (computational) విశ్లేషణ — అభ్యర్థి పెప్టైడ్ నిజంగా పనిచేస్తుందో లేదో wet-lab validation మాత్రమే నిర్ణయిస్తుంది, అది ఇంకా పూర్తి కాలేదు. దీన్ని ప్రయత్నించే ముందు చూడండి: ProtNLM అంచనాల ఖచ్చితత్వం ఎలా కొలవబడింది, మరియు ఈ walkthrough ఒక్క విజయవంతమైన కేసు మాత్రమేనా లేక పునరావృతమయ్యే ప్రక్రియా కాదో.",
+            "source_ids": [
+              "news-ad09b0946a60"
+            ]
+          }
+        ],
+        "exercise": "రెండు నిమిషాల సోర్స్-చెక్ వ్యాయామం: పై మూడు అంశాల్లో ఒకదాన్ని ఎంచుకోండి. మూల లింక్ తెరిచి, ఈ మూడు ప్రశ్నలకు సమాధానం ఇవ్వండి: (1) ఇది ప్రాథమిక సోర్సా (పరిశోధన/ప్రకటన) లేదా ద్వితీయ కవరేజా? (2) క్లెయిమ్‌లు ఏవి publisher స్వంత మూల్యాంకనపై ఆధారపడి ఉన్నాయి? (3) ఏ పరిమితులు లేదా సరళీకరణలు రచయితలు స్వయంగా ఒప్పుకున్నారు? మూడో ప్రశ్నకు సమాధానం దొరకకపోతే, అదే ఒక ముఖ్యమైన గమనిక.",
+        "question": "Anthropic స్వీయ-పునరుత్పత్తి అధ్యయనంలో పరిశోధకులు ఉద్దేశపూర్వకంగా విడిచిపెట్టిన పునరుత్పత్తి దశలు ఏవి, ఎందుకు?",
+        "answer": "వారు మొదటి రెండు దశలు — లక్ష్యాలను వెతకడం (finding targets) మరియు execution సాధించడం (gaining execution), అంటే సైబర్ exploit అంశం — ఎక్కువగా విడిచిపెట్టారు. ఎందుకంటే గత పని (CyberGym, ExploitBench, adaptive worms పరిశోధనలు) ఇప్పటికే చిన్న మోడల్స్ సరైన టూల్స్ ఇస్తే exploits చేయగలవని చూపింది. వారి దృష్టి తక్కువగా అధ్యయనం చేయబడిన inference setup దశపై ఉంది — తెలియని హార్డ్‌వేర్‌పై inference స్థాపించడం మరియు పూర్తి చక్రాన్ని ఒకే రన్‌లో కలపగలగడం."
+      },
+      "usage": {
+        "prompt_tokens": 5713,
+        "completion_tokens": 15643,
+        "total_tokens": 21356,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": null,
+          "reasoning_tokens": 46,
+          "rejected_prediction_tokens": null
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-c044b31b2af1",
+          "title": "AI models may be capable of self-replicating without access to a datacenter",
+          "url": "https://www.anthropic.com/research/self-replicating-ai",
+          "publisher": "www.anthropic.com",
+          "published_at": "2026-10-12T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 118,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "Other"
+        },
+        {
+          "id": "news-39cad894cdd2",
+          "title": "How AT&T is rethinking in-house legal work with OpenAI",
+          "url": "https://openai.com/index/att-legal",
+          "publisher": "OpenAI",
+          "published_at": "2026-10-21T17:00:00+00:00",
+          "evidence_type": "feed_excerpt",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-ad09b0946a60",
+          "title": "Accelerating the search for antimicrobial peptides with Google Antigravity",
+          "url": "https://deepmind.google/blog/accelerating-antimicrobial-discovery/",
+          "publisher": "Google DeepMind",
+          "published_at": "2026-10-15T16:08:03+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "RAG"
+        }
+      ],
+      "id": "be54e731e2d96449"
     }
   ]
 }

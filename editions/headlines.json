@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "task": "ai_headlines",
-  "checked_at": "2026-10-23T15:45:57.138547+00:00",
+  "checked_at": "2026-10-24T14:36:01.220291+00:00",
   "items": [
     {
       "id": "news-c044b31b2af1",
@@ -9,6 +9,27 @@
       "url": "https://www.anthropic.com/research/self-replicating-ai",
       "publisher": "www.anthropic.com",
       "published_at": "2026-10-12T00:00:00+00:00"
+    },
+    {
+      "id": "news-32ef7801f580",
+      "title": "Bringing foundational models to the front lines of TB screening",
+      "url": "https://research.google/blog/bringing-foundational-models-to-the-front-lines-of-tb-screening/",
+      "publisher": "Google Research",
+      "published_at": "2026-10-23T18:51:33+00:00"
+    },
+    {
+      "id": "news-ee4c22366ef7",
+      "title": "Rapidly scaling online storage to serve over 1 billion ChatGPT users (Part II)",
+      "url": "https://openai.com/index/scaling-storage-one-billion-users-part-two",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-23T17:00:00+00:00"
+    },
+    {
+      "id": "news-f8c156dba788",
+      "title": "Securing our frontier model training environment",
+      "url": "https://openai.com/index/securing-our-frontier-model-training-environment",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-23T10:00:00+00:00"
     },
     {
       "id": "news-2b3f616d26d3",
@@ -65,27 +86,6 @@
       "url": "https://openai.com/index/att-legal",
       "publisher": "OpenAI",
       "published_at": "2026-10-21T17:00:00+00:00"
-    },
-    {
-      "id": "news-3bfcd79e09f1",
-      "title": "Empowering frontline maternal care with AI-assisted ultrasound",
-      "url": "https://research.google/blog/empowering-frontline-maternal-care-with-ai-assisted-ultrasound/",
-      "publisher": "Google Research",
-      "published_at": "2026-10-21T16:23:53+00:00"
-    },
-    {
-      "id": "news-b1215e1aefc0",
-      "title": "ChatGPT Ads expands to 26 new countries as over 100,000 advertisers have used the platform",
-      "url": "https://openai.com/index/chatgpt-ads-expands-26-new-countries",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-21T13:00:00+00:00"
-    },
-    {
-      "id": "news-95dedf578de7",
-      "title": "OpenAI models are coming to Google Cloud",
-      "url": "https://openai.com/index/openai-models-google-cloud",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-21T12:00:00+00:00"
     }
   ]
 }
