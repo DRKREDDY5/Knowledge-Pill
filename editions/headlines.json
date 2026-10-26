@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
   "task": "ai_headlines",
-  "checked_at": "2026-10-25T14:57:49.102628+00:00",
+  "checked_at": "2026-10-26T17:24:57.004264+00:00",
   "items": [
     {
-      "id": "news-c044b31b2af1",
-      "title": "AI models may be capable of self-replicating without access to a datacenter",
-      "url": "https://www.anthropic.com/research/self-replicating-ai",
-      "publisher": "www.anthropic.com",
-      "published_at": "2026-10-12T00:00:00+00:00"
+      "id": "news-7e73eebe3e90",
+      "title": "How Fanatics and OpenAI streamline the fan experience",
+      "url": "https://openai.com/index/fanatics-streamline-fan-experience",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-26T07:00:00+00:00"
     },
     {
       "id": "news-32ef7801f580",
@@ -53,13 +53,6 @@
       "published_at": "2026-10-22T19:00:00+00:00"
     },
     {
-      "id": "news-301925b8adfc",
-      "title": "Beyond tree cover: mapping the world’s forest types",
-      "url": "https://deepmind.google/blog/beyond-tree-cover-mapping-the-worlds-forest-types/",
-      "publisher": "Google DeepMind",
-      "published_at": "2026-10-22T14:30:24+00:00"
-    },
-    {
       "id": "news-6400feb68147",
       "title": "What FDE means at OpenAI",
       "url": "https://openai.com/index/forward-deployed-engineering-means",
@@ -86,6 +79,13 @@
       "url": "https://openai.com/index/att-legal",
       "publisher": "OpenAI",
       "published_at": "2026-10-21T17:00:00+00:00"
+    },
+    {
+      "id": "news-3bfcd79e09f1",
+      "title": "Empowering frontline maternal care with AI-assisted ultrasound",
+      "url": "https://research.google/blog/empowering-frontline-maternal-care-with-ai-assisted-ultrasound/",
+      "publisher": "Google Research",
+      "published_at": "2026-10-21T16:23:53+00:00"
     }
   ]
 }

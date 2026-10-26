@@ -1,234 +1,8 @@
 {
   "schema_version": 1,
   "task": "daily_pills_collection",
-  "updated_at": "2026-10-25T14:59:35.205193+00:00",
+  "updated_at": "2026-10-26T17:26:10.809343+00:00",
   "packets": [
-    {
-      "date": "2026-10-09",
-      "timezone": "America/New_York",
-      "created_at": "2026-10-09T17:27:32.745081+00:00",
-      "topic": "RAG",
-      "language": "en",
-      "concept": "When retrieval finds the wrong evidence",
-      "news_window": "recent",
-      "source_warnings": [],
-      "router_engine": "TF-IDF + logistic regression",
-      "schema_version": 1,
-      "task": "daily_pills",
-      "status": "draft",
-      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
-      "generation_method": "fireworks",
-      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
-      "knowledge": {
-        "title": "When Retrieval Finds the Wrong Evidence",
-        "summary": "Retrieval-augmented generation (RAG) grounds a language model in external documents, but the retriever can fetch passages that are topically similar yet factually wrong. This pill explains why wrong evidence happens, how to spot it, and what to do about it.",
-        "story": "Priya is a librarian at a small office. Whenever a colleague asks a question, she walks to the shelves, pulls the three folders whose covers most resemble the question's wording, and hands them over. One day a colleague asks, \"What's our refund policy for damaged items?\" Priya returns three folders: one on refunds, one on damaged shipments, and one on warranty claims. The colleague reads the warranty folder, which describes a completely different policy, and confidently quotes it in a customer email. The problem was never Priya's speed or effort; her matching rule (cover similarity) was a proxy for relevance, and the proxy failed. The fix wasn't a smarter librarian but a better check: the colleague now skims each folder's first page, confirms it actually addresses the question, and discards the rest before writing anything.",
-        "connection": "Priya is the retriever: she selects documents based on similarity, not verified truth. The folders are the passages in your vector index or document store. The colleague is the generator (the language model), which reads whatever it is handed and tends to trust it. The warranty folder is the classic failure mode: a passage that shares vocabulary with the query (\"damaged,\" \"item\") but answers a different question. The first-page skim is evidence verification, the step most pipelines skip.",
-        "explanation": "The foundational RAG papers describe models that combine a parametric memory (the pre-trained seq2seq model's weights) with a non-parametric memory (a dense vector index of documents, accessed by a neural retriever). The retriever scores passages by embedding similarity to the query and hands the top ones to the generator. Two properties of this design make wrong evidence likely. First, dense similarity measures surface and semantic relatedness, not factual correctness: a passage about warranty claims is genuinely close in embedding space to a question about damaged-item refunds. Second, the generator has no independent way to know a passage is wrong; it conditions on what it receives. The REALM paper highlights why retrieval is still worth it: knowledge stored in an external index is modular and interpretable, so you can update it and inspect what was retrieved, unlike facts baked into weights. That inspectability is exactly your tool for catching wrong evidence: log the retrieved passages, read them, and compare them against the query's actual intent. Practical mitigations include retrieving more candidates and re-ranking them, adding a verification step that checks whether a passage actually answers the question (not just whether it shares words), writing queries that name the specific policy or entity, and designing the generator to say \"the retrieved documents don't answer this\" when they don't.",
-        "application": "In a support chatbot over your company docs, add a cheap post-retrieval check: ask the model, for each retrieved chunk, \"Does this passage answer the user's question, yes or no?\" and drop the noes before generation. Also log every retrieved chunk ID with each answer so that when a wrong answer surfaces, you can immediately see which folder Priya pulled.",
-        "exercise": "Take any RAG demo you have (or imagine one). Write three questions: one the index can answer, one about a topic adjacent to indexed content, and one the index cannot answer at all. Run retrieval for each and read the top three chunks. For the adjacent question, note how plausible-but-wrong the chunks look. Two minutes.",
-        "question": "Why can a retriever return a passage that is highly similar to the query yet factually irrelevant, and what is the simplest defense?",
-        "answer": "Because retrieval ranks by embedding similarity, which captures relatedness of wording and topic rather than whether the passage answers the question. The simplest defense is human or model verification of retrieved passages against the query's intent before generation, plus logging retrievals so failures can be traced.",
-        "limits": "The librarian analogy understates the scale problem: Priya reads folder covers, but a real retriever compares dense vectors where 'similar' is a geometric judgment no human can eyeball. It also implies the retriever and generator are separate people, when in end-to-end RAG systems the retriever can be trained jointly with the generator, blurring who is responsible for a bad pick. Finally, the analogy suggests verification is cheap; in practice, verifying every chunk adds latency and cost, so pipelines must trade thoroughness against speed.",
-        "source_ids": [
-          "paper-2005.11401",
-          "paper-2002.08909"
-        ]
-      },
-      "news": {
-        "title": "Recent RAG-adjacent developments: on-device multimodal embeddings and a ChatGPT Work case study",
-        "overview": "Two recent items relevant to retrieval pipelines: Google's EmbeddingGemma 2, a lightweight multimodal embedding model for on-device retrieval, and an OpenAI customer story about a social club using ChatGPT Work for document-heavy tasks. Publisher claims below are not independently verified.",
-        "items": [
-          {
-            "headline": "Google launches EmbeddingGemma 2, a lightweight multimodal embedding model for on-device retrieval",
-            "what_happened": "Google announced EmbeddingGemma 2, a 740M-parameter embedding model under an Apache 2.0 license that maps text, images, audio, and video into a shared embedding space. Google claims leading scores among sub-1B multimodal embedders on benchmarks like MTEB Code and MAEB, a modular design where text-only workloads can run with as little as 270M parameters plus optional vision and audio encoders, Matryoshka-style truncation of output vectors from 768 down to 128 dimensions for storage savings, an 8K token context window, and on-device RAM requirements of roughly 191MB for text-only weights (quantized, on a Pixel 11 Pro). Weights are on Hugging Face and Kaggle, with tooling via LiteRT, MediaPipe, and common serving libraries.",
-            "why_it_matters": "For RAG developers, embeddings are the retriever's matching rule, and this post is essentially a new librarian for edge devices. A concrete use case: a privacy-sensitive app that indexes a user's photos, voice memos, and notes locally, so a text query can retrieve the right media without any data leaving the phone. The truncated embedding dimensions also matter for local vector databases, where storage is the binding constraint.",
-            "takeaway": "These are publisher benchmarks and RAM figures, not independent measurements, and 'best-in-class for its size' is a size-bounded claim. Before adopting, read the model card, run the model on your own retrieval queries, and compare retrieval quality and latency against your current embedder; also note the source is an article excerpt, so full evaluation details were not reviewed here.",
-            "source_ids": [
-              "news-e6e1d2a9f0a4"
-            ]
-          },
-          {
-            "headline": "OpenAI case study: The Den social club reports large time savings with ChatGPT Work",
-            "what_happened": "An OpenAI customer story describes The Den, a family social club, using ChatGPT Work while opening a new location. OpenAI states the club now prepares grant applications in about 2 hours instead of 3 days and liquor-license materials in about 3 hours instead of 4 days, freeing a reported 10-15 hours per week.",
-            "why_it_matters": "This is the pattern behind many RAG-adjacent deployments: an assistant grounded in an organization's own documents (licenses, applications, policies) drafts materials that previously required slow manual lookup. The analogy from this pill: the assistant is a fast librarian, and the risk is the same, plausible-looking folders that don't actually answer the question. Grant and licensing documents are exactly where a confidently wrong answer is costly.",
-            "takeaway": "These figures are OpenAI's claims about its own customer, based on a feed excerpt, not an audited study; the time savings likely reflect the whole workflow, not retrieval quality alone. Before expecting similar results, inspect what documents ground the assistant, who reviews its drafts, and whether licensing or grant submissions get human verification.",
-            "source_ids": [
-              "news-2167384f51e2"
-            ]
-          }
-        ],
-        "exercise": "Pick either item and open the primary source. Find one quantitative claim (a benchmark score, RAM figure, or time saving) and identify what evidence the publisher offers for it. Note whether the claim would apply unchanged to your own workload. Two minutes.",
-        "question": "The Den case study claims grant applications dropped from 3 days to 2 hours. Why should you treat that number cautiously before pitching a similar deployment?",
-        "answer": "It is a vendor's claim about its own customer, based on a feed excerpt with no methodology, baseline, or verification described, and the savings may come from workflow changes rather than the model's retrieval accuracy. You would need to inspect what documents ground the system and whether outputs are human-reviewed before generalizing the result."
-      },
-      "usage": {
-        "prompt_tokens": 2972,
-        "total_tokens": 4901,
-        "completion_tokens": 1929,
-        "prompt_tokens_details": {
-          "cached_tokens": 0
-        },
-        "completion_tokens_details": {
-          "reasoning_tokens": 0
-        },
-        "output_tokens_details": {
-          "reasoning_tokens": 0
-        }
-      },
-      "sources": [
-        {
-          "id": "paper-2005.11401",
-          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
-          "url": "https://arxiv.org/abs/2005.11401",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "paper-2002.08909",
-          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
-          "url": "https://arxiv.org/abs/2002.08909",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "news-e6e1d2a9f0a4",
-          "title": "EmbeddingGemma 2: an open, lightweight multimodal embedding model",
-          "url": "https://blog.google/innovation-and-ai/technology/developers-tools/embeddinggemma-2/",
-          "publisher": "blog.google",
-          "published_at": "2026-10-06T00:00:00+00:00",
-          "evidence_type": "article_excerpt",
-          "discussion_points": 435,
-          "discovery_channel": "Hacker News link to primary source",
-          "topic": "Other"
-        },
-        {
-          "id": "news-2167384f51e2",
-          "title": "The Den frees up 10-15 hours a week to grow with ChatGPT Work",
-          "url": "https://openai.com/index/the-den-family-social",
-          "publisher": "OpenAI",
-          "published_at": "2026-10-01T00:00:00+00:00",
-          "evidence_type": "feed_excerpt",
-          "topic": "RAG"
-        }
-      ],
-      "id": "e164bdb0e57b78cb"
-    },
-    {
-      "date": "2026-10-09",
-      "timezone": "America/New_York",
-      "created_at": "2026-10-09T17:27:32.745081+00:00",
-      "topic": "RAG",
-      "language": "te",
-      "concept": "When retrieval finds the wrong evidence",
-      "news_window": "recent",
-      "source_warnings": [],
-      "router_engine": "TF-IDF + logistic regression",
-      "schema_version": 1,
-      "task": "daily_pills",
-      "status": "draft",
-      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
-      "generation_method": "fireworks",
-      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
-      "knowledge": {
-        "title": "రిట్రీవల్ తప్పు ఆధారాలను కనుగునప్పుడు (When retrieval finds the wrong evidence)",
-        "summary": "RAG సిస్టమ్‌లో retriever తప్పు లేదా సరిపోని documents ను తెచ్చినప్పుడు, generator ఆ తప్పు ఆధారాల ఆధారంగా నమ్మకంగా తప్పు సమాధానం ఇవ్వవచ్చు. ఈ పిల్ ద్వారా retrieval quality ఎందుకు ముఖ్యమో, దాన్ని ఎలా గుర్తించాలో నేర్చుకుంటారు.",
-        "story": "ఊహించండి: లక్ష్మి ఒక పెద్ద లైబ్రరీలో పనిచేసే సహాయకురాలు. ఒక రోజు విద్యార్థి వచ్చి 'భారతదేశంలో 2019లో GST రేట్లు ఎలా మారాయి?' అని అడిగాడు. లక్ష్మి త్వరగా షెల్ఫ్‌ల వెనుక పరుగెత్తి, 'GST' అనే పదం కనిపించిన మొదటి పుస్తకం తీసుకొచ్చింది — అది 2017 వార్తాపత్రిక కత్తినట్టు. విద్యార్థి ఆ పేజీలను చదివి, నిశ్చయంగా 'ఇదిగో, ఇదే జరిగింది' అని ఒక సమాధానం రాసుకున్నాడు. సమాధానం సరిగ్గా లేదు — కానీ అతనికి తెలియదు, ఎందుకంటే అతను చూసిన పుస్తకం నిజమైన పుస్తకమే, కేవలం తప్పు సంవత్సరం ది. లక్ష్మి చెడ్డది కాదు; ఆమె వేగంగా, keyword ఆధారంగా వెతికింది. సమస్య ఏమిటంటే, ఆమె ఎంపిక చేసిన ఆధారం ప్రశ్నకు సరిపోలేదు — కానీ విద్యార్థి దాన్ని పూర్తి సత్యంగా నమ్మేశాడు.",
-        "connection": "ఈ కథలో లక్ష్మి = retriever (ప్రశ్న ఆధారంగా documents వెతికే భాగం). విద్యార్థి = generator (LLM), అతను చేతిలో పెట్టిన ఆధారాలను మాత్రమే చూసి సమాధానం ఇస్తాడు. తప్పు సంవత్సరం పుస్తకం = సిమాంటిక్‌గా దగ్గరగా ఉన్నా, ప్రశ్నకు సరిపోని retrieved document. విద్యార్థి నమ్మడం = hallucination అనిపించే విశ్వాసంతో కూడిన తప్పు సమాధానం.",
-        "explanation": "RAG (Retrieval-Augmented Generation) లో రెండు భాగాలుంటాయి: ఒకటి బాహ్య జ్ఞానాన్ని (non-parametric memory, ఉదా: document index) వెతికే retriever, రెండు ఆ ఆధారాలను చదివి సమాధానం రాసే generator (parametric memory). Lewis et al. (2020) చూపినట్టు, ఈ కలయిక జ్ఞానం-ఆధారిత పనుల్లో మరింత నిఖరమైన, వాస్తవిక అవుట్‌పుట్‌లు ఇస్తుంది; REALM (Guu et al., 2020) కూడా retriever ద్వారా interpretability, modularity లాభాలను చూపింది. కానీ ఈ నాణ్యత పూర్తిగా retrieval quality మీద ఆధారపడి ఉంటుంది. Retriever సాధారణంగా embedding similarity ఆధారంగా పనిచేస్తుంది — అంటే పదాలు లేదా అర్థం దగ్గరగా ఉన్న documents ను తెస్తుంది. 'దగ్గరగా ఉండటం' ≠ 'సరైన సమాధానం కలిగి ఉండటం'. తేదీ తప్పిన పాత document, వేరే entity గురించిన document, లేదా ప్రశ్నలోని ఒకే ఒక్క keyword మీద సరిపోయే document — అన్నీ top results లో నెట్టుకొచ్చేస్తాయి. Generator కి వేరే మార్గం లేకుండా ఆ ఆధారాలనే నమ్మి, ధ్వని కలిగిన సమాధానం ఇస్తుంది. అందుకే RAG లో తప్పు సమాధానం అనేకప్పుడు generation కాదు, retrieval వైపు మొదలవుతుంది.",
-        "application": "మీ RAG pipeline లో ప్రాక్టికల్‌గా ఇలా చేయండి: (1) ప్రతి సమాధానంతో దాని ఆధారంగా వాడిన source chunks ను citations గా చూపించండి — ఇది provenance ఇస్తుంది, యూజర్ సొంతంగా verify చేయగలరు. (2) Retrieval evaluation చేయండి: ఒక చిన్న test question set తయారుచేసి, ప్రతి ప్రశ్నకు సరైన document తెచ్చారో లేదో manually తనిఖీ చేయండి (recall@k). (3) Retrieved chunk యొక్క metadata — తేదీ, source, version — ను చూసి పాత సమాచారాన్ని filter చేయండి. (4) Generator కి 'ఇచ్చిన ఆధారాల్లో సమాధానం లేకపోతే అందుబాటు చేయకండి' అని సూచించండి.",
-        "exercise": "రెండు నిమిషాల వ్యాయామం: మీ ఫోన్‌లో లేదా కంప్యూటర్‌లో ఏదైనా search box తీసుకోండి (మీ ఇన్‌బాక్స్ search అయినా చాలు). ఒక నిర్దిష్ట ప్రశ్న టైప్ చేయండి, ఉదా: 'గత నెల రెండో వారం రేఖ పంపిన invoice ఎంత?'. ఫలితాల్లో మొదటి మూడింటిని చూడండి: అవి ప్రశ్నలోని పదాలకు సరిపోయాయా, లేదా నిజంగా అడిగిన విషయానికి సమాధానం ఉందా? ఒక ఫలితం 'పదాలు సరిపోయాయి కానీ అర్థం తప్పు' అయితే — అదే retrieval error యొక్క అనుభవం.",
-        "question": "RAG సిస్టమ్ తప్పు సమాధానం ఇచ్చినప్పుడు, మొదట దేన్ని తనిఖీ చేయాలి: generator నా, retrieved documents నా? ఎందుకు?",
-        "answer": "Retrieved documents ను మొదట తనిఖీ చేయాలి. Generator చేతిలో పెట్టిన ఆధారాలకే పరిమితం అవుతుంది; ఆధారాలే తప్పు లేదా సరిపోకపోతే, generator ని మార్చడం వల్ల లాభం లేదు. సరైన document retrieve అవుతున్నా తప్పు వస్తేనే generation వైపు చూడాలి.",
-        "limits": "ఈ లైబ్రరీ కథ ఒకే తప్పు document అనే సులభమైన సందర్భాన్ని చూపిస్తుంది. వాస్తవంలో retrieval failure ఇంకా సూటిగా లేదు: కొన్నిసార్లు సరైన document తెచ్చినా generator దాన్ని విస్మరిస్తుంది, కొన్నిసార్లు ప్రశ్నే అస్పష్టంగా ఉంటుంది, కొన్నిసార్లు సత్యం ఎటువంటి document లోనూ లేదు. అంతేకాదు, 'similarity' అనేది ఒకే ఒక్క కొలత కాదు — embedding model మారితే ఏది 'దగ్గర' అనే నిర్వచనమూ మారుతుంది. కథలో లక్ష్మి తప్పు పుస్తకం తీసుకున్నది కనిపిస్తుంది; నిజమైన సిస్టమ్‌లో అది కనిపించకపోవడమే ప్రధాన సవాలు.",
-        "source_ids": [
-          "paper-2005.11401",
-          "paper-2002.08909"
-        ]
-      },
-      "news": {
-        "title": "ఈ వారం RAG చుట్టూ: on-device embeddings మరియు వ్యాపార కేస్ స్టడీ",
-        "overview": "ఈ రెండు అంశాలూ retrieval నాణ్యత మీద ప్రభావం చూపే అంశాలకు సంబంధించినవి: ఒకటి పరికరంపై పనిచేసే నూతన embedding model, రెండో ఒక సంస్థ ప్రచురించిన వినియోగ కథనం. రెండింటిలోనూ publisher చెప్పిన వివరాలు, మా విశ్లేషణ వేరు చేసి చూపిస్తున్నాం.",
-        "items": [
-          {
-            "headline": "Google, on-device multimodal embeddings కోసం EmbeddingGemma 2 విడుదల చేసింది",
-            "what_happened": "Google DeepMind బ్లాగ్ ప్రకారం (అక్టోబర్ 6, 2026), EmbeddingGemma 2 అనేది 740M parameters కలిగిన, Apache 2.0 లైసెన్స్‌తో విడుదలైన open embedding model. ఇది text, images, audio, video లను ఒకే unified embedding space లోకి map చేస్తుంది. Matryoshka Representation Learning ద్వారా vectors ను 768 నుంచి 128 dimensions వరకు truncate చేయవచ్చని, quantization తో text-only వాడకానికి సుమారు 191MB RAM చాలని బ్లాగ్ చెబుతోంది. MTEB Code, MAEB వంటి benchmarks లో sub-1B multimodal models లో మంచి స్కోర్లు సాధించినట్టు publisher చెబుతోంది — ఇది publisher చేసిన కొలత, స్వతంత్ర ధృవీకరణ కాదు.",
-            "why_it_matters": "RAG పైప్‌లైన్ నాణ్యత retrieval మీద ఆధారపడుతుంది, embedding model ఆ retrieval యొక్క పునాది. ఈ model యొక్క ప్రత్యేకత ఏమిటంటే, ఇది పరికరంపై (on-device) పనిచేస్తుంది — అంటే మీ డేటా క్లౌడ్‌కు వెళ్ళదు. ఒక స్పష్టమైన analogy: ఇది మీ ఇంట్లోనే ఉండే వ్యక్తిగత లైబ్రరీ సూచీకర్త లాంటిది; పుస్తకాలు (మీ ఫైళ్ళు) ఇంటి నుంచి బయటకు వెళ్ళకుండానే వాటికి index తయారవుతుంది. Developer కి దీని అర్థం: offline పనిచేసే, privacy-first semantic search లేదా RAG app ను మొబైల్/edge hardware పై నిర్మించవచ్చు — ఉదాహరణకు, text query తో వీడియో clips వెతకడం.",
-            "takeaway": "ముఖ్యమైన పరిమితి: benchmark స్కోర్లు publisher నివేదికలే; మీ డొమైన్‌లో ఎలా పనిచేస్తుందో ఊహించడానికి అవి సరిపోవు. దీన్ని ప్రయత్నించే ముందు model card లోని పూర్తి evaluation metrics, license నిబంధనలు, మీ లక్ష్య hardware పై నిజమైన RAM/latency అవసరాలు, మరియు మీ సొంత డేటాతో చిన్న retrieval quality test (మీ ప్రశ్నలకు సరైన chunks తెస్తుందో లేదో) చూడండి.",
-            "source_ids": [
-              "news-e6e1d2a9f0a4"
-            ]
-          },
-          {
-            "headline": "OpenAI, ChatGPT Work వాడుతున్న సోషల్ క్లబ్ కేస్ స్టడీని ప్రచురించింది",
-            "what_happened": "OpenAI వెబ్‌సైట్‌లో (అక్టోబర్ 1, 2026) 'The Den' అనే సోషల్ క్లబ్ ChatGPT Work వాడకంతో వారానికి 10–15 గంటలు ఆదా చేసినట్టు, grant applications ఇప్పుడు 2 గంటల్లో (పూర్వం 3 రోజులు), liquor-license పత్రాలు 3 గంటల్లో (పూర్వం 4 రోజులు) సిద్ధమవుతున్నట్టు పేర్కొన్నారు. మేము చూసినది feed excerpt మాత్రమే — పూర్తి కథనాన్ని చదవలేదు, కాబట్టి ఈ సంఖ్యలు ఎలా కొలవబడ్డాయో మాకు తెలియదు.",
-            "why_it_matters": "ఇటువంటి కేస్ స్టడీలు RAG వంటి techniques యొక్క వ్యాపార విలువను చూపిస్తాయి: grant applications, legal/compliance పత్రాలు వంటి document-heavy పనుల్లో, సంస్థ యొక్క పాత templates, నియమాలు, గత applications ను retrieve చేసి మళ్ళీ వాడగలిగితే సమయం గణనీయంగా ఆదా అవుతుంది. ఇది ఒక స్పష్టమైన analogy తో చెప్పాలంటే: ప్రతిసారి అర్రే పెట్టుకుని వంట చేయడం కంటే, పాత వంటకాల పుస్తకం చేతిలో ఉండటం లాంటిది — పుస్తకం సరైనది కావాలి, లేదంటే వంట తప్పు అవుతుంది. అదే ముఖ్యమైన పాయింట్: ఈ ఆదా అయిన సమయం retrieval quality మీద ఆధారపడి ఉంటుంది.",
-            "takeaway": "ముఖ్యమైన పరిమితి: ఇది vendor ప్రచురించిన కేస్ స్టడీ — సమయ ఆదా గణనలు ఎలా జరిగాయో, ఏ పనుల్లో human review జరిగిందో తెలియదు. దీన్ని మీ సంస్థలో ప్రయత్నించే ముందు: పూర్తి కథనం చదవండి, ఆ పనుల్లో ఎటువంటి డేటా/documents వాడారో, ఫలితాలను ఎవరు verify చేశారో, మరియు మీ సొంత పనుల స్వభావం (నకిలీ కాదు, ప్రత్యేకమైనదా) పరిశీలించండి. ఒక్క కేసు స్టడీ సార్వత్రిక ఫలితం కాదు.",
-            "source_ids": [
-              "news-2167384f51e2"
-            ]
-          }
-        ],
-        "exercise": "రెండు నిమిషాల source-check వ్యాయామం: EmbeddingGemma 2 బ్లాగ్‌ను తెరవండి మరియు 'best-in-class' వంటి వాదనల పక్కన benchmark పేర్లు (MTEB Code, MAEB) కనిపిస్తాయో లేదో గమనించండి. తర్వాత మూల పేజీలో model card కి link ఉందో చూడండి — publisher వాదనను స్వతంత్రంగా తనిఖీ చేయగల ఆధారానికి link చేస్తున్నారా లేదా అనేది మూల విశ్వసనీయతకు మొదటి పరీక్ష. The Den కథనం విషయంలో, సమయ ఆదా సంఖ్యల వెనుక ఏమైనా methodology వివరణ ఉందో వెతకండి.",
-        "question": "Publisher చెప్పిన benchmark స్కోర్లు లేదా సమయ ఆదా సంఖ్యలు మీ ప్రాజెక్ట్‌లో పునరావృతమవుతాయని ఎలా ధృవీకరించగలరు?",
-        "answer": "Publisher వాదనలను attribution గా మాత్రమే పరిగణించాలి. ధృవీకరణకు: (1) వారి పేర్కొన్న benchmark methodology/model card వివరాలు చదవండి, (2) మీ సొంత డేటాతో చిన్న pilot test నడపండి — ఉదా: మీ ప్రశ్నలకు సరైన documents retrieve అవుతున్నాయో లెక్కించండి, (3) సమయ ఆదా వంటి వాటిని మీ సొంత baseline తో పోల్చి కొలవండి. స్వతంత్ర ధృవీకరణ లేని వరకు ఇవి publisher చెప్పిన వాదనలే."
-      },
-      "usage": {
-        "prompt_tokens": 2972,
-        "total_tokens": 13329,
-        "completion_tokens": 10357,
-        "prompt_tokens_details": {
-          "cached_tokens": 0
-        },
-        "completion_tokens_details": {
-          "reasoning_tokens": 33
-        },
-        "output_tokens_details": {
-          "reasoning_tokens": 33
-        }
-      },
-      "sources": [
-        {
-          "id": "paper-2005.11401",
-          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
-          "url": "https://arxiv.org/abs/2005.11401",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "paper-2002.08909",
-          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
-          "url": "https://arxiv.org/abs/2002.08909",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "news-e6e1d2a9f0a4",
-          "title": "EmbeddingGemma 2: an open, lightweight multimodal embedding model",
-          "url": "https://blog.google/innovation-and-ai/technology/developers-tools/embeddinggemma-2/",
-          "publisher": "blog.google",
-          "published_at": "2026-10-06T00:00:00+00:00",
-          "evidence_type": "article_excerpt",
-          "discussion_points": 435,
-          "discovery_channel": "Hacker News link to primary source",
-          "topic": "Other"
-        },
-        {
-          "id": "news-2167384f51e2",
-          "title": "The Den frees up 10-15 hours a week to grow with ChatGPT Work",
-          "url": "https://openai.com/index/the-den-family-social",
-          "publisher": "OpenAI",
-          "published_at": "2026-10-01T00:00:00+00:00",
-          "evidence_type": "feed_excerpt",
-          "topic": "RAG"
-        }
-      ],
-      "id": "169f9a7d9684b888"
-    },
     {
       "date": "2026-10-10",
       "timezone": "America/New_York",
@@ -3891,6 +3665,237 @@
         }
       ],
       "id": "3dc79b6ea09dee33"
+    },
+    {
+      "date": "2026-10-26",
+      "timezone": "America/New_York",
+      "created_at": "2026-10-26T17:24:57.004264+00:00",
+      "topic": "RAG",
+      "language": "en",
+      "concept": "Why citations need checking",
+      "news_window": "recent",
+      "source_warnings": [
+        {
+          "publisher": "Google DeepMind",
+          "reason": "ParseError"
+        }
+      ],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "Why citations need checking: RAG grounds answers, but grounding isn't proof",
+        "summary": "Retrieval-Augmented Generation (RAG) lets a language model pull documents from an external index and generate answers grounded in them. This improves factuality and provides provenance, but a retrieved source is not automatically a correct source — the model can still misread it, cite something irrelevant, or lean on stale content. Checking citations remains a human and pipeline responsibility.",
+        "story": "Priya is a junior analyst preparing a briefing for her manager. Her company gives her access to a huge library and a helpful assistant named Sam. Priya's workflow: she writes a question, a librarian fetches the ten most promising documents, and Sam writes a summary citing them. The first briefing goes well — every claim has a footnote. Then the manager asks a pointed question: 'Footnote 3 — did the report actually say that, or did you infer it?' Priya checks. The report said something adjacent, not the same thing. Sam had bridged the gap plausibly. A second footnote pointed to a 2019 policy that had since been superseded — the library kept old editions on the shelf. Sam's citations were real and honestly given; they just didn't prove what the summary implied. Priya adds a new habit: every footnote gets opened, and every date gets checked, before anything leaves her desk.",
+        "connection": "Map the story to RAG. Priya's question is the user query. The librarian is the retriever — in the RAG paper, a pre-trained neural retriever that queries a dense vector index of Wikipedia. Sam is the generator — a pre-trained seq2seq model that conditions on retrieved passages. The footnotes are provenance: the retrieved passages that influenced the generated text. The manager's pointed question is the verification step, and the outdated 2019 policy is the index-staleness problem.",
+        "explanation": "The original RAG paper (Lewis et al.) motivates the approach precisely: large pre-trained models store facts in their parameters, but their ability to access and precisely manipulate knowledge is limited, and providing provenance and updating world knowledge remain open problems. RAG combines parametric memory (the model's weights) with non-parametric memory (a document index), and the paper reports that RAG models generate more specific, diverse, and factual language than a parametric-only baseline, plus state-of-the-art results on open-domain QA. REALM takes a related route, attaching a latent knowledge retriever during pre-training and highlighting interpretability and modularity as benefits. But note what these papers claim: better grounding and more factual generation — not perfect citation fidelity. The generator still chooses which passages to use and how to phrase claims over them; one RAG variant even selects different passages per token, meaning provenance can be finer-grained than a single 'source' for the whole answer. A retrieved passage can be irrelevant, partially relevant, or outdated, and the generator can smooth over those gaps fluently. That's why citations are evidence to inspect, not certificates of truth.",
+        "application": "In a production RAG system, treat citation checking as a pipeline stage, not an afterthought. Practical moves: return the exact retrieved chunks to the user (not just document titles) so claims can be checked against the actual text the model saw; log retrieval scores and timestamps so stale or weakly-matched sources are visible; add an automated verification pass where a second model checks each generated claim against its cited chunk before display; and schedule index refreshes so superseded documents don't keep answering questions. For developers, this also means designing evaluation that measures citation faithfulness — does the claim match the chunk? — separately from answer fluency.",
+        "exercise": "Set a two-minute timer. Take any AI answer with a citation (or write a two-sentence answer from a document yourself). For one citation, ask three questions: (1) Does the source actually state the claim, or something adjacent? (2) When was the source created, and is it still current? (3) Did the answer omit a caveat the source included? Write down one sentence on what you found.",
+        "question": "In RAG, what does a citation prove, and what does it not prove?",
+        "answer": "It proves which retrieved passages the system had access to and used as context for the answer. It does not prove the claim is correct — the passage could be misread, irrelevant, or outdated, so the citation still needs to be checked against the claim.",
+        "limits": "The library analogy understates a real difference: Sam the assistant reads documents roughly the way Priya does, while a RAG generator is a statistical model that can blend parametric knowledge with retrieved text in ways no human reader would. The analogy also makes the librarian look like a neutral gatekeeper; in practice retriever quality, chunking choices, and index contents silently shape what's available, and those failures are harder to spot than a wrong footnote. Finally, the papers cited report benchmark results on specific QA and generation tasks — they don't establish how well citation checking works in your domain.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "RAG in the wild: legal knowledge at AT&T and grounded document review from Google",
+        "overview": "Two recent items show retrieval-grounded AI moving into high-stakes document workflows — one a corporate legal deployment described by OpenAI, the other a public document-verification tool from Google Research. Both underline this pill's theme: grounding answers in sources is valuable, but the sources and the claims over them still need verification.",
+        "items": [
+          {
+            "headline": "AT&T's LegalEdge team works with OpenAI on legal knowledge access",
+            "what_happened": "According to an OpenAI-published post, AT&T is working with OpenAI so its LegalEdge team can make legal knowledge easier to access, rethinking intake and scaling legal judgment. The source is a feed excerpt, so only the publisher's summary is available here — the underlying article was not read in full, and no technical details of the system are described in the excerpt.",
+            "why_it_matters": "Legal work is a classic knowledge-intensive domain: answers must be traceable to specific policies, precedents, or contracts, which is exactly where RAG-style grounding helps. For a developer, the use case is an internal assistant where an employee's question retrieves the relevant company policy and the answer cites it — faster intake without replacing the lawyer's judgment. Think of it as a librarian-plus-drafter for a firm's own document shelf.",
+            "takeaway": "This is a publisher's description of a partnership, not an independent evaluation, and the excerpt doesn't say how accuracy or citation fidelity are verified. Before modeling your own legal-intake tool on it, inspect what the full article says about retrieval sources, human review steps, and how legal judgment is kept in the loop.",
+            "source_ids": [
+              "news-39cad894cdd2"
+            ]
+          },
+          {
+            "headline": "Google Research publicly releases Deep Review for grounded document verification",
+            "what_happened": "Google Research announced the public launch of Deep Review, an agentic AI system for technical verification of complex documents. Evolved from the Paper Assistant Tool (PAT), which gave opt-in pre-submission feedback on 16,000+ manuscripts across four computer science conference pilots, it now targets documents beyond papers — including Google Docs, presentations, and legal and financial documents. The pipeline segments the document, allocates compute per section, runs parallel verification agents with full-document context, then synthesizes reports with external grounding checks. Access is tiered: two free reviews weekly, or higher limits via a Gemini API key; PDFs and plain text are supported initially, and uploaded documents are stated not to be used for training.",
+            "why_it_matters": "Deep Review attacks the validation bottleneck: content is generated faster than humans can verify it. A concrete developer use case is running it (or the described pattern) over a design document to catch unstated assumptions, or over a contract draft to flag inconsistent clauses — the same citation-checking discipline from this pill, automated. It's essentially a team of tireless reviewers who each read one section but share the whole file.",
+            "takeaway": "The pilot statistics and author reactions come from Google's own blog post — publisher claims, not independent benchmarks — and the post itself says higher-level judgments stay with humans. Before trying it, inspect the data policy details (one-year storage of uploads is stated), the supported input formats, and how its grounding checks perform on your document type rather than academic papers.",
+            "source_ids": [
+              "news-6c3fa003d587"
+            ]
+          }
+        ],
+        "exercise": "Set a two-minute timer. Open the Deep Review blog post and find one claim about its pilot results (for example, the number of manuscripts or the conferences involved). Note whether the claim is backed by a linked paper or retrospective, and write one sentence on what evidence you'd want before trusting the tool on your own documents.",
+        "question": "Both news items involve grounding AI outputs in documents. What limitation should you check before trusting either system's citations?",
+        "answer": "That the citations actually support the claims: both items are publisher descriptions (one only a feed excerpt), so you should verify how each system retrieves sources, whether claims are checked against the retrieved text, and where human review remains — grounding shown in a vendor post isn't independent proof of accuracy."
+      },
+      "usage": {
+        "prompt_tokens": 3496,
+        "total_tokens": 5477,
+        "completion_tokens": 1981,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-39cad894cdd2",
+          "title": "How AT&T is rethinking in-house legal work with OpenAI",
+          "url": "https://openai.com/index/att-legal",
+          "publisher": "OpenAI",
+          "published_at": "2026-10-21T17:00:00+00:00",
+          "evidence_type": "feed_excerpt",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-6c3fa003d587",
+          "title": "Analyzing technical documents with Deep Review",
+          "url": "https://research.google/blog/analyzing-technical-documents-with-deep-review/",
+          "publisher": "Google Research",
+          "published_at": "2026-10-14T16:14:00+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "RAG"
+        }
+      ],
+      "id": "f6d64a886f65724d"
+    },
+    {
+      "date": "2026-10-26",
+      "timezone": "America/New_York",
+      "created_at": "2026-10-26T17:24:57.004264+00:00",
+      "topic": "RAG",
+      "language": "te",
+      "concept": "Why citations need checking",
+      "news_window": "recent",
+      "source_warnings": [
+        {
+          "publisher": "Google DeepMind",
+          "reason": "ParseError"
+        }
+      ],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "RAG లో citations ఎందుకు తనిఖీ చేయాలి",
+        "summary": "Retrieval-Augmented Generation (RAG) మోడల్స్ సమాధానాలను బయటి documents ఆధారంగా ఇస్తాయి, కాబట్టి provenance (మూలం) చూపించగలవు. కానీ citation ఉండటం అంటే ఆ మూలం నిజంగా claim కి support చేస్తుందని కాదు — retrieval తప్పు document ని తీసుకురావచ్చు, లేదా generation ఆ document లో లేని విషయం చెప్పవచ్చు. అందుకే citations ని ఒక feature లా కాక, తనిఖీ చేయాల్సిన output లా చూడాలి.",
+        "story": "ఒక ఊరిలో లైబ్రరీ అసిస్టెంట్ అయిన రాము ఉన్నాడు. అతను చాలా పుస్తకాలు చదివి ఉంటాడు, కానీ ప్రశ్న వచ్చినప్పుడు తన జ్ఞాపకం మీద ఆధారపడకుండా, సరైన పుస్తకం తీసుకుని, సంబంధిత page తెరిచి, అది చదివి సమాధానం ఇస్తాడు. ఒకరోజు ఒక విద్యార్థి 'ఈ సమాధానం ఎక్కడ నుంచి వచ్చింది?' అని అడిగాడు. రాము పుస్తకం, page నంబర్ చూపించాడు. విద్యార్థి ఆ page చదివితే — రాము చెప్పిన వివరాల్లో సగం అక్కడ లేదు. రాము సరైన పుస్తకం తీసుకున్నాడు కానీ, తన ఊహలు కలిపి చెప్పేశాడు. మరోసారి, పుస్తకమే తప్పు — పాత edition, నియమం మారిపోయింది. Citation చూపించడం, citation నిజంగా claim కి ఆధారం కావడం — ఇవి రెండు వేర్వేరు విషయాలు.",
+        "connection": "ఈ కథలో రాము = RAG system. అతని జ్ఞాపకం = parametric memory (model parameters లో దాచిన జ్ఞానం). లైబ్రరీ = non-parametric memory (Wikipedia లాంటి document index). పుస్తకం తీసుకురావడం = retrieval. చదివి సమాధానం ఇవ్వడం = generation. Citation చూపించడం = provenance. విద్యార్థి page చదవడం = citation verification.",
+        "explanation": "RAG ప్రారంభ పరిశోధనలు — Lewis తదితరుల RAG paper (2005.11401) మరియు REALM (2002.08909) — ఎందుకు ఈ approach అవసరమో వివరిస్తాయి. పెద్ద language models వాస్తవాలను parameters లో store చేస్తాయి, కానీ ఆ జ్ఞానాన్ని precisely access చేయడం, provenance ఇవ్వడం, కొత్త సమాచారంతో update చేయడం — ఇవి open problems గా ఉన్నాయి. RAG దీనికి పరిష్కారం: pre-trained seq2seq model (parametric memory) + dense vector index (non-parametric memory) ని retriever తో కలుపుతుంది. REALM కూడా latent knowledge retriever తో pre-training చేసి, interpretability మరియు modularity లాంటి లబ్ధాలను చూపింది. Interpretability అంటే — model ఏ document ఆధారంగా మాట్లాడుతుందో చూడగలం. కానీ ఇది potential, guarantee కాదు. Retriever సరైన document ని తీసుకురావచ్చు లేదా తీసుకురాకపోవచ్చు; generator ఆ document లో ఉన్న దానికి, లేని దానికి రెండింటికీ ఆ మూలాన్ని cite చేయగలదు. అందుకే RAG systems లో citation ఒక signal మాత్రమే — దాన్ని verify చేయకపోతే అది నమ్మకానికి ఆధారం కాదు.",
+        "application": "మీరు internal docs మీద RAG chatbot build చేస్తున్నారనుకోండి. Practical చర్యలు: (1) ప్రతి answer తో retrieved passages ని UI లో చూపించండి, కానీ 'sources' అని లేబుల్ చేసినప్పుడు అవి 'answer కి ఆధారం' అని చెప్పకండి — 'retrieved context' అని చెప్పండి. (2) Evaluation set లో answer మాత్రమే కాదు, citation support ని కూడా కొలవండి: ఒక judge (మనిషి లేదా జాగ్రత్తగా design చేసిన automated check) 'ఈ passage లో ఈ claim నిజంగా ఉందా?' అని చూస్తుంది. (3) Retrieval quality ని విడిగా test చేయండి — generation కంటే ముందు retrieval fail అయితే, మంచి generation కూడా తప్పు మూలాన్ని cite చేస్తుంది.",
+        "exercise": "రెండు నిమిషాలు: మీరు వాడే ఏదైనా AI tool నుంచి source లు చూపించే ఒక answer తీసుకోండి (లేదా ఒక ముక్క రాసి, దానికి మీరు చెప్పే ఒక source జోడించండి). ఒక్క claim ని ఎంచుకుని, ఆ source ని తెరిచి, ఈ మూడు ప్రశ్నలు అడగండి: (1) ఈ source నిజంగా ఆ claim ని support చేస్తుందా? (2) Source తాజాదా — సమాచారం మారిందా? (3) Claim లో source కంటే ఎక్కువ చెప్తున్నారా (over-claiming)? మీ గమనింపులను ఒక వాక్యంలో రాయండి.",
+        "question": "RAG system ఒక answer తో పాటు document citation చూపిస్తే, ఆ citation ఆమోదించదగినది అవ్వడానికి ముందు ఏం తనిఖీ చేయాలి?",
+        "answer": "రెండు విషయాలు: (1) Retrieval relevance — ఆ document నిజంగా ప్రశ్నకి సంబంధించినదా, తాజాదా. (2) Support — answer లోని claim ఆ document లో నిజంగా ఉందా, లేదా model దాన్ని వివరించి చెప్పిందా/ఊహించిందా. Citation ఉండటం provenance కి అవకాశం మాత్రమే; verification పూర్తయితేనే అది నమ్మదగిన ఆధారం.",
+        "limits": "ఈ analogy కి పరిమితులు: రాము ఒకేసారి ఒక పుస్తకం చదువుతాడు, కానీ కొన్ని RAG formulations (Lewis తదితరుల paper లో వివరించినట్టు) token-by-token వేర్వేరు passages ని వాడతాయి — అంటే ఒక answer లో వివిధ భాగాలకి వివిధ మూలాలు ఉండవచ్చు. అలాగే, 'citation check' అనేది స్వయంగా ఒక model task — దానికీ తప్పులు రావచ్చు. ఈ papers లోని benchmark results నిర్దిష్ట tasks కి సంబంధించినవి; అవి మీ use case లో అదే ఫలితాలను ఇస్తాయని హామీ లేదు.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "RAG సంబంధిత తాజా అభివృద్ధులు",
+        "overview": "ఈ వారం RAG-సంబంధిత రెండు వార్తా అంశాలు: AT&T legal knowledge access, మరియు Google Research యొక్క Deep Review document verification system. రెండూ ఒకే సూత్రాన్ని గుర్తు చేస్తాయి — మూలాల ఆధారంగా సమాచారం ఇవ్వడం అంతే కాదు, దాన్ని verify చేయడం కూడా ముఖ్యం.",
+        "items": [
+          {
+            "headline": "AT&T, OpenAI తో కలిసి legal knowledge access ని సులభతరం చేస్తోంది",
+            "what_happened": "OpenAI ప్రచురించిన blog post ప్రకారం (2026 అక్టోబర్ 21), AT&T యొక్క LegalEdge team legal knowledge ని సులభంగా access చేయడానికి OpenAI తో పని చేస్తోంది. Post లో intake process ని మార్చడం మరియు legal judgment ని scale చేయడం గురించి పేర్కొన్నారు. గమనిక: మా దగ్గర ఉన్నది feed excerpt మాత్రమే — పూర్తి వ్యాసం చదవలేదు, కాబట్టి ఇది publisher చెప్పిన దాని సారాంశం.",
+            "why_it_matters": "Legal teams లో సమాచారం అనేది ఎక్కువగా documents లో ఉంటుంది — policies, contracts, precedents. ఇది సహజంగానే retrieval-based systems కి సరిపోయే use case. Developer కోసం analogy: ఇది 'well-organized library తో assistant' లాంటిది — assistant ఎంత తెలివైనా, లైబ్రరీ లో ఏ page తెరిచాడో చూడటం (citation verification) అవసరం. Legal context లో తప్పు citation యొక్క ఖరీదు ఎక్కువ, కాబట్టి provenance checking ఇక్కడ ప్రధానం.",
+            "takeaway": "Publisher చెప్పినది ఒక భాగస్వామ్యం గురించి మాత్రమే; ఫలితాలు, accuracy, లేదా deployment scale గురించి మా దగ్గర స్వతంత్ర ఆధారాలు లేవు. ఇలాంటి setup ని try చేసే ముందు: ఏ documents వాడారు, citations ఎలా చూపిస్తారు, legal review process లో human oversight ఎలా ఉందో పూర్తి post లో చూడండి.",
+            "source_ids": [
+              "news-39cad894cdd2"
+            ]
+          },
+          {
+            "headline": "Google Research, Deep Review ని public గా విడుదల చేసింది",
+            "what_happened": "Google Research blog (2026 అక్టోబర్ 14) ప్రకారం, Deep Review అనే agentic system ఇప్పుడు public గా అందుబాటులో ఉంది. ఇది complex documents — research papers తో పాటు legal, finance, design docs — మీద structured feedback ఇస్తుంది: logical consistency checks, fact grounding, existing work తో comparison. ఇది గతంలో Paper Assistant Tool (PAT) పేరుతో STOC 2026, ICML 2026, NeurIPS 2026, ICLR 2027 conferences లో 16,000+ submissions కి pilot చేయబడిందని publisher చెప్పారు. Pipeline నాలుగు stages లో పని చేస్తుంది: document segmentation, adaptive compute budgeting, parallel verification agents, మరియు grounding checks తో global synthesis. వాడుకరులకు వారానికి రెండు free reviews, Gemini API key తో ఎక్కువ limits; PDF మరియు plain text formats support ఉన్నాయి.",
+            "why_it_matters": "ఇది ఈ వారం knowledge pill యొక్క ముఖ్యాంశాన్నే ప్రతిబింబిస్తుంది: content generation వేగంగా పెరిగినప్పుడు, verification capacity అడ్డుగా మారుతుంది. Developer use case: మీ design document ని పంపే ముందు unstated assumptions మరియు logical gaps ని పట్టుకోవడం, లేదా CI workflow లో API ద్వారా document checks పరుగెల్పించడం. Analogy: ఇది 'second reader' లాంటిది — మీ పనిని మొత్తంగా భర్తీ చేయదు, కానీ మీరు miss అయిన స్థానిక అంచనా వేయకుండా చూస్తుంది.",
+            "takeaway": "ఇది Google యొక్క product announcement — ఫలితాలను publisher నే నివేదించారు, స్వతంత్ర verification లేదు. Pilot feedback 'extremely positive' అని publisher చెప్పారు, కానీ అది author opt-in feedback మాత్రమే. Try చేసే ముందు: మీ document type కి ఎలా పని చేస్తుందో చిన్న sample మీద test చేయండి, privacy policy (documents ఒక సంవత్సరం storage అని, training కి వాడనని publisher చెప్పారు) ని మీ సంస్థ నియమాలతో సరిపోల్చండి, మరియు grounding checks ఎంతవరకు hallucinations ని నివారిస్తాయో మీ సొంత కేసులతో కొలవండి.",
+            "source_ids": [
+              "news-6c3fa003d587"
+            ]
+          }
+        ],
+        "exercise": "రెండు నిమిషాల source-check: Deep Review blog post ని తెరవండి (లేదా ఏదైనా product announcement తీసుకోండి). ఈ మూడు ప్రశ్నలకు సమాధానం రాయండి: (1) ఏ ఫలితాలు publisher చెప్పారు, ఏవి స్వతంత్రంగా verify చేయబడ్డాయి? (2) Pilot లో ఎవరు participate చేశారు, selection bias ఉందా? (3) మీ use case కి ఏ limitations ముఖ్యం — formats, privacy, cost?",
+        "question": "Deep Review యొక్క pilot results గురించి మనం ఏ జాగ్రత్తతో ఉండాలి?",
+        "answer": "Pilot results publisher (Google) చెప్పినవే — అవి opt-in చేసిన authors యొక్క feedback ఆధారంగా ఉన్నాయి, స్వతంత్ర evaluation కాదు. అంతేకాక, మా దగ్గర ఉన్నది article excerpt; పూర్తి methodology మరియు evaluation details కోసం preprint ని చూడాలి. ఏదైనా tool ని మీ సొంత documents మీద test చేయకుండా నమ్మకూడదు."
+      },
+      "usage": {
+        "prompt_tokens": 3496,
+        "completion_tokens": 8123,
+        "total_tokens": 11619,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": null,
+          "reasoning_tokens": 28,
+          "rejected_prediction_tokens": null
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-39cad894cdd2",
+          "title": "How AT&T is rethinking in-house legal work with OpenAI",
+          "url": "https://openai.com/index/att-legal",
+          "publisher": "OpenAI",
+          "published_at": "2026-10-21T17:00:00+00:00",
+          "evidence_type": "feed_excerpt",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-6c3fa003d587",
+          "title": "Analyzing technical documents with Deep Review",
+          "url": "https://research.google/blog/analyzing-technical-documents-with-deep-review/",
+          "publisher": "Google Research",
+          "published_at": "2026-10-14T16:14:00+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "RAG"
+        }
+      ],
+      "id": "8fcb28740f44d9f6"
     }
   ]
 }
