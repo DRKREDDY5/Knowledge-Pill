@@ -1,14 +1,63 @@
 {
   "schema_version": 1,
   "task": "ai_headlines",
-  "checked_at": "2026-10-26T17:24:57.004264+00:00",
+  "checked_at": "2026-10-27T16:42:21.947237+00:00",
   "items": [
+    {
+      "id": "news-393575ee7d83",
+      "title": "Genie 4: A new generation of world simulation",
+      "url": "https://deepmind.google/blog/genie-4-a-new-generation-of-world-simulation/",
+      "publisher": "Google DeepMind",
+      "published_at": "2026-10-27T16:01:38+00:00"
+    },
+    {
+      "id": "news-a9c488820a62",
+      "title": "Greptile takes bug detection beyond code review with GPT-6 Astra",
+      "url": "https://openai.com/index/greptile-code-review-codex-astra",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-26T22:00:00+00:00"
+    },
+    {
+      "id": "news-8eb6001a836a",
+      "title": "Working with academic communities to build scientific understanding",
+      "url": "https://openai.com/index/building-scientific-understanding-with-academic-communities",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-26T14:30:00+00:00"
+    },
+    {
+      "id": "news-7d972df501d0",
+      "title": "GPT-6.1 Sol helps CodeRabbit strengthen security across complex codebases",
+      "url": "https://openai.com/index/gpt-6-1-sol-coderabbit-code-security",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-26T13:45:00+00:00"
+    },
+    {
+      "id": "news-27334100e818",
+      "title": "ChatGPT’s expanding world of work",
+      "url": "https://openai.com/index/chatgpt-expanding-world-of-work",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-26T10:00:00+00:00"
+    },
     {
       "id": "news-7e73eebe3e90",
       "title": "How Fanatics and OpenAI streamline the fan experience",
       "url": "https://openai.com/index/fanatics-streamline-fan-experience",
       "publisher": "OpenAI",
       "published_at": "2026-10-26T07:00:00+00:00"
+    },
+    {
+      "id": "news-742d30efdc40",
+      "title": "How Ultrafast cut incident investigation from hours to minutes at OpenAI",
+      "url": "https://openai.com/index/openai-cut-incident-investigation",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-26T07:00:00+00:00"
+    },
+    {
+      "id": "news-35e334c19874",
+      "title": "Introducing GPT-6.1 Terra",
+      "url": "https://openai.com/index/introducing-gpt-6-1-terra",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-26T00:00:00+00:00"
     },
     {
       "id": "news-32ef7801f580",
@@ -37,55 +86,6 @@
       "url": "https://huggingface.co/blog/torch-neuronx-model-support",
       "publisher": "Hugging Face",
       "published_at": "2026-10-23T00:00:00+00:00"
-    },
-    {
-      "id": "news-1a543055a02f",
-      "title": "OpenAI and Poland’s NASK partner to advance AI safety and security",
-      "url": "https://openai.com/index/openai-nask-ai-safety-security-partnership",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-23T00:00:00+00:00"
-    },
-    {
-      "id": "news-891b7e0bbf66",
-      "title": "Build more responsive apps with the Decisions API",
-      "url": "https://openai.com/index/decisions-api",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-22T19:00:00+00:00"
-    },
-    {
-      "id": "news-6400feb68147",
-      "title": "What FDE means at OpenAI",
-      "url": "https://openai.com/index/forward-deployed-engineering-means",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-22T06:00:00+00:00"
-    },
-    {
-      "id": "news-eda525050cea",
-      "title": "Uber brings ChatGPT Work to all employees with OpenAI",
-      "url": "https://openai.com/index/uber-chatgpt-work-rollout",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-22T00:00:00+00:00"
-    },
-    {
-      "id": "news-3f1a11956436",
-      "title": "Broad access through consistent standards",
-      "url": "https://openai.com/index/broad-access-through-consistent-standards",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-21T21:00:00+00:00"
-    },
-    {
-      "id": "news-39cad894cdd2",
-      "title": "How AT&T is rethinking in-house legal work with OpenAI",
-      "url": "https://openai.com/index/att-legal",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-21T17:00:00+00:00"
-    },
-    {
-      "id": "news-3bfcd79e09f1",
-      "title": "Empowering frontline maternal care with AI-assisted ultrasound",
-      "url": "https://research.google/blog/empowering-frontline-maternal-care-with-ai-assisted-ultrasound/",
-      "publisher": "Google Research",
-      "published_at": "2026-10-21T16:23:53+00:00"
     }
   ]
 }
