@@ -1,14 +1,35 @@
 {
   "schema_version": 1,
   "task": "ai_headlines",
-  "checked_at": "2026-10-29T17:26:41.692221+00:00",
+  "checked_at": "2026-10-30T17:02:09.308928+00:00",
   "items": [
+    {
+      "id": "news-a86d24c59c82",
+      "title": "Community safety report and new protections for teens",
+      "url": "https://openai.com/index/community-safety-report-and-new-protections-for-teens",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-30T09:00:00+00:00"
+    },
+    {
+      "id": "news-9349f418e7bc",
+      "title": "An updated Model Spec for more capable and beneficial AI",
+      "url": "https://openai.com/index/updated-model-spec",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-29T17:00:00+00:00"
+    },
     {
       "id": "news-0f01adb2acab",
       "title": "How we detect frontier model misalignment",
       "url": "https://openai.com/index/how-we-detect-frontier-model-misalignment",
       "publisher": "OpenAI",
       "published_at": "2026-10-29T09:00:00+00:00"
+    },
+    {
+      "id": "news-d948735545c2",
+      "title": "How Ropes & Gray is developing AI for transactional diligence",
+      "url": "https://openai.com/index/ropes-gray-ai-diligence",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-29T07:00:00+00:00"
     },
     {
       "id": "news-718617961cab",
@@ -29,6 +50,13 @@
       "title": "Introducing AnySpeechRecognizer and AnyDecisionModel: Open Models for Speech and Decisions on Apple Platforms",
       "url": "https://huggingface.co/blog/anydecisionmodel",
       "publisher": "Hugging Face",
+      "published_at": "2026-10-29T00:00:00+00:00"
+    },
+    {
+      "id": "news-85f94c0fe8f0",
+      "title": "Credit Saison achieves 954% ROI in a ChatGPT Enterprise pilot",
+      "url": "https://openai.com/index/credit-saison",
+      "publisher": "OpenAI",
       "published_at": "2026-10-29T00:00:00+00:00"
     },
     {
@@ -58,34 +86,6 @@
       "url": "https://openai.com/index/legora",
       "publisher": "OpenAI",
       "published_at": "2026-10-28T09:30:00+00:00"
-    },
-    {
-      "id": "news-b49ec3bd8394",
-      "title": "The sleep framework: A new way for LLMs to retain knowledge in continual learning",
-      "url": "https://research.google/blog/the-sleep-framework-a-new-way-for-llms-to-retain-knowledge-in-continual-learning/",
-      "publisher": "Google Research",
-      "published_at": "2026-10-27T17:35:00+00:00"
-    },
-    {
-      "id": "news-393575ee7d83",
-      "title": "Genie 4: A new generation of world simulation",
-      "url": "https://deepmind.google/blog/genie-4-a-new-generation-of-world-simulation/",
-      "publisher": "Google DeepMind",
-      "published_at": "2026-10-27T16:01:38+00:00"
-    },
-    {
-      "id": "news-1e3ebf94e41e",
-      "title": "Retell uses OpenAI models to help power 100M monthly calls",
-      "url": "https://openai.com/index/retell-ai",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-27T15:00:00+00:00"
-    },
-    {
-      "id": "news-c417f8e3d39d",
-      "title": "OpenAI expands partnership with Oracle to bring its apps to ChatGPT",
-      "url": "https://openai.com/index/oracle-apps-in-chatgpt",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-27T07:00:00+00:00"
     }
   ]
 }
