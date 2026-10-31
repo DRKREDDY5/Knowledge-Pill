@@ -1,14 +1,28 @@
 {
   "schema_version": 1,
   "task": "ai_headlines",
-  "checked_at": "2026-10-30T17:02:09.308928+00:00",
+  "checked_at": "2026-10-31T16:08:27.280868+00:00",
   "items": [
+    {
+      "id": "news-84abd1857de5",
+      "title": "Making it easier for websites to express AI training preferences",
+      "url": "https://openai.com/index/helping-websites-express-ai-training-preferences",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-30T09:30:00+00:00"
+    },
     {
       "id": "news-a86d24c59c82",
       "title": "Community safety report and new protections for teens",
       "url": "https://openai.com/index/community-safety-report-and-new-protections-for-teens",
       "publisher": "OpenAI",
       "published_at": "2026-10-30T09:00:00+00:00"
+    },
+    {
+      "id": "news-574dbaf7fc87",
+      "title": "Fair use benefits everyone",
+      "url": "https://openai.com/index/fair-use-benefits-everyone",
+      "publisher": "OpenAI",
+      "published_at": "2026-10-30T00:00:00+00:00"
     },
     {
       "id": "news-9349f418e7bc",
@@ -72,20 +86,6 @@
       "url": "https://openai.com/index/openai-servicenow-partnership-expansion",
       "publisher": "OpenAI",
       "published_at": "2026-10-28T13:15:00+00:00"
-    },
-    {
-      "id": "news-e2ed7680c50a",
-      "title": "The future of the firm",
-      "url": "https://openai.com/index/the-future-of-the-firm",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-28T10:00:00+00:00"
-    },
-    {
-      "id": "news-709cc8e2bd46",
-      "title": "Legora is building the agentic operating system for legal work",
-      "url": "https://openai.com/index/legora",
-      "publisher": "OpenAI",
-      "published_at": "2026-10-28T09:30:00+00:00"
     }
   ]
 }
