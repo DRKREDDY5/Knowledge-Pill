@@ -1,14 +1,56 @@
 {
   "schema_version": 1,
   "task": "ai_headlines",
-  "checked_at": "2026-11-03T18:27:44.815245+00:00",
+  "checked_at": "2026-11-04T18:40:00.819514+00:00",
   "items": [
+    {
+      "id": "news-43862ef771df",
+      "title": "Progress on provable inference for large language models",
+      "url": "https://www.anthropic.com/research/provable-inference",
+      "publisher": "www.anthropic.com",
+      "published_at": "2026-11-02T00:00:00+00:00"
+    },
+    {
+      "id": "news-09c40cbdb759",
+      "title": "Agile Deliberation: How AI helps humans define the gray areas",
+      "url": "https://research.google/blog/agile-deliberation-how-ai-helps-humans-define-the-gray-areas/",
+      "publisher": "Google Research",
+      "published_at": "2026-11-04T18:07:05+00:00"
+    },
+    {
+      "id": "news-1be4fdd8e6ca",
+      "title": "OpenAI to acquire Pierre Computer Company, Inc.",
+      "url": "https://openai.com/index/openai-to-acquire-pierre",
+      "publisher": "OpenAI",
+      "published_at": "2026-11-04T14:30:00+00:00"
+    },
+    {
+      "id": "news-a3433e936d2c",
+      "title": "Daybreak Red is now available in AWS GovCloud (US-East)",
+      "url": "https://openai.com/index/daybreak-red-aws-govcloud",
+      "publisher": "OpenAI",
+      "published_at": "2026-11-04T07:00:00+00:00"
+    },
     {
       "id": "news-da38bc697163",
       "title": "Agentic cheminformatics with Google Antigravity",
       "url": "https://deepmind.google/blog/agentic-cheminformatics-with-google-antigravity/",
       "publisher": "Google DeepMind",
       "published_at": "2026-11-03T17:01:49+00:00"
+    },
+    {
+      "id": "news-25493a43cba5",
+      "title": "Accelerating engineering for the physical world",
+      "url": "https://openai.com/index/accelerating-engineering-for-the-physical-world",
+      "publisher": "OpenAI",
+      "published_at": "2026-11-03T12:00:00+00:00"
+    },
+    {
+      "id": "news-34e7d6261520",
+      "title": "How Cisco defends at machine speed with OpenAI",
+      "url": "https://openai.com/index/cisco-cyber",
+      "publisher": "OpenAI",
+      "published_at": "2026-11-03T08:00:00+00:00"
     },
     {
       "id": "news-fc87a45dcfbf",
@@ -32,11 +74,11 @@
       "published_at": "2026-11-03T00:00:00+00:00"
     },
     {
-      "id": "news-0d297090385a",
-      "title": "Preparing our next security sprint to harden OpenAI",
-      "url": "https://openai.com/index/preparing-our-next-security-sprint-to-harden-openai",
+      "id": "news-019edb616369",
+      "title": "OpenAI appoints Jill Hazelbaker as Chief Corporate Affairs Officer",
+      "url": "https://openai.com/index/jill-hazelbaker-chief-corporate-affairs-officer",
       "publisher": "OpenAI",
-      "published_at": "2026-11-02T18:00:00+00:00"
+      "published_at": "2026-11-03T00:00:00+00:00"
     },
     {
       "id": "news-bca108e4c77b",
@@ -44,48 +86,6 @@
       "url": "https://openai.com/index/rewarding-defenders-with-bigger-bug-bounties",
       "publisher": "OpenAI",
       "published_at": "2026-11-02T18:00:00+00:00"
-    },
-    {
-      "id": "news-277870ffc8d7",
-      "title": "Scaling Git at OpenAI",
-      "url": "https://openai.com/index/scaling-git-at-openai",
-      "publisher": "OpenAI",
-      "published_at": "2026-11-02T15:30:00+00:00"
-    },
-    {
-      "id": "news-5d33ed0c66ac",
-      "title": "Introducing the Grid Protectors Program",
-      "url": "https://openai.com/index/grid-protectors-program",
-      "publisher": "OpenAI",
-      "published_at": "2026-11-02T15:00:00+00:00"
-    },
-    {
-      "id": "news-5a014341bc3f",
-      "title": "LifeVal",
-      "url": "https://openai.com/index/lifeval",
-      "publisher": "OpenAI",
-      "published_at": "2026-11-02T09:00:00+00:00"
-    },
-    {
-      "id": "news-945f879ef3a4",
-      "title": "OpenAI appoints Dan Driscoll as Senior Counselor for National Security Modernization",
-      "url": "https://openai.com/index/dan-driscoll-joins-openai",
-      "publisher": "OpenAI",
-      "published_at": "2026-11-02T00:00:00+00:00"
-    },
-    {
-      "id": "news-4094d4340f9e",
-      "title": "Qodo builds context into AI code review with Codex",
-      "url": "https://openai.com/index/qodo-codex-plugin",
-      "publisher": "OpenAI",
-      "published_at": "2026-11-02T00:00:00+00:00"
-    },
-    {
-      "id": "news-1b296d8bb115",
-      "title": "Speeding up planning decisions with AI",
-      "url": "https://deepmind.google/blog/speeding-up-planning-decisions-with-ai/",
-      "publisher": "Google DeepMind",
-      "published_at": "2026-10-30T14:18:30+00:00"
     }
   ]
 }
