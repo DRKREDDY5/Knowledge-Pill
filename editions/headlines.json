@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "task": "ai_headlines",
-  "checked_at": "2026-11-04T18:40:00.819514+00:00",
+  "checked_at": "2026-11-05T18:46:48.326107+00:00",
   "items": [
     {
       "id": "news-43862ef771df",
@@ -9,6 +9,34 @@
       "url": "https://www.anthropic.com/research/provable-inference",
       "publisher": "www.anthropic.com",
       "published_at": "2026-11-02T00:00:00+00:00"
+    },
+    {
+      "id": "news-f09d7876c1e9",
+      "title": "Gemini Omni 1.2 Flash: Fast and cost-effective with longer clips",
+      "url": "https://deepmind.google/blog/gemini-omni-12-flash-fast-and-cost-effective-with-longer-clips/",
+      "publisher": "Google DeepMind",
+      "published_at": "2026-11-05T17:05:16+00:00"
+    },
+    {
+      "id": "news-6e85f4370dc4",
+      "title": "Detecting signs of hypertension using wearable sensors",
+      "url": "https://research.google/blog/detecting-signs-of-hypertension-using-wearable-sensors/",
+      "publisher": "Google Research",
+      "published_at": "2026-11-05T16:01:08+00:00"
+    },
+    {
+      "id": "news-25fa4dd18ec7",
+      "title": "Setting a new standard for responsible AI infrastructure",
+      "url": "https://openai.com/index/setting-new-standard-responsible-ai-infrastructure",
+      "publisher": "OpenAI",
+      "published_at": "2026-11-05T02:00:00+00:00"
+    },
+    {
+      "id": "news-c65c7708e939",
+      "title": "A Closer Look at Phonon TTS. Launching High-Quality On-Device Speech That Tops the Benchmarks.",
+      "url": "https://huggingface.co/blog/phonon-tts",
+      "publisher": "Hugging Face",
+      "published_at": "2026-11-05T00:00:00+00:00"
     },
     {
       "id": "news-09c40cbdb759",
@@ -25,6 +53,13 @@
       "published_at": "2026-11-04T14:30:00+00:00"
     },
     {
+      "id": "news-fbaa86a829ad",
+      "title": "A thousand fewer paths to root",
+      "url": "https://openai.com/index/a-thousand-fewer-paths-to-root",
+      "publisher": "OpenAI",
+      "published_at": "2026-11-04T08:00:00+00:00"
+    },
+    {
       "id": "news-a3433e936d2c",
       "title": "Daybreak Red is now available in AWS GovCloud (US-East)",
       "url": "https://openai.com/index/daybreak-red-aws-govcloud",
@@ -32,60 +67,25 @@
       "published_at": "2026-11-04T07:00:00+00:00"
     },
     {
+      "id": "news-295354ff422b",
+      "title": "Introducing Images 2.6",
+      "url": "https://openai.com/index/introducing-images-2-6",
+      "publisher": "OpenAI",
+      "published_at": "2026-11-04T00:00:00+00:00"
+    },
+    {
+      "id": "news-981785a01550",
+      "title": "DevRev delivers autonomous self-service with GPT-6.1 Sol",
+      "url": "https://openai.com/index/devrev-enterprise-self-service",
+      "publisher": "OpenAI",
+      "published_at": "2026-11-04T00:00:00+00:00"
+    },
+    {
       "id": "news-da38bc697163",
       "title": "Agentic cheminformatics with Google Antigravity",
       "url": "https://deepmind.google/blog/agentic-cheminformatics-with-google-antigravity/",
       "publisher": "Google DeepMind",
       "published_at": "2026-11-03T17:01:49+00:00"
-    },
-    {
-      "id": "news-25493a43cba5",
-      "title": "Accelerating engineering for the physical world",
-      "url": "https://openai.com/index/accelerating-engineering-for-the-physical-world",
-      "publisher": "OpenAI",
-      "published_at": "2026-11-03T12:00:00+00:00"
-    },
-    {
-      "id": "news-34e7d6261520",
-      "title": "How Cisco defends at machine speed with OpenAI",
-      "url": "https://openai.com/index/cisco-cyber",
-      "publisher": "OpenAI",
-      "published_at": "2026-11-03T08:00:00+00:00"
-    },
-    {
-      "id": "news-fc87a45dcfbf",
-      "title": "Heimstaden is changing residential real estate management with AI",
-      "url": "https://openai.com/index/heimstaden",
-      "publisher": "OpenAI",
-      "published_at": "2026-11-03T08:00:00+00:00"
-    },
-    {
-      "id": "news-63945bc79480",
-      "title": "CWE-bench v2: More coverage, quality, and transparency",
-      "url": "https://huggingface.co/blog/cwe-bench",
-      "publisher": "Hugging Face",
-      "published_at": "2026-11-03T00:00:00+00:00"
-    },
-    {
-      "id": "news-a6f54d325d31",
-      "title": "Transformers Model Integration Contracts",
-      "url": "https://huggingface.co/blog/transformers-mic",
-      "publisher": "Hugging Face",
-      "published_at": "2026-11-03T00:00:00+00:00"
-    },
-    {
-      "id": "news-019edb616369",
-      "title": "OpenAI appoints Jill Hazelbaker as Chief Corporate Affairs Officer",
-      "url": "https://openai.com/index/jill-hazelbaker-chief-corporate-affairs-officer",
-      "publisher": "OpenAI",
-      "published_at": "2026-11-03T00:00:00+00:00"
-    },
-    {
-      "id": "news-bca108e4c77b",
-      "title": "Rewarding defenders with bigger bug bounties",
-      "url": "https://openai.com/index/rewarding-defenders-with-bigger-bug-bounties",
-      "publisher": "OpenAI",
-      "published_at": "2026-11-02T18:00:00+00:00"
     }
   ]
 }
