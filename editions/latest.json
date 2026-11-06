@@ -1,278 +1,8 @@
 {
   "schema_version": 1,
   "task": "daily_pills_collection",
-  "updated_at": "2026-11-05T18:48:24.924884+00:00",
+  "updated_at": "2026-11-06T18:03:22.185316+00:00",
   "packets": [
-    {
-      "date": "2026-10-21",
-      "timezone": "America/New_York",
-      "created_at": "2026-10-21T15:58:32.377943+00:00",
-      "topic": "RAG",
-      "language": "en",
-      "concept": "Comparing retrieved passages",
-      "news_window": "recent",
-      "source_warnings": [
-        {
-          "publisher": "Google DeepMind",
-          "reason": "ParseError"
-        }
-      ],
-      "router_engine": "TF-IDF + logistic regression",
-      "schema_version": 1,
-      "task": "daily_pills",
-      "status": "draft",
-      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
-      "generation_method": "fireworks",
-      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
-      "knowledge": {
-        "title": "Comparing Retrieved Passages in RAG",
-        "summary": "Retrieval-augmented generation (RAG) pairs a pre-trained language model with an external, searchable memory of documents. A key design choice is how the generator uses multiple retrieved passages: conditioning on the same set of passages for the whole output, or selecting different passages for different parts of the answer. Understanding this comparison helps developers reason about why RAG answers differ in specificity and factuality from parametric-only models.",
-        "story": "Imagine Priya, a librarian who answers questions at a reference desk. A visitor asks a complicated question about local history. Priya walks to the archive, pulls out five folders, and reads them. In one approach, she keeps all five folders open on her desk and answers the whole question using only those five, no matter how the answer unfolds. In another approach, she starts with the five folders, but as she writes each sentence, she reaches back into the archive for a different folder that is most relevant to that specific sentence — one folder for the founding date, another for the flood of 1954, a third for the mayoral election. The first approach is simpler and faster; the second lets her cite the most precise source for each claim, but requires more trips and better judgment about when to swap sources.",
-        "connection": "Priya's two working styles map directly onto the two RAG formulations described in the RAG paper. The archive is the non-parametric memory — a dense vector index of Wikipedia accessed through a pre-trained neural retriever. Priya herself is the parametric memory: a pre-trained seq2seq model. Her first style, keeping the same five folders open for the entire answer, is the RAG formulation that conditions on the same retrieved passages across the whole generated sequence. Her second style, reaching for a different folder per sentence, is the formulation that can use different passages per token. The archive folders themselves are the retrieved passages being compared and selected from.",
-        "explanation": "The RAG paper (Lewis et al.) introduced two variants of retrieval-augmented generation. Both combine a pre-trained seq2seq generator with a dense vector index of Wikipedia queried by a pre-trained neural retriever. The difference lies in how retrieved passages are used during generation. In the first variant, one set of retrieved passages conditions the entire generated sequence — a single retrieval decision shapes the whole answer. In the second variant, retrieval happens at a finer granularity: different passages can inform different tokens, so the model can draw on different evidence as the answer progresses. The authors fine-tuned and evaluated both on knowledge-intensive NLP tasks, setting state-of-the-art results on three open-domain QA benchmarks and outperforming both parametric seq2seq models and task-specific retrieve-and-extract architectures. For generation tasks, RAG models produced more specific, diverse, and factual language than a parametric-only baseline. Related work on REALM (Guu et al.) showed that a latent knowledge retriever can be pre-trained in an unsupervised way using masked language modeling as the learning signal, backpropagating through a retrieval step over millions of documents, and reported significant accuracy gains on open-domain QA alongside interpretability and modularity benefits. Comparing retrieved passages — deciding which documents earn influence over the output, and at what granularity — is the mechanism that lets these systems stay grounded in external evidence rather than relying solely on facts compressed into model weights.",
-        "application": "When building a RAG system, the passage-comparison design shows up in your retriever and generator wiring. If your task has a single dominant evidence source per question — say, answering factual queries where one or two documents settle the matter — conditioning the whole generation on one retrieved set is simpler to implement, cheaper to serve, and easier to debug, because you can inspect exactly which passages produced an answer. If your answers synthesize multiple facets (a summary that touches on history, pricing, and support policy), a finer-grained approach where different parts of the output attend to different passages can improve precision, at the cost of more retrieval calls and more complex provenance tracking. In practice, start by logging which passages were retrieved for each query and comparing them against the generated answer; this makes it obvious whether the generator is actually using the evidence or drifting back into parametric memory.",
-        "exercise": "Set a two-minute timer. Take any RAG-style query (for example, 'What changed in the EU AI Act's treatment of open-source models?') and sketch on paper: (1) which three passages you would retrieve, (2) which passage should govern the first sentence of the answer, and (3) whether the second sentence needs a different passage. This forces you to reason about whole-sequence versus per-token passage selection before writing any code.",
-        "question": "In the RAG paper's two formulations, what is the key difference in how retrieved passages are used during generation?",
-        "answer": "One formulation conditions on the same retrieved passages across the entire generated sequence, while the other can use different passages per token, allowing different parts of the answer to draw on different evidence.",
-        "limits": "The librarian analogy breaks down in an important way: Priya consciously chooses folders and understands their contents, while the RAG retriever and generator are neural networks whose passage selection is learned and not easily inspectable. Also, 'per token' retrieval in the paper is a modeling formulation, not a literal librarian-style trip to the shelves each sentence — the mechanism is differentiable and internal to the model, and the analogy should not be read as describing an explicit step-by-step lookup at inference time.",
-        "source_ids": [
-          "paper-2005.11401",
-          "paper-2002.08909"
-        ]
-      },
-      "news": {
-        "title": "Recent AI Developments: Self-Replicating Models, Coordinated Vulnerability Disclosure, and Automated Document Review",
-        "overview": "Three recent items from Anthropic, OpenAI, and Google Research touch on agentic AI capabilities and verification workflows relevant to developers thinking about RAG-style grounding and document analysis.",
-        "items": [
-          {
-            "headline": "Anthropic studies whether small AI models could self-replicate on IoT devices",
-            "what_happened": "An Anthropic research blog post reports experiments on autonomous replication and adaptation (ARA): whether small open-weight models could copy and run themselves on compromised hardware without human control. The team tested whether models could set up inference on unfamiliar hardware, decomposing replication into four stages: finding targets, gaining execution, establishing inference, and continuing propagation. They report that a 9B model got inference running on 8 of 9 hardware types tested, that models of 30B parameters and under can complete many individual replication steps but make mistakes composing them end to end, and that in their simplified evaluations GLM-5.2 and stronger models completed end-to-end replication. They also demonstrated a 26B model running distributed across 15 inexpensive Android TV boxes at 0.39 tokens per second, and built a harness called Memento on top of the open-source Pi coding agent to mitigate agents fixating on incorrect debugging ideas.",
-            "why_it_matters": "For developers, the concrete relevance is twofold. First, it is a reminder that small open-weight models are increasingly capable of long-horizon agentic tasks — the same capabilities that power coding assistants also power automated attacks, so IoT and edge devices with weak security are a growing attack surface worth factoring into threat models. Second, the Memento harness addresses a failure mode every agent developer recognizes: an agent fixating on a wrong hypothesis instead of backtracking. The pattern of periodically restarting a fresh agent instance with the previous workspace and short handoff notes is a practical technique worth borrowing for your own long-running agents. As an analogy, it is like a pair programmer who, rather than stubbornly defending a wrong theory, hands a written note to a fresh colleague saying 'here is what I tried and why it failed.'",
-            "takeaway": "These are the publisher's own evaluations under simplified conditions, not evidence of autonomous worms in the wild, and the authors note they largely ignored the exploit stage of the replication chain. Before drawing conclusions, inspect the full post's threat models and evaluation setup — including which steps were simplified — rather than relying on headline summaries.",
-            "source_ids": [
-              "news-c044b31b2af1"
-            ]
-          },
-          {
-            "headline": "OpenAI announces Patch the Planet for coordinated vulnerability disclosure",
-            "what_happened": "An OpenAI announcement describes Patch the Planet, described as an effort to connect security researchers, maintainers, and incident responders to help address critical vulnerabilities across open source. The available source material is a short feed excerpt, so details about how the program operates, who participates, and what tooling is involved are not available in the provided text.",
-            "why_it_matters": "Coordinated disclosure programs matter to developers because most teams depend on open-source dependencies whose maintainers are volunteers with limited time. If such a program lowers the friction between a researcher finding a critical bug and a maintainer shipping a patch, the everyday benefit is fewer days of exposure in the libraries you ship. Analogy: it aims to be a matchmaking layer between the person who finds a broken lock and the person who owns the door — useful only if both sides actually show up.",
-            "takeaway": "The evidence here is a feed excerpt, not a full article, so claims about scope, funding, and effectiveness cannot be assessed from this source. Before relying on or participating, inspect the full announcement for how vulnerabilities are triaged, what disclosure timelines are promised, and whether maintainers are compensated or merely notified.",
-            "source_ids": [
-              "news-de9db6f384cb"
-            ]
-          },
-          {
-            "headline": "Google Research launches Deep Review for agentic document verification",
-            "what_happened": "A Google Research blog post announces the public release of Deep Review, an agentic AI system for reviewing complex technical documents, evolved from the Paper Assistant Tool (PAT) piloted with four computer science conferences. The post reports pilots covering more than 16,000 opted-in manuscripts and describes a four-stage pipeline: document segmentation into logical sections, adaptive budgeting of compute per section, parallel verification agents that each see full document context while focusing on one segment, and a synthesis agent that consolidates reports and performs external grounding checks. It now targets documents beyond papers, including design documents, presentations, and legal and financial documents, with two free reviews per week and API access via a Gemini API key. The post also cites rising submission counts at major AI conferences as the motivation for reducing reviewer burden.",
-            "why_it_matters": "The architecture is directly relevant to anyone building RAG or document-analysis systems: the pattern of segmenting a long document, allocating reasoning effort proportionally to density, running parallel verifiers with shared context, then synthesizing with grounding checks is a reusable blueprint for reviewing contracts, design docs, or compliance reports. A developer could apply the same segmentation-then-verify pattern to a pipeline that checks internal consistency across a long technical specification.",
-            "takeaway": "The statistics and positive author reactions come from Google's own pilots and are publisher claims, not independent evaluations. The post itself notes that single-prompt LLM calls struggle with long documents and that grounding checks are a preventative measure against hallucinations — meaning the tool can still err. Before trying it, inspect the linked preprint for pilot evaluation methodology, and note the stated data policy: uploads are stored for one year for display purposes and are not used for training.",
-            "source_ids": [
-              "news-6c3fa003d587"
-            ]
-          }
-        ],
-        "exercise": "Set a two-minute timer and pick one of the three items. Find the primary source, then answer: what does the publisher claim, what evidence do they provide, and what is one thing the source does not tell you? Write your three answers in one sentence each.",
-        "question": "Why should publisher-reported evaluation results, such as Anthropic's replication experiments or Google's Deep Review pilot statistics, be treated as claims rather than established facts?",
-        "answer": "Because they come from the organizations' own evaluations under conditions they chose, which may involve simplifications or self-selected participants; independent replication and inspection of the methodology are needed before treating the results as general findings."
-      },
-      "usage": {
-        "prompt_tokens": 5656,
-        "completion_tokens": 2531,
-        "total_tokens": 8187,
-        "prompt_tokens_details": {
-          "cached_tokens": 0
-        },
-        "completion_tokens_details": {
-          "accepted_prediction_tokens": null,
-          "reasoning_tokens": 0,
-          "rejected_prediction_tokens": null
-        }
-      },
-      "sources": [
-        {
-          "id": "paper-2005.11401",
-          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
-          "url": "https://arxiv.org/abs/2005.11401",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "paper-2002.08909",
-          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
-          "url": "https://arxiv.org/abs/2002.08909",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "news-c044b31b2af1",
-          "title": "AI models may be capable of self-replicating without access to a datacenter",
-          "url": "https://www.anthropic.com/research/self-replicating-ai",
-          "publisher": "www.anthropic.com",
-          "published_at": "2026-10-12T00:00:00+00:00",
-          "evidence_type": "article_excerpt",
-          "discussion_points": 118,
-          "discovery_channel": "Hacker News link to primary source",
-          "topic": "Other"
-        },
-        {
-          "id": "news-de9db6f384cb",
-          "title": "Patch the Planet: global response coordination as agents uncover critical vulnerabilities",
-          "url": "https://openai.com/index/coordinated-disclosure-of-critical-vulnerabilities",
-          "publisher": "OpenAI",
-          "published_at": "2026-10-21T07:00:00+00:00",
-          "evidence_type": "feed_excerpt",
-          "topic": "RAG"
-        },
-        {
-          "id": "news-6c3fa003d587",
-          "title": "Analyzing technical documents with Deep Review",
-          "url": "https://research.google/blog/analyzing-technical-documents-with-deep-review/",
-          "publisher": "Google Research",
-          "published_at": "2026-10-14T16:14:00+00:00",
-          "evidence_type": "article_excerpt",
-          "topic": "RAG"
-        }
-      ],
-      "id": "c56af164456d8eb9"
-    },
-    {
-      "date": "2026-10-21",
-      "timezone": "America/New_York",
-      "created_at": "2026-10-21T15:58:32.377943+00:00",
-      "topic": "RAG",
-      "language": "te",
-      "concept": "Comparing retrieved passages",
-      "news_window": "recent",
-      "source_warnings": [
-        {
-          "publisher": "Google DeepMind",
-          "reason": "ParseError"
-        }
-      ],
-      "router_engine": "TF-IDF + logistic regression",
-      "schema_version": 1,
-      "task": "daily_pills",
-      "status": "draft",
-      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
-      "generation_method": "fireworks",
-      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
-      "knowledge": {
-        "title": "RAGలో వెలికితీసిన passages పోల్చడం",
-        "summary": "Retrieval-Augmented Generation (RAG) సిస్టమ్స్ ఒకే పాసేజ్ మీద ఆధారపడకుండా, వెలికితీసిన అనేక passages మధ్య సమాచారాన్ని పోల్చి నిర్ణయం తీసుకోవడం ఎలాగో, దాని వెనుక ఉన్న ఆలోచనను ఒక కథ ద్వారా తెలుసుకుందాం.",
-        "story": "లక్ష్మి ఒక పట్టణ గ్రంథాలయంలో పనిచేసే సహాయకురాలు. ఒక రోజు విద్యార్థి వచ్చి 'మధ్యధరా వాతావరణం గురించి ఖచ్చితమైన సమాచారం కావాలి' అన్నాడు. లక్ష్మి గ్రంథాలయం నుంచి మూడు పుస్తకాలు తీసుకువచ్చింది — ఒకటి పాత భూగోళ శాస్త్ర పుస్తకం, రెండో ఇటీవలి పరిశోధనా నివేదిక, మూడోది ప్రయాణ మార్గదర్శిని. ఆమె మొదటి పుస్తకం చదివి ఆపేసినట్లు కాదు. మూడింటినీ పక్కపక్కన పెట్టుకుని, ఏ పుస్తకం ఎంత సంబంధం కలది, ఏ సమాచారం ఇతర పుస్తకాలతో ఒప్పుతుందో, ఏది పాతదో లేదా అసంపూర్తిదో పోల్చి చూసింది. చివరగా పరిశోధనా నివేదిక మరియు మార్గదర్శిని రెండింటిలో ఒప్పుకునే భాగాలను కలిపి విద్యార్థికి ఇచ్చింది. ఒక్క పుస్తకం మీద ఆధారపడి ఉంటే, ఆ పుస్తకంలోని పాత సమాచారమే తప్పకుండా వెళ్లేది.",
-        "connection": "ఈ కథలోని ప్రతి భాగం RAG సిస్టమ్‌లో ఒక భాగానికి అనుగుణంగా ఉంటుంది. విద్యార్థి ప్రశ్న = user query. గ్రంథాలయం = document corpus (ఉదాహరణకు Wikipedia వంటి పెద్ద ఇండెక్స్). లక్ష్మి తీసుకువచ్చిన మూడు పుస్తకాలు = retriever వెలికితీసే టాప్-k passages. పుస్తకాలను పోల్చడం = generator లోపల వివిధ passages మధ్య సమాచారాన్ని సరిచూచి, సంబంధం ఎక్కువగా ఉన్న భాగాలకు ప్రాధాన్యం ఇవ్వడం. చివరి సమాధానం = ఆధారాలతో కూడిన (grounded) అవుట్‌పుట్.",
-        "explanation": "RAG మోడల్స్ parametric memory (మోడల్ పారామితుల్లో నిలిచిన జ్ఞానం) మరియు non-parametric memory (dense vector index వంటి బాహ్య జ్ఞానం) రెండింటినీ కలిపి పనిచేస్తాయి. Lewis తదితరుల RAG పేపర్ (2005.11401) రెండు రకాల ఫార్ములేషన్లను పోల్చింది: ఒకటి మొత్తం జనరేషన్ అంతటా ఒకే సెట్ వెలికితీసిన passages మీద ఆధారపడుతుంది (లక్ష్మి ఒకేసారి తీసుకున్న పుస్తకాలు); రెండోది టోకెన్ వారీగా వేరు వేరు passages ఎంచుకోగలదు — అంటే వాక్యంలోని ప్రతి భాగానికి సరైన ఆధారాన్ని వేరే పుస్తకంలో వెతకడం. REALM పేపర్ (2002.08909) ఇంకో దిశను చూపిస్తుంది: మోడల్ ప్రీ-ట్రైనింగ్ సమయంలోనే ఒక latent knowledge retriever ద్వారా కోట్ల డాక్యుమెంట్లలో వెతకడం నేర్చుకుంటుంది, దీనివల్ల interpretability మరియు modularity లాంటి ప్రయోజనాలు వస్తాయి. రెండు పేపర్ల ముఖ్య సందేశం ఒకటే: ఒకే పాసేజ్‌ను నమ్మకూడదు; బహుళ ఆధారాలను పోల్చడం వల్ల సమాధానాలు మరింత ఖచ్చితమవుతాయి, జనరేటెడ్ భాష ఎక్కువ factual గా ఉంటుంది.",
-        "application": "ప్రాక్టికల్‌గా, మీ RAG అప్లికేషన్‌లో టాప్ 5–10 passages వెలికితీసి, వాటిని ప్రాంప్ట్‌లో కలిపి ఇచ్చి, మోడల్‌ను 'ఈ ఆధారాలు ఒకదానితో ఒకటి విభేదిస్తే దాన్ని గుర్తించి, ఎటువంటి ఆధారం లేని భాగాలను వదిలేయమని' సూచించవచ్చు. ఉదాహరణకు ఇంటర్నల్ డాక్యుమెంటేషన్ చాట్‌బాట్‌లో, పాత మరియు కొత్త policy డాక్యుమెంట్లు రెండూ వెలికివచ్చినప్పుడు, మోడల్ వాటి మధ్య వ్యత్యాసాన్ని పోల్చి తాజాదైనదాన్ని ఎంచుకోగలదు — ఇది ఒకే పాసేజ్‌ను నమ్మినట్లయితే సాధ్యం కాదు.",
-        "exercise": "రెండు నిమిషాల వ్యాయామం: ఏదైనా ఒక ప్రశ్న తీసుకోండి (ఉదా: 'మా టీమ్ డిప్లాయ్‌మెంట్ ప్రాసెస్ ఏమిటి?'). దీనికి సంబంధించి రెండు వేరు వేరు డాక్యుమెంట్లు లేదా పేరాలు చదవండి. ఒక్కో దానికి సంబంధితత (relevance) స్కోరు 1–5 ఇచ్చి, రెండింటిలో ఒప్పుకునే మరియు విభేదించే వాక్యాలను ఒక్కొక్కటి రాయండి. ఇదే పనిని మీ RAG ప్రాంప్ట్‌లో మోడల్‌కి అప్పగించడం ద్వారా ఈ నైపుణ్యాన్ని ఆటోమేట్ చేయవచ్చు.",
-        "question": "RAG ఫార్ములేషన్‌లలో 'మొత్తం జనరేషన్‌కు ఒకే సెట్ passages' మరియు 'టోకెన్ వారీగా వేరు passages' మధ్య తేడా ఏమిటి?",
-        "answer": "మొదటి రకంలో మోడల్ మొత్తం సమాధానం అంతటా ఒకేసారి వెలికితీసిన passages మీద ఆధారపడుతుంది; రెండో రకంలో జనరేట్ చేసే ప్రతి టోకెన్‌కు వేరు వేరు passages ఎంచుకోవచ్చు, దీనివల్ల సమాధానంలోని ప్రతి భాగానికి అత్యంత సంబంధం ఉన్న ఆధారం వాడవచ్చు.",
-        "limits": "ఈ అనలాజీకి పరిమితులున్నాయి: లక్ష్మి పుస్తకాలను పూర్తిగా చదివి అర్థం చేసుకుంటుంది, కానీ RAG మోడల్ passages ను కేవలం వెక్టర్ సారూప్యత ఆధారంగా చూస్తుంది — అది 'పోల్చడం' అనే మానవ తర్కాన్ని పూర్తిగా అనుకరించదు. అలాగే వెలికితీసిన passages లో తప్పు సమాచారం ఉంటే, మోడల్ దాన్ని గుర్తించి సవరిస్తుందని హామీ లేదు; పోలిక సామర్థ్యం మోడల్ మరియు టాస్క్‌పై ఆధారపడి మారుతుంది.",
-        "source_ids": [
-          "paper-2005.11401",
-          "paper-2002.08909"
-        ]
-      },
-      "news": {
-        "title": "ఈ వారం AI వార్తలు: సెక్యూరిటీ నుంచి డాక్యుమెంట్ రివ్యూ వరకు",
-        "overview": "ఈ వారం మూడు అంశాలు: Anthropic చిన్న మోడల్స్ స్వయం-పునరుత్పత్తి (self-replication) సామర్థ్యంపై పరిశోధన, OpenAI యొక్క 'Patch the Planet' వల్నరబిలిటీ కోఆర్డినేషన్ ఇనిషియేటివ్, మరియు Google Research యొక్క Deep Review డాక్యుమెంట్ రివ్యూ సిస్టమ్ పబ్లిక్ రిలీజ్. గమనిక: ఒక సోర్స్ (Google DeepMind) parse లోపం కారణంగా చేర్చబడలేదు.",
-        "items": [
-          {
-            "headline": "Anthropic: చిన్న AI మోడల్స్ IoT పరికరాలపై స్వయం-పునరుత్పత్తికి దగ్గరగా ఉండవచ్చు",
-            "what_happened": "Anthropic పరిశోధన బ్లాగ్ ప్రకారం, చిన్న మోడల్స్ (30B పారామిటర్ల కంటే తక్కువ) పునరుత్పత్తి చక్రంలోని చాలా దశలు — టార్గెట్‌ను కనుగొనడం, execution పొందడం, inference సెటప్ చేయడం, మరింత వ్యాప్తి — చేయగలవు, అయితే వాటిని end-to-end కలపడంలో తప్పులు చేస్తున్నాయి. వారి పరీక్షల్లో 9B మోడల్ 9 హార్డ్‌వేర్ రకాల్లో 8 దానికి inference నడిపించగలిగింది; సరళీకృత పరిస్థితుల్లో GLM-5.2 మరియు అంతకంటే బలీయమైన మోడల్స్ end-to-end replication చేయగలవని నివేదిక. వారు 15 చౌక Android TV బాక్సులపై Gemma4-26B-A4B మోడల్‌ను పంపిణీ చేసి 0.39 tokens/sec వేగంతో నడిపారు. ఇది ప్రచురించిన ప్రకటన కావచ్చు, కానీ ఇది ప్రమాదకర సామర్థ్యం లభ్యమైనట్టు లేదా నిజమైన దాడి జరిగినట్టు కాదు — ఇది వారి సొంత పరీక్షల ఫలితం.",
-            "why_it_matters": "డెవలపర్లకు దీని అర్థం: ఇంటర్నెట్‌కు అనుసంధానమై, తక్కువ సెక్యూరిటీ ఉన్న IoT పరికరాలు (స్మార్ట్ TV బాక్సులు, క్యామెరాలు) భవిష్యత్తులో లక్ష్యాలు కావచ్చు. ఒక స్పష్టమైన అనలాజీ: ఇప్పటివరకు మాల్‌వేర్ ఒక చిన్న కోడ్ ముక్కలా వ్యాపిస్తే, ఇది తన మెదడును (model weights) తనతో మోసుకెళ్లే వ్యాపించే ప్రోగ్రామ్ లాంటిది. మీ పరికరాల inventory, నెట్‌వర్క్ segmentation, అనవసరమైన outbound access నియంత్రణ ఇప్పుడే ముఖ్యం.",
-            "takeaway": "ఇది ప్రస్తుతం సాధ్యమయ్యే దాడి కాదు — ఇది సరళీకృత ప్రయోగశాల పరిస్థితుల్లో జరిగిన మూల్యాంకనం, మరియు exploit దశలను ఎక్కువగా పరిశోధనలో చేర్చలేదు. దీన్ని ప్రయత్నించే ముందు (లేదా ఆందోళన చెందే ముందు) చూడండి: పరీక్షలు ఏ threat model కింద జరిగాయో, ఏ హార్డ్‌వేర్ మాత్రమే పరీక్షించారో, మరియు Anthropic స్వయంగా పేర్కొన్న పరిమితులు (నెమ్మదైన వ్యాప్తి వేగం, end-to-end విఫలాలు) పూర్తి పేపర్/బ్లాగ్‌లో ఎలా వివరించారో.",
-            "source_ids": [
-              "news-c044b31b2af1"
-            ]
-          },
-          {
-            "headline": "OpenAI 'Patch the Planet': ఓపెన్ సోర్స్ వల్నరబిలిటీల కోసం గ్లోబల్ కోఆర్డినేషన్",
-            "what_happened": "OpenAI 'Patch the Planet' అనే ఇనిషియేటివ్‌ను ప్రకటించింది. ఇది సెక్యూరిటీ రీసెర్చర్లు, మెయింటెయినర్లు, ఇన్సిడెంట్ రెస్పాండర్ల మధ్య సమన్వయాన్ని (coordinated disclosure) ఏర్పాటు చేసి, ఓపెన్ సోర్స్‌లోని క్లిష్టమైన వల్నరబిలిటీలను పరిష్కరించడంలో సహాయపడుతుంది. గమనిక: మా దగ్గర అందిన సోర్స్ ఒక feed excerpt మాత్రమే — పూర్తి ప్రకటనను చదవలేదు, కాబట్టి ఇనిషియేటివ్ యొక్క నిర్దిష్ట ప్రక్రియలు లేదా ఫీచర్ల గురించి ఎలాంటి వివరాలు చేర్చడం లేదు.",
-            "why_it_matters": "డెవలపర్‌గా, మీరు వాడుతున్న ఓపెన్ సోర్స్ లైబ్రరీల్లో వల్నరబిలిటీ బహిర్గతమైతే, కోఆర్డినేటెడ్ డిస్క్లోజర్ ప్రక్రియ ద్వారా patch అందే వరకు మీకు సమాచారం మరియు సమయం రెండూ అవసరం. ఇటువంటి కోఆర్డినేషన్ వేదికలు పనిచేస్తే, మీ dependency tree లోని ప్రమాదాలను ముందుగానే తెలుసుకోవడం సులభమవుతుంది.",
-            "takeaway": "ఇది వల్నరబిలిటీలను స్వయంచాలకంగా కనుగొనే లేదా పరిష్కరించే విశ్వవ్యాప్త పరిష్కారం అని చెప్పడానికి సమాచారం సరిపోలేదు. దీన్ని ఉపయోగించే ముందు చూడండి: ప్రకటనలో పేర్కొన్న ప్రక్రియ ఎలా పనిచేస్తుందో, ఎవరు పాల్గొంటారో, మీ ప్రాజెక్టులు లేదా మీరు వాడే ప్యాకేజీలు దీని పరిధిలో ఉన్నాయో లేదో.",
-            "source_ids": [
-              "news-de9db6f384cb"
-            ]
-          },
-          {
-            "headline": "Google Research Deep Review: టెక్నికల్ డాక్యుమెంట్ల సమీక్షకు పబ్లిక్ రిలీజ్",
-            "what_happened": "Google Research, Deep Review అనే agentic AI సిస్టమ్‌ను పబ్లిక్‌గా విడుదల చేసినట్టు ప్రకటించింది. ఇది గతంలో Paper Assistant Tool (PAT) పేరుతో STOC, ICML, NeurIPS, ICLR లలో 16,000+ పేపర్లకు ప్రీ-సబ్మిషన్ ఫీడ్‌బ్యాక్ ఇచ్చిన ప్రయోగం ఆధారంగా రూపొందించినట్టు కంపెనీ చెబుతోంది. సిస్టమ్ డాక్యుమెంట్‌ను సెగ్మెంట్లుగా విభజించి, ప్రతి సెగ్మెంట్‌కు compute budget ని అనుగుణంగా కేటాయించి, సమాంతరంగా verification agents నడిపి, చివరగా ఒక synthesis agent అన్ని నివేదికలను కలిపి grounding checks చేస్తుంది. ఇప్పుడు ఇది పరిశోధనా పేపర్లతో పాటు design docs, presentations, legal/financial డాక్యుమెంట్లకు కూడా వర్తిస్తుందని ప్రకటించారు; వారపు రెండు ఉచిత రివ్యూలు మరియు API ఆప్షన్ ఉన్నాయి.",
-            "why_it_matters": "డెవలపర్‌కి ఇది నేరుగా పనికొస్తుంది: పెద్ద design doc లేదా proposal రాసే ముందు దీన్ని రెండో జత్నాలా వాడి, అస్పష్టమైన ఊహలు (unstated assumptions) మరియు లాజికల్ లోపాలను ముందుగా గుర్తించవచ్చు. ఇది మా RAG కాన్సెప్ట్‌తో కూడా ముడుస్తుంది — Deep Review కూడా డాక్యుమెంట్ భాగాలను విడివిడిగా చూసి, క్రాస్-రిఫరెన్స్‌లను పోల్చి, చివరగా సమన్వయం చేసే నిర్మాణాన్ని వాడుతుంది.",
-            "takeaway": "ఇవి ప్రధానంగా Google యొక్క ప్రకటనలు; pilot ఫలితాలు మరియు author feedback వారి సొంత నివేదిక నుంచి వచ్చినవే, స్వతంత్ర ధృవీకరణ కాదు. దీన్ని ప్రయత్నించే ముందు చూడండి: మీ డాక్యుమెంట్ ప్రైవసీ పాలసీ (వారి ప్రకటన ప్రకారం అప్‌లోడ్‌లు ట్రైనింగ్‌కు వాడబడవు, ఒక సంవత్సరం storage ఉంటాయి), సపోర్టెడ్ ఇన్‌పుట్ ఫార్మాట్లు (ప్రస్తుతం PDF మరియు plain text), మరియు మీ డాక్యుమెంట్ రకానికి ఇది సరిపోతుందో లేదో.",
-            "source_ids": [
-              "news-6c3fa003d587"
-            ]
-          }
-        ],
-        "exercise": "రెండు నిమిషాల సోర్స్-చెక్: మూడు వార్తా అంశాల్లో ఏదైనా ఒకదాన్ని ఎంచుకోండి. అసలు సోర్స్‌ను తెరిచి, ఈ మూడు ప్రశ్నలకు సమాధానం రాయండి: (1) ఇది ప్రకటనా, ప్రయోగ ఫలితమా, లేదా స్వతంత్ర మూల్యాంకనమా? (2) రచయితలు స్వయంగా పేర్కొన్న పరిమితులు ఏమిటి? (3) నా పనికి ఇది ఇప్పుడు వర్తిస్తుందా, లేదా ఇంకా పరిపక్వం కానిదా?",
-        "question": "Anthropic యొక్క self-replication పరిశోధనలో, చిన్న మోడల్స్ ఇప్పుడు చేయగలిగినది మరియు ఇంకా చేయలేనిది ఏమిటి?",
-        "answer": "30B పారామిటర్ల కంటే తక్కువ మోడల్స్ పునరుత్పత్తి చక్రంలోని చాలా వ్యక్తిగత దశలు (హార్డ్‌వేర్‌పై inference సెటప్ వంటివి) చేయగలవు, కానీ వాటిని end-to-end ఒకే రన్‌లో కలిపి చేయడంలో ఇంకా తప్పులు చేస్తున్నాయి; సరళీకృత పరిస్థితుల్లో GLM-5.2 వంటి బలీయమైన మోడల్స్ మాత్రమే end-to-end replication చేయగలవని నివేదిక చెబుతోంది."
-      },
-      "usage": {
-        "prompt_tokens": 5656,
-        "completion_tokens": 13495,
-        "total_tokens": 19151,
-        "prompt_tokens_details": {
-          "cached_tokens": 0
-        },
-        "completion_tokens_details": {
-          "accepted_prediction_tokens": null,
-          "reasoning_tokens": 40,
-          "rejected_prediction_tokens": null
-        }
-      },
-      "sources": [
-        {
-          "id": "paper-2005.11401",
-          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
-          "url": "https://arxiv.org/abs/2005.11401",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "paper-2002.08909",
-          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
-          "url": "https://arxiv.org/abs/2002.08909",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "news-c044b31b2af1",
-          "title": "AI models may be capable of self-replicating without access to a datacenter",
-          "url": "https://www.anthropic.com/research/self-replicating-ai",
-          "publisher": "www.anthropic.com",
-          "published_at": "2026-10-12T00:00:00+00:00",
-          "evidence_type": "article_excerpt",
-          "discussion_points": 118,
-          "discovery_channel": "Hacker News link to primary source",
-          "topic": "Other"
-        },
-        {
-          "id": "news-de9db6f384cb",
-          "title": "Patch the Planet: global response coordination as agents uncover critical vulnerabilities",
-          "url": "https://openai.com/index/coordinated-disclosure-of-critical-vulnerabilities",
-          "publisher": "OpenAI",
-          "published_at": "2026-10-21T07:00:00+00:00",
-          "evidence_type": "feed_excerpt",
-          "topic": "RAG"
-        },
-        {
-          "id": "news-6c3fa003d587",
-          "title": "Analyzing technical documents with Deep Review",
-          "url": "https://research.google/blog/analyzing-technical-documents-with-deep-review/",
-          "publisher": "Google Research",
-          "published_at": "2026-10-14T16:14:00+00:00",
-          "evidence_type": "article_excerpt",
-          "topic": "RAG"
-        }
-      ],
-      "id": "4500eb4a016ac47a"
-    },
     {
       "date": "2026-10-22",
       "timezone": "America/New_York",
@@ -3675,6 +3405,276 @@
         }
       ],
       "id": "668bc80da3c24758"
+    },
+    {
+      "date": "2026-11-06",
+      "timezone": "America/New_York",
+      "created_at": "2026-11-06T18:01:32.518129+00:00",
+      "topic": "RAG",
+      "language": "en",
+      "concept": "Comparing retrieved passages",
+      "news_window": "recent",
+      "source_warnings": [
+        {
+          "publisher": "Google DeepMind",
+          "reason": "ParseError"
+        }
+      ],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "Comparing Retrieved Passages in RAG",
+        "summary": "In retrieval-augmented generation (RAG), the model does not rely on a single fetched document. It retrieves several passages and weighs them against each other, letting the evidence compete before an answer is produced. This pill explains why comparing passages matters, how RAG architectures support it, and what it buys you in practice.",
+        "story": "Imagine a small-town journalist named Priya who is writing a story about a proposed bridge. She asks her editor's assistant for background, and the assistant hands her one memo. Priya could write the whole article from that single memo — but what if the memo is outdated, or written by someone with an axe to grind? A careful journalist does something different: she pulls three or four memos, reads them side by side, notices where they agree (the bridge's location), where they conflict (the budget figures), and where one memo has a detail the others lack (an environmental study). The agreement gives her confidence; the conflicts tell her exactly where to dig deeper. She does not average the memos blindly — she treats each one as a witness with its own reliability, and her final article cites the ones that actually supported each claim.",
+        "connection": "Every part of Priya's workflow maps to a component of RAG. The editor's assistant is the retriever, which fetches candidate passages from a corpus instead of relying on the model's memory alone. The stack of memos is the set of retrieved passages — typically the top-k results from a dense vector index. Reading them side by side is the comparison step: the generator attends over multiple passages and can prefer the ones that are consistent, specific, or better supported. Citing the memos that supported each claim is provenance — knowing which source backed which part of the answer. And the risk of one biased memo is the risk of a single low-quality retrieval dominating the context.",
+        "explanation": "The RAG paper (Lewis et al.) formalizes this idea with two formulations worth knowing. In RAG-Sequence, the model conditions on the same set of retrieved passages for the entire generated output — like Priya reading all her memos once and then writing. In RAG-Token, the model can consult different passages for different tokens of the output — like switching between memos mid-sentence as the topic shifts. Both combine a pre-trained seq2seq generator (parametric memory) with a dense vector index of documents accessed by a neural retriever (non-parametric memory). Because the retriever is differentiable, the model can learn during fine-tuning which kinds of passages are actually useful, effectively learning how to compare and select evidence. The paper reports that this approach set state-of-the-art results on three open-domain QA tasks and produced more specific, diverse, and factual generation than a parametric-only baseline. The earlier REALM paper (Guu et al.) showed a related idea: a latent knowledge retriever can be trained end-to-end during pre-training itself, using masked language modeling as the signal, and improved open-domain QA accuracy by 4–16 absolute points while adding interpretability and modularity — you can inspect which documents the model attended to.",
+        "application": "In a production RAG system, comparison shows up concretely: retrieve top-k passages rather than one, order them so the strongest evidence is not buried, and design prompts that ask the model to reconcile conflicts or say when sources disagree. For a support chatbot grounded in your documentation, retrieving several passages means a stale page can be outvoted by a newer one, and you can log which passage influenced which answer span — invaluable when debugging a wrong response or satisfying an audit.",
+        "exercise": "Set a two-minute timer. Take any RAG prompt you have (or sketch one) and write down three questions you would ask about your retrieved passages before trusting them: Do they agree? Which is most recent? Which actually answers the question versus merely mentioning the keywords? If you cannot answer these, your pipeline needs a comparison or reranking step.",
+        "question": "What is the difference between RAG-Sequence and RAG-Token in how they use retrieved passages?",
+        "answer": "RAG-Sequence conditions on the same retrieved passages across the whole generated sequence, while RAG-Token can use different passages for different tokens of the output.",
+        "limits": "The journalist analogy breaks down in one important way: Priya consciously evaluates source reliability, while a RAG model's 'comparison' is learned attention, not deliberate judgment. A confident but wrong passage can outweigh a correct one, and retrieved passages that agree can still all be wrong. Comparison improves the odds; it does not verify truth. Also, the benchmark results cited come from the papers' own evaluations on Wikipedia-based QA — your domain and corpus may behave differently.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "Recent Developments Touching RAG and LLM Infrastructure",
+        "overview": "Three items from the past two weeks: cryptographic proofs of inference from Anthropic, a customer-story feed excerpt from OpenAI, and Google Research's sleep framework for continual learning. Each is summarized from the supplied excerpts only.",
+        "items": [
+          {
+            "headline": "Anthropic releases FlashProve, an open-source prototype for provable inference",
+            "what_happened": "Anthropic published research (November 2, 2026) on zkSNARK-based proofs of inference, released as an open-source prototype called FlashProve under Apache 2.0. According to the post, for a 400B-parameter mixture-of-experts model (Llama 4 Maverick, 4-bit quantized), a single H100 GPU generates proofs at around 110 tokens/second with ~19 MB proofs per 1,024-token request — roughly 70–95x the GPU time of running the model itself on vLLM, and far faster than prior open-source systems. The release includes a prover, two verifiers (C++ and Lean), and Lean formal proofs of top-level security statements. The authors frame this as intermediate research progress, not a completed agenda.",
+            "why_it_matters": "For developers, this addresses a trust gap: when you call a model through a router or API, you cannot currently verify that the claimed model actually produced the tokens. Provable inference would let an evaluator confirm the served model matches the evaluated one, or let a customer verify they got the model they paid for — think of it like a tamper-evident seal on the response stream rather than judging quality by output alone. The post also suggests uses in compliance monitoring, while noting limits (it verifies inference was served, not that no other compute happened).",
+            "takeaway": "This is a prototype, not production infrastructure: proving costs 70–95x normal inference GPU time, proofs are ~19 MB per request, and model weights are hidden but architecture is not. Before trying it, inspect the released technical report and Lean artifacts, and note the authors' own caution that Claude-generated optimization decisions are hard to evaluate — that is precisely why they published formal verification statements.",
+            "source_ids": [
+              "news-43862ef771df"
+            ]
+          },
+          {
+            "headline": "OpenAI feed excerpt: Flipsnack reports signup growth with ChatGPT Ads",
+            "what_happened": "An OpenAI customer page excerpt (dated November 5, 2026) states that Flipsnack focused its ChatGPT Ads campaigns on getting people to try its product, growing registrations while lowering cost per signup. This is a feed excerpt — I have not read a full article, and no methodology, metrics, or timeframes are provided in the source.",
+            "why_it_matters": "For marketers, it signals that ad placements inside ChatGPT are being positioned around conversion outcomes rather than just impressions. A concrete use case would be testing intent-targeted ad copy against your existing search or social campaigns and comparing cost per signup directly. Treat the framing as an analogy: the excerpt describes an outcome, not the mechanism.",
+            "takeaway": "This is a vendor-published customer story with no independent verification, benchmarks, or numbers in the excerpt. Before drawing conclusions, look for the full case study, the measurement methodology, and whether the cost-per-signup comparison used a controlled baseline.",
+            "source_ids": [
+              "news-2d1d326185a6"
+            ]
+          },
+          {
+            "headline": "Google Research proposes a 'sleep framework' for continual learning in LLMs",
+            "what_happened": "A Google Research blog post (October 27, 2026) describes a continual-learning paradigm with two phases: an active phase where the model processes inputs into short-term memory, and an offline 'sleep' phase that consolidates that context into expanded long-term parameters. It uses Mixture-of-Experts capacity expansion, knowledge distillation with RL-based imitation, and a 'dreaming' stage of self-generated, gradient-filtered training samples. The post reports results including long-context retention up to 10M tokens on BABILong, reduced catastrophic forgetting in continual translation, and reasoning gains on math benchmarks versus baselines like SFT and ICL.",
+            "why_it_matters": "Deployed LLMs are largely static, and naive fine-tuning risks catastrophic forgetting. If approaches like this mature, a deployed assistant could absorb new domain facts overnight without a full retrain — analogous to a night-shift editor consolidating the day's notes into the reference library. It also relates to RAG as a complementary strategy: retrieval keeps knowledge external, while consolidation writes it into parameters.",
+            "takeaway": "The neuroscience framing ('sleep', 'dreaming') is a metaphor for a fixed, human-defined training pipeline, not a biological process. The reported numbers come from Google's own benchmarks and the post does not indicate production availability. Before relying on any claim, inspect the paper's baselines, evaluation setup, and whether the consolidation cycle's compute cost is practical for your deployment.",
+            "source_ids": [
+              "news-b49ec3bd8394"
+            ]
+          }
+        ],
+        "exercise": "Set a two-minute timer and pick one item above. Find the primary source, then note three things: who is making the claim, what evidence is offered (benchmark, customer story, or formal proof), and what is explicitly not covered — for example, FlashProve's post states it verifies inference but not side uses of hardware.",
+        "question": "Why should you treat the Flipsnack item differently from the Anthropic and Google items?",
+        "answer": "The Flipsnack item is a vendor-published feed excerpt with no metrics, methodology, or full article available, so its claims are marketing-level; the other two link to detailed technical posts with stated numbers, artifacts, and acknowledged limitations, though all are still self-published claims rather than independent verification."
+      },
+      "usage": {
+        "prompt_tokens": 5639,
+        "completion_tokens": 2294,
+        "total_tokens": 7933,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": null,
+          "reasoning_tokens": 37,
+          "rejected_prediction_tokens": null
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-43862ef771df",
+          "title": "Progress on provable inference for large language models",
+          "url": "https://www.anthropic.com/research/provable-inference",
+          "publisher": "www.anthropic.com",
+          "published_at": "2026-11-02T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 238,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "Agents"
+        },
+        {
+          "id": "news-2d1d326185a6",
+          "title": "Flipsnack grows product signups with conversion optimization",
+          "url": "https://openai.com/ads/customers/flipsnack",
+          "publisher": "OpenAI",
+          "published_at": "2026-11-05T00:45:15+00:00",
+          "evidence_type": "feed_excerpt",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-b49ec3bd8394",
+          "title": "The sleep framework: A new way for LLMs to retain knowledge in continual learning",
+          "url": "https://research.google/blog/the-sleep-framework-a-new-way-for-llms-to-retain-knowledge-in-continual-learning/",
+          "publisher": "Google Research",
+          "published_at": "2026-10-27T17:35:00+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "RAG"
+        }
+      ],
+      "id": "7a13deaad3288d40"
+    },
+    {
+      "date": "2026-11-06",
+      "timezone": "America/New_York",
+      "created_at": "2026-11-06T18:01:32.518129+00:00",
+      "topic": "RAG",
+      "language": "te",
+      "concept": "Comparing retrieved passages",
+      "news_window": "recent",
+      "source_warnings": [
+        {
+          "publisher": "Google DeepMind",
+          "reason": "ParseError"
+        }
+      ],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "రిట్రీవ్డ్ పేరాలను పోల్చడం: RAGలో ఏ మూలాన్ని నమ్మాలి?",
+        "summary": "RAG వ్యవస్థలో మోడల్ ఒక్క పేరాపై ఆధారపడకుండా, వచ్చిన అనేక passages మధ్య సారూప్యత, విభేదాలు, సమాచార నాణ్యతను పోల్చి సమాధానం రూపొందించడం ఎలా జరుగుతుందో ఈ పాఠంలో నేర్చుకుంటారు.",
+        "story": "ఊహించండి: మీరు ఒక పట్టణంలో కొత్త రెస్టారెంట్ గురించి తెలుసుకోవాలనుకుంటున్నారు. మీ స్నేహితులలో ముగ్గురిని అడిగారు. ఒకరు 'ఫుడ్ చాలా బాగుంది' అన్నారు, రెండోడు 'సర్వీస్ నెమ్మదిగా ఉంది' అన్నారు, మూడోడు 'ధరలు కొంచెం ఎక్కువ, కానీ విలువైనది' అన్నారు. మీరు ఒక్క అభిప్రాయం మీద నిర్ణయం తీసుకోరు — ముగ్గురి మాటలను పక్కపక్కన పెట్టి, ఏది నిజమైన వివరాలతో సరిపోతుందో, ఏది పాత సమాచారమో, ఏది వ్యక్తిగత అభిరుచి మాత్రమో పోల్చుతారు. చివరికి మీ సమాధానం ఒక్క మూలం కాదు, అన్నింటి సమన్వయంగా ఏర్పడుతుంది.",
+        "connection": "RAG (Retrieval-Augmented Generation) వ్యవస్థలో ఇదే జరుగుతుంది. మోడల్ ఒక ప్రశ్నకు సమాధానం ఇస్తున్నప్పుడు, ఒక retriever పెద్ద corpus నుంచి సంబంధిత passages ను తెస్తుంది. Lewis et al. వారి RAG పేపర్ ప్రకారం, ఈ passages ఒక dense vector index నుంచి వస్తాయి, మరియు రెండు రకాల విధానాలు ఉన్నాయి: ఒకటి మొత్తం సమాధానానికి ఒకే set పేరాలను వాడుతుంది, రెండోది టోకెన్-బై-టోకెన్ వేర్వేరు passages ఎంచుకోగలదు. అంటే మోడల్ ప్రతి అంశానికి ఏ మూలం మెరుగైనదో ఎంపిక చేసే అవకాశం కలిగి ఉంటుంది.",
+        "explanation": "పేరాలను పోల్చడం అంటే మూడు పనులు: (1) సారూప్యత గుర్తింపు — రెండు passages ఒకే వాస్తవాన్ని చెబుతున్నాయా? అవునంటే విశ్వాసం పెరుగుతుంది. (2) విభేదాల గుర్తింపు — ఒకటి 'X 2023లో జరిగింది' అని, మరొకటి 'X 2024లో జరిగింది' అని చెబితే, మోడల్ ఏ మూలం తాజాదో లేదా ఎక్కువ నమ్మదేవరైనదో తీర్మానించాలి. (3) సాధికారత అంచనా — పేరా ప్రశ్నకు నేరుగా సంబంధించినదా, లేదా కేవలం కీవర్డ్స్ మాత్రమే సరిపోయాయా? REALM పేపర్ చూపినట్లు, retriever ను pre-training లోనే నేర్పితే మోడల్ ఏ డాక్యుమెంట్స్ ఉపయోగకరమో మెరుగ్గా గుర్తించగలదు, దీనివల్ల interpretability (ఏ మూలం వాడామో చూపగలగడం) మరియు modularity (జ్ఞానాన్ని విడిగా అప్‌డేట్ చేయగలగడం) లాభాలు వస్తాయి. పోల్చడం అనేది కేవలం ర్యాంకింగ్ కాదు — సమాధానంలో ఏ వాదన ఎక్కడ నుంచి వచ్చిందో అనుసంధానం చేయడం.",
+        "application": "డెవలపర్‌గా మీరు ఒక కంపెనీ డాక్యుమెంటేషన్ పై ప్రశ్నలకు సమాధానమిచ్చే RAG చాట్‌బాట్ నిర్మిస్తున్నారనుకోండి. వినియోగదారు 'API rate limits ఏమిటి?' అడిగితే, retriever పాత మరియు కొత్త రెండు వెర్షన్ల డాక్యుమెంటేషన్ పేరాలను తిరిగి ఇవ్వవచ్చు. ప్రాక్టికల్ పద్ధతి: ప్రతి passage కి metadata (చివరి అప్‌డేట్ తేదీ, వెర్షన్) జోడించండి; prompt లో మోడల్‌ను passages మధ్య విభేదాలు ఉంటే వాటిని పేర్కొనమని ఆదేశించండి; సమాధానంలో citations చేర్చండి. ఇలా చేస్తే పాత సమాచారం ఆధారంగా తప్పు సమాధానాలు తగ్గుతాయి, మరియు provenance (సమాధానం ఎక్కడి నుంచి వచ్చిందో చూపడం) అనే సమస్యపై ఆచరణాత్మక అడుగు పడుతుంది — ఇది RAG పేపర్ పేర్కొన్న ముఖ్యమైన లాభం.",
+        "exercise": "రెండు నిమిషాల వ్యాయామం: మీ ప్రాజెక్ట్‌లో (లేదా ఊహలో) ఒక ప్రశ్నకు retriever తిరిగిచ్చే మూడు passages ను ఊహించండి. ఒక్కో దానికి ఈ మూడు లేబుల్స్ ఇవ్వండి: 'సరిపోతుంది / పాతది / అసలు ప్రశ్నకు సంబంధం లేదు'. ఇప్పుడు ఒక వాక్యంలో రాయండి: విభేదం ఉంటే మీ చాట్‌బాట్ యూజర్‌కి ఏం చెప్పాలి? ఇది మీ prompt design లో ఏ మార్పుకు దారి తీస్తుంది?",
+        "question": "RAG లో రెండు passages ఒకే వాస్తవం గురించి విభేదిస్తే, మోడల్ సమాధానం రూపొందించే ముందు ఏం చేయాలి?",
+        "answer": "మోడల్ (లేదా డిజైన్ చేసే డెవలపర్) పేరాల మధ్య విభేదాన్ని గుర్తించి, metadata లేదా మూల నాణ్యత ఆధారంగా ఏ సమాచారం తాజాదో/నమ్మదేవరైనదో తీర్మానించాలి; అవసరమైతే యూజర్‌కి విభేదాన్నే నివేదించి, citations తో చూపించాలి. ఒక్క పేరాను నిశ్శబ్దంగా నమ్మడం సరికాదు.",
+        "limits": "ఈ కథనం ఒక పరిమితి కలిగి ఉంది: స్నేహితుల అభిప్రాయాలు వ్యక్తిగతమైనవి, కానీ RAG passages లో 'నమ్మదేవరైనది' అని ఎల్లప్పుడూ తేలికగా చెప్పడం కష్టం — తాజాదనం, సాధికారత అనేవి సిగ్నల్స్ మాత్రమే, హామీలు కాదు. అలాగే అసలు మోడల్స్ passages ను మానవుల్లా స్పష్టంగా 'పోల్చడం' లేదు; attention ద్వారా అంతర్లీనంగా సమన్వయం చేస్తాయి, దీనిని మేము వివరించే విధానం ఒక సరళీకరణ. చివరగా, పేరాల మధ్య సామరస్యం ఎక్కువగా ఉండటం సరైన సమాధానానికి హామీ కాదు — అన్ని మూలాలు ఒకే తప్పు సమాచారాన్ని పునరావృతం చేయవచ్చు.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "ఈ వారం RAG & LLM రంగంలో ముఖ్య వార్తలు",
+        "overview": "ఈ వారం మూడు అంశాలు: Anthropic యొక్క provable inference ప్రోటోటైప్, OpenAI వద్ద ఒక కస్టమర్ కేస్ స్టడీ ఫీడ్ ఎగ్జార్ప్ట్, మరియు Google Research యొక్క 'sleep framework' కొనసాగుతున్న అభ్యాస పరిశోధన. ప్రతి అంశానికి పరిమితులు మరియు తనిఖీ చేయవలసిన విషయాలు చేర్చాము.",
+        "items": [
+          {
+            "headline": "Anthropic, zkSNARKs తో ప్రూవబుల్ ఇన్ఫరెన్స్‌పై ప్రగతిని ప్రకటించింది",
+            "what_happened": "Anthropic 2026 నవంబర్ 2న 'FlashProve' అనే ఓపెన్-సోర్స్ ప్రోటోటైప్‌ను విడుదల చేసింది. ఇది zkSNARK అనే క్రిప్టోగ్రాఫిక్ పద్ధతిని వాడి, ఒక మోడల్ సమాధానం నిజంగానే ఆ మోడల్ నుంచి వచ్చిందని నిరూపిస్తుంది — మోడల్ వెయిట్స్ రహస్యంగా ఉంచుతూనే. బ్లాగ్ ప్రకారం, 400B-పారామీటర్ Llama 4 Maverick మోడల్ (4-bit quantization) కోసం ఒక H100 GPU సెకనుకు సుమారు 110 టోకెన్ల వేగంతో proofs ఉత్పత్తి చేస్తుంది; 1,024-టోకెన్ రిక్వెస్ట్‌కి ప్రూఫ్ సైజ్ ~19 MB. ఇది vLLM తో పోల్చితే ~70-95 రెట్లు GPU సమయం అవుతుంది. కంపెనీ ఇది మధ్యంతర పరిశోధన ప్రగతినే అని స్పష్టంగా చెప్పింది — పూర్తయిన అజెండా కాదు.",
+            "why_it_matters": "ఈ రోజు వినియోగదారు లేదా థర్డ్-పార్టీ routing సర్వీస్ వాడే డెవలపర్, సమాధానాలు నిజంగానే చెల్లించిన మోడల్ నుంచి వచ్చాయో లేదో తనిఖీ చేయలేరు — రౌటర్ ఖర్చు తగ్గించుకోవడానికి చవక మోడల్‌ను మార్చి పెట్టినా గుర్తుపట్టదు. ఒక స్పష్టమైన analogy: ఇది డబ్బు లావాదేవీలపై బ్యాంక్ ఇచ్చే సైన్డ్ రసీదు లాంటిది — లావాదేవీ జరిగిందని నిరూపిస్తుంది కానీ మీ ఖాతా వివరాలు బహిర్గతం చేయదు. RAG సిస్టమ్స్ నిర్వహించే టీమ్స్‌కి, ఇలాంటి integrity guarantees భవిష్యత్తులో ఆడిట్ మరియు కంప్లయన్స్‌లో ఉపయోగపడవచ్చు.",
+            "takeaway": "ఇది విశ్వవ్యాప్త విప్లవం కాదు — ఇది ఒక ప్రదర్శన మాత్రమే, అంతేకాక్ ఇన్ఫరెన్స్ ఖర్చు 70-95 రెట్లు పెంచుతుంది. ప్రయత్నించే ముందు: బ్లాగ్ స్వయంగా చెప్పినట్లు ఇది పూర్తి పరిశోధన కాదని, మోడల్ ఆర్కిటెక్చర్ గోప్యత ఈ సిస్టమ్ లక్ష్యం కాదని, మరియు ఇది హార్డ్‌వేర్ దుర్వినియోగాన్ని (ఉదా: పక్కనే training) నిరోధించదని గుర్తుంచుకోండి. Apache 2.0 లైసెన్స్‌తో విడుదలైన కోడ్, Lean proofs, technical report ని స్వయంగా పరిశీలించండి.",
+            "source_ids": [
+              "news-43862ef771df"
+            ]
+          },
+          {
+            "headline": "Flipsnack, ChatGPT Ads తో సైన్‌అప్‌లను పెంచినట్లు OpenAI కేస్ స్టడీ ఫీడ్‌లో",
+            "what_happened": "OpenAI వెబ్‌సైట్‌లోని ఒక కస్టమర్ పేజీ ఫీడ్ ఎగ్జార్ప్ట్ ప్రకారం, Flipsnack అనే కంపెనీ ChatGPT Ads కాంపెయిన్లను ప్రొడక్ట్ ట్రయల్స్‌పై దృష్టి పెట్టి నడిపింది, దీనివల్ల రిజిస్ట్రేషన్లు పెరిగి సైన్‌అప్ ఖర్చు తగ్గిందట. గమనిక: మేము ఇక్కడ ఫీడ్ ఎగ్జార్ప్ట్ మాత్రమే చూశాము — పూర్తి కేస్ స్టడీని చదవలేదు, కాబట్టి వివరాలు లేదా పద్ధతి శాస్త్రం గురించి ముగింపులకు రావడం సాధ్యం కాదు.",
+            "why_it_matters": "డెవలపర్లు/మార్కెటర్లకు ఇది ఒక డిస్కవరీ సిగ్నల్: AI ఆధారిత ads ఛానెల్స్ కొత్త యూజర్ అక్విజిషన్ మార్గంగా అందుబాటులో ఉన్నాయి. ఒక స్పష్టమైన analogy: ఇది కొత్త మార్గంలో ఒక దుకాణం బోర్డు పెట్టడం లాంటిది — ఆ మార్గంలో ఎంత మంది నడిచేస్తున్నారో మీరే కొలవాలి. ఇది RAG కి నేరుగా సంబంధం లేని మార్కెటింగ్ ఫలితం; పబ్లిషర్ చెప్పిన ఫలితాలు స్వతహాగా స్వతంత్ర ధృవీకరణ లేనివి.",
+            "takeaway": "ఇది ప్రామాణికమైన సాధారణ ఫలితం అని భావించకండి — ఇది ప్రచురించిన సంస్థ యొక్క కస్టమర్ కథనం. ప్రయత్నించే ముందు పూర్తి కేస్ స్టడీని చదివి, కొలిచిన మెట్రిక్స్ (ఎలా నిర్వచించారో), కాలవ్యవధి, మరియు ఇతర ఛానెల్సతో పోలిక ఉందేమో తనిఖీ చేయండి.",
+            "source_ids": [
+              "news-2d1d326185a6"
+            ]
+          },
+          {
+            "headline": "Google Research, LLM ల కొనసాగుతున్న అభ్యాసానికి 'sleep framework' ని ప్రతిపాదించింది",
+            "what_happened": "Google Research 2026 అక్టోబర్ 27న ప్రచురించిన బ్లాగ్ ప్రకారం, వారు 'sleep framework' అనే కొనసాగుతున్న అభ్యాస (continual learning) పద్ధతిని ప్రతిపాదించారు. ఇందులో రెండు దశలున్నాయి: wake phase లో మోడల్ ఇన్‌పుట్‌లను తాత్కాలిక షార్ట్-టర్మ్ మెమరీలో నిల్వ చేస్తుంది; sleep phase లో కొత్తగా అన్‌లాక్ చేసిన Mixture-of-Experts మెమరీ బ్లాక్స్‌లోకి ఆ జ్ఞానాన్ని distillation మరియు RL ఆధారిత పద్ధతులతో స్థిరీకరిస్తుంది, అలాగే 'dreaming' దశలో స్వీయ-ఉత్పత్తి చేసిన ఉదాహరణలతో మెరుగుపడుతుంది. బ్లాగ్ ప్రకారం ఈ పద్ధతి 10M టోకెన్ల వరకు long-context జ్ఞానాన్ని నిలుపుకోగలదని, catastrophic forgetting ను తగ్గిస్తుందని వారు నివేదిస్తున్నారు. ఈ పద్ధతి పూర్తిగా స్థిర మోడల్ ఆర్కిటెక్చర్ మరియు మానవ-నిర్వచిత ట్రైనింగ్ నియమాల్లోనే పనిచేస్తుంది.",
+            "why_it_matters": "RAG డెవలపర్లకు ఇది ఒక స్పష్టమైన analogy తో అర్థమవుతుంది: మీ చాట్‌బాట్ సెషన్ ముగిసేసరికి context window లోని సమాచారం పోతుంది — ఇది ICL పరిమితి. Sleep framework ఆ తాత్కాలిక జ్ఞానాన్ని పారామెట్రిక్ మెమరీలోకి స్థిరీకరించడం ద్వారా ఈ సమస్యను మోడల్ స్థాయిలో పరిష్కరించడానికి ప్రయత్నిస్తుంది. ఇది retrieval ఆధారిత విధానాలకు (మోడల్‌ను మార్చకుండా జ్ఞానాన్ని విడిగా అప్‌డేట్ చేయడం) ఒక ప్రత్యామ్నాయ దిశగా కనిపిస్తుంది.",
+            "takeaway": "ఇవి ప్రచురించిన సంస్థ చేసిన ప్రకటనలు; ఫలితాలు (ఉదా: BABILong, SQuAD, AIME స్కోర్లు) వారి స్వంత బెంచ్‌మార్క్ నివేదికలే, స్వతంత్ర ధృవీకరణ లేదు. ఈ పద్ధతికి ప్రత్యేక sleep-phase కంప్యూట్, MoE ఆర్కిటెక్చర్ అవసరం కావడం వంటి ఆచరణాత్మక అవసరాలు, మరియు ఇది సాధారణ డెవలపర్లకు ఇప్పుడే అందుబాటులో లేదని గుర్తుంచుకోండి. ప్రయత్నించే ముందు బ్లాగ్‌లోని పద్ధతి వివరాలు మరియు ఏవైనా విడుదలైన కోడ్/పేపర్ ఉన్నాయేమో తనిఖీ చేయండి.",
+            "source_ids": [
+              "news-b49ec3bd8394"
+            ]
+          }
+        ],
+        "exercise": "రెండు నిమిషాల సోర్స్-చెక్ వ్యాయామం: పై మూడు అంశాల్లో ఒకదాన్ని ఎంచుకోండి. ఒక్కో అంశానికి ఈ మూడు ప్రశ్నలకు ఒక్కో వాక్యంలో సమాధానం రాయండి: (1) ఈ వాదనను ఎవరు చేస్తున్నారు — ప్రచురించిన సంస్థేనా, స్వతంత్ర పార్టీనా? (2) ఫలితాలు ఏ మెట్రిక్స్/పరిస్థితుల్లో నివేదించబడ్డాయి? (3) ఈ ఎగ్జార్ప్ట్ ఆధారంగా మనం తెలియనిది ఏమిటి? ఇది publisher claims మరియు మీ విశ్లేషణ మధ్య తేడాను గుర్తించడానికి సాధన.",
+        "question": "Anthropic యొక్క FlashProve గురించి, ఏ రెండు పరిమితులను ప్రచురించిన సంస్థ స్వయంగా పేర్కొన్నది?",
+        "answer": "(1) ఇది పూర్తయిన పరిశోధన కాదు, మధ్యంతర ప్రగతి మాత్రమే; (2) ఈ సిస్టమ్ మోడల్ వెయిట్స్‌ను గోప్యంగా ఉంచుతుంది కానీ మోడల్ ఆర్కిటెక్చర్ గోప్యత లక్ష్యం కాదు; అలాగే ఇది హార్డ్‌వేర్ ఇతర వినియోగాలను (ఉదా: పక్కనే training) నిరూపించదు. అదనంగా, ప్రూఫ్ ఉత్పత్తికి ఇన్ఫరెన్స్ కంటే చాలా ఎక్కువ GPU సమయం (~70-95x) పడుతుంది."
+      },
+      "usage": {
+        "prompt_tokens": 5639,
+        "completion_tokens": 13712,
+        "total_tokens": 19351,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": null,
+          "reasoning_tokens": 47,
+          "rejected_prediction_tokens": null
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-43862ef771df",
+          "title": "Progress on provable inference for large language models",
+          "url": "https://www.anthropic.com/research/provable-inference",
+          "publisher": "www.anthropic.com",
+          "published_at": "2026-11-02T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 238,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "Agents"
+        },
+        {
+          "id": "news-2d1d326185a6",
+          "title": "Flipsnack grows product signups with conversion optimization",
+          "url": "https://openai.com/ads/customers/flipsnack",
+          "publisher": "OpenAI",
+          "published_at": "2026-11-05T00:45:15+00:00",
+          "evidence_type": "feed_excerpt",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-b49ec3bd8394",
+          "title": "The sleep framework: A new way for LLMs to retain knowledge in continual learning",
+          "url": "https://research.google/blog/the-sleep-framework-a-new-way-for-llms-to-retain-knowledge-in-continual-learning/",
+          "publisher": "Google Research",
+          "published_at": "2026-10-27T17:35:00+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "RAG"
+        }
+      ],
+      "id": "b0e66f3e3066c2bb"
     }
   ]
 }
