@@ -1,14 +1,28 @@
 {
   "schema_version": 1,
   "task": "ai_headlines",
-  "checked_at": "2026-11-06T18:01:32.518129+00:00",
+  "checked_at": "2026-11-07T16:52:27.778240+00:00",
   "items": [
+    {
+      "id": "news-f0247d2be6d2",
+      "title": "The components of agent memory",
+      "url": "https://www.anthropic.com/research/components-of-agent-memory",
+      "publisher": "www.anthropic.com",
+      "published_at": "2026-11-06T00:00:00+00:00"
+    },
     {
       "id": "news-43862ef771df",
       "title": "Progress on provable inference for large language models",
       "url": "https://www.anthropic.com/research/provable-inference",
       "publisher": "www.anthropic.com",
       "published_at": "2026-11-02T00:00:00+00:00"
+    },
+    {
+      "id": "news-a0a44ed09dc9",
+      "title": "Partnering with Hacktron to find vulnerabilities in OpenAI’s systems",
+      "url": "https://openai.com/index/partnering-with-hacktron",
+      "publisher": "OpenAI",
+      "published_at": "2026-11-06T08:00:00+00:00"
     },
     {
       "id": "news-13e4c95dcbaa",
@@ -18,11 +32,25 @@
       "published_at": "2026-11-06T00:00:00+00:00"
     },
     {
+      "id": "news-5f721228af36",
+      "title": "Measuring how AI agents handle everyday wet-lab science",
+      "url": "https://openai.com/index/measuring-how-ai-agents-handle-wet-lab-science",
+      "publisher": "OpenAI",
+      "published_at": "2026-11-06T00:00:00+00:00"
+    },
+    {
       "id": "news-bbd492caba72",
       "title": "Cult.fit builds operational muscle with Codex",
       "url": "https://openai.com/index/cultfit-builds-with-codex",
       "publisher": "OpenAI",
       "published_at": "2026-11-05T20:00:00+00:00"
+    },
+    {
+      "id": "news-f09d7876c1e9",
+      "title": "Gemini Omni 1.2 Flash: Fast and cost-effective with longer clips",
+      "url": "https://deepmind.google/blog/gemini-omni-12-flash-fast-and-cost-effective-with-longer-clips/",
+      "publisher": "Google DeepMind",
+      "published_at": "2026-11-05T17:05:16+00:00"
     },
     {
       "id": "news-616c68177b70",
@@ -58,34 +86,6 @@
       "url": "https://openai.com/index/setting-new-standard-responsible-ai-infrastructure",
       "publisher": "OpenAI",
       "published_at": "2026-11-05T02:00:00+00:00"
-    },
-    {
-      "id": "news-2d1d326185a6",
-      "title": "Flipsnack grows product signups with conversion optimization",
-      "url": "https://openai.com/ads/customers/flipsnack",
-      "publisher": "OpenAI",
-      "published_at": "2026-11-05T00:45:15+00:00"
-    },
-    {
-      "id": "news-c65c7708e939",
-      "title": "A Closer Look at Phonon TTS. Launching High-Quality On-Device Speech That Tops the Benchmarks.",
-      "url": "https://huggingface.co/blog/phonon-tts",
-      "publisher": "Hugging Face",
-      "published_at": "2026-11-05T00:00:00+00:00"
-    },
-    {
-      "id": "news-a8e215d1c3fc",
-      "title": "Franklin Templeton uses OpenAI to support investment research",
-      "url": "https://openai.com/index/franklin-templeton",
-      "publisher": "OpenAI",
-      "published_at": "2026-11-05T00:00:00+00:00"
-    },
-    {
-      "id": "news-09c40cbdb759",
-      "title": "Agile Deliberation: How AI helps humans define the gray areas",
-      "url": "https://research.google/blog/agile-deliberation-how-ai-helps-humans-define-the-gray-areas/",
-      "publisher": "Google Research",
-      "published_at": "2026-11-04T18:07:05+00:00"
     }
   ]
 }
