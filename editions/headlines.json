@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "task": "ai_headlines",
-  "checked_at": "2026-11-10T18:41:18.229822+00:00",
+  "checked_at": "2026-11-11T18:43:19.981655+00:00",
   "items": [
     {
       "id": "news-e9950a58c892",
@@ -25,6 +25,41 @@
       "published_at": "2026-11-02T00:00:00+00:00"
     },
     {
+      "id": "news-833534b672b8",
+      "title": "AlphaGenome 2: Deciphering how cells read DNA to better understand disease",
+      "url": "https://deepmind.google/blog/alphagenome-2-deciphering-how-cells-read-dna-to-better-understand-disease/",
+      "publisher": "Google DeepMind",
+      "published_at": "2026-11-11T15:00:15+00:00"
+    },
+    {
+      "id": "news-ac94b61a25ad",
+      "title": "ChatGPT Plus for veterans and servicemembers",
+      "url": "https://openai.com/index/chatgpt-plus-for-veterans",
+      "publisher": "OpenAI",
+      "published_at": "2026-11-11T08:00:00+00:00"
+    },
+    {
+      "id": "news-11568aa8dfcf",
+      "title": "Token Pooling-Aware Training for Multi-Vector Embedding Models",
+      "url": "https://huggingface.co/blog/token-pooling",
+      "publisher": "Hugging Face",
+      "published_at": "2026-11-11T00:00:00+00:00"
+    },
+    {
+      "id": "news-6d8eb3bcd497",
+      "title": "Gemini 4 Carbon is now available",
+      "url": "https://deepmind.google/blog/gemini-4-carbon-is-now-available/",
+      "publisher": "Google DeepMind",
+      "published_at": "2026-11-10T16:03:47+00:00"
+    },
+    {
+      "id": "news-f321c904268b",
+      "title": "Introducing AlphaProof Code: a breakthrough in verifying complex software at depth",
+      "url": "https://deepmind.google/blog/introducing-alphaproof-code/",
+      "publisher": "Google DeepMind",
+      "published_at": "2026-11-10T12:02:28+00:00"
+    },
+    {
       "id": "news-0f0020abcf73",
       "title": "Helping caregivers use AI in everyday life",
       "url": "https://openai.com/index/helping-caregivers-use-ai-in-everyday-life",
@@ -46,46 +81,11 @@
       "published_at": "2026-11-10T09:00:00+00:00"
     },
     {
-      "id": "news-f3fc54cd1d78",
-      "title": "Work at the Frontier: AI’s effect on freelance work",
-      "url": "https://openai.com/index/ai-effect-on-freelance-work",
+      "id": "news-9092d5eb66f2",
+      "title": "Singapore Airlines elevates travel & work with OpenAI technology",
+      "url": "https://openai.com/index/singapore-airlines-travel-work",
       "publisher": "OpenAI",
-      "published_at": "2026-11-10T07:00:00+00:00"
-    },
-    {
-      "id": "news-cb93d68b445c",
-      "title": "Pay for Hugging Face Hub with your Google Cloud Account",
-      "url": "https://huggingface.co/blog/hub-gcp-marketplace",
-      "publisher": "Hugging Face",
-      "published_at": "2026-11-10T00:00:00+00:00"
-    },
-    {
-      "id": "news-5f3963726dbe",
-      "title": "Decision Models in Hugging Face",
-      "url": "https://huggingface.co/blog/decision",
-      "publisher": "Hugging Face",
-      "published_at": "2026-11-10T00:00:00+00:00"
-    },
-    {
-      "id": "news-2dcdb6cee137",
-      "title": "Exploring the world's languages with Language Explorer",
-      "url": "https://research.google/blog/exploring-the-worlds-languages-with-language-explorer/",
-      "publisher": "Google Research",
-      "published_at": "2026-11-09T20:29:39+00:00"
-    },
-    {
-      "id": "news-caa9073cefb4",
-      "title": "ChatGPT Enterprise now available in AWS Marketplace",
-      "url": "https://openai.com/index/chatgpt-enterprise-aws-marketplace",
-      "publisher": "OpenAI",
-      "published_at": "2026-11-09T19:00:00+00:00"
-    },
-    {
-      "id": "news-952d2516af2e",
-      "title": "Control Room: A central system to track and stop model workloads across our research infrastructure",
-      "url": "https://openai.com/index/control-room",
-      "publisher": "OpenAI",
-      "published_at": "2026-11-09T13:00:00+00:00"
+      "published_at": "2026-11-10T08:00:00+00:00"
     }
   ]
 }
