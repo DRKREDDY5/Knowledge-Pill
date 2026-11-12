@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "task": "ai_headlines",
-  "checked_at": "2026-11-11T18:43:19.981655+00:00",
+  "checked_at": "2026-11-12T18:58:20.188376+00:00",
   "items": [
     {
       "id": "news-e9950a58c892",
@@ -25,6 +25,48 @@
       "published_at": "2026-11-02T00:00:00+00:00"
     },
     {
+      "id": "news-c7a410ad3b86",
+      "title": "Introducing Gemini 4 Hydrogen",
+      "url": "https://deepmind.google/blog/introducing-gemini-4-hydrogen/",
+      "publisher": "Google DeepMind",
+      "published_at": "2026-11-12T18:00:50+00:00"
+    },
+    {
+      "id": "news-4922ca6fb0dd",
+      "title": "Holiday Extras is rethinking what it can build with Codex",
+      "url": "https://openai.com/business/customer-stories/holidays-extras-codex",
+      "publisher": "OpenAI",
+      "published_at": "2026-11-12T09:30:00+00:00"
+    },
+    {
+      "id": "news-cbda9238a368",
+      "title": "The Definitive Fine-Tuning Guide for 3D Generation Models",
+      "url": "https://huggingface.co/blog/3d-lora-finetuning",
+      "publisher": "Hugging Face",
+      "published_at": "2026-11-12T00:00:00+00:00"
+    },
+    {
+      "id": "news-d7c1da8cb7dc",
+      "title": "Supporting research on AI and children’s safety",
+      "url": "https://openai.com/index/children-first-declaration",
+      "publisher": "OpenAI",
+      "published_at": "2026-11-12T00:00:00+00:00"
+    },
+    {
+      "id": "news-65b96c238445",
+      "title": "Gilbert + Tobin rethinks the business of law with AI",
+      "url": "https://openai.com/index/gilbert-tobin-sam-nickless",
+      "publisher": "OpenAI",
+      "published_at": "2026-11-12T00:00:00+00:00"
+    },
+    {
+      "id": "news-0f5c21881c73",
+      "title": "Using wearables to enable cardiovascular-kidney-metabolic (CKM) risk profiling for personalized coaching",
+      "url": "https://research.google/blog/using-wearables-to-enable-cardiovascular-kidney-metabolic-ckm-risk-profiling-for-personalized-coaching/",
+      "publisher": "Google Research",
+      "published_at": "2026-11-11T19:54:00+00:00"
+    },
+    {
       "id": "news-833534b672b8",
       "title": "AlphaGenome 2: Deciphering how cells read DNA to better understand disease",
       "url": "https://deepmind.google/blog/alphagenome-2-deciphering-how-cells-read-dna-to-better-understand-disease/",
@@ -44,48 +86,6 @@
       "url": "https://huggingface.co/blog/token-pooling",
       "publisher": "Hugging Face",
       "published_at": "2026-11-11T00:00:00+00:00"
-    },
-    {
-      "id": "news-6d8eb3bcd497",
-      "title": "Gemini 4 Carbon is now available",
-      "url": "https://deepmind.google/blog/gemini-4-carbon-is-now-available/",
-      "publisher": "Google DeepMind",
-      "published_at": "2026-11-10T16:03:47+00:00"
-    },
-    {
-      "id": "news-f321c904268b",
-      "title": "Introducing AlphaProof Code: a breakthrough in verifying complex software at depth",
-      "url": "https://deepmind.google/blog/introducing-alphaproof-code/",
-      "publisher": "Google DeepMind",
-      "published_at": "2026-11-10T12:02:28+00:00"
-    },
-    {
-      "id": "news-0f0020abcf73",
-      "title": "Helping caregivers use AI in everyday life",
-      "url": "https://openai.com/index/helping-caregivers-use-ai-in-everyday-life",
-      "publisher": "OpenAI",
-      "published_at": "2026-11-10T12:00:00+00:00"
-    },
-    {
-      "id": "news-991ad48e8559",
-      "title": "Introducing Businesses in ChatGPT",
-      "url": "https://openai.com/index/introducing-businesses-chatgpt",
-      "publisher": "OpenAI",
-      "published_at": "2026-11-10T10:00:00+00:00"
-    },
-    {
-      "id": "news-69d4d9d74efa",
-      "title": "Closing the AI guidance gap in education",
-      "url": "https://openai.com/index/closing-ai-guidance-gap-education",
-      "publisher": "OpenAI",
-      "published_at": "2026-11-10T09:00:00+00:00"
-    },
-    {
-      "id": "news-9092d5eb66f2",
-      "title": "Singapore Airlines elevates travel & work with OpenAI technology",
-      "url": "https://openai.com/index/singapore-airlines-travel-work",
-      "publisher": "OpenAI",
-      "published_at": "2026-11-10T08:00:00+00:00"
     }
   ]
 }
