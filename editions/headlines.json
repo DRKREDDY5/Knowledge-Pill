@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "task": "ai_headlines",
-  "checked_at": "2026-11-12T18:58:20.188376+00:00",
+  "checked_at": "2026-11-13T18:33:23.031741+00:00",
   "items": [
     {
       "id": "news-e9950a58c892",
@@ -25,11 +25,32 @@
       "published_at": "2026-11-02T00:00:00+00:00"
     },
     {
+      "id": "news-7d4d71d056da",
+      "title": "Introducing ChatGPT Wallet",
+      "url": "https://openai.com/index/introducing-chatgpt-wallet",
+      "publisher": "OpenAI",
+      "published_at": "2026-11-13T15:00:00+00:00"
+    },
+    {
+      "id": "news-67672a694e38",
+      "title": "How Amplitude ships product improvements in 1–2 days with OpenAI",
+      "url": "https://openai.com/business/customer-stories/amplitude",
+      "publisher": "OpenAI",
+      "published_at": "2026-11-12T20:00:00+00:00"
+    },
+    {
       "id": "news-c7a410ad3b86",
       "title": "Introducing Gemini 4 Hydrogen",
       "url": "https://deepmind.google/blog/introducing-gemini-4-hydrogen/",
       "publisher": "Google DeepMind",
       "published_at": "2026-11-12T18:00:50+00:00"
+    },
+    {
+      "id": "news-b9840fd67063",
+      "title": "Gondola doubles revenue as its team builds more with Codex",
+      "url": "https://openai.com/business/customer-stories/gondola",
+      "publisher": "OpenAI",
+      "published_at": "2026-11-12T12:00:00+00:00"
     },
     {
       "id": "news-4922ca6fb0dd",
@@ -65,27 +86,6 @@
       "url": "https://research.google/blog/using-wearables-to-enable-cardiovascular-kidney-metabolic-ckm-risk-profiling-for-personalized-coaching/",
       "publisher": "Google Research",
       "published_at": "2026-11-11T19:54:00+00:00"
-    },
-    {
-      "id": "news-833534b672b8",
-      "title": "AlphaGenome 2: Deciphering how cells read DNA to better understand disease",
-      "url": "https://deepmind.google/blog/alphagenome-2-deciphering-how-cells-read-dna-to-better-understand-disease/",
-      "publisher": "Google DeepMind",
-      "published_at": "2026-11-11T15:00:15+00:00"
-    },
-    {
-      "id": "news-ac94b61a25ad",
-      "title": "ChatGPT Plus for veterans and servicemembers",
-      "url": "https://openai.com/index/chatgpt-plus-for-veterans",
-      "publisher": "OpenAI",
-      "published_at": "2026-11-11T08:00:00+00:00"
-    },
-    {
-      "id": "news-11568aa8dfcf",
-      "title": "Token Pooling-Aware Training for Multi-Vector Embedding Models",
-      "url": "https://huggingface.co/blog/token-pooling",
-      "publisher": "Hugging Face",
-      "published_at": "2026-11-11T00:00:00+00:00"
     }
   ]
 }
