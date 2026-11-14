@@ -1,228 +1,8 @@
 {
   "schema_version": 1,
   "task": "daily_pills_collection",
-  "updated_at": "2026-11-13T18:35:07.609540+00:00",
+  "updated_at": "2026-11-14T17:12:27.504527+00:00",
   "packets": [
-    {
-      "date": "2026-10-29",
-      "timezone": "America/New_York",
-      "created_at": "2026-10-29T17:26:41.692221+00:00",
-      "topic": "RAG",
-      "language": "en",
-      "concept": "Comparing retrieved passages",
-      "news_window": "recent",
-      "source_warnings": [],
-      "router_engine": "TF-IDF + logistic regression",
-      "schema_version": 1,
-      "task": "daily_pills",
-      "status": "draft",
-      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
-      "generation_method": "fireworks",
-      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
-      "knowledge": {
-        "title": "Comparing Retrieved Passages in RAG",
-        "summary": "Retrieval-augmented generation (RAG) systems rarely fetch just one passage. They retrieve several candidates, and the quality of the final answer often depends on how the system compares and uses those passages. This pill explains what it means to compare retrieved passages, why RAG papers treat it as a core design choice, and how to reason about it in practice.",
-        "story": "Imagine you ask three librarians where to find the best explanation of tidal energy. Each hands you a different article. The first is short but shallow, the second is detailed but outdated, the third is current and thorough. You would not simply take the first one. You would skim all three, notice overlaps and contradictions, and decide which passages actually answer your question before writing your summary. A RAG system faces the same situation every time it retrieves: multiple candidate passages arrive, and the generator must weigh them rather than blindly trust one.",
-        "connection": "In the story, the three articles are the retrieved passages, your skimming is the comparison step, and your final summary is the generated answer grounded in the chosen evidence. The librarians are the retriever, and your judgment about which article is authoritative maps to relevance scoring, ranking, and how the generator conditions on multiple documents.",
-        "explanation": "The original RAG paper (Lewis et al., 2020) describes two formulations that differ exactly in how passages are used: one conditions on the same retrieved passages across the whole generated sequence, while the other can use different passages per token. This matters because retrieved passages are not equally reliable; a marginal passage may support one sentence of an answer while a stronger passage supports the rest. Earlier, the REALM paper (Guu et al., 2020) showed that retrieving and attending over documents from a large corpus like Wikipedia, during pre-training, fine-tuning, and inference, improves open-domain question answering by a significant margin while adding interpretability and modularity, since you can inspect which documents the model used. Comparing passages is therefore not an implementation detail; it is central to how these models combine parametric knowledge (weights) with non-parametric memory (the index).",
-        "application": "In a practical RAG pipeline, you can compare retrieved passages at several points: (1) at retrieval time, by scoring candidates with a cross-encoder reranker so the strongest passages are placed first in the prompt; (2) at generation time, by prompting the model to cite which passage supports each claim, making contradictions visible; and (3) at evaluation time, by checking whether answers change when passage order or count changes. If your answers flip when you reorder passages, your comparison step is fragile.",
-        "exercise": "Take a question your RAG system answers and retrieve the top five passages. For each, write one line: does it directly answer, partially support, or contradict the others? Then check whether your generator's answer actually reflects the strongest passage or just the first one. Two minutes.",
-        "question": "In RAG, what is the difference between conditioning on the same retrieved passages for the whole sequence versus using different passages per token?",
-        "answer": "The first formulation grounds the entire generated output in one fixed set of retrieved passages, while the second lets the model select and attend to different passages as it generates each token, allowing different parts of the answer to draw on different evidence.",
-        "limits": "The library analogy breaks down because a RAG model does not consciously 'read and judge' passages the way you do; attention weights and retrieval scores are statistical, not deliberative. Also, higher retrieval scores do not guarantee truthfulness, and the papers' benchmark results do not tell you how passage comparison behaves on your own domain's messy, contradictory documents.",
-        "source_ids": [
-          "paper-2005.11401",
-          "paper-2002.08909"
-        ]
-      },
-      "news": {
-        "title": "Recent RAG-adjacent developments",
-        "overview": "Two recent items: Google Research's sleep framework for continual learning, and an OpenAI–AT&T legal knowledge collaboration. Both touch on how models access and retain knowledge, the same problem space RAG addresses with external retrieval.",
-        "items": [
-          {
-            "headline": "Google Research proposes a 'sleep framework' for continual learning in LLMs",
-            "what_happened": "Google Research published a blog post describing a sleep framework: a continual learning paradigm where a deployed LLM alternates between an active phase (processing inputs into short-term memory) and an offline sleep phase. During sleep, the model consolidates short-term context into expanded long-term parameters using newly unlocked Mixture-of-Experts memory blocks, distillation, and reinforcement learning, and runs a 'dreaming' stage of self-generated, filtered practice samples. Google reports results including long-context retention up to 10M tokens on BABILong, factual knowledge incorporation scores on SQuAD and continued pre-training, and math reasoning accuracy on AIME and HMMT benchmarks, claiming advantages over in-context learning and supervised fine-tuning baselines.",
-            "why_it_matters": "For developers, this targets a real pain point: models with static knowledge cutoffs and context windows that forget everything after a session ends. Today, many teams solve this with RAG, keeping knowledge external and retrieved on demand. The sleep framework represents a different bet: writing new knowledge into parameters during offline consolidation. A useful analogy: RAG is like keeping notes in a filing cabinet you consult on demand, while this approach is like studying the notes overnight until they become memory. Which is better depends on how often knowledge changes and how much traceability you need.",
-            "takeaway": "These are Google's reported research results, not an independently verified product you can deploy; the blog itself notes the framework operates within fixed architectures and human-defined training rules. Before drawing conclusions, inspect the benchmark setups (e.g., what baselines and evaluation data were used) and whether code or model weights are available. For most teams today, retrieval-based approaches remain the practical option for up-to-date knowledge.",
-            "source_ids": [
-              "news-b49ec3bd8394"
-            ]
-          },
-          {
-            "headline": "AT&T works with OpenAI on legal knowledge access via LegalEdge",
-            "what_happened": "OpenAI published a page describing how AT&T's LegalEdge team is working with OpenAI to make legal knowledge easier to access, rethinking intake and scaling legal judgment. The available source is only a feed excerpt, so the full details of the deployment are not visible here.",
-            "why_it_matters": "Legal work is a classic knowledge-intensive domain: answers must be traceable to specific sources, which is exactly where retrieval-augmented approaches shine compared with relying on a model's parametric memory alone. For developers building internal knowledge tools, an enterprise legal-intake use case is a concrete example of grounding model outputs in a controlled document corpus, with provenance as a likely requirement.",
-            "takeaway": "This is a vendor-published description of a collaboration, based on a feed excerpt rather than the full article, so claims about how the system works or performs come from the publisher. Before modeling your own system on it, inspect what architecture is actually described (retrieval, fine-tuning, or something else), what guardrails exist for legal accuracy, and whether any evaluation results are disclosed.",
-            "source_ids": [
-              "news-39cad894cdd2"
-            ]
-          }
-        ],
-        "exercise": "Pick either news item and spend two minutes finding the primary source beyond the excerpt: for the Google post, check whether benchmark details or code links are provided; for the AT&T item, check whether the full page describes the technical architecture at all. Note what is claimed versus what is actually demonstrated.",
-        "question": "Why might a legal knowledge tool favor retrieval-based grounding over relying only on a model's parametric memory?",
-        "answer": "Legal answers need provenance and up-to-date sources; retrieval lets the system cite specific documents from a controlled corpus and update the corpus without retraining, whereas parametric memory cannot easily show where a statement came from or be updated incrementally."
-      },
-      "usage": {
-        "prompt_tokens": 3468,
-        "completion_tokens": 1678,
-        "total_tokens": 5146,
-        "prompt_tokens_details": {
-          "cached_tokens": 0
-        },
-        "completion_tokens_details": {
-          "accepted_prediction_tokens": null,
-          "reasoning_tokens": 0,
-          "rejected_prediction_tokens": null
-        }
-      },
-      "sources": [
-        {
-          "id": "paper-2005.11401",
-          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
-          "url": "https://arxiv.org/abs/2005.11401",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "paper-2002.08909",
-          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
-          "url": "https://arxiv.org/abs/2002.08909",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "news-b49ec3bd8394",
-          "title": "The sleep framework: A new way for LLMs to retain knowledge in continual learning",
-          "url": "https://research.google/blog/the-sleep-framework-a-new-way-for-llms-to-retain-knowledge-in-continual-learning/",
-          "publisher": "Google Research",
-          "published_at": "2026-10-27T17:35:00+00:00",
-          "evidence_type": "article_excerpt",
-          "topic": "RAG"
-        },
-        {
-          "id": "news-39cad894cdd2",
-          "title": "How AT&T is rethinking in-house legal work with OpenAI",
-          "url": "https://openai.com/index/att-legal",
-          "publisher": "OpenAI",
-          "published_at": "2026-10-21T17:00:00+00:00",
-          "evidence_type": "feed_excerpt",
-          "topic": "RAG"
-        }
-      ],
-      "id": "7e7323ded24f2a5e"
-    },
-    {
-      "date": "2026-10-29",
-      "timezone": "America/New_York",
-      "created_at": "2026-10-29T17:26:41.692221+00:00",
-      "topic": "RAG",
-      "language": "te",
-      "concept": "Comparing retrieved passages",
-      "news_window": "recent",
-      "source_warnings": [],
-      "router_engine": "TF-IDF + logistic regression",
-      "schema_version": 1,
-      "task": "daily_pills",
-      "status": "draft",
-      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
-      "generation_method": "fireworks",
-      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
-      "knowledge": {
-        "title": "రిట్రీవ్డ్ పేరాలను పోల్చడం: RAGలో ఏ భాగాన్ని నమ్మాలి?",
-        "summary": "RAG (Retrieval-Augmented Generation) అంటే మోడల్ తన పారామీటర్లలో దాచుకున్న జ్ఞానంతో మాత్రమే కాకుండా, ఒక external knowledge index నుంచి వచ్చే passages ను తెచ్చుకుని ఆధారపడి సమాధానం ఇస్తుంది. ఈ పాఠంలో ముఖ్యమైన నైపుణ్యం: రిట్రీవ్ చేసిన పేరాలను ఒకదానితో ఒకటి పోల్చి, ఏది నిజంగా ప్రశ్నకు సంబంధించినదో, ఏది నమ్మదగినదో తేల్చడం. RAG పేపర్ ప్రకారం, మోడల్ ఒకే సమాధానానికి ఒకే passage ను వాడవచ్చు లేదా టోకెన్-బై-టోకెన్ వేరు వేరు passages ను వాడవచ్చు — అంటే పోలిక అనేది మోడల్ లోపల కూడా జరుగుతుంది. REALM పేపర్ చెప్పేది ఏమిటంటే, retriever ను ముందుగానే pre-train చేస్తే, మోడల్ ఏ documents ను చూస్తుందో అది interpret చేయగలం — అంటే మనం కూడా ఆ passages ను చూసి మోడల్ ఎందుకు అలా సమాధానం చెప్పిందో అర్థం చేసుకోవచ్చు. కాబట్టి retrieved passages ను పోల్చడం అనేది developer కి ఒక debugging skill: ఏ passage సమాధానాన్ని నడిపిస్తోందో గుర్తించడం.",
-        "story": "ఊహించండి: మీరు ఒక పట్టణంలో కొత్త ఉద్యోగం చేస్తున్నారు. ఒక రోజు మేనేజర్ అడుగుతారు: \"మా పాత వారంటీ విధానం ఏమిటి?\" మీ డెస్క్ లో రెండు ఫైళ్లు ఉన్నాయి. మొదటి ఫైల్ పేరు సరిపోలిక విధానం — పేరు చాలా సరిపోలిపోతుంది, కానీ లోపల 2019 నాటి పాత నియమాలున్నాయి. రెండో ఫైల్ పేరు అస్పష్టంగా ఉంది — ప్రాసెస్ నవీకరణలు — కానీ లోపల ఈ ఏడాది అమలులో ఉన్న నియమాలు స్పష్టంగా రాసి ఉన్నాయి. ఒక సహోద్యోగి మొదటి ఫైల్ పేరు చూసి, \"ఇదే సరైనది\" అని సమాధానం చెప్పేస్తాడు. మరొకరు రెండు ఫైళ్లను తెరిచి, తేదీలు, విధానాలు, ఎవరు ఆమోదించారో పోల్చి, రెండో ఫైల్ ఆధారంగా సమాధానం ఇస్తారు — మరియు \"ఇది పాత ఫైల్ ప్రకారం భిన్నంగా ఉంది\" అని గమనించి చెప్తారు. ఈ రెండో సహోద్యోగి చేసిన పని అంటే: పేరుతో కాదు, కంటెంట్ తో పోల్చడం. ఇదే RAG లో retrieved passages ను పోల్చడం లాంటిది — retriever తెచ్చిన పేరాలు అన్నీ సమానంగా నమ్మదగినవి కావు.",
-        "connection": "ఈ కథలోని భాగాలను RAG కి ఇలా మ్యాప్ చేయవచ్చు: మీ ప్రశ్న = user query. ఫైల్ క్యాబినెట్ = dense vector index (RAG పేపర్ లో Wikipedia యొక్క non-parametric memory). ఫైళ్లను వెతికి తెచ్చే అసిస్టెంట్ = pre-trained neural retriever. మొదటి సహోద్యోగి (పేరు చూసి నమ్మేవాడు) = retrieval score మాత్రమే చూసే వ్యవస్థ. రెండో సహోద్యోగి (కంటెంట్ పోల్చేవాడు) = passages ను జాగ్రత్తగా చదివి, వాటి మధ్య విభేదాలను గుర్తించి సమాధానం ఇచ్చే generator. RAG పేపర్ లో రెండు formulations ఉన్నాయి: ఒకటి మొత్తం సమాధానానికి ఒకే set of passages వాడుతుంది, రెండో ప్రతి టోకెన్ కి వేరు passage ఎంచుకోగలదు — అంటే మోడల్ స్వయంగా ఏ passage ఏ భాగానికి సరిపోతుందో పోల్చుతుంది. REALM చెప్పే interpretability అంటే: మేము ఏ documents మీద ఆధారపడ్డామో చూడగలం — అదే మీరు developer గా చేయాల్సిన పని.",
-        "explanation": "ప్రాక్టికల్‌గా: మీ RAG అప్లికేషన్ తప్పు సమాధానం ఇస్తుందని ఊహించండి. మొదట చేయాల్సింది మోడల్ ను నిందించడం కాదు — retrieved passages ను inspect చేయడం. (1) Top-k passages ను log చేయండి, వాటి retrieval scores తో పాటు. (2) ప్రతి passage ను ప్రశ్నతో పోల్చండి: ఇది ప్రశ్నకు సంబంధించినదా, లేదా కేవలం keyword సరిపోలిక మాత్రమేనా? (3) Passages మధ్య వైరుధ్యాలు ఉన్నాయా — వేరు వేరు సంస్కరణలు, వేరు వేరు తేదీలు — అని చూడండి. (4) మోడల్ ఏ passage ఆధారంగా సమాధానం చెప్తోందో చెప్పమనండి (citation అడగండి), ఆపై దాన్ని మీ స్వయంగా పోల్చిన మూల్యాంకనంతో సరిపోల్చండి. ఇది ఒక చిన్న evaluation harness గా పనిచేస్తుంది: సమస్య retriever లోనా (తప్పు passages వస్తున్నాయి), generator లోనా (సరైన passages ఉన్నా తప్పుగా వాడుతోంది) అని వేరు చేయగలరు.",
-        "application": "ఉదాహరణకు, మీ సంస్థ యొక్క internal docs మీద RAG chatbot నిర్మిస్తున్నారనుకోండి. ఒక user \"మా API rate limits ఏమిటి?\" అని అడిగితే, retriever పాత migration guide ఒకటి, కొత్త pricing page ఒకటి తెస్తుంది. పోల్చడం ద్వారా — తేదీలు, document source, సంబంధిత విభాగం — మీరు చెప్పగలరు సమాధానం ఏ passage మీద ఆధారపడిందో, మరియు ఆ passage నమ్మదగినదా లేదా. ఇది production లో hallucination లేదా stale-data సమస్యలను వేగంగా గుర్తించే మార్గం.",
-        "exercise": "రెండు నిమిషాల వ్యాయామం: ఏదైనా ఒక ప్రశ్న తీసుకోండి (ఉదా: \"మా విధానంలో refund విధానం ఏమిటి?\"). రెండు ఊహాజనిత passages రాయండి — ఒకటి పేరు/శీర్షిక సరిపోలిక కలిగిన పాతది, రెండో అస్పష్ట శీర్షికతో కూడిన కొత్తది. ఇప్పుడు మూడు ప్రశ్నలు అడగండి: (1) ఏ passage ప్రశ్నకు నేరుగా సమాధానం ఇస్తుంది? (2) ఏది ఎక్కువ తాజాది? (3) రెండింటి మధ్య వైరుధ్యం ఉందా, ఉంటే ఎందుకు? ఈ మూడు ప్రశ్నలే మీ RAG debugging checklist కి మొదటి అడుగులు.",
-        "question": "RAG వ్యవస్థలో సమాధానం తప్పుగా వస్తే, మొదట ఏమి inspect చేయాలి మరియు ఎందుకు?",
-        "answer": "మొదట retrieved passages ను (వాటి retrieval scores తో సహా) inspect చేయాలి, ఎందుకంటే సమస్య తరచుగా generator కాదు, retriever తెచ్చిన passages లో ఉంటుంది — పాత, అసంబంధిత, లేదా వైరుధ్యమైన passages ను పోల్చి చూస్తే, తప్పు retriever లోనా generator లోనా అని వేరు చేయగలం.",
-        "limits": "ఈ కథకు పరిమితులు: ఫైల్ క్యాబినెట్ లో ఫైళ్లు స్థిరంగా ఉంటాయి, కానీ vector index లో embeddings అనేది అస్పష్టమైన గణిత ప్రాతినిధ్యాలు — మనం చూసేది కేవలం చివరి passages మాత్రమే, retriever లోపలి పోలిక ప్రక్రియ కాదు. అలాగే, మానవుడు తేదీలు, ఆమోదాలు చూసి నిర్ణయం తీసుకోగలడు; మోడల్ మాత్రం passages ను ఎలా అంతర్గతంగా పోల్చుతుందో పూర్తిగా తెలియదు — citation అడగడం అనేది ఒక సూచన, నిజమైన నిర్ధారణ కాదు. చివరగా, ఈ పోలిక నైపుణ్యం మానవ సమయం తీసుకుంటుంది; పెద్ద వ్యవస్థలలో దీన్ని automated evaluations తో భర్తీ చేయాలి, పూర్తిగా కాదు.",
-        "source_ids": [
-          "paper-2005.11401",
-          "paper-2002.08909"
-        ]
-      },
-      "news": {
-        "title": "ఈ వారం RAG సంబంధిత అభివృద్ధులు",
-        "overview": "గత రెండు వారాల్లో రెండు ముఖ్యమైన అభివృద్ధులు: Google Research యొక్క 'sleep framework' — deployed మోడల్స్ కొత్త జ్ఞానాన్ని నేర్చుకునే కొత్త విధానం — మరియు AT&T యొక్క OpenAI తో కలిసి చేస్తున్న legal knowledge access ప్రాజెక్ట్. రెండూ ఒకే ప్రశ్నకు సంబంధించినవి: మోడల్స్ తాజా జ్ఞానాన్ని ఎలా పొందుతాయి — parameters ని అప్డేట్ చేస్తూనా, లేదా retrieval ద్వారా నా?",
-        "items": [
-          {
-            "headline": "Google Research 'sleep framework': LLMల కోసం కొనసాగే నేర్చుకునే విధానం",
-            "what_happened": "Google Research (అక్టోబర్ 27, 2026 న ప్రచురించిన బ్లాగ్ పోస్ట్) ఒక 'sleep framework' ను ప్రతిపాదించింది. ఇది continual learning కోసం ఒక విధానం: మోడల్ active (wake) phase లో inputs ను స్వీకరించి short-term memory లో నిల్వ చేస్తుంది; ఆపై offline 'sleep' phase లో ఆ తాత్కాలిక జ్ఞానాన్ని newly unlocked Mixture-of-Experts memory blocks లోకి consolidate చేస్తుంది, మరియు self-generated practice examples తో weights ను అప్డేట్ చేస్తుంది. బ్లాగ్ ప్రకారం ఇది catastrophic forgetting ను తగ్గించి, 10M టోకెన్ల వరకు long-context knowledge ను retain చేయగలదని, అలాగే గణిత reasoning benchmarks (AIME 24/25, HMMT 25) లో మెరుగుదలలు చూపిందని చెబుతోంది. ఈ ఫలితాలు publisher చేసిన claims — ఇవి స్వతంత్రంగా verify చేయబడలేదు.",
-            "why_it_matters": "RAG దృష్టికోణం నుంచి ఇది ముఖ్యం ఎందుకంటే ఇది retrieval కి ఒక alternative గా చూడవచ్చు: జ్ఞానాన్ని external index లో కాకుండా parameters లోనే క్రమంగా రాయడం. ఒక అనువుగా చెప్పాలంటే: RAG అనేది ప్రతిసారి లైబ్రరీకి వెళ్లి reference చూసుకోవడం లాంటిది; sleep framework అనేది రాత్రిపుడు చదివిన విషయాన్ని జ్ఞాపకంలో నిల్వ చేసుకోవడం. Developer కి అర్థమయ్యే యూస్ కేస్: చాలా పెద్ద, తరచుగా మారే corpus ఉన్నప్పుడు retrieval ఇప్పటికీ సరైన ఎంపిక కావచ్చు; కానీ నిర్దిష్టమైన, పునరావృతమయ్యే కొత్త జ్ఞానం (ఉదా: కొత్త భాష, కొత్త domain) ఉన్నప్పుడు ఇలాంటి consolidation విధానాలు ప్రస్తుతికావచ్చు.",
-            "takeaway": "ముఖ్యమైన పరిమితి: ఇది Google యొక్క స్వంత బ్లాగ్ పోస్ట్ — ఫలితాలు publisher claims మాత్రమే, స్వతంత్ర ధృవీకరణ లేదు, మరియు ఇది ఇంకా సాధారణంగా అందుబాటులో ఉన్న product కాదు. దీన్ని try చేసే ముందు: ఏ benchmarks లో baselines తో పోల్చారో, evaluation setup వివరాలు, మరియు ఈ విధానం మీ స్వంత use case లో (పెద్ద, వేగంగా మారే corpus) retrieval కంటే నిజంగా మెరుగైనదా అని తనిఖీ చేయండి. RAG ని వదిలేయాలని ఇది సూచించడం లేదు — ఇది ఒక పరిశోధనా దిశ.",
-            "source_ids": [
-              "news-b49ec3bd8394"
-            ]
-          },
-          {
-            "headline": "AT&T, OpenAI తో కలిసి legal knowledge access ను మెరుగుపరచాలని చూస్తోంది",
-            "what_happened": "OpenAI వెబ్‌సైట్‌లో (అక్టోబర్ 21, 2026 న) ఒక పోస్ట్ వచ్చింది: AT&T యొక్క LegalEdge బృందం OpenAI తో కలిసి legal knowledge ను సులభంగా access చేయడానికి పనిచేస్తోంది — ముఖ్యంగా legal intake ను పునఃఆలోచించడం మరియు legal judgment ను scale చేయడం. గమనిక: మా దగ్గర ఉన్నది ఈ పోస్ట్ యొక్క feed excerpt మాత్రమే; పూర్తి వ్యాసాన్ని మేము చదవలేదు, కాబట్టి సాంకేతిక వివరాలు (ఉదా: RAG వాడారా లేదా, ఏ మోడల్స్ వాడారో) మాకు తెలియవు.",
-            "why_it_matters": "ఇది RAG కి సంబంధించిన ఒక నిజమైన enterprise pattern ను చూపుతుంది: పెద్ద సంస్థల్లో legal, compliance, policy documents అనేది చాలా పెద్ద, నిర్దిష్టమైన corpora — ఇక్కడ సమాధానాలకు provenance (ఏ document ఆధారం) చాలా అవసరం. ఇదే RAG యొక్క బలమైన క్షేత్రం. ఒక అనువు: న్యాయవాది ప్రతి సమాధానానికి 'ఏ statute, ఏ clause' అని చెప్పాల్సి ఉంటుంది — retrieval-based వ్యవస్థలు ఆ citation అవసరానికి సహజంగా సరిపోతాయి. Developer గా, మీ సంస్థ internal knowledge access కోసం ఇలాంటి intake + retrieval నమూనాలను పరిశీలించవచ్చు.",
-            "takeaway": "ముఖ్యమైన పరిమితి: ఇది vendor (OpenAI) ప్రచురించిన కేస్ స్టడీ — వారి సొంత product పట్ల అనుకూలంగా ఉండే అవకాశం ఉంది, మరియు మాకు లభించినది సంక్షిప్త excerpt మాత్రమే. దీన్ని అనుసరించే ముందు: పూర్తి పోస్ట్ చదవండి, ఏ సాంకేతిక విధానం (retrieval, fine-tuning, tooling) వాడారో, ఎలాంటి accuracy లేదా review safeguards ఉన్నాయో, మరియు legal judgment అంటే వాస్తవంలో ఏమిటో (automation కాదు, assistance) స్పష్టం చేసుకోండి.",
-            "source_ids": [
-              "news-39cad894cdd2"
-            ]
-          }
-        ],
-        "exercise": "రెండు నిమిషాల source-check వ్యాయామం: Google యొక్క sleep framework బ్లాగ్ పోస్ట్ తెరవండి. ఈ మూడు ప్రశ్నలకు సమాధానం కనుగొనండి: (1) ఫలితాలు ఏ benchmarks మీద కొలిచారు, baselines ఎవరు? (2) ఈ విధానం ఏ model architecture మీద ప్రయోగించారు — ఇది సాధారణంగా అందుబాటులో ఉందా? (3) పోస్ట్ ఏ పరిమితులను ఒప్పుకుంటుంది? అలాగే AT&T పోస్ట్ లో: వారు retrieval వాడారా లేదా అని పేర్కొన్నారా, లేదా అది మీ ఊహా మాత్రమేనా అని గుర్తించండి. ఈ వ్యాయామం publisher claims ను మీ స్వంత అర్థం నుంచి వేరు చేయడం నేర్పుతుంది.",
-        "question": "Google యొక్క sleep framework ఫలితాలను ఎలాంటి ధృవీకరణ స్థాయిలో చూడాలి, ఎందుకు?",
-        "answer": "అవి publisher claims గా మాత్రమే చూడాలి — ఇవి Google స్వంత బ్లాగ్ లో వచ్చిన ఫలితాలు, స్వతంత్ర ధృవీకరణ లేదు, peer-reviewed ప్రచురణ వివరాలు మా సోర్స్‌లో లేవు. కాబట్టి benchmarks, baselines, evaluation setup ను ముందు తనిఖీ చేయాలి; అదే జాగ్రత్త OpenAI ప్రచురించిన AT&T కేస్ స్టడీకి కూడా వర్తిస్తుంది."
-      },
-      "usage": {
-        "prompt_tokens": 3468,
-        "completion_tokens": 11852,
-        "total_tokens": 15320,
-        "prompt_tokens_details": {
-          "cached_tokens": 0
-        },
-        "completion_tokens_details": {
-          "accepted_prediction_tokens": null,
-          "reasoning_tokens": 0,
-          "rejected_prediction_tokens": null
-        }
-      },
-      "sources": [
-        {
-          "id": "paper-2005.11401",
-          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
-          "url": "https://arxiv.org/abs/2005.11401",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "paper-2002.08909",
-          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
-          "url": "https://arxiv.org/abs/2002.08909",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "news-b49ec3bd8394",
-          "title": "The sleep framework: A new way for LLMs to retain knowledge in continual learning",
-          "url": "https://research.google/blog/the-sleep-framework-a-new-way-for-llms-to-retain-knowledge-in-continual-learning/",
-          "publisher": "Google Research",
-          "published_at": "2026-10-27T17:35:00+00:00",
-          "evidence_type": "article_excerpt",
-          "topic": "RAG"
-        },
-        {
-          "id": "news-39cad894cdd2",
-          "title": "How AT&T is rethinking in-house legal work with OpenAI",
-          "url": "https://openai.com/index/att-legal",
-          "publisher": "OpenAI",
-          "published_at": "2026-10-21T17:00:00+00:00",
-          "evidence_type": "feed_excerpt",
-          "topic": "RAG"
-        }
-      ],
-      "id": "73f19644618cb088"
-    },
     {
       "date": "2026-10-30",
       "timezone": "America/New_York",
@@ -3630,6 +3410,234 @@
         }
       ],
       "id": "7976f0cd6fc2bf2d"
+    },
+    {
+      "date": "2026-11-14",
+      "timezone": "America/New_York",
+      "created_at": "2026-11-14T17:10:48.919881+00:00",
+      "topic": "RAG",
+      "language": "en",
+      "concept": "Comparing retrieved passages",
+      "news_window": "recent",
+      "source_warnings": [],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "Comparing Retrieved Passages: The RAG Skill of Choosing Between Candidates",
+        "summary": "Retrieval-augmented generation (RAG) systems fetch several candidate passages from an external index and must decide which ones actually answer the question. Comparing retrieved passages—weighing relevance, freshness, and agreement between candidates—is what turns a retrieval list into a trustworthy answer. This pill explains the skill through an everyday story, maps it to how RAG models condition on retrieved documents, and gives you a practical exercise.",
+        "story": "Imagine you are a librarian helping a visitor who asks, \"What are the rules for renewing a library card?\" You walk to the reference shelf and pull four documents: a city ordinance from 2011, a library brochure from last year, a sticky note someone left on the desk, and a printed FAQ. All four mention card renewal, but they disagree. The ordinance is authoritative but outdated—the library changed its policy since. The brochure is current and official. The sticky note is handwritten and might be a joke. The FAQ is generic and doesn't mention your city at all. A careless librarian would hand over the first document she touched. A good librarian reads all four, notices the conflict between the ordinance and the brochure, prefers the more recent official source, discards the sticky note, and tells the visitor: \"The current rule is X; note that an older ordinance says Y, but the policy changed.\" That act of reading several documents side by side, judging each one, and reconciling conflicts is exactly the skill we're studying.",
+        "connection": "In RAG, the librarian's shelf-pull is the retriever: a neural retriever searches a dense vector index of documents (in the original RAG paper, Wikipedia) and returns the top passages. The four documents on the desk are the retrieved candidates. The librarian's judgment is the generation step, where the language model reads the passages and writes an answer. The original RAG formulation even offers two ways to use the shelf: one version reads the same set of passages for the whole answer (like the librarian deciding up front which documents to trust), while another can consult different passages for different parts of the answer (like glancing back at the ordinance only when discussing history). REALM, a closely related system, showed that a model can learn to retrieve and attend over documents during pre-training itself, and that grounding answers in retrievable documents brings interpretability and modularity—you can inspect which documents were used.",
+        "explanation": "Comparing passages matters because retrieval is imperfect. A dense retriever returns passages that are semantically similar to the query, not necessarily correct or current. Two candidates may contradict each other; one may be authoritative, another SEO spam. Practical comparison heuristics include: (1) check each passage independently answers the question, not just that it shares keywords; (2) prefer sources that agree with each other, and flag conflicts rather than silently picking one; (3) weigh recency and source authority when they conflict; (4) notice when all candidates are off-topic—that's a signal to say \"I don't know\" instead of hallucinating. Systems that condition on multiple passages can generate more specific and factual language than parametric-only models, but only if the comparison step is done thoughtfully.",
+        "application": "In a production RAG pipeline, you can implement comparison at two levels. At retrieval time, fetch k passages (e.g., 5–10) instead of one, and optionally re-rank them with a cross-encoder that scores each passage against the query. At generation time, prompt the model to cite which passage supports each claim, and to state when passages disagree. Logging which passage was used for which answer gives you provenance, so when a user reports a wrong answer you can trace it to a specific stale or irrelevant document and fix your index.",
+        "exercise": "Take any question and manually retrieve three sources (e.g., three web pages or three documentation sections). For two minutes, write one line per source: does it directly answer the question, how current is it, and does it agree with the others? Then write your answer citing the best source and noting any conflict. This simulates exactly what a well-designed RAG generation step should do.",
+        "question": "Your RAG system retrieves two passages that give contradictory answers to the user's question. What should a well-designed system do, and why is silently picking one a problem?",
+        "answer": "It should surface the conflict—prefer the more authoritative or recent source while noting the disagreement, or ask the user for clarification. Silently picking one hides provenance: if the chosen passage is wrong or stale, neither the user nor the developer can tell that another candidate existed, making debugging and trust impossible.",
+        "limits": "The librarian analogy breaks down in an important way: a human librarian understands why a source is authoritative, while a language model compares passages based on learned patterns in text, not genuine understanding of authority. Also, the analogy suggests a careful, deliberate reading; in practice, models attend over passages in a single forward pass and can be distracted by plausible-but-wrong candidates. Comparison quality depends heavily on retriever and re-ranker quality—garbage candidates in, garbage comparisons out.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "Recent Developments Touching Retrieval and Agent Memory",
+        "overview": "Two recent items are relevant to developers thinking about retrieval and context: Anthropic's research on how agents should organize memory, and Google's announcement of new TPU systems aimed at agentic workloads. Both are publisher claims; treat benchmarks and performance figures as vendor-reported until independently verified.",
+        "items": [
+          {
+            "headline": "Anthropic describes how Claude agents organize and use memory, including offline \"dreaming\"",
+            "what_happened": "An Anthropic research post (published November 6, 2026) explains a framework for agent memory: knowledge an agent gains from experience and retains between sessions as readable context. It describes \"dreaming\"—using idle time to reflect on session logs, fix mistakes, and write memory notes—and reports evaluations including a CL-Bench database task, where newer Claude models reportedly closed a learning loop by writing validated rules to a memory directory, and a Pokémon Red test, where a model writing fewer, more strategic memory files progressed further than one that archived everything indiscriminately. Anthropic also reports that rigid prompting rules (like \"record only failures\") reduced the memory benefit for stronger models.",
+            "why_it_matters": "If you build agents that persist state across sessions, the salience lesson is directly applicable: memory that mirrors what's already visible in context is redundant and goes stale, while distilled rules, plans, and tested corrections are what pay off. Think of it like a team's wiki—a page per meeting transcript rots quickly, but a short page of verified on-call rules stays useful. For RAG developers, this reinforces the comparison skill: an agent must judge which stored notes still apply, much like judging which retrieved passage is current.",
+            "takeaway": "These are Anthropic's own evaluations on its own models; the reported performance differences are publisher claims, not independent results. Before applying the pattern, inspect the full post's evaluation setups (task definitions, baselines, and how memory directories were seeded) and test salience-driven memory on your own workload rather than assuming the gains transfer.",
+            "source_ids": [
+              "news-f0247d2be6d2"
+            ]
+          },
+          {
+            "headline": "Google announces TPU 8tx and 8i Max for confidential inference and large-context agentic workloads",
+            "what_happened": "A Google Cloud blog post (November 9, 2026) announces two additions to its eighth-generation TPU lineup: TPU 8tx, which adds hardware-level confidential computing so data and model weights stay protected even while in active use, and TPU 8i Max, which pairs two TPU 8i chips on one package to double compute, SRAM, and HBM bandwidth for very large context windows. Google also highlights software efforts such as open-sourced TorchTPU and claims state-of-the-art price-performance on its InferenceX and AgentX benchmarks.",
+            "why_it_matters": "For developers, the practical relevance is capacity for long-context and multi-agent workloads: when an agent must reason over a large codebase or long documents—effectively a large retrieved context—memory bandwidth becomes the bottleneck, which is the problem 8i Max targets. The analogy: it's like widening both the desk and the shelf so the librarian can spread out all candidate passages at once instead of fetching them in batches. The confidential-computing angle matters if you're building RAG over sensitive corporate documents where data must stay encrypted even during inference.",
+            "takeaway": "All performance and benchmark figures are Google's own claims, and availability, pricing, and real-world price-performance for your specific workload need verification. Before trying these, inspect the actual Cloud documentation for regional availability and quotas, and run your own retrieval-heavy workload against the published numbers rather than relying on vendor benchmarks.",
+            "source_ids": [
+              "news-e9950a58c892"
+            ]
+          }
+        ],
+        "exercise": "For two minutes, pick one news item and open the primary source. Identify one claim that is a vendor-reported benchmark number and one that is a design description. Note what you'd need to verify the benchmark claim independently (workload definition, baseline, hardware configuration).",
+        "question": "Why should you treat the Pokémon and CL-Bench results in Anthropic's post as observations rather than proof that memory \"dreaming\" will improve your agent?",
+        "answer": "They are the publisher's own evaluations on its own models, with task setups and baselines described only in the post itself; results on different tasks, models, and workloads may not transfer, so you should inspect the methodology and test the pattern on your own system."
+      },
+      "usage": {
+        "prompt_tokens": 5904,
+        "completion_tokens": 2091,
+        "total_tokens": 7995,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": null,
+          "reasoning_tokens": 19,
+          "rejected_prediction_tokens": null
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-f0247d2be6d2",
+          "title": "The components of agent memory",
+          "url": "https://www.anthropic.com/research/components-of-agent-memory",
+          "publisher": "www.anthropic.com",
+          "published_at": "2026-11-06T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 189,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-e9950a58c892",
+          "title": "Our newest TPUs: 8tx and 8i Max, built for the agentic era",
+          "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/tpu-8i-max-and-8tx/",
+          "publisher": "blog.google",
+          "published_at": "2026-11-09T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 28,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "Other"
+        }
+      ],
+      "id": "b8524f2c91ad113e"
+    },
+    {
+      "date": "2026-11-14",
+      "timezone": "America/New_York",
+      "created_at": "2026-11-14T17:10:48.919881+00:00",
+      "topic": "RAG",
+      "language": "te",
+      "concept": "Comparing retrieved passages",
+      "news_window": "recent",
+      "source_warnings": [],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "విడుదలైన passages ని పోల్చడం: RAG లో సమాచార ఎంపిక",
+        "summary": "RAG systems లో retriever ఒక్క passage మాత్రమే ఇవ్వదు — అనేక passages ని అందిస్తుంది. వాటిని ఎలా పోల్చి, ఏది నమ్మదగినదో ఎంచుకోవడం ఒక ముఖ్యమైన డెవలపర్ నైపుణ్యం. ఈ lesson లో ఒక ఊహాజనిత కథ ద్వారా ఈ భావనను నేర్చుకుంటాం.",
+        "story": "ఊహించండి: మీరు ఒక పట్టణంలో కొత్త ఇల్లు కోసం వెతుకుతున్నారు. మీరు ఒక రియల్ ఎస్టేట్ ఏజెంట్ (retriever) ని సంప్రదించారు. ఆయన మీకు మూడు ఇళ్ల వివరాలు ఇస్తాడు. మొదటి ఇల్లు చాలా అందంగా ఉంది, కానీ వివరాలు పాతవి — ధర రెండేళ్ల క్రితంది. రెండో ఇల్లు సరిగ్గా మీ అవసరాలకు సరిపోతుంది: మీరు అడిగిన ప్రతి విషయం — పాఠశాల దగ్గరగా ఉండటం, బడ్జెట్ లోపలి ధర — అన్నీ సమాధానం చేస్తుంది. మూడో ఇల్లు చాలా ప్రసిద్ధమైన ప్రకటనలో ఉంది, చాలా మంది చూశారు, కానీ మీ ప్రశ్నలకు సంబంధం తక్కువ. మీరు ఏమి చేస్తారు? మీరు మూడింటినీ పక్కపక్కన పెట్టి పోల్చుతారు: ఏ ఇల్లు మీ ప్రశ్నకు దగ్గరగా ఉంది? ఏ సమాచారం తాజాది? ఏది ఇతర వనరులతో ఒప్పుకుంటుంది? మీరు ఒక్క ఇల్లు మాత్రమే చూసి నిర్ణయం తీసుకుంటే, తప్పుడు ఎంపిక చేసే ప్రమాదం ఎక్కువ. మూడింటినీ పోల్చడం వల్ల మీకు సరైన ఎంపిక మాత్రమే కాకుండా, ఎందుకు ఎంచుకున్నారో అనే కారణం కూడా వస్తుంది.",
+        "connection": "ఈ కథలోని భాగాలు RAG లో ఇలా అమరుతాయి. మీ ప్రశ్న (ఇల్లు కావాలి అనే అవసరం) = user query. రియల్ ఎస్టేట్ ఏజెంట్ = retriever, ఇల్లు వివరాలు = retrieved passages. ఇళ్లను పోల్చడం = passage comparison. మొదటి ఇల్లు పాత సమాచారం = stale document. రెండో ఇల్లు = query కి ఎక్కువ relevance ఉన్న passage. మూడో ఇల్లు = ప్రసిద్ధం కానీ తక్కువ relevant అయిన passage — ఇది popularity లేదా surface-level similarity వల్ల వచ్చే భ్రమ. చివరి నిర్ణయం = generator model ఏ passage ఆధారంగా answer ఇస్తుందో అనేది.",
+        "explanation": "RAG (Retrieval-Augmented Generation) models లో, ఒక pre-trained seq2seq model (parametric memory) తో పాటు, ఒక dense vector index (non-parametric memory) ని pre-trained neural retriever తో access చేస్తారు. Lewis et al. యొక్క RAG paper ప్రకారం, రెండు formulations ఉన్నాయి: ఒకటి మొత్తం generated sequence అంతటా ఒకే set of retrieved passages పై ఆధారపడుతుంది (RAG-Sequence), రెండో ప్రతి token కి వేరు వేరు passages ని ఉపయోగించగలదు (RAG-Token). అంటే model ఒక్క passage పై ఆధారపడకుండా, అనేక passages మధ్య ఎలాంటి సమాచారం ఉందో పోల్చే అవకాశం కలిగి ఉంటుంది. REALM paper లో కూడా, model ఒక latent knowledge retriever తో Wikipedia లోని documents ని retrieve చేసి, వాటిపై attend చేస్తుంది. ఇది interpretability మరియు modularity అనే ప్రయోజనాలను అందిస్తుంది — అంటే model ఏ documents పై ఆధారపడిందో చూడవచ్చు. డెవలపర్ దృష్టిలో, ఇది ముఖ్యం: retriever ఇచ్చే top-k passages అన్నీ సమానంగా ఉపయోగకరం కావు. ఒక passage query కి సరిగ్గా సంబంధం ఉండవచ్చు, మరొకటి పాత సమాచారం కలిగి ఉండవచ్చు, మరొకటి పూర్తిగా వేరు విషయం గురించి ఉండవచ్చు. వీటిని పోల్చడం అంటే — relevance, freshness, consistency, coverage అనే కోణాల్లో చూడటం. ఒకే passage పై ఆధారపడితే hallucination లేదా పక్షపాతం వచ్చే అవకాశం పెరుగుతుంది; అనేక passages ని పోల్చితే, వాటి మధ్య విభేదాలు కనిపించి, ఎక్కువ నమ్మదగిన answer వస్తుంది.",
+        "application": "ప్రాయోగికంగా: మీరు ఒక RAG-based support chatbot ని నిర్మిస్తున్నారనుకోండి. Retriever top-5 passages ఇస్తుంది. మీరు చేయగలిగేవి: (1) ప్రతి passage కి relevance score ని లాగ్ చేసి, తక్కువ score passages ని filter చేయడం; (2) passages మధ్య విరుద్ధమైన సమాచారం ఉందో తనిఖీ చేయడం — ఉదాహరణకు రెండు passages వేరువేరు refund policies చెప్తే, model కి ఆ విభేదాన్ని గుర్తించమని prompt చేయడం; (3) ఏ passage ఆధారంగా answer వచ్చిందో user కి citations గా చూపడం — ఇది provenance అంటారు, RAG paper దీన్ని ఒక open research problem గా పేర్కొంది. ఇలా చేయడం వల్ల మీ chatbot ఒకే తప్పుడు document పై ఆధారపడకుండా, అనేక వనరులను సమతౌల్యంగా ఉపయోగిస్తుంది.",
+        "exercise": "రెండు నిమిషాల వ్యాయామం: మీరు రోజూ వాడే ఏదైనా search engine లో ఒక సాంకేతిక ప్రశ్న వెతకండి. మొదటి మూడు results తీసుకోండి. ఒక్కోదానికి ఈ మూడు ప్రశ్నలు అడగండి: (1) ఇది నా ప్రశ్నకు నేరుగా సమాధానమిస్తుందా? (2) ఇది ఎప్పుడు రాయబడింది — తాజాదా? (3) మిగతా రెండింటితో ఇది ఒప్పుకుంటుందా? మీ నిర్ణయాన్ని ఒక వాక్యంలో రాయండి. ఇదే ప్రక్రియనే RAG system లో passages పై చేస్తారు.",
+        "question": "RAG-Token formulation RAG-Sequence తో పోలిస్తే passages ని ఎలా ఉపయోగిస్తుంది?",
+        "answer": "RAG-Sequence మొత్తం generated sequence అంతటా ఒకే set of retrieved passages పై ఆధారపడుతుంది, కానీ RAG-Token ప్రతి token కి వేరు వేరు passages ని ఉపయోగించగలదు. అంటే generation లో భాగాన్ని బట్టి వివిధ passages మధ్య మారవచ్చు.",
+        "limits": "ఈ analogy కి పరిమితులు: ఇళ్లను పోల్చడం మానవుడు చేసే స్పష్టమైన, నెమ్మదైన ప్రక్రియ. కానీ RAG model లో ఈ పోలిక అంత స్పష్టంగా జరగదు — model లోపల attention mechanisms ద్వారా ఇది implicit గా జరుగుతుంది, మనం దాన్ని నేరుగా చూడలేం. రెండో పరిమితి: ఇల్లు ఎంపికలో ఒక్కటే ఎంచుకుంటారు, కానీ RAG లో అనేక passages ని కలిపి ఉపయోగించవచ్చు. మూడోది: relevance score ఎక్కువగా ఉండటం అంటే సమాచారం ఖచ్చితంగా ఉందని కాదు — retriever కేవలం similarity పై ఆధారపడుతుంది, truth పై కాదు.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "ఈ వారం AI వార్తలు: agent memory మరియు కొత్త TPU systems",
+        "overview": "ఈ రోజు ప్రచురించబడిన కొత్త వార్తలు లేవు, కానీ గత రెండు వారాల్లో రెండు ముఖ్యమైన అభివృద్ధులు నమోదయ్యాయి: Anthropic agent memory పై పరిశోధన, మరియు Google యొక్క కొత్త TPU systems. రెండు సందర్భాల్లోనూ publisher చేసిన claims ని, మన interpretation ని విడివిడిగా చూద్దాం.",
+        "items": [
+          {
+            "headline": "Anthropic: AI agents కోసం memory components పై పరిశోధన",
+            "what_happened": "Anthropic 2026 నవంబర్ 6న ఒక research post ప్రచురించింది. దీని ప్రకారం, AI agents తమ sessions మధ్య ఉంచే memory ని ఎలా నిర్వహించాలో వివరించారు. మానవ మెదడులో నిద్రలో జ్ఞాపకాలు consolidate అయ్యే విధానాన్ని పోల్చి, agents idle సమయంలో తమ logs ని పునఃపరిశీలించి 'dreaming' ద్వారా memory notes ని సరిచేయవచ్చని పేర్కొన్నారు. వారి evaluations లో — CL-Bench 1.0 database task మరియు Pokémon Red game — ఎక్కువ సామర్థ్యం ఉన్న models తక్కువ, ఎంపిక చేసిన memory files తో మెరుగైన ఫలితాలు సాధించాయి. ఉదాహరణకు, ఒక model 413 files రాసి ఒక badge సాధించగా, మరొక model 9 files తో నాలుగు badges సాధించింది. అలాగే, models కి 'ఏమి రాయాలో' ఖరారైన నియమాలు విధించడం కంటే, salience ని నిర్ణయించే స్వేచ్ఛ ఇవ్వడం మెరుగైన ఫలితాలను చూపింది.",
+            "why_it_matters": "డెవలపర్లకు ఇది ఒక స్పష్టమైన పాఠం: agent కి memory ఇచ్చేటప్పుడు, ఏది రాయాలో అనే నిర్ణయం ముఖ్యం — అన్నీ రాయడం వల్ల memory పాతదై, దాన్ని వెతకడానికే ఎక్కువ సమయం వెచ్చించే ప్రమాదం ఉంది. ఇది RAG తో సంబంధం కలిగి ఉంది: మీ knowledge base లో ఏ సమాచారం ఉంచాలో, ఎప్పుడు update చేయాలో ఆలోచించడం — ఇది మానవ జ్ఞాపకాలను పోల్చడం ద్వారా అర్థం చేసుకోవచ్చు. ఒక analogy: మీ డెస్క్ పై అన్ని పత్రాలను పేరుకుపేర్చడం కంటే, ముఖ్యమైన నియమాలను మాత్రమే ఒక నోట్ పై రాయడం మెరుగు. గమనిక: ఇది Anthropic చేసిన పరిశోధనపై వారి స్వంత నివేదిక; ఇది peer-reviewed కాదు, మరియు ఫలితాలు వారి ప్రత్యేక benchmarks పై ఆధారపడి ఉన్నాయి.",
+            "takeaway": "పరిమితి: ఈ ఫలితాలు Anthropic యొక్క స్వంత evaluations (CL-Bench, Pokémon) పై ఆధారపడినవి; ఇతర tasks లో అవి అలాగే పనిచేస్తాయని హామీ లేదు. దీన్ని ప్రయత్నించే ముందు: మీ agent యొక్క memory files ఎంత త్వరగా పాతదవుతున్నాయో, మరియు memory ని చదవడానికి వెచ్చించే సమయం vs పొందే లాభం ఏమిటో కొలవండి. పూర్తి post లో evaluations methodology ని చదవడం మంచిది — మేము excerpt మాత్రమే చూశాము.",
+            "source_ids": [
+              "news-f0247d2be6d2"
+            ]
+          },
+          {
+            "headline": "Google: కొత్త TPU 8tx మరియు TPU 8i Max systems",
+            "what_happened": "Google 2026 నవంబర్ 9న తన eighth-generation TPU portfolio లో రెండు కొత్త systems ని ప్రకటించింది. TPU 8tx — secure, confidential inference కోసం: data మరియు model weights processing సమయంలో కూడా hardware స్థాయిలో protected గా ఉండేలా రూపొందించారు. TPU 8i Max — massive context windows కోసం: రెండు TPU 8i chips ని ఒక package లో కలిపి, TPU 8i తో పోలిస్తే రెండు రెట్లు compute, SRAM మరియు HBM bandwidth అందిస్తుంది. Google ప్రకారం ఇది ఒక సంవత్సరంలో నాలుగు TPU systems ప్రకటించిన మొదటిసారి. వారు TorchTPU open-sourcing, vLLM మరియు SGLang కి backends, మరియు InferenceX/AgentX benchmarks పై price-performance claims కూడా చేశారు.",
+            "why_it_matters": "డెవలపర్ కోణంలో: పెద్ద context windows అంటే ఒక RAG system లో ఎక్కువ retrieved passages ని ఒకేసారి model కి ఇవ్వగలరు — అయితే అది memory bandwidth పై ఒత్తిడి తెస్తుంది, దీనికే Google 'memory wall' అని పేరు పెట్టింది. TPU 8i Max ఆ సమస్యను పరిష్కరించడానికి ప్రయత్నిస్తుంది. Confidential inference (8tx) అంటే — ఒక analogy తో చెప్పాలంటే — మీ ఇంటి తాళం చాలా బలంగా ఉండటం కానీ, లోపల ఉన్నప్పుడు కూడా వస్తువులు కప్పబడి ఉండటం: data సాధారణంగా storage/network లో encrypted ఉంటుంది కానీ processing సమయంలో unlock అవుతుంది; 8tx ఆ సమయంలో కూడా protection ఇవ్వడానికి ప్రయత్నిస్తుంది. గమనిక: performance claims (2x latency, 80% price-performance వంటివి) Google చేసిన vendor claims; వీటిని స్వతంత్రంగా ధృవీకరించలేదు.",
+            "takeaway": "పరిమితి: ఇవి Google యొక్క స్వంత benchmarks మరియు వారి స్వంత నిర్వచనాలపై ఆధారపడిన claims; ఇది ఒక product announcement, స్వతంత్ర మూల్యాంకనం కాదు. దీన్ని పరిగణించే ముందు: మీ workload కి నిజంగా confidential compute లేదా million-token context అవసరమా అని, మరియు మీ ప్రస్తుత infrastructure పై actual cost/latency ని benchmark చేసి, తర్వాతే నిర్ణయం తీసుకోండి. InferenceX/AgentX benchmark definitions ని కూడా చూడండి — 'industry-standard' అని చెప్పడం వేరు, వాటి methodology అర్థం చేసుకోవడం వేరు.",
+            "source_ids": [
+              "news-e9950a58c892"
+            ]
+          }
+        ],
+        "exercise": "రెండు నిమిషాల source-check వ్యాయామం: రెండు వార్తా items లోనూ, publisher చేసిన claim ఒకటి మరియు అది ఏ పరిమితిపై ఆధారపడిందో ఒకటి గుర్తించండి. ఉదాహరణకు: Anthropic యొక్క 'dreaming' claim — అది వారి స్వంత benchmarks పై ఆధారపడింది; Google యొక్క performance claims — అవి vendor benchmarks పై ఆధారపడింది. ఒక్కో item కి 'ఇది ఎవరు కొలిచారు?' అనే ప్రశ్న అడగండి. సమాధానం ఎక్కువగా 'publisher స్వయంగా' అయితే, ఆ claim ని జాగ్రత్తగా చదవాలి.",
+        "question": "Anthropic యొక్క agent memory పరిశోధనలో, models కి ఖరారైన నియమాలు విధించడం బదులు ఏమి చేయడం మెరుగైన ఫలితాలు చూపింది?",
+        "answer": "Stronger models కి memory లో ఏది ముఖ్యమో (salience) నిర్ణయించే స్వేచ్ఛ ఇవ్వడం మెరుగైన ఫలితాలు చూపింది. ఉదాహరణకు 'record only failures' అనే నియమం విధించినప్పుడు, Opus 5 మరియు Opus 4.7 models memory నుంచి పొందే ప్రయోజనాన్ని ఎక్కువగా కోల్పోయాయి. అయితే ఇది Anthropic యొక్క స్వంత evaluations లో గమనించిన ఫలితం — స్వతంత్ర ధృవీకరణ లేదు."
+      },
+      "usage": {
+        "prompt_tokens": 5904,
+        "completion_tokens": 11002,
+        "total_tokens": 16906,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": null,
+          "reasoning_tokens": 31,
+          "rejected_prediction_tokens": null
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-f0247d2be6d2",
+          "title": "The components of agent memory",
+          "url": "https://www.anthropic.com/research/components-of-agent-memory",
+          "publisher": "www.anthropic.com",
+          "published_at": "2026-11-06T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 189,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-e9950a58c892",
+          "title": "Our newest TPUs: 8tx and 8i Max, built for the agentic era",
+          "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/tpu-8i-max-and-8tx/",
+          "publisher": "blog.google",
+          "published_at": "2026-11-09T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 28,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "Other"
+        }
+      ],
+      "id": "dc87e08bdecf23f1"
     }
   ]
 }

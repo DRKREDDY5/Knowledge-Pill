@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "task": "ai_headlines",
-  "checked_at": "2026-11-13T18:33:23.031741+00:00",
+  "checked_at": "2026-11-14T17:10:48.919881+00:00",
   "items": [
     {
       "id": "news-e9950a58c892",
@@ -25,11 +25,25 @@
       "published_at": "2026-11-02T00:00:00+00:00"
     },
     {
+      "id": "news-bea6f68aca51",
+      "title": "Advancing science & engineering with Antigravity’s /teamwork",
+      "url": "https://research.google/blog/advancing-science-engineering-with-antigravitys-teamwork-feature/",
+      "publisher": "Google Research",
+      "published_at": "2026-11-13T20:47:18+00:00"
+    },
+    {
       "id": "news-7d4d71d056da",
       "title": "Introducing ChatGPT Wallet",
       "url": "https://openai.com/index/introducing-chatgpt-wallet",
       "publisher": "OpenAI",
       "published_at": "2026-11-13T15:00:00+00:00"
+    },
+    {
+      "id": "news-a99dfdd20d85",
+      "title": "Shield helps technicians hand off legacy portal work with OpenAI",
+      "url": "https://openai.com/business/customer-stories/shield",
+      "publisher": "OpenAI",
+      "published_at": "2026-11-13T08:00:00+00:00"
     },
     {
       "id": "news-67672a694e38",
@@ -72,20 +86,6 @@
       "url": "https://openai.com/index/children-first-declaration",
       "publisher": "OpenAI",
       "published_at": "2026-11-12T00:00:00+00:00"
-    },
-    {
-      "id": "news-65b96c238445",
-      "title": "Gilbert + Tobin rethinks the business of law with AI",
-      "url": "https://openai.com/index/gilbert-tobin-sam-nickless",
-      "publisher": "OpenAI",
-      "published_at": "2026-11-12T00:00:00+00:00"
-    },
-    {
-      "id": "news-0f5c21881c73",
-      "title": "Using wearables to enable cardiovascular-kidney-metabolic (CKM) risk profiling for personalized coaching",
-      "url": "https://research.google/blog/using-wearables-to-enable-cardiovascular-kidney-metabolic-ckm-risk-profiling-for-personalized-coaching/",
-      "publisher": "Google Research",
-      "published_at": "2026-11-11T19:54:00+00:00"
     }
   ]
 }
