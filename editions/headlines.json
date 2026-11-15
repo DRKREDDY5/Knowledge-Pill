@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "task": "ai_headlines",
-  "checked_at": "2026-11-14T17:10:48.919881+00:00",
+  "checked_at": "2026-11-15T17:46:18.764717+00:00",
   "items": [
     {
       "id": "news-e9950a58c892",
@@ -53,13 +53,6 @@
       "published_at": "2026-11-12T20:00:00+00:00"
     },
     {
-      "id": "news-c7a410ad3b86",
-      "title": "Introducing Gemini 4 Hydrogen",
-      "url": "https://deepmind.google/blog/introducing-gemini-4-hydrogen/",
-      "publisher": "Google DeepMind",
-      "published_at": "2026-11-12T18:00:50+00:00"
-    },
-    {
       "id": "news-b9840fd67063",
       "title": "Gondola doubles revenue as its team builds more with Codex",
       "url": "https://openai.com/business/customer-stories/gondola",
@@ -84,6 +77,13 @@
       "id": "news-d7c1da8cb7dc",
       "title": "Supporting research on AI and children’s safety",
       "url": "https://openai.com/index/children-first-declaration",
+      "publisher": "OpenAI",
+      "published_at": "2026-11-12T00:00:00+00:00"
+    },
+    {
+      "id": "news-65b96c238445",
+      "title": "Gilbert + Tobin rethinks the business of law with AI",
+      "url": "https://openai.com/index/gilbert-tobin-sam-nickless",
       "publisher": "OpenAI",
       "published_at": "2026-11-12T00:00:00+00:00"
     }

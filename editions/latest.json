@@ -1,228 +1,8 @@
 {
   "schema_version": 1,
   "task": "daily_pills_collection",
-  "updated_at": "2026-11-14T17:12:27.504527+00:00",
+  "updated_at": "2026-11-15T17:48:02.986479+00:00",
   "packets": [
-    {
-      "date": "2026-10-30",
-      "timezone": "America/New_York",
-      "created_at": "2026-10-30T17:02:09.308928+00:00",
-      "topic": "RAG",
-      "language": "en",
-      "concept": "Knowing when evidence is missing",
-      "news_window": "recent",
-      "source_warnings": [],
-      "router_engine": "TF-IDF + logistic regression",
-      "schema_version": 1,
-      "task": "daily_pills",
-      "status": "draft",
-      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
-      "generation_method": "fireworks",
-      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
-      "knowledge": {
-        "title": "Knowing When Evidence Is Missing: The RAG Skill Nobody Teaches",
-        "summary": "Retrieval-augmented generation (RAG) grounds a language model in documents fetched at query time, but retrieval can return nothing useful. A well-built system must recognize when the evidence is absent and say so, rather than answering from parametric memory or hallucinating around a weak match. This pill teaches you to design and evaluate that 'no evidence' path.",
-        "story": "Imagine Maya, a librarian at a small reference desk. A visitor asks, 'What was the rainfall in the town of Elmsworth in March 1972?' Maya walks to the shelves, pulls three books on regional weather, and flips through them. Nothing. She has two choices: guess based on general knowledge she picked up somewhere years ago, or tell the visitor, 'I checked the sources I have, and this information isn't in them. Here's what I'd need to answer properly.' A good librarian does the second. A bad one says a plausible-sounding number, and the visitor walks away confidently wrong. Now imagine Maya's manager evaluates her only on whether she 'sounds helpful' — she'd be incentivized to always answer, even when the shelf is empty. The fix isn't a smarter Maya; it's a rule that says an empty search result is a valid, reportable outcome.",
-        "connection": "Every part of Maya's day maps to a RAG component. The visitor's question is the user query. Walking to the shelves is the retriever: in the original RAG formulation (Lewis et al.), a pre-trained neural retriever queries a dense vector index of documents, and a seq2seq generator conditions its output on the retrieved passages. The books are the non-parametric memory — explicit documents outside the model's weights. Maya's temptation to guess is the parametric memory talking: the model's weights store factual knowledge, which the RAG paper notes is limited in precision and hard to update or attribute. Her honest 'not in my sources' is the missing-evidence path. And the manager's flawed evaluation is any pipeline that scores only answer fluency, never abstention quality.",
-        "explanation": "RAG exists because parametric models struggle to precisely manipulate knowledge, provide provenance, or stay current; REALM and RAG showed that attaching a retriever over an explicit corpus improves open-domain QA and makes answers more specific, factual, and interpretable. But retrieval guarantees only that documents were fetched, not that they contain the answer. A retriever will almost always return its top-k passages, even for unanswerable queries — similarity is not presence. Systems therefore need an explicit evidence check: does any retrieved passage actually support an answer? That can be a classifier scoring passage-query support, a generation prompt that permits an 'insufficient evidence' response, or a threshold on retrieval scores. Without it, the generator fills gaps from parametric memory, which is exactly the failure mode RAG was meant to prevent.",
-        "application": "In practice, add three things to your RAG pipeline. First, an abstention rule: instruct the generator that if the retrieved context does not contain the answer, it must say so, and test this with queries you know are absent from the corpus. Second, provenance: require citations to specific passages, so an unsupported claim is visible. Third, evaluation with an 'unanswerable' split: measure how often the system correctly abstains versus hallucinates, not just accuracy on answerable questions. A system that abstains correctly on hard queries is more trustworthy than one that scores slightly higher by guessing.",
-        "exercise": "Take any RAG demo you can run (or sketch one on paper). Write three queries: one clearly answerable from the corpus, one partially related, and one about a topic the corpus certainly lacks. Run or trace all three. For each, note whether the system answered, cited real passages, and whether any claim went beyond the retrieved text. Two minutes: you will usually find the third query produces a confident answer with no genuine support — your abstention path is missing.",
-        "question": "Why does a RAG system still need an explicit 'evidence missing' check, even though it retrieves documents at query time?",
-        "answer": "Because the retriever always returns top-k passages regardless of relevance; similarity between a query and a document does not mean the document contains the answer. Without an explicit support check or abstention rule, the generator fills the gap from parametric memory, reintroducing the hallucination and provenance problems RAG was designed to solve.",
-        "limits": "The librarian analogy understates the difficulty: Maya knows when a shelf is empty, but a retriever's scores give only weak signals of absence — a low similarity threshold is hard to calibrate across query types. The analogy also implies a single correct answer, while many real queries need synthesis across passages with conflicting evidence. Finally, abstention itself can be over-triggered, frustrating users; it must be tuned, not just added.",
-        "source_ids": [
-          "paper-2005.11401",
-          "paper-2002.08909"
-        ]
-      },
-      "news": {
-        "title": "Recent developments touching retrieval-grounded AI",
-        "overview": "Two recent items are relevant to this topic: a Google Research post on a 'sleep framework' for continual learning, and a brief OpenAI feed item about AT&T's legal team. Both are publisher claims; treat reported numbers as unverified until you inspect the underlying evaluations.",
-        "items": [
-          {
-            "headline": "Google Research proposes a 'sleep framework' for continual learning in LLMs",
-            "what_happened": "A Google Research blog post (October 27, 2026) describes a proposed learning paradigm in which a deployed LLM alternates between an active phase (processing inputs into short-term memory) and an offline 'sleep' phase that consolidates that context into expanded parametric memory using Mixture-of-Experts capacity, distillation, and reinforcement learning, plus a 'dreaming' stage of self-generated practice data. The authors report results on continual translation, long-context benchmarks up to 10M tokens, factual knowledge incorporation, and math reasoning, claiming advantages over in-context learning and supervised fine-tuning baselines.",
-            "why_it_matters": "For RAG builders, this is an alternative direction to external retrieval: instead of keeping knowledge in a non-parametric index, the proposal compresses session context into weights during offline consolidation. A concrete use case is an assistant that must retain knowledge across sessions without re-running retrieval every turn. The useful analogy: a student rewriting lecture notes into long-term understanding overnight — though, as the authors note, the neuroscience terms are metaphorical and the mechanism is ordinary training rules within a fixed architecture.",
-            "takeaway": "These are the authors' own reported results, not independent evaluations, and the framework requires significant infrastructure (MoE expansion, offline training cycles) that most teams cannot deploy. Before considering it, inspect the benchmark setups — especially how catastrophic forgetting was measured and whether baselines were tuned comparably — and note that it does not eliminate the evidence-grounding problem this pill covers: consolidated memories still lack document-level provenance.",
-            "source_ids": [
-              "news-b49ec3bd8394"
-            ]
-          },
-          {
-            "headline": "OpenAI feed item describes AT&T using OpenAI for legal knowledge access",
-            "what_happened": "An OpenAI feed excerpt (dated October 21, 2026) states that AT&T is working with OpenAI so its LegalEdge team can make legal knowledge easier to access, rethinking intake and scaling legal judgment. This is a short feed summary, not a full article; the excerpt does not describe the technical architecture, so any RAG-specific details are unknown from this source alone.",
-            "why_it_matters": "Legal work is a natural fit for retrieval-grounded systems: answers must cite specific internal documents, and 'no supporting document found' is a far better outcome than a confident guess — exactly the abstention discipline in this pill. For developers, it signals continued enterprise demand for knowledge-access systems over proprietary corpora, where provenance and evidence checking are the core requirements, not optional extras.",
-            "takeaway": "Because this is a feed excerpt, do not assume you know the implementation; it may or may not involve retrieval augmentation at all. Publisher case studies are also marketing-adjacent. Before drawing lessons, look for a full write-up or technical detail on how the system handles citation, access control, and unanswerable queries.",
-            "source_ids": [
-              "news-39cad894cdd2"
-            ]
-          }
-        ],
-        "exercise": "Pick either news item and spend two minutes locating the primary source beyond the excerpt. For the Google post, find which benchmarks are author-run versus independent. For the AT&T item, check whether any technical detail about the system's architecture or evaluation exists publicly. Note what you could and could not verify.",
-        "question": "Why should you treat the reported benchmark numbers in the Google sleep-framework post with caution?",
-        "answer": "They are self-reported by the framework's authors on their own comparisons; baselines may differ in tuning and setup, and no independent replication is cited. Publisher claims are a starting point for investigation, not verification."
-      },
-      "usage": {
-        "prompt_tokens": 3468,
-        "completion_tokens": 1951,
-        "total_tokens": 5419,
-        "prompt_tokens_details": {
-          "cached_tokens": 0
-        },
-        "completion_tokens_details": {
-          "accepted_prediction_tokens": null,
-          "reasoning_tokens": 40,
-          "rejected_prediction_tokens": null
-        }
-      },
-      "sources": [
-        {
-          "id": "paper-2005.11401",
-          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
-          "url": "https://arxiv.org/abs/2005.11401",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "paper-2002.08909",
-          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
-          "url": "https://arxiv.org/abs/2002.08909",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "news-b49ec3bd8394",
-          "title": "The sleep framework: A new way for LLMs to retain knowledge in continual learning",
-          "url": "https://research.google/blog/the-sleep-framework-a-new-way-for-llms-to-retain-knowledge-in-continual-learning/",
-          "publisher": "Google Research",
-          "published_at": "2026-10-27T17:35:00+00:00",
-          "evidence_type": "article_excerpt",
-          "topic": "RAG"
-        },
-        {
-          "id": "news-39cad894cdd2",
-          "title": "How AT&T is rethinking in-house legal work with OpenAI",
-          "url": "https://openai.com/index/att-legal",
-          "publisher": "OpenAI",
-          "published_at": "2026-10-21T17:00:00+00:00",
-          "evidence_type": "feed_excerpt",
-          "topic": "RAG"
-        }
-      ],
-      "id": "3c9e86a894713551"
-    },
-    {
-      "date": "2026-10-30",
-      "timezone": "America/New_York",
-      "created_at": "2026-10-30T17:02:09.308928+00:00",
-      "topic": "RAG",
-      "language": "te",
-      "concept": "Knowing when evidence is missing",
-      "news_window": "recent",
-      "source_warnings": [],
-      "router_engine": "TF-IDF + logistic regression",
-      "schema_version": 1,
-      "task": "daily_pills",
-      "status": "draft",
-      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
-      "generation_method": "fireworks",
-      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
-      "knowledge": {
-        "title": "RAGలో సాక్ష్యం లేనప్పుడు గుర్తించడం",
-        "summary": "Retrieval-Augmented Generation (RAG) అంటే భాషా మోడల్ తన పారామీటర్లలో దాచుకున్న జ్ఞానంతో పాటు, బయటి డాక్యుమెంట్ ఇండెక్స్ నుంచి మెటీరియల్ వెతికి దాని మీద ఆధారపడి సమాధానం ఇవ్వడం. ఈ పాఠం ముఖ్యమైన నైపుణ్యం: రిట్రీవర్ ఏమీ తెచ్చి ఇవ్వలేకపోయినప్పుడు — అంటే సాక్ష్యం లేనప్పుడు — దాన్ని ఎలా గుర్తించి, మోడల్ ఊహించి చెప్పకుండా ఎలా నియంత్రించాలో నేర్చుకోవడం.",
-        "story": "ఒక ఊహాజనిత కథనం: లైబ్రరీ సహాయకురాలు సుమి ఒక పెద్ద గ్రంథాలయంలో పనిచేస్తుంది. వాడుకదారులు ప్రశ్నలు అడిగితే, ఆమె కేటలాగ్ చూసి సంబంధిత పుస్తకాలు తీసుకొచ్చి, వాటి ఆధారంగా సమాధానం ఇస్తుంది. ఒక రోజు ఒక విద్యార్థి '1987లో చిన్న పట్టణమైన కొండూరులో జరిగిన తిప్పలు గురించి చెప్పండి' అని అడిగాడు. సుమి కేటలాగ్‌లో ఆ పేరుతో ఏమీ దొరకలేదు. ఇక్కడ రెండు మార్గాలున్నాయి: ఒకటి — 'దొరకలేదు' అని చెప్పడం; రెండు — తనకు తెలిసిన ఇతర ఊహాజనిత వివరాలతో నమ్మకంగా అనిపించే కథ కట్టి చెప్పడం. సుమి మొదటి మార్గాన్ని ఎన్నుకుంటే విశ్వసనీయత నిలుస్తుంది; రెండో మార్గం ఎంత సజీవంగా ఉన్నా, అది ఊహ మాత్రమే. కొన్ని ప్రశ్నలకు లైబ్రరీలోనే సమాధానం లేకపోవచ్చు — అది సహాయకురాలి తప్పు కాదు, కానీ దాన్ని గుర్తించి చెప్పడం ఆమె విధి.",
-        "connection": "ఈ కథలోని భాగాలు RAG భాగాలకు సరిపోతాయి. సుమి = జనరేటివ్ మోడల్; గ్రంథాలయ కేటలాగ్ = dense vector index (నాన్-పారామెట్రిక్ మెమరీ); కేటలాగ్‌లో వెతకడం = neural retriever; తీసుకువచ్చిన పుస్తకాలు = retrieved passages; 'దొరకలేదు' అని చెప్పే సామర్థ్యం = evidence-missing detection. విద్యార్థి ప్రశ్న = user query; సుమి ఊహలతో కథ కట్టడం = hallucination.",
-        "explanation": "RAG పరిశోధన ప్రకారం, పెద్ద ప్రీ-ట్రైన్డ్ మోడల్స్ వాస్తవాలను పారామీటర్లలో నిల్వ చేస్తాయి కానీ జ్ఞానాన్ని ఖచ్చితంగా యాక్సెస్ చేయడంలో, ప్రాసెస్ చేయడంలో పరిమితంగా ఉంటాయి; నిర్ణయాలకు provenance ఇవ్వడం, జ్ఞానాన్ని అప్‌డేట్ చేయడం అనేవి ఓపెన్ సమస్యలుగా గుర్తించబడ్డాయి. RAG మోడల్స్ ప్రీ-ట్రైన్డ్ seq2seq మోడల్ (parametric memory) మరియు డాక్యుమెంట్ల dense vector index (non-parametric memory) కలుపుతాయి; ఇది ఓపెన్-డొమైన్ QA లో మెరుగైన ఫలితాలు ఇచ్చింది. REALM కూడా ఇదే ఆలోచనను మరింత మోడ్యులర్, ఇంటర్‌ప్రెటబుల్ జ్ఞాన నిల్వగా సూచిస్తుంది — మోడల్ ఇన్ఫెరెన్స్ సమయంలో పెద్ద కార్పస్ నుంచి డాక్యుమెంట్లను వెతికి వాటిపై దృష్టి పెడుతుంది. కానీ ఇక్కడ కీలకమైన అంశం: రిట్రీవర్ తెచ్చిన passages సంబంధం లేకపోతే లేదా ఇండెక్స్‌లో సమాధానం లేకపోతే, జనరేటివ్ మోడల్ ఇప్పటికీ ఒప్పందకరమైన సమాధానం చెప్పే ప్రవృత్తి కలిగి ఉంటుంది. అందుకే సాక్ష్యం లేకపోవడాన్ని స్పష్టంగా గుర్తించడం — రిట్రీవల్ స్కోర్ తక్కువగా ఉండటం, passages ప్రశ్నతో సంబంధం లేకపోవడం, లేదా మోడల్‌ను 'సాక్ష్యం లేకపోతే అందుబాటులో లేదు అని చెప్పు' అని ప్రాంప్ట్ చేయడం — విశ్వసనీయ RAG వ్యవస్థకు అవసరం.",
-        "application": "ప్రాక్టికల్ అప్లికేషన్: ఒక సంస్థ తమ అంతర్గత డాక్యుమెంటేషన్ మీద పనిచేసే RAG చాట్‌బాట్‌ను నిర్మిస్తున్నారనుకోండి. డెవలపర్‌గా మీరు చేయాల్సినది: (1) రిట్రీవల్ స్కోర్‌కు ఒక థ్రెషోల్డ్ పెట్టడం — స్కోర్ అంతకంటే తక్కువ అయితే జనరేషన్‌కు వెళ్లకుండా 'సంబంధిత డాక్యుమెంటేషన్ కనబడలేదు' అని చెప్పడం; (2) జనరేటెడ్ సమాధానంలో ప్రతి వాదన తెచ్చుకున్న passages లో ఉందో లేదో తనిఖీ చేసే grounding check పెట్టడం; (3) సమాధానంతో పాటు source citations చూపించడం, ద్వారా provenance అందించడం. ఇలా చేయడం వల్ల వినియోగదారు సమాధానం నిజమైన డాక్యుమెంట్ ఆధారితమో లేదో వేగంగా గుర్తించగలరు.",
-        "exercise": "రెండు నిమిషాల వ్యాయామం: మీ ప్రాజెక్ట్‌లో (లేదా ఊహల్లో) ఒక RAG ప్రశ్నను తీసుకోండి. రిట్రీవర్ తెచ్చిన top-3 passages చదివి, ఈ మూడు ప్రశ్నలకు సమాధానం ఇవ్వండి: (1) ఈ passages ప్రశ్నకు నిజంగా సంబంధించినవా? (2) ప్రశ్నకు పూర్తి సమాధానం ఇవి కలిగి ఉన్నాయా, లేదా భాగం మాత్రమే? (3) సమాధానం లేకపోతే, మీ వ్యవస్థ దాన్ని ఎలా నివేదిస్తుంది? ఒక పేరాలో మీ 'సాక్ష్యం లేదు' నియమాన్ని రాయండి.",
-        "question": "RAG వ్యవస్థలో రిట్రీవర్ తక్కువ-స్కోర్ పాసేజీలను మాత్రమే తెచ్చినప్పుడు, జనరేటివ్ మోడల్‌ను సమాధానం చెప్పకుండా ఆపడానికి రెండు ఆచరణాత్మక పద్ధతులు ఏమిటి?",
-        "answer": "ఒకటి: రిట్రీవల్ స్కోర్‌కు థ్రెషోల్డ్ పెట్టి, అంతకంటే తక్కువ అయితే జనరేషన్‌కు వెళ్లకుండా 'సాక్ష్యం కనబడలేదు' అని స్పందించడం. రెండు: మోడల్‌ను సాక్ష్యం లేకపోతే అది స్పష్టంగా చెప్పమని ప్రాంప్ట్ చేయడం, మరియు సమాధానంలోని వాదనలు తెచ్చుకున్న passages లో ఉన్నాయో లేదో తనిఖీ చేసే grounding check ఉపయోగించడం.",
-        "limits": "ఈ ఉపమానం పరిమితులు: సుమి లైబ్రరీలో ఏముందో తెలుసుకోవడం సులభం, కానీ dense vector index లో 'ఏమీ లేదు' అని నిర్ధారించడం కష్టం — తక్కువ స్కోర్ అంటే సమాచారం లేదా అని కాదు, కేవలం రిట్రీవర్ వెతకలేదు లేదా ఎంబెడింగ్ సరిపోలలేదు అని మాత్రమే అర్థం. అలాగే థ్రెషోల్డ్‌లు, grounding checks అన్నీ heuristic పద్ధతులే; అవి false positives (ఉన్న సాక్ష్యాన్ని తోసిపుచ్చడం) మరియు false negatives (లేని సాక్ష్యం ఉన్నట్టు అనిపించడం) రెండూ చేయగలవు. రిట్రీవల్ ఆధారిత సమాధానం ఎప్పుడూ నిజమని హామీ లేదు — passages తప్పు సమాచారం కలిగి ఉండవచ్చు.",
-        "source_ids": [
-          "paper-2005.11401",
-          "paper-2002.08909"
-        ]
-      },
-      "news": {
-        "title": "ఇటీవలి RAG-సంబంధిత అభివృద్ధులు",
-        "overview": "ఈ వారం రెండు వార్తా అంశాలు అందాయి: Google Research యొక్క 'sleep framework' — మోడల్స్ ఎలా కొత్త జ్ఞానాన్ని నిల్వ చేసుకుంటాయి అనే దానికి సంబంధించిన పరిశోధన — మరియు AT&T తన లీగల్ పనిలో OpenAI తో కలిసి పనిచేసే విధానం గురించి ఒక ప్రకటన. రెండూ జ్ఞానాన్ని యాక్సెస్ చేయడం, నిల్వ చేయడం అనే మా RAG థీమ్‌కు సంబంధించినవే, కానీ వేర్వేరు కోణాల నుంచి.",
-        "items": [
-          {
-            "headline": "Google Research 'sleep framework': LLMల కొరకు కంటిన్యూవస్ లెర్నింగ్‌లో కొత్త పద్ధతి",
-            "what_happened": "Google Research బ్లాగ్ (అక్టోబర్ 27, 2026) ప్రకారం, వారు 'sleep framework' అనే కంటిన్యూవస్ లెర్నింగ్ పద్ధతిని ప్రతిపాదించారు. ఇది రెండు దశలను కలిగి ఉంటుంది: active (wake) దశలో మోడల్ ఇన్‌పుట్‌లను ప్రాసెస్ చేసి షార్ట్-టర్మ్ మెమరీలో నిల్వ చేస్తుంది; sleep దశలో కొత్త ఇన్‌పుట్‌లను ఆపి, ఆ ఫ్రేగిల్ షార్ట్-టర్మ్ జ్ఞానాన్ని Mixture-of-Experts ఆధారిత పారామెట్రిక్ మెమరీలోకి కన్సాలిడేట్ చేస్తుంది. ఇందులో knowledge distillation, synthetic 'dream' డేటా జనరేషన్, gradient-based ఫిల్టరింగ్ వంటి యంత్రాంగాలు ఉన్నాయి. బ్లాగ్ ప్రకారం ఈ పద్ధతి catastrophic forgetting తగ్గించి, 10M టోకెన్ల వరకు లాంగ్-కాంటెక్స్ట్ జ్ఞానాన్ని నిల్వ చేయగలదని, గణిత రీజనింగ్ బెంచ్‌మార్క్‌లలో (AIME 24/25, HMMT 25) మెరుగైన స్కోర్లు చూపిందని వారు చెబుతున్నారు. ఈ ఫలితాలు ప్రచురించిన సంస్థ చెప్పినవే; స్వతంత్ర ధృవీకరణ మా దగ్గర లేదు.",
-            "why_it_matters": "డెవలపర్లకు దీని అర్థం: RAG బదులుగా (లేదా దానితో పాటు) మోడల్ జ్ఞానాన్ని పారామీటర్లలోనే క్రమంగా అప్‌డేట్ చేయడం ఒక ప్రత్యామ్నాయ దిశగా పరిశోధన జరుగుతోంది. ఉపయోగకరమైన ఉపమానం: మీరు రోజూ నోట్స్ తీసుకుని (wake phase), రాత్రి వాటిని సమీక్షించి జ్ఞాపకాల్లోకి భద్రపరచడం (sleep phase) లాంటిది. ఇది RAG కు భర్త కాదు — RAG లో సాక్ష్యం బయట ఉంటుంది కాబట్టి provenance, అప్‌డేటింగ్, తొలగించడం సులభం; పారామెట్రిక్ కన్సాలిడేషన్‌లో అది కష్టం.",
-            "takeaway": "ముఖ్యమైన పరిమితి: ఇది Google యొక్క స్వంత బ్లాగ్ ప్రకటన; బెంచ్‌మార్క్ ఫలితాలు వారి సెటప్‌లోనే నివేదించబడ్డాయి. దీన్ని ప్రయత్నించే ముందు: పద్ధతి పూర్తి టెక్నికల్ రిపోర్ట్ లేదా పేపర్, ఎవాల్యుయేషన్ సెటప్, బేస్‌లైన్లతో పోలిక, మరియు ఇది ప్రొడక్ట్‌గా అందుబాటులో ఉందా లేదో తనిఖీ చేయండి. పారామెట్రిక్ మెమరీలో చేరిన జ్ఞానాన్ని తప్పుగా నేర్చుకుంటే తొలగించడం ఎలా అనే ప్రశ్నను కూడా ఆలోచించండి.",
-            "source_ids": [
-              "news-b49ec3bd8394"
-            ]
-          },
-          {
-            "headline": "AT&T, OpenAI తో కలిసి ఇన్-హౌస్ లీగల్ పనిని పునరాలోచిస్తోంది",
-            "what_happened": "OpenAI వెబ్‌సైట్‌లో (అక్టోబర్ 21, 2026) ప్రచురించిన ప్రకటన ప్రకారం, AT&T తన LegalEdge టీమ్ ద్వారా లీగల్ జ్ఞానాన్ని సులభంగా యాక్సెస్ చేయడానికి OpenAI తో కలిసి పనిచేస్తోంది; ప్రకటనలో intake ప్రక్రియను మార్చడం మరియు లీగల్ జడ్జిమెంట్‌ను స్కేల్ చేయడం గురించి పేర్కొన్నారు. గమనిక: మా దగ్గర ఉన్నది ఈ పేజీ యొక్క feed excerpt మాత్రమే — పూర్తి ఆర్టికల్ చదివినట్టు చెప్పలేము, కాబట్టి ఖచ్చితమైన టెక్నికల్ వివరాలు అందుబాటులో లేవు.",
-            "why_it_matters": "ఎంటర్‌ప్రైజ్ సందర్భంలో ఇది సాధారణ RAG యూస్ కేసును ప్రతిబింబిస్తుంది: సంస్థ అంతర్గత లీగల్ డాక్యుమెంట్లు, ప్రిసిడెంట్ల మీద ఒక అసిస్టెంట్‌ను నిర్మించడం — సిబ్బందికి సమాధానాలు, citations వేగంగా అందేలా. ఉపమానం: ఇది లీగల్ టీమ్ కోసం ఒక స్మార్ట్ ఫ్రంట్ డెస్క్ లాంటిది — వచ్చే అభ్యర్థనలను (intake) వర్గీకరించి, సంబంధిత సమాచారానికి దారి చూపుతుంది. అయితే ఇది మా అర్థం చేసుకున్న వివరణ; ప్రకటనలో సాంకేతిక ఆర్కిటెక్చర్ వివరాలు మాకు అందిన భాగంలో లేవు.",
-            "takeaway": "ముఖ్యమైన పరిమితి: ఇది ప్రచురించిన సంస్థ (OpenAI) చెప్పిన వివరణ; ఫలితాలు, ఖచ్చితత్వం, లీగల్ జడ్జిమెంట్ ఎలా స్కేల్ అవుతుందో అనే దానికి స్వతంత్ర ధృవీకరణ లేదు. దీన్ని అనుసరించే ముందు: పూర్తి కేస్ స్టడీని చదవండి, వారు ఏ డేటా మీద మోడల్‌ను గ్రౌండ్ చేశారో, సమాధానాలకు citations ఉన్నాయో లేదో, మరియు లీగల్ సమాచారంలో తప్పులను ఎలా హ్యాండిల్ చేస్తున్నారో తనిఖీ చేయండి.",
-            "source_ids": [
-              "news-39cad894cdd2"
-            ]
-          }
-        ],
-        "exercise": "రెండు నిమిషాల source-check వ్యాయామం: Google Research బ్లాగ్ పోస్ట్‌ను తెరవండి. ఈ మూడింటికి సమాధానం ఇవ్వండి: (1) ఫలితాలు ఏ బెంచ్‌మార్క్‌ల మీద నివేదించబడ్డాయి, ఏ బేస్‌లైన్లతో పోల్చారు? (2) ఇది పీర్-రివ్యూడ్ పేపర్‌కు లింక్ చేస్తుందా, లేదా బ్లాగ్ మాత్రమేనా? (3) ఈ పద్ధతిలో చేర్చిన జ్ఞానాన్ని తప్పుగా నేర్చుకుంటే తొలగించే పద్ధతి గురించి ఏమైనా పేర్కొన్నారా? ఒక్కో సమాధానం కోసం పోస్ట్‌లో ఖచ్చితమైన భాగాన్ని కనుగొనండి; దొరకకపోతే అది అంతర్లీన పరిమితిగా నోట్ చేయండి.",
-        "question": "Google యొక్క sleep framework మరియు RAG రెండూ మోడల్ జ్ఞానాన్ని అప్‌డేట్ చేయడం గురించినవే — సాక్ష్యం (evidence) నిల్వ చేయబడే చోటు పరంగా వీటి మధ్య ప్రధాన వ్యత్యాసం ఏమిటి, దాని వల్ల provenance పరంగా ఏమి ప్రభావం ఉంటుంది?",
-        "answer": "RAG లో సాక్ష్యం బయటి non-parametric memory (డాక్యుమెంట్ ఇండెక్స్) లో ఉంటుంది — కాబట్టి సమాధానాలకు sources చూపించవచ్చు, జ్ఞానాన్ని అప్‌డేట్ చేయడం లేదా తొలగించడం ఇండెక్స్‌ను మార్చడం ద్వారా సాధ్యమవుతుంది. Sleep framework లో జ్ఞానం కన్సాలిడేట్ అయి మోడల్ పారామీటర్లలో (MoE మెమరీ బ్లాక్స్) చేరుతుంది — దీనివల్ల ప్రతి సమాధానానికి స్పష్టమైన source citation ఇవ్వడం లేదా ఒక నిర్దిష్ట వాస్తవాన్ని వేరుగా తొలగించడం కష్టమవుతుంది."
-      },
-      "usage": {
-        "prompt_tokens": 3468,
-        "completion_tokens": 13508,
-        "total_tokens": 16976,
-        "prompt_tokens_details": {
-          "cached_tokens": 0
-        },
-        "completion_tokens_details": {
-          "accepted_prediction_tokens": null,
-          "reasoning_tokens": 22,
-          "rejected_prediction_tokens": null
-        }
-      },
-      "sources": [
-        {
-          "id": "paper-2005.11401",
-          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
-          "url": "https://arxiv.org/abs/2005.11401",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "paper-2002.08909",
-          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
-          "url": "https://arxiv.org/abs/2002.08909",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "news-b49ec3bd8394",
-          "title": "The sleep framework: A new way for LLMs to retain knowledge in continual learning",
-          "url": "https://research.google/blog/the-sleep-framework-a-new-way-for-llms-to-retain-knowledge-in-continual-learning/",
-          "publisher": "Google Research",
-          "published_at": "2026-10-27T17:35:00+00:00",
-          "evidence_type": "article_excerpt",
-          "topic": "RAG"
-        },
-        {
-          "id": "news-39cad894cdd2",
-          "title": "How AT&T is rethinking in-house legal work with OpenAI",
-          "url": "https://openai.com/index/att-legal",
-          "publisher": "OpenAI",
-          "published_at": "2026-10-21T17:00:00+00:00",
-          "evidence_type": "feed_excerpt",
-          "topic": "RAG"
-        }
-      ],
-      "id": "da8f185c685d4daa"
-    },
     {
       "date": "2026-10-31",
       "timezone": "America/New_York",
@@ -3638,6 +3418,245 @@
         }
       ],
       "id": "dc87e08bdecf23f1"
+    },
+    {
+      "date": "2026-11-15",
+      "timezone": "America/New_York",
+      "created_at": "2026-11-15T17:46:18.764717+00:00",
+      "topic": "RAG",
+      "language": "en",
+      "concept": "Knowing when evidence is missing",
+      "news_window": "recent",
+      "source_warnings": [
+        {
+          "publisher": "Google DeepMind",
+          "reason": "ParseError"
+        }
+      ],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "Knowing When Evidence Is Missing: The RAG Skill Nobody Teaches",
+        "summary": "Retrieval-Augmented Generation grounds a model's answers in retrieved documents, but grounding only helps if the right evidence actually exists in the corpus. This pill teaches you to detect when retrieval came up empty — and to make the system say so instead of guessing.",
+        "story": "Picture a librarian named Priya. A visitor asks, 'What was the attendance at the 1987 Riverside town fair?' Priya searches the town archive, finds nothing about 1987, and returns with a pamphlet about the 1989 fair. 'Close enough,' she says, and the visitor walks away believing attendance figures for a fair that may never have been recorded. Priya didn't lie on purpose — she was trained to always bring back something. The fix isn't a smarter Priya; it's a rule: if the search returns nothing relevant, say 'the archive doesn't cover that,' and show what you searched. The visitor loses a fake answer but gains trust in every real one.",
+        "connection": "Every part of the story maps to RAG. The archive is your non-parametric memory — in the original RAG formulation, a dense vector index of documents accessed by a neural retriever, working alongside the model's parametric memory (paper-2005.11401). REALM showed the same idea from the pre-training side: a latent knowledge retriever lets the model attend over documents instead of cramming ever more facts into parameters (paper-2002.08909). Priya's habit of returning 'something close' is the failure mode: the retriever always ranks the top-k passages, even when none answer the question. The visitor's false belief is a hallucination wearing a citation.",
+        "explanation": "A retriever is a ranking system, not a truth detector. It scores passages by similarity and returns the best ones unconditionally. If the corpus lacks the fact, the top passage is merely the least-bad match — often topically adjacent but factually empty. The generator then conditions on that passage, and because the text looks authoritative, the model treats it as evidence. Both RAG papers motivated retrieval partly by the need for provenance and updatable knowledge; provenance only means something if the cited passage genuinely supports the claim. So 'knowing when evidence is missing' has three layers: (1) retrieval-level — similarity scores below a threshold signal weak matches; (2) generation-level — the model should check whether the passage actually entails the answer, not just mentions the topic; (3) system-level — the product must have a sanctioned 'I don't know' path, otherwise the pipeline is optimized to always answer.",
+        "application": "In practice, add an evidence gate before generation: retrieve top-k, compute a relevance signal (score threshold, or a cheap cross-encoder judging passage-vs-question entailment), and if it fails, route to an abstention response that states what was searched and suggests alternatives. Log these abstentions — a spike in empty-evidence queries tells you exactly which documents to add to your corpus. For developers, this turns 'the model hallucinated' bug reports into actionable corpus-gap tickets.",
+        "exercise": "Take any RAG demo you can access (or imagine one). For two minutes, write down three questions where the correct answer is 'the corpus doesn't contain this.' Then note what your current pipeline would do: answer anyway, cite a near-miss passage, or abstain? If you can't name the abstention path, you've found your first TODO.",
+        "question": "Why does a RAG system return a passage even when no relevant evidence exists in the corpus?",
+        "answer": "Because the retriever is a ranker: it always returns the top-k highest-scoring passages regardless of absolute quality. Without a relevance threshold or abstention path, the least-bad match gets treated as evidence.",
+        "limits": "The librarian analogy understates the difficulty: in real systems, 'relevant' is graded, not binary — a passage can be partially supporting, and thresholds trade recall for honesty. The analogy also hides that parametric memory still contributes; a model may answer correctly from its weights even when retrieval fails, which muddies the signal. Finally, abstention itself can be over-triggered, frustrating users with 'I don't know' when a confident, well-sourced answer was available.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "Recent developments touching retrieval, memory, and infrastructure",
+        "overview": "Two recent items from primary sources: Anthropic on organizing agent memory, and Google on new TPU systems. Both are publisher claims; treat benchmarks and performance figures as unverified until you test them.",
+        "items": [
+          {
+            "headline": "Anthropic describes how agents can organize their own memory — including 'dreaming' during idle time",
+            "what_happened": "An Anthropic research post (published November 6, 2026) describes agent memory as knowledge gained from experience and persisted between sessions as readable context, distinct from weight changes, in-context learning, and compaction. It reports experiments where Claude writes memory notes, tags salient events, and uses idle time ('sleep-time compute', credited to Letta and UC Berkeley researchers) to reorganize logs, fix mistakes, and produce notes. In a Pokémon Red evaluation, a model that wrote a small set of strategy-focused memory files progressed further than one that logged nearly everything indiscriminately. The post also reports that telling models a memory folder exists helped, while rigid rules like 'record only failures' could reduce the benefit for stronger models.",
+            "why_it_matters": "For developers building agents, this is a design lesson about salience: memory that mirrors what's already observable (like current game state) is redundant and rots quickly, while memory capturing tested rules and plans is durable and valuable. Analogy: it's the difference between photographing your desk every hour versus writing down the one lesson you learned today. It connects directly to this pill's theme — knowing what evidence you have (and don't) is as important for memory as for retrieval.",
+            "takeaway": "These are the publisher's own evaluations on its own models; no independent replication is cited. Before applying the pattern, inspect what your agent actually re-reads from memory and whether stale notes get corrected — the post itself shows memory can go out of date and consume resources.",
+            "source_ids": [
+              "news-f0247d2be6d2"
+            ]
+          },
+          {
+            "headline": "Google announces TPU 8tx and 8i Max, aimed at confidential inference and large context windows",
+            "what_happened": "A Google Cloud blog post (November 9, 2026) announces two additions to its eighth-generation TPU portfolio. TPU 8tx targets secure and confidential inference, keeping data and model weights protected in hardware even during processing, and also supports small-scale training. TPU 8i Max pairs two TPU 8i chips on one package, doubling compute, SRAM, and HBM bandwidth for workloads the post characterizes as memory-bandwidth-bound, such as large context windows and multi-agent work. The post also cites PyTorch/open-source tooling efforts and claims state-of-the-art price-performance on what it calls InferenceX and AgentX benchmarks.",
+            "why_it_matters": "If you serve RAG pipelines, context-window and memory-bandwidth limits are practical constraints: bigger retrieved-context budgets and long agent sessions stress memory, not just compute. Analogy: a library with unlimited shelf space is useless if the librarian can only carry one book at a time — 8i Max is pitched as widening the librarian's arms. For regulated industries, hardware-level encryption during processing could remove a real blocker to running retrieval over sensitive corpora.",
+            "takeaway": "All performance and benchmark figures are Google's own claims from its own post; the excerpt does not include methodology. Before trying either system, inspect actual pricing, availability in your region, and whether your serving stack (e.g., vLLM or PyTorch paths) is supported for your specific models — and verify any benchmark numbers against independent sources.",
+            "source_ids": [
+              "news-e9950a58c892"
+            ]
+          }
+        ],
+        "exercise": "For two minutes, pick one news item and find the primary source yourself. Identify one claim that is a publisher's own measurement (e.g., a benchmark result or evaluation outcome) and one design idea you could test cheaply in your own work. Note which claims, if any, have independent verification — likely none.",
+        "question": "The Anthropic post and the TPU announcement both touch agentic workloads. What's the key difference in the kind of claim each makes?",
+        "answer": "Anthropic's post reports behavioral evaluations of its own models' memory use (a software/design claim), while Google's post announces hardware products with performance claims (an infrastructure claim). In both cases the evidence comes from the publisher itself and lacks independent verification in the excerpt."
+      },
+      "usage": {
+        "prompt_tokens": 5920,
+        "completion_tokens": 1923,
+        "total_tokens": 7843,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": null,
+          "reasoning_tokens": 31,
+          "rejected_prediction_tokens": null
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-f0247d2be6d2",
+          "title": "The components of agent memory",
+          "url": "https://www.anthropic.com/research/components-of-agent-memory",
+          "publisher": "www.anthropic.com",
+          "published_at": "2026-11-06T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 189,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-e9950a58c892",
+          "title": "Our newest TPUs: 8tx and 8i Max, built for the agentic era",
+          "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/tpu-8i-max-and-8tx/",
+          "publisher": "blog.google",
+          "published_at": "2026-11-09T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 28,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "Other"
+        }
+      ],
+      "id": "7452d899105f411e"
+    },
+    {
+      "date": "2026-11-15",
+      "timezone": "America/New_York",
+      "created_at": "2026-11-15T17:46:18.764717+00:00",
+      "topic": "RAG",
+      "language": "te",
+      "concept": "Knowing when evidence is missing",
+      "news_window": "recent",
+      "source_warnings": [
+        {
+          "publisher": "Google DeepMind",
+          "reason": "ParseError"
+        }
+      ],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "RAGలో సాక్ష్యం లేనప్పుడు గుర్తించడం",
+        "summary": "Retrieval-Augmented Generation (RAG) మోడల్ సమాధానం చెప్పే ముందు బాహ్య డాక్యుమెంట్లను వెతుకుతుంది. కానీ వెతికి ఏమీ దొరకకపోతే, లేదా దొరికిన దానిలో అసలు సమాధానం లేకపోతే, మోడల్ దాన్ని గుర్తించి 'నా దగ్గర సాక్ష్యం లేదు' అని చెప్పడం చాలా ముఖ్యం. ఈ పాఠంలో ఆ నైపుణ్యాన్ని ఎలా ఆలోచించాలో నేర్చుకుంటాం.",
+        "story": "ఊహించండి: లక్ష్మి ఒక లైబ్రరీ అసిస్టెంట్. ఒక రోజు ఒక విద్యార్థి వచ్చి '2019లో మా ఊరి గ్రంథాలయంలో ఎన్ని పుస్తకాలు ఉన్నాయి?' అని అడిగాడు. లక్ష్మి కేటలాగ్ కంప్యూటర్‌లో వెతికింది. కొన్ని ఫలితాలు వచ్చాయి — కానీ అవన్నీ 2023 నాటి జాబితాలు, అవి ఇతర ఊళ్ళ గ్రంథాలయాల గురించి. ఇక్కడ లక్ష్మికి రెండు దారులు: ఒకటి, దొరికిన దానిలో కొంత సమాచారం కలిపి 'సుమారు ఇన్ని ఉండొచ్చు' అని ఒక సమాధానం కట్టివేయడం. రెండు, 'నేను వెతికాను, కానీ మీ ప్రశ్నకు సరిపోయే సాక్ష్యం ఈ కేటలాగ్‌లో లేదు — మీరు ఇలా ప్రశ్నిస్తే దొరుకుతుంది' అని నిజాయితీగా చెప్పడం. మొదటి దారి వేగంగా అనిపించినా, విద్యార్థి తప్పు సంఖ్యతో రిపోర్ట్ రాస్తాడు. రెండో దారి నిజమైన సేవ. మరోసారి ఒక పెద్దయ్య 'ఈ పుస్తకం ఎక్కడ దొరుకుతుంది?' అని అడిగాడు. లక్ష్మి వెతికి ఒక జాబితా చూసింది, కానీ అందులో పుస్తకం పేరు మాత్రమే ఉంది, దుకాణం వివరాలు లేవు. ఆమె 'పేరు ఉంది కాబట్టి దొరుకుతుందేమో' అని చెప్పకూడదు — పేరు దొరకడం, సమాధానం దొరకడం ఒకటి కాదు. ఇదే RAG మోడల్ ఎదుర్కొనే పరిస్థితి: రిట్రీవర్ ఏదైనా డాక్యుమెంట్లను తెస్తుంది, కానీ అందులో అడిగిన ప్రశ్నకు సమాధానం ఉందో లేదో వేరే విషయం.",
+        "connection": "ఈ కథలోని భాగాలు RAG భాగాలకు సరిపోతాయి. లక్ష్మి = జనరేషన్ చేసే మోడల్. కేటలాగ్ కంప్యూటర్ = non-parametric memory, అంటే డాక్యుమెంట్ల dense vector index. వెతకడం = neural retriever చేసే retrieval. విద్యార్థి ప్రశ్న = user query. 'దొరికిన జాబితాలు వేరే ఊళ్ళవి' = retrieved passages ప్రశ్నకు సంబంధించినవిగా కనిపించినా అసలు సమాధానం లేకపోవడం. 'సమాధానం లేదు' అని చెప్పడం = evidence-missing గుర్తింపు, ఇది hallucination నిరోధించే మొదటి అడుగు.",
+        "explanation": "RAG అనే ఆలోచన రెండు ప్రసిద్ధ పేపర్ల నుంచి వచ్చింది. RAG పేపర్ (Lewis et al.) ప్రకారం, పెద్ద pre-trained మోడల్స్ వాస్తవాలను తమ parameters లో నిల్వ చేస్తాయి, కానీ ఆ నాలెడ్జ్‌ను ఖచ్చితంగా యాక్సెస్ చేయడం, అప్‌డేట్ చేయడం, provenance (ఏ మూలం నుంచి వచ్చిందో చెప్పడం) ఇబ్బందులుగా ఉన్నాయి. అందుకే పరిష్కారం: parametric memory (మోడల్ వెయిట్స్) + non-parametric memory (Wikipedia లాంటి కార్పస్ యొక్క dense vector index) కలిపి, pre-trained neural retriever తో డాక్యుమెంట్లను వెతికి generation సమయంలో వాడటం. REALM పేపర్ కూడా ఇదే సూత్రాన్ని చెబుతుంది: నాలెడ్జ్‌ను modular, interpretable పద్ధతిలో బాహ్య కార్పస్ నుంచి retrieve చేయడం, దీనివల్ల interpretability (ఏ డాక్యుమెంట్లు వాడామో చూడగలం) వస్తుంది. ఇక్కడే మన కథాంశం ముఖ్యం: retrieval అనేది similarity ఆధారంగా పనిచేస్తుంది — retriever 'ఈ ప్రశ్నకు సమాధానం ఉంది' అని కాదు, 'ఈ ప్రశ్నకు పోలిక ఉన్న డాక్యుమెంట్లు' అని మాత్రమే చెబుతుంది. అందుకే రిట్రీవ్ చేసిన passages లో సమాధానం నిజంగా ఉందో లేదో వేరుగా అంచనా వేయాలి. సాక్ష్యం లేనప్పుడు మోడల్ తన parametric నాలెడ్జ్ నుంచి ఊహలు కట్టి విశ్వసనీయంగా నిజమనిపించే తప్పు సమాధానాలు ఇవ్వవచ్చు. మంచి RAG సిస్టమ్‌లో: (1) retrieved passages ని జాగ్రత్తగా చదివి సమాధానం ఉందో లేదో చెక్ చేయాలి, (2) లేకపోతే 'సాక్ష్యం సరిపోలేదు' అని స్పష్టంగా చెప్పాలి, (3) చెప్పిన దానికి మూల డాక్యుమెంట్‌ను provenance గా cite చేయాలి.",
+        "application": "ప్రాక్టికల్ వాడుక: మీ కంపెనీ internal docs పై Q&A chatbot ని నిర్మిస్తున్నారనుకోండి. ఇలా డిజైన్ చేయండి — రిట్రీవ్ చేసిన top-k passages ని prompt లో ఇచ్చి, 'ఈ passages లో సమాధానం లేకపోతే ఊహించకుండా అలాగే చెప్పు, ఏ passage నుంచి వచ్చిందో cite చెయ్యి' అని సూచన ఇవ్వండి. అలాగే మీ టెస్ట్ సెట్‌లో ఉత్తరం docs లో లేని ప్రశ్నలను ఉద్దేశపూర్వకంగా పెట్టి, మోడల్ 'సాక్ష్యం లేదు' అని చెబుతుందో లేదో కొలవండి. ఇది hallucination rate ని తగ్గించే సాధారణ, ప్రభావవంతమైన అభ్యాసం.",
+        "exercise": "రెండు నిమిషాల వ్యాయామం: మీ ఎదుట ఉన్న ఏదైనా ఒక డాక్యుమెంట్ (README, వార్తా కథనం) తీసుకోండి. దానిలో సమాధానం లేని ఒక ప్రశ్నను మీరే రాయండి — ఉదాహరణకు కథనం ఒక ఉత్పత్తి గురించి ఉంటే 'దీని ధర ఎంత?' అడగండి. ఇప్పుడు ఆ డాక్యుమెంట్‌ను మాత్రమే ఆధారంగా చేసుకుని సమాధానం రాయమని ఏదైనా LLM ని అడగండి, మరియు 'సమాధానం డాక్యుమెంట్‌లో లేకపోతే అలాగే చెప్పు' అని కూడా చెప్పండి. మోడల్ ఊహించి సమాధానం ఇస్తుందా, లేదా సాక్ష్యం లేదని గుర్తిస్తుందా గమనించండి. రెండు వెర్షన్లు (సూచన తో, లేకుండా) పోల్చి చూడండి.",
+        "question": "Retriever డాక్యుమెంట్లను తెచ్చాడం అంటే వాటిలో సమాధానం ఉందని కాదు — ఎందుకు? మీ సొంత మాటల్లో ఒక్క వాక్యంలో చెప్పండి.",
+        "answer": "Retriever similarity (పోలిక) ఆధారంగా పనిచేస్తుంది — ప్రశ్నకు టాపిక్ పోలిక ఉన్న డాక్యుమెంట్లను తెస్తుంది తప్ప, వాటిలో ఖచ్చితమైన సమాధానం ఉందో లేదో ధృవీకరించదు; దాన్ని generation అంచెలో వేరుగా తనిఖీ చేయాలి.",
+        "limits": "ఈ ఉపమానం పరిమితులు: లక్ష్మిలా మనిషి వెతికిన ఫలితాల నాణ్యతను అర్థం చేసుకోగలదు, కానీ vector retriever అర్థం కాదు, గణితపరమైన పోలికే చేస్తుంది — కథలోని 'వెతకడం' అంత చురుకుగా ఉండదు. అలాగే 'సాక్ష్యం లేదు' అని మోడల్ చెప్పడం ఖచ్చితంగా ఉంటుందని హామీ లేదు; మోడల్ తప్పుగా సాక్ష్యం ఉందని లేదా లేదని నిర్ణయించవచ్చు. పేపర్లు RAG యొక్క ప్రయోజనాలను (specificity, factuality, interpretability) నివేదిస్తున్నా, సాక్ష్యం లేని పరిస్థితులను గుర్తించే నైపుణ్యం ఆటోమేటిక్‌గా వస్తుందని అవి చెప్పవు — అది డిజైన్, మూల్యాంకనం ద్వారా మనం కల్పించాల్సినదే.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "RAG & AI వార్తలు — నవంబర్ 2026",
+        "overview": "గత రెండు వారాల్లో రెండు ముఖ్యమైన అభివృద్ధులు: Anthropic ఏజెంట్ మెమరీ భాగాలపై పరిశోధన ప్రచురించింది, Google కొత్త TPU సిస్టమ్స్ ప్రకటించింది. రెండూ మన కథాంశమైన 'సాక్ష్యం, నాలెడ్జ్ నిర్వహణ'కి సంబంధించినవే.",
+        "items": [
+          {
+            "headline": "Anthropic: ఏజెంట్ మెమరీ భాగాలు — 'dreaming' తో మెమరీ వ్యవస్థీకరణ",
+            "what_happened": "Anthropic 2026 నవంబర్ 6న ఏజెంట్ మెమరీ పై ఒక పరిశోధనా పోస్ట్ ప్రచురించింది. ఇందులో ముఖ్య ఆలోచన: ఏజెంట్లు సెషన్ల మధ్య ఉండే idle సమయంలో తమ logs ని పునశ్చరణ చేసి మెమరీ నోట్స్ రాయడం, తప్పులు సరిదిద్దడం — దీన్ని 'dreaming' అంటారు (Letta, UC Berkeley ప్రతిపాదించిన sleep-time compute ఆలోచన ఆధారంగా). వారి CL-Bench 1.0 డేటాబేస్ టాస్క్‌లో, మెమరీ డైరెక్టరీ వాడిన మోడల్స్ క్రమంగా మెరుగైన లెర్నింగ్ లూప్స్ ఏర్పరుచుకున్నాయి — Claude Opus 5 మొదటిసారి 'ధృవీకరించిన నియమాలు' రాసి లూప్ మూసింది. Pokémon Red పరీక్షలో, Sonnet 3.7 అన్నీ రాస్తూ 413 ఫైళ్ళు చేసి ఒకే బ్యాడ్జ్ సాధించగా, Fable 5 కేవలం తొమ్మిది ఫైళ్ళతో నాలుగు బ్యాడ్జెస్ సాధించింది — సాలియన్స్ (ఏది నిల్వ చేయాలో) ఎంపికే తేడా. బలమైన మోడల్స్‌కు 'ఫెయిల్యూర్లు మాత్రమే రాయి' లాంటి నిర్దిష్ట నియమాలు పనితీయుడాన్ని తగ్గించగలవని కూడా కనుగొన్నారు.",
+            "why_it_matters": "డెవలపర్ దృష్టిలో, ఇది RAG తో నేరుగా ముడిపడి ఉంది: ఏజెంట్ మెమరీ అంటే భవిష్యత్ సెషన్లలో retrieve చేయదగిన నాలెడ్జ్ — ఇది ఒక రకమైన వ్యక్తిగత RAG. మీ కోడింగ్ ఏజెంట్ తప్పుల నుంచి ధృవీకరించిన నియమాలు రాసుకుంటే, తర్వాతి టాస్క్‌లో అవే తప్పులు పునరావృతం కాకుండా ఉంటాయి. ఉపమానం: మీ టీమ్ wiki — అన్నీ రాస్తే వెతకడం కష్టం, ఎంపిక చేసి రాస్తే ఉపయోగకరం. ముఖ్యంగా 'ఏది ధృవీకరించబడింది, ఏది కాదు' అని గుర్తించడం — మన కథాంశమైన సాక్ష్యం అంచనా — మెమరీ నాణ్యతను నిర్ణయిస్తుంది.",
+            "takeaway": "పరిమితి: ఇది Anthropic వారి స్వంత మూల్యాంకనాల (CL-Bench, Pokémon) ఆధారంగా వారి మోడల్స్ పై చేసిన నివేదిక; ఫలితాలు మోడల్, టాస్క్ పై ఆధారపడతాయి. ప్రయత్నించే ముందు: మీ ఏజెంట్ మెమరీలో ఏమి నిల్వ అవుతుందో, ధృవీకరణ లేని ఊహలు నిల్వ అవుతున్నాయో లేదో, మెమరీ ఫైళ్ళను ఎలా inspect చేయగలరో చూడండి.",
+            "source_ids": [
+              "news-f0247d2be6d2"
+            ]
+          },
+          {
+            "headline": "Google: కొత్త TPUs — 8tx (confidential inference) మరియు 8i Max (పెద్ద context windows)",
+            "what_happened": "Google 2026 నవంబర్ 9న ఎనిమిదో తరం TPU పోర్ట్‌ఫోలియోకి రెండు కొత్త సిస్టమ్స్ జోడించింది. TPU 8tx: సెన్సిటివ్ డేటా కోసం hardware-level confidential compute — డేటా, model weights ప్రాసెసింగ్ సమయంలో కూడా రక్షించబడతాయి; సాధారణంగా డేటా మెమరీలో అన్‌లాక్ అవుతుంది కానీ ఇక్కడ hardware లోనే isolation ఉంటుంది. TPU 8i Max: రెండు 8i చిప్స్‌ను ఒకే ప్యాకేజీలో కలిపి, 8i తో పోలిస్తే రెట్టింపు compute, SRAM, HBM bandwidth అందించడం — దీర్ఘ context windows, మెమరీ bandwidth bottleneck తగ్గించడం లక్ష్యం. Google ప్రకారం ఇది ఒకే సంవత్సరంలో నాలుగు TPU సిస్టమ్స్ ప్రకటించిన మొదటిసారి. PyTorch (TorchTPU), vLLM, SGLang లాంటి open-source స్టాక్‌లకు మద్దతు కూడా ప్రకటించారు.",
+            "why_it_matters": "డెవలపర్ వాడుక: RAG సిస్టమ్స్ కు ఇది ముఖ్యం — ఎందుకంటే పెద్ద context windows అంటే ఎక్కువ retrieved passages ఒకేసారి ఇవ్వగలం, మరియు confidential inference అంటే ఆసుపత్రి, బ్యాంకింగ్ లాంటి regulated రంగాల్లో సెన్సిటివ్ docs పై retrieval-augmented Q&A నడపవచ్చు. ఉపమానం: 8i Max అనేది విశాలమైన అరికట్టు — ఎక్కువ పేజీలు (context) ఒకేసారి చదవగలం; 8tx అనేది తాళం వేసిన గది — లోపల పని జరుగుతున్నా డేటా బయటకు కనబడదు.",
+            "takeaway": "పరిమితి: ఇవి Google వారి స్వంత ప్రకటనలు; పేర్ఫార్మెన్స్ క్లెయిమ్స్ (InferenceX, AgentX benchmarks లో state-of-the-art price-performance) వారి స్వంత నివేదికలపై ఆధారపడి ఉన్నాయి — స్వతంత్ర ధృవీకరణ కాదు. ప్రయత్నించే ముందు: మీ workload కు నిజంగా ఈ ప్రత్యేక hardware అవసరమా (పెద్ద context? confidential data?), ధర, ప్రాంతీయ availability, మరియు TorchTPU/vLLM మద్దతు మీ స్టాక్‌తో సరిపోతుందో ధృవీకరించండి.",
+            "source_ids": [
+              "news-e9950a58c892"
+            ]
+          }
+        ],
+        "exercise": "రెండు నిమిషాల source-check వ్యాయామం: Anthropic పోస్ట్ తెరిచి, 'dreaming' అనే పదాన్ని వారు ఎలా నిర్వచించారో చూడండి — ఇది పూర్తి వ్యాసం కాదు, మేము చూసినది excerpt మాత్రమే అని గుర్తుంచుకోండి. తర్వాత Google బ్లాగ్ తెరిచి, 8tx, 8i Max క్లెయిమ్స్ లో ఏవి కొలిచిన ఫలితాలు, ఏవి లక్ష్యాలు ('built for', 'designed for') అని వేరు చేయండి. రెండు సందర్భాల్లోనూ: ప్రచురించిన తేదీ, మూలం ఎవరు, క్లెయిమ్ కు ఆధారం ఏమిటి అని మూడు ప్రశ్నలు అడగండి.",
+        "question": "Anthropic పోస్ట్ ప్రకారం, Pokémon పరీక్షలో Sonnet 3.7 కంటే Fable 5 మెరుగైన ఫలితాలు సాధించడానికి ముఖ్య కారణం ఏమిటి?",
+        "answer": "Fable 5 సాలియన్స్ తో మెమరీ రాసింది — స్క్రీన్ పై ప్రతి టర్న్ చూడగలిగే సమాచారాన్ని కాదు, స్ట్రాటజీ, ప్లాన్లు, ధృవీకరించిన నియమాలు వంటి తానే కనిపెట్టాల్సిన సమాచారాన్ని మాత్రమే తక్కువ ఫైళ్ళలో నిల్వ చేసింది; Sonnet 3.7 అన్నీ రాసి 413 ఫైళ్ళు చేసింది కాబట్టి వెతకడానికే సమయం వెచ్చించింది."
+      },
+      "usage": {
+        "prompt_tokens": 5920,
+        "total_tokens": 18920,
+        "completion_tokens": 13000,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 35
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 35
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-f0247d2be6d2",
+          "title": "The components of agent memory",
+          "url": "https://www.anthropic.com/research/components-of-agent-memory",
+          "publisher": "www.anthropic.com",
+          "published_at": "2026-11-06T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 189,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-e9950a58c892",
+          "title": "Our newest TPUs: 8tx and 8i Max, built for the agentic era",
+          "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/tpu-8i-max-and-8tx/",
+          "publisher": "blog.google",
+          "published_at": "2026-11-09T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 28,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "Other"
+        }
+      ],
+      "id": "dd6570ae9ba01b65"
     }
   ]
 }
