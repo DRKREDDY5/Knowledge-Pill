@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "task": "ai_headlines",
-  "checked_at": "2026-11-15T17:46:18.764717+00:00",
+  "checked_at": "2026-11-16T21:04:09.005513+00:00",
   "items": [
     {
       "id": "news-e9950a58c892",
@@ -18,74 +18,74 @@
       "published_at": "2026-11-06T00:00:00+00:00"
     },
     {
-      "id": "news-43862ef771df",
-      "title": "Progress on provable inference for large language models",
-      "url": "https://www.anthropic.com/research/provable-inference",
-      "publisher": "www.anthropic.com",
-      "published_at": "2026-11-02T00:00:00+00:00"
-    },
-    {
-      "id": "news-bea6f68aca51",
-      "title": "Advancing science & engineering with Antigravity’s /teamwork",
-      "url": "https://research.google/blog/advancing-science-engineering-with-antigravitys-teamwork-feature/",
-      "publisher": "Google Research",
-      "published_at": "2026-11-13T20:47:18+00:00"
-    },
-    {
-      "id": "news-7d4d71d056da",
-      "title": "Introducing ChatGPT Wallet",
-      "url": "https://openai.com/index/introducing-chatgpt-wallet",
+      "id": "news-2d7a5d6b20ff",
+      "title": "Broadening access to AI for scientists",
+      "url": "https://openai.com/index/expanding-chatgpt-for-academic-researchers",
       "publisher": "OpenAI",
-      "published_at": "2026-11-13T15:00:00+00:00"
+      "published_at": "2026-11-16T17:00:00+00:00"
     },
     {
-      "id": "news-a99dfdd20d85",
-      "title": "Shield helps technicians hand off legacy portal work with OpenAI",
-      "url": "https://openai.com/business/customer-stories/shield",
+      "id": "news-dd659f011024",
+      "title": "Strengthening the fight against online child sexual abuse with new tools and support",
+      "url": "https://openai.com/index/strengthening-online-child-safety",
       "publisher": "OpenAI",
-      "published_at": "2026-11-13T08:00:00+00:00"
+      "published_at": "2026-11-16T17:00:00+00:00"
     },
     {
-      "id": "news-67672a694e38",
-      "title": "How Amplitude ships product improvements in 1–2 days with OpenAI",
-      "url": "https://openai.com/business/customer-stories/amplitude",
+      "id": "news-d91fd06de7b8",
+      "title": "Science at the Frontier: How scientists use ChatGPT",
+      "url": "https://openai.com/index/science-at-the-frontier",
       "publisher": "OpenAI",
-      "published_at": "2026-11-12T20:00:00+00:00"
+      "published_at": "2026-11-16T12:00:00+00:00"
     },
     {
-      "id": "news-b9840fd67063",
-      "title": "Gondola doubles revenue as its team builds more with Codex",
-      "url": "https://openai.com/business/customer-stories/gondola",
+      "id": "news-ff7833693fa2",
+      "title": "LVMH’s Media Division announces strategic partnership with OpenAI",
+      "url": "https://openai.com/index/lvmh-media-division-partnership",
       "publisher": "OpenAI",
-      "published_at": "2026-11-12T12:00:00+00:00"
+      "published_at": "2026-11-16T09:00:00+00:00"
     },
     {
-      "id": "news-4922ca6fb0dd",
-      "title": "Holiday Extras is rethinking what it can build with Codex",
-      "url": "https://openai.com/business/customer-stories/holidays-extras-codex",
+      "id": "news-9fe6d2ae73e5",
+      "title": "Our first phase of embedded assessments",
+      "url": "https://openai.com/index/our-first-phase-of-embedded-assessments",
       "publisher": "OpenAI",
-      "published_at": "2026-11-12T09:30:00+00:00"
+      "published_at": "2026-11-16T08:00:00+00:00"
     },
     {
-      "id": "news-cbda9238a368",
-      "title": "The Definitive Fine-Tuning Guide for 3D Generation Models",
-      "url": "https://huggingface.co/blog/3d-lora-finetuning",
+      "id": "news-21b4758ab521",
+      "title": "Advancing computer-use agents for healthcare teams",
+      "url": "https://openai.com/index/advancing-computer-use-for-healthcare-teams",
+      "publisher": "OpenAI",
+      "published_at": "2026-11-16T06:00:00+00:00"
+    },
+    {
+      "id": "news-21e886491b30",
+      "title": "More ways to move care forward with ChatGPT for Healthcare",
+      "url": "https://openai.com/index/more-ways-to-move-care-forward-with-chatgpt-for-healthcare",
+      "publisher": "OpenAI",
+      "published_at": "2026-11-16T06:00:00+00:00"
+    },
+    {
+      "id": "news-8ec21efa2c62",
+      "title": "Hugging Face and OpenRouter join forces to make open-weight models easy to run",
+      "url": "https://huggingface.co/blog/openrouter",
       "publisher": "Hugging Face",
-      "published_at": "2026-11-12T00:00:00+00:00"
+      "published_at": "2026-11-16T00:00:00+00:00"
     },
     {
-      "id": "news-d7c1da8cb7dc",
-      "title": "Supporting research on AI and children’s safety",
-      "url": "https://openai.com/index/children-first-declaration",
+      "id": "news-60f3c7381bc6",
+      "title": "The King’s Trust and OpenAI launch £1m partnership",
+      "url": "https://openai.com/index/the-kings-trust-and-openai",
       "publisher": "OpenAI",
-      "published_at": "2026-11-12T00:00:00+00:00"
+      "published_at": "2026-11-16T00:00:00+00:00"
     },
     {
-      "id": "news-65b96c238445",
-      "title": "Gilbert + Tobin rethinks the business of law with AI",
-      "url": "https://openai.com/index/gilbert-tobin-sam-nickless",
+      "id": "news-2e8f421d2ee2",
+      "title": "A step toward defining the Standard Model on a lattice",
+      "url": "https://openai.com/index/step-toward-defining-the-standard-model",
       "publisher": "OpenAI",
-      "published_at": "2026-11-12T00:00:00+00:00"
+      "published_at": "2026-11-15T22:00:01+00:00"
     }
   ]
 }
