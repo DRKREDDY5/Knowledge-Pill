@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "task": "ai_headlines",
-  "checked_at": "2026-11-16T21:04:09.005513+00:00",
+  "checked_at": "2026-11-17T19:53:33.340006+00:00",
   "items": [
     {
       "id": "news-e9950a58c892",
@@ -16,6 +16,34 @@
       "url": "https://www.anthropic.com/research/components-of-agent-memory",
       "publisher": "www.anthropic.com",
       "published_at": "2026-11-06T00:00:00+00:00"
+    },
+    {
+      "id": "news-8f6af8c44a4a",
+      "title": "Introducing GPT-6.2 Astra and Sol",
+      "url": "https://openai.com/index/introducing-gpt-6-2-astra-sol",
+      "publisher": "OpenAI",
+      "published_at": "2026-11-17T17:45:00+00:00"
+    },
+    {
+      "id": "news-0e7f690aa4ff",
+      "title": "Strengthening NATO and allied cyber defenses with AI",
+      "url": "https://openai.com/index/strengthening-nato-allied-cyber-defences-ai",
+      "publisher": "OpenAI",
+      "published_at": "2026-11-17T00:00:00+00:00"
+    },
+    {
+      "id": "news-3b3be741a87f",
+      "title": "Introducing OpenAI for Chile",
+      "url": "https://openai.com/index/introducing-openai-for-chile",
+      "publisher": "OpenAI",
+      "published_at": "2026-11-17T00:00:00+00:00"
+    },
+    {
+      "id": "news-b43ef08ac3ed",
+      "title": "Astra for Law leads in legal intelligence",
+      "url": "https://openai.com/index/astra-law-6-2",
+      "publisher": "OpenAI",
+      "published_at": "2026-11-17T00:00:00+00:00"
     },
     {
       "id": "news-2d7a5d6b20ff",
@@ -39,6 +67,13 @@
       "published_at": "2026-11-16T12:00:00+00:00"
     },
     {
+      "id": "news-b82b64ef90f7",
+      "title": "How Revolut raises ambition without lowering the bar",
+      "url": "https://openai.com/business/customer-stories/revolut",
+      "publisher": "OpenAI",
+      "published_at": "2026-11-16T09:30:00+00:00"
+    },
+    {
       "id": "news-ff7833693fa2",
       "title": "LVMH’s Media Division announces strategic partnership with OpenAI",
       "url": "https://openai.com/index/lvmh-media-division-partnership",
@@ -51,41 +86,6 @@
       "url": "https://openai.com/index/our-first-phase-of-embedded-assessments",
       "publisher": "OpenAI",
       "published_at": "2026-11-16T08:00:00+00:00"
-    },
-    {
-      "id": "news-21b4758ab521",
-      "title": "Advancing computer-use agents for healthcare teams",
-      "url": "https://openai.com/index/advancing-computer-use-for-healthcare-teams",
-      "publisher": "OpenAI",
-      "published_at": "2026-11-16T06:00:00+00:00"
-    },
-    {
-      "id": "news-21e886491b30",
-      "title": "More ways to move care forward with ChatGPT for Healthcare",
-      "url": "https://openai.com/index/more-ways-to-move-care-forward-with-chatgpt-for-healthcare",
-      "publisher": "OpenAI",
-      "published_at": "2026-11-16T06:00:00+00:00"
-    },
-    {
-      "id": "news-8ec21efa2c62",
-      "title": "Hugging Face and OpenRouter join forces to make open-weight models easy to run",
-      "url": "https://huggingface.co/blog/openrouter",
-      "publisher": "Hugging Face",
-      "published_at": "2026-11-16T00:00:00+00:00"
-    },
-    {
-      "id": "news-60f3c7381bc6",
-      "title": "The King’s Trust and OpenAI launch £1m partnership",
-      "url": "https://openai.com/index/the-kings-trust-and-openai",
-      "publisher": "OpenAI",
-      "published_at": "2026-11-16T00:00:00+00:00"
-    },
-    {
-      "id": "news-2e8f421d2ee2",
-      "title": "A step toward defining the Standard Model on a lattice",
-      "url": "https://openai.com/index/step-toward-defining-the-standard-model",
-      "publisher": "OpenAI",
-      "published_at": "2026-11-15T22:00:01+00:00"
     }
   ]
 }
