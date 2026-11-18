@@ -1,228 +1,8 @@
 {
   "schema_version": 1,
   "task": "daily_pills_collection",
-  "updated_at": "2026-11-17T19:55:08.819482+00:00",
+  "updated_at": "2026-11-18T19:26:23.902079+00:00",
   "packets": [
-    {
-      "date": "2026-11-02",
-      "timezone": "America/New_York",
-      "created_at": "2026-11-02T20:47:53.271355+00:00",
-      "topic": "RAG",
-      "language": "en",
-      "concept": "When retrieval finds the wrong evidence",
-      "news_window": "recent",
-      "source_warnings": [],
-      "router_engine": "TF-IDF + logistic regression",
-      "schema_version": 1,
-      "task": "daily_pills",
-      "status": "draft",
-      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
-      "generation_method": "fireworks",
-      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
-      "knowledge": {
-        "title": "When Retrieval Finds the Wrong Evidence",
-        "summary": "RAG models combine a parametric language model with a retriever that fetches documents from an external index at generation time. This gives provenance and updatable knowledge, but the whole pipeline depends on the retriever surfacing the right passages. When retrieval returns the wrong evidence, the generator can still produce fluent, confident output built on bad sources.",
-        "story": "Imagine a librarian named Sam who works at a help desk. A visitor asks a question, and Sam dashes into the stacks, grabs three pages that look relevant, and hands them to the writer at the desk. The writer, Priya, is an excellent prose stylist: whatever pages land on her desk, she weaves them into a smooth, confident answer. One day Sam grabs pages about a similarly named but different product. Priya does not know they are wrong; she has no independent way to check. She writes a beautiful, detailed, entirely wrong answer, and the visitor walks away convinced. The failure was not Priya's writing; it was Sam's fetching. The system looked trustworthy end to end because every part performed its job well on the wrong inputs.",
-        "connection": "This maps directly onto retrieval-augmented generation. The retriever (Sam) is a neural retriever searching a dense vector index of documents, such as Wikipedia in the original RAG setup. The generator (Priya) is a pre-trained seq2seq model that conditions on the retrieved passages. The RAG paper describes two formulations: one that conditions on the same retrieved passages for the whole generated sequence, and one that can use different passages per token. REALM takes a related approach, integrating a latent knowledge retriever into language model pre-training itself, and highlights interpretability and modularity as benefits: because knowledge lives in an explicit, non-parametric memory, you can inspect which documents the model used.",
-        "explanation": "The core idea of RAG is that a model's parameters are a lossy, hard-to-update store of facts, while an external index is modular and refreshable. The retriever scores documents against the query and returns the top matches; the generator reads them and produces output. This architecture is why RAG models can be more specific, diverse, and factual than parametric-only baselines, and why they set state-of-the-art results on open-domain QA tasks in the original work. But the quality guarantee is conditional: the generator treats retrieved passages as evidence, not as verified truth. A dense retriever matches on semantic similarity, which is not the same as correctness. A passage can be topically close, outdated, contradictory, or from a low-quality source and still rank highly. Because generation is fluent by design, wrong evidence rarely produces visible hesitation; it produces confident prose. This is why provenance matters: RAG gives you citations you can check, but only if you actually check them.",
-        "application": "In practice, treat retrieval quality as a first-class failure mode. Log the retrieved passages alongside every generated answer so you can audit which evidence drove which output. Build evaluation that scores retrieval separately from generation: if the correct document is not in the top-k results, no amount of generator tuning will fix the answer. Add guardrails such as requiring the generator to cite which passage supports each claim, flagging answers where retrieved passages disagree with each other, and refreshing the index on a schedule so stale documents do not keep ranking highly. When users report wrong answers, check the retrieved evidence first; often the bug is in chunking, embedding choice, or query phrasing rather than the model.",
-        "exercise": "Take any RAG demo or notebook you have access to. Ask it five questions, and for each one, before reading the answer, read only the retrieved passages and predict whether they contain the information needed. Note where retrieval alone would have led you to a wrong or empty answer. Two minutes.",
-        "question": "In a RAG system, if the generator is fluent but the answer is factually wrong, which component should you investigate first, and why?",
-        "answer": "The retriever. The generator conditions on whatever passages it is given, so if the retriever surfaced wrong, stale, or irrelevant evidence, the generator will confidently produce a wrong answer. Check what was actually retrieved before blaming the model.",
-        "limits": "The librarian analogy understates the coupling in real systems. In RAG and REALM, the retriever is trained end to end, so the generator's behavior shapes what the retriever learns; Sam and Priya are actually one organization, not two people. The analogy also suggests the generator blindly trusts the pages, but RAG models can weight and mix passages, and the per-token formulation can draw on different passages for different parts of the answer. Finally, the analogy says nothing about the index itself: corpus quality and coverage constrain what good retrieval even looks like.",
-        "source_ids": [
-          "paper-2005.11401",
-          "paper-2002.08909"
-        ]
-      },
-      "news": {
-        "title": "Recent Developments Touching Retrieval and Knowledge",
-        "overview": "Two recent items relevant to how models access and retain knowledge: a Qodo plugin that brings company context into Codex, and Google Research's sleep framework for continual learning. Both relate to the RAG theme of getting the right knowledge into a model at the right time, though they take different approaches.",
-        "items": [
-          {
-            "headline": "Qodo builds context into AI code review with Codex",
-            "what_happened": "OpenAI's announcement page describes a Qodo plugin for Codex. According to the announcement, Qodo brings company knowledge and coding standards into Codex, helping developers catch P0 issues across repositories before opening a pull request. This is based on a feed excerpt, so details of how the integration works internally are not available here.",
-            "why_it_matters": "This is retrieval applied to developer workflow: instead of a generic code reviewer, the tool is meant to surface your organization's own standards and context at review time. The analogy is a new hire who, before flagging an issue, checks your internal style guide rather than guessing. For teams, the use case is catching severe issues earlier in the development cycle, before a pull request is even opened.",
-            "takeaway": "The announcement is a publisher claim about what the plugin does; the excerpt does not explain how Qodo retrieves or represents company knowledge, nor how well it performs. Before trying it, inspect how it indexes your repositories and standards, what data leaves your environment, and whether its P0-issue detection is evaluated on codebases like yours.",
-            "source_ids": [
-              "news-4094d4340f9e"
-            ]
-          },
-          {
-            "headline": "Google Research introduces a sleep framework for continual learning in LLMs",
-            "what_happened": "A Google Research blog post by Ali Behrouz and Vahab Mirrokni describes a 'sleep framework' for continual learning. The proposal alternates an active phase, where the model processes inputs into short-term memory, with an offline sleep phase that consolidates that context into long-term parameters. It uses Mixture-of-Experts memory expansion, knowledge distillation combined with reinforcement learning, and a 'dreaming' stage that generates and filters synthetic training samples. The authors report results including long-context retention up to 10M tokens on BABILong, factual knowledge incorporation scores on SQuAD and continued pre-training, and math reasoning accuracy on AIME and HMMT benchmarks, comparing favorably to baselines like supervised fine-tuning and in-context learning.",
-            "why_it_matters": "This addresses the same underlying problem that motivates RAG from a different direction: deployed models have static knowledge cutoffs, and naive parameter updates cause catastrophic forgetting. Where RAG keeps knowledge external and retrieves it at inference time, the sleep framework compresses new knowledge into the parameters themselves. For developers, the everyday relevance is the trade-off: retrieval gives you inspectable, refreshable evidence; parametric consolidation gives you a model that carries knowledge internally but is harder to audit. The neuroscience-inspired framing is a clearly labelled analogy; the authors note the mechanism operates entirely within a fixed architecture and human-defined training rules.",
-            "takeaway": "The reported numbers come from the authors' own evaluations and comparisons, not independent verification, and the blog post describes a research framework rather than a deployed product. Before drawing conclusions, inspect the benchmark setups, how the sleep phase compares against strong retrieval baselines rather than only fine-tuning baselines, and what compute the offline consolidation phase requires.",
-            "source_ids": [
-              "news-b49ec3bd8394"
-            ]
-          }
-        ],
-        "exercise": "For each news item, open the source and find one claim that is a publisher's own evaluation versus one that describes how the system works mechanically. Note which claims you could independently verify. Two minutes.",
-        "question": "How do RAG and the sleep framework differ in where new knowledge lives, and what auditability does each give you?",
-        "answer": "RAG keeps knowledge in an external index and retrieves it at generation time, so you can inspect the exact passages used. The sleep framework consolidates knowledge into model parameters during offline phases, which may improve retention but makes the knowledge implicit and harder to audit or update selectively."
-      },
-      "usage": {
-        "prompt_tokens": 3472,
-        "completion_tokens": 1914,
-        "total_tokens": 5386,
-        "prompt_tokens_details": {
-          "cached_tokens": 0
-        },
-        "completion_tokens_details": {
-          "accepted_prediction_tokens": null,
-          "reasoning_tokens": 0,
-          "rejected_prediction_tokens": null
-        }
-      },
-      "sources": [
-        {
-          "id": "paper-2005.11401",
-          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
-          "url": "https://arxiv.org/abs/2005.11401",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "paper-2002.08909",
-          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
-          "url": "https://arxiv.org/abs/2002.08909",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "news-4094d4340f9e",
-          "title": "Qodo builds context into AI code review with Codex",
-          "url": "https://openai.com/index/qodo-codex-plugin",
-          "publisher": "OpenAI",
-          "published_at": "2026-11-02T00:00:00+00:00",
-          "evidence_type": "feed_excerpt",
-          "topic": "RAG"
-        },
-        {
-          "id": "news-b49ec3bd8394",
-          "title": "The sleep framework: A new way for LLMs to retain knowledge in continual learning",
-          "url": "https://research.google/blog/the-sleep-framework-a-new-way-for-llms-to-retain-knowledge-in-continual-learning/",
-          "publisher": "Google Research",
-          "published_at": "2026-10-27T17:35:00+00:00",
-          "evidence_type": "article_excerpt",
-          "topic": "RAG"
-        }
-      ],
-      "id": "c292f6f2df6dee45"
-    },
-    {
-      "date": "2026-11-02",
-      "timezone": "America/New_York",
-      "created_at": "2026-11-02T20:47:53.271355+00:00",
-      "topic": "RAG",
-      "language": "te",
-      "concept": "When retrieval finds the wrong evidence",
-      "news_window": "recent",
-      "source_warnings": [],
-      "router_engine": "TF-IDF + logistic regression",
-      "schema_version": 1,
-      "task": "daily_pills",
-      "status": "draft",
-      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
-      "generation_method": "fireworks",
-      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
-      "knowledge": {
-        "title": "RAGలో retrieval తప్పు evidence ఇచ్చినప్పుడు ఏం జరుగుతుంది?",
-        "summary": "RAG (Retrieval-Augmented Generation) అంటే మోడల్ తన పారామీటర్లలో దాచుకున్న జ్ఞానంతో పాటు, ఒక external index నుంచి documents ని retrieve చేసి వాటి మీద ఆధారపడి జవాబులు generate చేయడం. కానీ retriever తప్పు లేదా సగటు నాణ్యత కలిగిన passages ని ఇచ్చినప్పుడు, generator ఆ తప్పు evidence మీద confidence తో తప్పు జవాబు ఇవ్వవచ్చు. ఈ lesson లో retrieval failure ఎలా జరుగుతుందో, దాన్ని ఎలా గుర్తించాలో నేర్చుకుంటాం.",
-        "story": "ఊహించండి: మీరు ఒక పెద్ద library లో పనిచేసే research assistant ని కలిగి ఉన్నారు. మీరు ఒక ప్రశ్న అడిగితే, ఆ assistant మొత్తం library ని చదవదు — బదులుగా ఒక librarian దగ్గర 'ఈ keywords కి సంబంధించి పుస్తకాలు ఇవ్వు' అని అడుగుతాడు. Librarian వేగంగా పనిచేస్తాడు, కానీ అతను పుస్తకం లోపలి కంటెంట్ ని లోతుగా అర్థం చేసుకోడు — కేవలం title, keywords, లేదా సుమారు similarity మీద ఆధారపడి పుస్తకాలు ఇస్తాడు. ఒకసారి మీరు '2023 tax rules' అడిగారు అనుకోండి. Librarian 'tax' అనే మాట చూసి 2019 పుస్తకం ఇచ్చాడు. Assistant ఆ పుస్తకం చదివి, అందులో ఏముందో ఆధారంగా ధైర్యంగా జవాబు చెప్పాడు — కానీ ఆ సమాచారం పాతది. ఇక్కడ తప్పు assistant ది కాదు, librarian ఇచ్చిన wrong evidence ది. Assistant కి 'ఇది పాతది' అని తెలియదు, ఎందుకంటే అతనికి ఇచ్చింది అదే.",
-        "connection": "ఈ కథలో: (1) Librarian = retriever (dense vector index నుంచి passages ని వెలికితీసే neural retriever). (2) Research assistant = generator (pre-trained seq2seq model). (3) Library = non-parametric memory (Wikipedia లాంటి పెద్ద corpus యొక్క dense vector index). (4) తప్పు పుస్తకం = retrieval failure — retriever relevance ని అంచనా వేస్తాడు కానీ correctness లేదా freshness ని కాదు. (5) Assistant ధైర్యంగా చెప్పడం = generator తప్పు context ని కూడా fluent గా వినియోగించడం.",
-        "explanation": "RAG పేపర్ (Lewis et al., 2020) రెండు రకాల memory లను కలుపుతుంది: parametric memory (model weights లో దాగిన జ్ఞానం) మరియు non-parametric memory (dense vector index లో ఉన్న documents). ఒక pre-trained neural retriever ఈ index ను query చేస్తాడు. ఇక్కడ ముఖ్యమైన పాయింట్: retriever అనేది similarity మీద పనిచేస్తుంది — query embedding కి దగ్గరగా ఉన్న vectors ని తీస్తుంది. ఇది సాధారణంగా బాగా పనిచేస్తుంది, కానీ రెండు failure modes ఉన్నాయి: (1) Lexical overlap trap: query లోని పదాలు తప్పు document లో కూడా ఉండవచ్చు — 'tax' అనే పదం పాత document లో కూడా ఉంటుంది. (2) Stale index: index లోని సమాచారం అప్డేట్ కాకపోతే, retriever ఖచ్చితంగా పనిచేసినా పాత evidence ఇస్తుంది. REALM పేపర్ ఇంకో ముఖ్యమైన పాయింట్ చెబుతుంది: retrieval ని pre-training లోనే integrate చేస్తే (backpropagating through the retrieval step), retriever కూడా మెరుగవుతుంది — అంటే retrieval quality అనేది fixed కాదు, training తో improve చేయగలరు. కానీ production లో మీరు సాధారణంగా off-the-shelf retriever ని వాడతారు, అప్పుడు ఈ failure modes ని మీరే detect చేయాలి.",
-        "application": "మీ RAG system లో ఈ సమస్యను ఎలా handle చేయాలి: (1) Retrieval evaluation: ఒక చిన్న test set ని తయారు చేయండి — ప్రతి query కి సరైన document id తెలిసి ఉండాలి. Retriever ఎంత తరచుగా సరైన document ని top-k లో ఇస్తుందో కొలవండి (recall@k). (2) Freshness checks: మీ index లో document timestamps ఉంచండి, మరియు time-sensitive queries కి పాత documents ని downrank చేయండి. (3) Grounding checks: generator చెప్పిన జవాబులోని claims ని retrieved passages తో cross-check చేయండి — జవాబులో ఉండి passages లో లేని claims అనేవి hallucination లేదా parametric leakage సూచిస్తాయి. (4) Provenance: ప్రతి జవాబుతో 'ఇది ఈ document నుంచి వచ్చింది' అని చూపించండి — RAG పేపర్ ప్రకారం provenance అనేది ఈ approach యొక్క ముఖ్య ప్రయోజనాలలో ఒకటి.",
-        "exercise": "2 నిమిషాలు: మీ సొంత RAG system (లేదా ఊహించిన system) కోసం 3 test queries రాయండి — ఒకటి time-sensitive ('current pricing'), ఒకటి ambiguous term తో ('jaguar' — animal లేదా car?), ఒకటి సాధారణ factual. ప్రతి query కి: retriever ఏ documents ఇస్తుందో ఊహించండి, ఏ failure mode (lexical overlap, stale index, ambiguity) జరిగే అవకాశం ఎక్కువగా ఉందో గుర్తించండి. ఒక query కి అయినా మీరు ఎలాంటి guardrail (timestamp filter, query rewrite, లేదా grounding check) జోడిస్తారో ఒక వాక్యంలో రాయండి.",
-        "question": "Retriever ఖచ్చితంగా పనిచేస్తున్నా (సరైన similarity తో documents ఇస్తున్నా), generator ఇంకా తప్పు జవాబు ఇవ్వడం ఎందుకు జరగవచ్చు?",
-        "answer": "Retriever relevance మీద పనిచేస్తుంది, correctness లేదా freshness మీద కాదు. Index లోని documents పాతవి అయి ఉంటే (stale index), లేదా query లోని పదాలు తప్పు document లో lexical overlap కలిగి ఉంటే, retriever 'సరైన' పని చేస్తూనే తప్పు evidence ఇస్తుంది. Generator కి ఆ evidence సరైనదా కాదా అని తెలియదు, కాబట్టి దాని మీద ఆధారపడి fluent కానీ తప్పు జవాబు ఇస్తుంది. అందుకే retrieval evaluation, freshness checks, grounding checks అవసరం.",
-        "limits": "ఈ analogy కి పరిమితులు: Librarian ఒక వ్యక్తి — కానీ నిజమైన dense retriever అనేది neural network, దాని 'similarity' అనేది high-dimensional vector space లో దూరం, మానవ అర్థం కాదు. రెండవ పరిమితి: కథలో assistant పుస్తకం పూర్తిగా చదువుతాడు, కానీ నిజమైన generator కి passages మాత్రమే context గా ఇస్తారు, మరియు అది తన parametric జ్ఞానాన్ని కూడా మిళియిస్తుంది — ఏ భాగం ఎక్కడి నుంచి వచ్చిందో వేరు చేయడం కష్టం. మూడవది: RAG formulations లో ఒకటి ప్రతి token కి వేరు వేరు passages వాడవచ్చు — ఇది కథలో లేని స్థాయి complexity.",
-        "source_ids": [
-          "paper-2005.11401",
-          "paper-2002.08909"
-        ]
-      },
-      "news": {
-        "title": "RAG చుట్టూ ఇటీవలి అభివృద్ధులు",
-        "overview": "ఈ వారం రెండు సంబంధిత ఐటమ్స్: developer workflows లో context retrieval ని వాడే ఒక code review integration, మరియు LLM లలో జ్ఞానాన్ని నిలుపుకోవడం మీద ఒక research framework. రెండూ retrieval-augmented systems ఎలా జ్ఞానాన్ని యాక్సెస్ చేస్తాయి, నిల్వ చేస్తాయి అనే ప్రశ్నకు సంబంధించినవే.",
-        "items": [
-          {
-            "headline": "Qodo, Codex లో company context తో AI code review ని మెరుగుపరుస్తుంది",
-            "what_happened": "OpenAI ప్రచురించిన ప్రకటన ప్రకారం, Qodo అనే సంస్థ Codex కోసం ఒక plugin తో తమ company knowledge మరియు coding standards ని integrate చేస్తోంది. దీని లక్ష్యం: developers pull request open చేయకముందే, repositories లో P0 (critical) issues ని పట్టుకోవడం. గమనిక: ఇది feed excerpt ఆధారంగా ఉంది — మేము పూర్తి article చదవలేదు, కాబట్టి integration యొక్క technical వివరాలు (ఇది RAG వాడుతుందా, ఎలా index చేస్తుందా) అనేవి ఈ excerpt లో లేవు.",
-            "why_it_matters": "Developer కోసం అర్థం: code review అనేది knowledge-intensive task — 'మన team ఇలా చేయదు' లేదా 'ఈ pattern మన codebase లో ఇప్పటికే ఉంది' అనే నిర్ణయాలకు internal context కావాలి. ఇది మన lesson తో నేరుగా ముడిపడి ఉంది: review agent కి ఇచ్చే context (company standards, repo history) అనేది retrieval ద్వారా వస్తే, తప్పు లేదా పాత standards retrieve అయితే review తప్పుగా ఉంటుంది. Analogy: ఇది librarian తో పనిచేసే code reviewer లాంటిది — reviewer బాగుంటే కానీ librarian సరైన rulebook ఇస్తే కానీ review నమ్మదోపడం అవుతుంది.",
-            "takeaway": "పరిమితి: ఈ feed excerpt లో ఏ విధమైన retrieval/indexing mechanism వాడారో, ఏ standards ఎలా store చేశారో, accuracy ఎలా evaluate చేశారో తెలియదు. Try చేయకముందు inspect చేయండి: (1) మీ coding standards ఎలా index అవుతాయి మరియు అప్డేట్ అవుతాయా, (2) తప్పు P0 flags ని మీరు ఎలా measure చేస్తారు, (3) ఇది మీ existing CI/review workflow లో ఎలా fit అవుతుంది. Publisher claim ('P0 issues catch చేయడం') ని మీ సొంత repos మీద validate చేయాలి.",
-            "source_ids": [
-              "news-4094d4340f9e"
-            ]
-          },
-          {
-            "headline": "Google Research 'sleep framework': LLM లలో continual learning కోసం ఒక కొత్త పద్ధతి",
-            "what_happened": "Google Research (Oct 27, 2026) ఒక framework ని ప్రతిపాదించింది: deployed LLM లు wake phase (inputs ని process చేయడం, short-term memory లో store చేయడం) మరియు sleep phase (offline లో memory consolidation) మధ్య మారుతూ ఉంటాయి. Sleep phase లో రెండు భాగాలు: (1) Memory consolidation — Mixture-of-Experts (MoE) లో కొత్త low-rank experts ని unlock చేసి, short-term context ని distillation + RL ద్వారా long-term parameters లోకి transfer చేయడం, తర్వాత short-term memory ని reset చేయడం (synaptic pruning). (2) Dreaming — random expert selection తో synthetic training samples generate చేసి, gradient-based filtering తో వాటిని select చేసి, RL తో refine చేయడం. Blog ప్రకారం ఇది catastrophic forgetting ని తగ్గించి, 10M tokens వరకు long-context retention, factual knowledge incorporation, మరియు math reasoning benchmarks (AIME 24/25, HMMT 25) లో baseline లను (SFT, ICL, GRPO) అధిగమించినట్టు చూపిస్తోంది. ఈ benchmark ఫలితాలు publisher యొక్క claims — మా independent verification కాదు.",
-            "why_it_matters": "RAG perspective నుంచి ఇది ముఖ్యం: RAG జ్ఞానాన్ని external index లో (non-parametric) ఉంచుతుంది, కానీ ఈ framework జ్ఞానాన్ని నేరుగా parameters లోకి consolidate చేయడానికి ప్రయత్నిస్తుంది — అంటే retrieval అస్సలు అవసరం లేకుండా చేసే దిశలో ఒక అడుగు. Developer use case: మీ application లో పెద్ద context windows లేదా పదే పదే retrieve చేసే documents అనేవి latency మరియు cost పెంచుతాయి — knowledge ని parameters లోకి consolidate చేయగలిగితే ఈ overhead తగ్గుతుంది. Analogy: ఇది ప్రతిసారి library కి వెళ్ళకుండా, రోజూ చదివిన దాన్ని రాత్రిపుడు జ్ఞాపకాల్లోకి stabilize చేసుకోవడం లాంటిది. కానీ ఇది research framework — production లో వాడగల system కాదు.",
-            "takeaway": "పరిమితి: ఇది Google Research blog — ప్రతిపాదిత framework మరియు publisher చేసిన evaluations మాత్రమే; ఇది shipped product లేదా universally available technique కాదు. Blog లోనే స్వయంగా ఇది fixed architecture మరియు human-defined training rules లోపే పనిచేస్తుందని స్పష్టం చేశారు. Try/adopt చేయకముందు inspect చేయండి: (1) benchmark setups మీ use case తో ఎంత వర్తిస్తాయి (BABILong, SQuAD, AIME అనేవి మీ workload ని represent చేస్తాయా), (2) sleep phase కి అవసరమయ్యే compute cost మరియు offline window, (3) code లేదా reproducible artifacts అందుబాటులో ఉన్నాయో లేదో. RAG అనేది ఇప్పటికీ మీ చేతిలో ఉన్న practical tool — ఈ framework దానికి బదులు కాదు, భవిష్యత్తులో ఒక complement కావచ్చు.",
-            "source_ids": [
-              "news-b49ec3bd8394"
-            ]
-          }
-        ],
-        "exercise": "2 నిమిషాల source-check: రెండు news items లోనూ 'context' అనే పదం వాడకాన్ని పోల్చండి. Qodo item లో context అంటే external గా ఉండే company knowledge (retrieval ద్వారా వస్తుంది); Google item లో context అంటే short-term in-context memory (parameters లోకి consolidate చేయబడుతుంది). ఒక వాక్యంలో రాయండి: మీ సొంత RAG system లో ఈ రెండు రకాల 'context' ఎలా కనిపిస్తాయి, ఏది stale అవ్వడానికి ఎక్కువ అవకాశం ఉంది?",
-        "question": "Qodo-Codex integration మరియు Google యొక్క sleep framework — రెండూ జ్ఞానాన్ని మోడల్ కి అందించడం గురించే మాట్లాడుతున్నాయి, కానీ వాటి approach లో ప్రధాన వ్యత్యాసం ఏమిటి?",
-        "answer": "Qodo approach లో జ్ఞానం model వెలుపల (company standards, repo context) ఉంటుంది — inference సమయంలో retrieval ద్వారా అందిస్తారు, RAG తెలిపిన non-parametric memory లాగా. Google sleep framework లో జ్ఞానాన్ని model parameters లోపలే consolidate చేయడానికి ప్రయత్నిస్తారు — offline distillation ద్వారా parametric memory ని expand చేయడం. మొదటిది fresh గా ఉంచడం సులభం కానీ retrieval quality మీద ఆధారపడుతుంది; రెండోది retrieval overhead లేకుండా చేస్తుంది కానీ research-stage లో ఉంది మరియు catastrophic forgetting అనే ప్రమాదాన్ని manage చేయాల్సి ఉంటుంది."
-      },
-      "usage": {
-        "prompt_tokens": 3472,
-        "completion_tokens": 9461,
-        "total_tokens": 12933,
-        "prompt_tokens_details": {
-          "cached_tokens": 0
-        },
-        "completion_tokens_details": {
-          "accepted_prediction_tokens": null,
-          "reasoning_tokens": 0,
-          "rejected_prediction_tokens": null
-        }
-      },
-      "sources": [
-        {
-          "id": "paper-2005.11401",
-          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
-          "url": "https://arxiv.org/abs/2005.11401",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "paper-2002.08909",
-          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
-          "url": "https://arxiv.org/abs/2002.08909",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "news-4094d4340f9e",
-          "title": "Qodo builds context into AI code review with Codex",
-          "url": "https://openai.com/index/qodo-codex-plugin",
-          "publisher": "OpenAI",
-          "published_at": "2026-11-02T00:00:00+00:00",
-          "evidence_type": "feed_excerpt",
-          "topic": "RAG"
-        },
-        {
-          "id": "news-b49ec3bd8394",
-          "title": "The sleep framework: A new way for LLMs to retain knowledge in continual learning",
-          "url": "https://research.google/blog/the-sleep-framework-a-new-way-for-llms-to-retain-knowledge-in-continual-learning/",
-          "publisher": "Google Research",
-          "published_at": "2026-10-27T17:35:00+00:00",
-          "evidence_type": "article_excerpt",
-          "topic": "RAG"
-        }
-      ],
-      "id": "08fe7df9c49fe739"
-    },
     {
       "date": "2026-11-03",
       "timezone": "America/New_York",
@@ -3755,6 +3535,230 @@
         }
       ],
       "id": "4bd3dcda36cb3006"
+    },
+    {
+      "date": "2026-11-18",
+      "timezone": "America/New_York",
+      "created_at": "2026-11-18T19:25:03.222059+00:00",
+      "topic": "RAG",
+      "language": "en",
+      "concept": "When retrieval finds the wrong evidence",
+      "news_window": "recent",
+      "source_warnings": [],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "When Retrieval Finds the Wrong Evidence",
+        "summary": "RAG systems combine a model's internal knowledge with documents fetched from an external index, but the retriever can fetch passages that look relevant yet are wrong. Understanding why retrieval fails — and how the generator still leans on it — is key to building trustworthy RAG pipelines.",
+        "story": "Imagine Priya, a librarian at a busy reference desk. A visitor asks a question about a city ordinance. Priya doesn't know the answer herself, but she's fast at finding documents whose titles and first lines resemble the question. She grabs three folders and hands them over. The visitor, trusting the librarian, reads only those folders and answers confidently — but one folder is from a neighboring county with a similar-sounding ordinance. The visitor's answer is fluent, specific, and wrong. Nobody at the desk flagged the mismatch, because the system's job was to find documents that matched the question's wording, not documents that were true. The next day, Priya notices the visitor citing her answer in a complaint letter, and realizes the desk needs a way to show which folder each claim came from — and a way for visitors to double-check.",
+        "connection": "Priya is the retriever: she selects documents based on similarity, not truth. The visitor is the generator (a language model): it conditions its answer on whatever passages it receives, and fluent prose can mask a bad source. The folders are the non-parametric memory — an explicit document index outside the model's weights. The neighboring-county document is the classic retrieval failure: high lexical or semantic overlap with the query, low factual relevance. The complaint letter is what happens when provenance is missing — the user cannot trace which evidence supported which claim.",
+        "explanation": "The original RAG paper (Lewis et al.) frames this precisely: a pre-trained seq2seq model (parametric memory) is combined with a dense vector index of documents (non-parametric memory) accessed by a neural retriever. Because the retriever selects passages by embedding similarity, it optimizes for relevance signals learned during training, not for correctness. Two RAG variants exist — one conditioning on the same passages for the whole output, another allowing different passages per token — and both inherit whatever the retriever returns. REALM takes a related approach, training a latent knowledge retriever end-to-end via masked language modeling, and reports both accuracy gains and qualitative benefits like interpretability and modularity. Interpretability matters here: because the model attends over retrieved documents, you can inspect what evidence was used. But inspection only helps if you actually look — a retrieved passage that is on-topic but outdated, from the wrong jurisdiction, or subtly contradictory is exactly the failure mode Priya's visitor hit. The generator rarely refuses; it synthesizes.",
+        "application": "In practice, treat retrieval quality as a first-class failure surface. Log the retrieved chunk IDs and scores alongside every generated answer so you can audit which evidence produced which claim. Add a verification step: have the generator cite passages, then check that cited passages actually entail the answer (a lightweight entailment check or human spot-check). Improve retrieval with query rewriting, hybrid keyword-plus-dense search, and reranking, and evaluate retrieval separately from generation — a RAG bug is often a retriever bug, not a model bug.",
+        "exercise": "Take any RAG demo you have access to (or imagine one). For two minutes, write down three questions where a document could be highly similar to the query wording but factually wrong — e.g., a similar-named product, an old policy version, or a different jurisdiction. Pick one and describe how you would detect it in your pipeline.",
+        "question": "In RAG, why can a retrieved passage that is topically similar to the query still lead to a wrong answer?",
+        "answer": "Because the retriever selects passages based on learned similarity signals (e.g., embedding proximity), not factual correctness. A passage can match the question's topic while being outdated, from the wrong source, or contradictory, and the generator will typically synthesize an answer from it anyway.",
+        "limits": "The librarian analogy understates the coupling in real RAG: in end-to-end trained systems like REALM, the retriever is learned through the model's own objective, so 'retriever' and 'generator' are not as independent as Priya and her visitor. The analogy also implies a human checks the folders; in production, nobody does unless you build that step. Finally, provenance in RAG shows which passages were used, not whether they were true.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "Recent Developments in Retrieval and Agent Memory",
+        "overview": "Two recent items from AI labs touch on how models access and organize knowledge beyond their weights: Anthropic's research on agent memory components, and OpenAI's expansion of free frontier-model access for academic researchers.",
+        "items": [
+          {
+            "headline": "Anthropic describes how Claude agents organize memory, including offline 'dreaming'",
+            "what_happened": "An Anthropic research post (published November 6, 2026) explains a framework for agent memory: knowledge an agent gains from experience and retains between sessions as readable context, distinct from weight changes or in-context learning. It describes 'dreaming' — using idle time to reflect on session logs, fix mistakes, and write memory notes — and reports evaluations including a CL-Bench database task, where newer Claude models progressively built 'learning loops' that recorded validated rules, and a Pokémon Red test where a model writing fewer, more strategic memory files progressed further than one that archived everything indiscriminately. Anthropic also reports that fixed prompting rules like 'record only failures' reduced the memory benefit for stronger models, while general guidance worked better.",
+            "why_it_matters": "For developers building agents, this is a concrete pattern for persistent memory: store what the environment won't tell you again (tested rules, plans, corrections), not raw state you can re-read each turn. The analogy to sleep consolidation is useful — an offline job that distills logs into curated notes — but it is Anthropic's framing of its own evaluations, not an independent benchmark. The Pokémon comparison is a single run per model, so treat the salience claims as directional.",
+            "takeaway": "The reported gains come from Anthropic's own evaluations and selected model comparisons; inspect the full post's methodology, run sizes, and whether the memory-organization behaviors replicate on your own tasks before adopting 'dreaming' in production.",
+            "source_ids": [
+              "news-f0247d2be6d2"
+            ]
+          },
+          {
+            "headline": "OpenAI expands free ChatGPT access to 200,000 academic researchers",
+            "what_happened": "An OpenAI announcement (published November 16, 2026) states the company is expanding its ChatGPT for Academic Researchers program to offer 200,000 researchers worldwide free access to its frontier models. The available source is a feed excerpt of the announcement, so details about eligibility, model tiers, and data handling are not visible here.",
+            "why_it_matters": "For researchers and RAG developers in academia, free access to frontier models lowers the cost of prototyping retrieval-augmented pipelines and knowledge-intensive tasks without lab-scale budgets. A useful analogy: it is less like a new tool launch and more like a library opening its stacks to more borrowers — the value depends on what each researcher builds, not on the access itself.",
+            "takeaway": "The excerpt is a feed summary, not the full program page; before relying on it, check OpenAI's official program page for eligibility criteria, usage limits, which models are included, and the data-use terms that apply to research inputs.",
+            "source_ids": [
+              "news-2d7a5d6b20ff"
+            ]
+          }
+        ],
+        "exercise": "Two minutes: open the Anthropic post and the OpenAI announcement. For each, note one claim that is backed by described evaluations or program terms in the source, and one claim you would need to verify elsewhere. This trains the habit of separating reported results from marketing framing.",
+        "question": "Why should you not treat a Hacker News discussion thread's vote count as evidence that Anthropic's memory findings are correct?",
+        "answer": "Discussion votes are only a discovery signal — they show attention, not accuracy. The findings' validity depends on the methodology in the primary source and independent replication, neither of which votes provide."
+      },
+      "usage": {
+        "prompt_tokens": 3824,
+        "completion_tokens": 1786,
+        "total_tokens": 5610,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": null,
+          "reasoning_tokens": 20,
+          "rejected_prediction_tokens": null
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-f0247d2be6d2",
+          "title": "The components of agent memory",
+          "url": "https://www.anthropic.com/research/components-of-agent-memory",
+          "publisher": "www.anthropic.com",
+          "published_at": "2026-11-06T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 189,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-2d7a5d6b20ff",
+          "title": "Broadening access to AI for scientists",
+          "url": "https://openai.com/index/expanding-chatgpt-for-academic-researchers",
+          "publisher": "OpenAI",
+          "published_at": "2026-11-16T17:00:00+00:00",
+          "evidence_type": "feed_excerpt",
+          "topic": "RAG"
+        }
+      ],
+      "id": "13558687b1eb7e16"
+    },
+    {
+      "date": "2026-11-18",
+      "timezone": "America/New_York",
+      "created_at": "2026-11-18T19:25:03.222059+00:00",
+      "topic": "RAG",
+      "language": "te",
+      "concept": "When retrieval finds the wrong evidence",
+      "news_window": "recent",
+      "source_warnings": [],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "RAGలో retrieval తప్పు evidence ని తెచ్చినప్పుడు ఏం చేయాలి?",
+        "summary": "Retrieval-Augmented Generation (RAG) అనేది language model కి బాహ్య knowledge source ను కలుపుతుంది, కానీ retriever తప్పు documents ని తెస్తే మొత్తం answer తప్పు అవుతుంది. ఈ lesson లో ఆ failure ఎలా జరుగుతుందో, దాన్ని ఎలా గుర్తించాలో నేర్చుకుంటాం.",
+        "story": "ఒక ఊరిలో లైబ్రరీ అసిస్టెంట్ అని చెప్పుకోండి. ఆమె చాలా వేగంగా పని చేస్తుంది — మీరు ఏ ప్రశ్న అడిగినా ఆమె అర్థం చేసుకోకుండానే, ప్రశ్నలోని కొన్ని పదాలను చూసి, అతి తక్కువ సమయంలో మూడు పుస్తకాలు తీసుకొచ్చి మీ ముందు పెడుతుంది. ఒకరోజు మీరు 'మా ఊరి చెరువు ఎప్పుడు తవ్వించారు?' అని అడిగారు. ఆమె 'చెరువు' అనే పదం చూసి, చెరువు గురించి కానీ సరిగా లేని ఒక పాత పత్రికను తెచ్చింది — అది పక్క ఊరి చెరువు గురించి అయి ఉండవచ్చు. మీరు ఆ పత్రిక చదివి, నమ్మకంగా ఒక సంవత్సరాన్ని చెప్పారు. అది తప్పు. అసిస్టెంట్ చెడ్డది కాదు — ఆమె వేగంగా, పొసగని పదాల ఆధారంగా వెతికింది. సమస్య ఏమిటంటే, ఆమె తెచ్చిన పత్రాలు 'చూడటానికి సంబంధం ఉన్నట్టు' కనిపిస్తాయి కానీ నిజమైన సమాధానం ఉన్న పత్రాలు కాకపోవచ్చు. ఇక్కడ ముఖ్యమైన పాఠం: తెచ్చిన సాక్ష్యం సరైనదేనో లేదో వేరే ఎవరో తనిఖీ చేయాలి — అసిస్టెంట్ తానే తీసుకొచ్చిన పత్రాల నాణ్యతను ఖచ్చితంగా చెప్పలేదు.",
+        "connection": "ఈ కథలో అసిస్టెంట్ = retriever (neural retriever), లైబ్రరీ = dense vector index, మీరు చదివి చెప్పిన సమాధానం = generator యొక్క output. తప్పు పత్రిక = wrong evidence retrieval.",
+        "explanation": "RAG అంటే pre-trained seq2seq model (parametric memory) తో బాహ్య document index (non-parametric memory) కలిపి generation చేయడం. Lewis et al. వారి RAG paper ప్రకారం, ఈ విధానం knowledge-intensive tasks లో parametric-only models కంటే మెరుగ్గా పనిచేస్తుంది, ఎందుకంటే model తన parameters లో లేని విషయాలను index నుంచి తెచ్చుకోగలదు. REALM paper ఇదే ఆలోచనను pre-training stage లోనే పెట్టి, retriever ను unsupervised గా నేర్పించవచ్చని చూపింది. కానీ రెండు papers లోనూ అంతర్లీన ఆందోళన ఒకటే: model యొక్క ఖచ్చితత్వం retriever ఎంత సరైన documents తెస్తున్నాదనే దానిపై ఆధారపడి ఉంటుంది. Retriever సాధారణంగా query కి, documents కి మధ్య semantic similarity లెక్కిస్తుంది. Similarity అనేది relevance కి ఒక proxy మాత్రమే — పదాలు పోలికగా ఉండటం అంటే సమాధానం అక్కడ ఉందని కాదు. తప్పు evidence తెచ్చినప్పుడు generator దానిని నమ్మి, confident గా తప్పు సమాధానం ఇస్తుంది. అందుకే RAG systems లో debugging మొదలుపెట్టే చోటు: ముందు ఏ documents retrieve అయ్యాయో చూడటం, ఆ తర్వాత generation చూడటం.",
+        "application": "మీరు ఒక internal docs Q&A bot నిర్మిస్తున్నారని ఊహించండి. ఒక user తప్పు సమాధానం పొందారని report వచ్చింది. Practical approach: (1) ఆ query కి retrieve అయిన top-k documents ని log చేసి inspect చేయండి — సరైన document అసలు index లో ఉందా? (2) ఉంటే, retriever దాన్ని rank చేయలేదా లేదా query phrasing సమస్యా? (3) లేకపోతే, chunking లేదా indexing లో gap ఉంది. (4) Generator కి 'ఇచ్చిన context లో సమాధానం లేకపోతే చెప్పమని' instruction ఇవ్వండి. ఇది wrong evidence ని నిశ్శబ్దంగా నమ్మే బదులు దాన్ని బయటకు చూపేలా చేస్తుంది.",
+        "exercise": "రెండు నిమిషాల వ్యాయామం: మీ సొంత ప్రశ్న ఒకదాన్ని తీసుకోండి (ఉదా: 'మా API rate limits ఏమిటి?'). దానిని రెండు విధాలు phrasing చేయండి — ఒకటి సహజ మాటల్లో, మరొకటి docs లో ఉండే ఖచ్చిత పదాలతో. రెండింటికీ ఏ documents పోలికగా ఉంటాయో ఊహించి రాయండి. రెండు queries ఒకే సమాధానాన్ని ఇవ్వకపోతే, అదే retrieval sensitivity సమస్య — మీ system లో దీన్ని ఎలా test చేస్తారో ఒక్క వాక్యంలో రాయండి.",
+        "question": "Retriever తెచ్చిన document కి, user ప్రశ్నకి మధ్య similarity ఉండటం అంటే సమాధానం ఆ document లో ఉందని కచ్చితంగా భరోసా ఇస్తుందా? ఎందుకు?",
+        "answer": "ఇవ్వదు. Similarity అనేది పదాలు/అర్థాల పోలిక మాత్రమే; సరైన సమాధానం ఉన్న document తక్కువ rank అవ్వవచ్చు, పోలిక ఎక్కువగా ఉన్న తప్పు document పైన రావచ్చు. అందుకే retrieved documents ని విడిగా inspect చేయడం, generator కి 'context లో లేకపోతే అని చెప్పు' అని అడగడం అవసరం.",
+        "limits": "ఈ analogy కి పరిమితులు: లైబ్రరీ అసిస్టెంట్ కథలో ఆమె పదాల ఆధారంగా వెతుకుతుందని చెప్పాం, కానీ neural retrievers dense embeddings వాడతాయి — అవి అర్థాన్ని కూడా capture చేస్తాయి, కాబట్టి failures చాలా subtle గా ఉంటాయి. అలాగే కథలో అసిస్టెంట్ తనిఖీ చేయదు అని చెప్పాం, కానీ కొన్ని RAG formulations (per-token retrieval వంటివి) generation లో భాగంగా retrieval ని మరింత మెత్తగా integrate చేస్తాయి. Analogy debugging mindset ని నేర్పిస్తుంది, నిర్దిష్ట architecture వివరాలను కాదు.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "ఈ వారం RAG & agent memory సంబంధిత అభివృద్ధులు",
+        "overview": "ఈ రోజు క్యాలెండర్ లో సరిగ్గా ప్రచురించబడిన వార్తలు లేవు; గత రెండు వారాల్లో (recent window) ప్రచురించిన రెండు items ఇవే. ఒకటి Anthropic యొక్క agent memory పై పరిశోధన పోస్ట్, మరొకటి OpenAI యొక్క academic access program expansion — రెండోది feed excerpt ఆధారంగా మాత్రమే, పూర్తి పేజీ చదవలేదు.",
+        "items": [
+          {
+            "headline": "Anthropic: agent memory కి 'dreaming' — idle సమయంలో logs ను పునఃసంఘటింపచేయడం",
+            "what_happened": "Anthropic వారి research post (2026-11-06 ప్రచురితం) ప్రకారం, Claude వంటి agents తమ session logs ను idle సమయంలో తిరిగి చూసి, తప్పులను సరిదిద్ది, memory notes తయారు చేయవచ్చు — దీన్ని వారు 'dreaming' అంటున్నారు. ఇది human brain లో sleep సమయంలో జ్ఞాపకాలు consolidate అయ్యే ప్రక్రియతో పోలిక. వారి evaluations లో: CL-Bench database task లో మెరుగైన models (Opus 5 నుంచి) తమ memory లో verified rules ని నిల్వ చేసి learning loop మూసివేశాయి; Pokémon Red test లో salience తెలిసిన model (Fable 5, 9 files) అన్నీ రాసే model (Sonnet 3.7, 413 files) కంటే బాగా ముందుంది. అలాగే 'record only failures' వంటి fixed rules కంటే, strong models కి salience పై freedom ఇవ్వడం మెరుగు.",
+            "why_it_matters": "RAG perspective నుంచి ఇది ముఖ్యం: agent memory అనేది ఒక రకమైన retrieval system — ఏమి నిల్వ చేశారో, దాన్ని ఎలా organize చేశారో బట్టి retrieval quality నిర్ణయమవుతుంది. Developer use case: మీ long-running agent లో ప్రతి వివరాన్నీ నిల్వ చేయకూడదు — స్క్రీన్ లో ప్రతి టర్న్ చదవగలిగే విషయాలు (state) redundant, కానీ tested rules, strategies, plans మాత్రమే రాయాలి. Analogy: ఇది పరీక్ష వ్రాసే ముందు revision notes — పుస్తకం మొత్తాన్ని కాపీ చేయకుండా, మీరే కష్టపడి నేర్చుకున్న సూత్రాలను మాత్రమే రాసుకోవడం. Note: ఇవి Anthropic వారి స్వంత evaluations, వారి claims; వేరే స్వతంత్ర verification మా దగ్గర లేదు.",
+            "takeaway": "పరిమితి: ఇది Anthropic వారి ప్రయోగాలు, వారి models పై — మీ setup లో అదే ఫలితాలు రావు. ప్రయత్నించే ముందు: మీ agent ఏ సమాచారాన్ని ప్రతి session లో మళ్ళీ పొందగలదో (నిల్వ అక్కర్లేదు) vs ఏది కోల్పోతే తిరిగి పొందలేనిదో (నిల్వ అక్కర్లు) వేరు చేయండి; post లోని evaluations methodology, benchmark details ని నేరుగా చదవండి.",
+            "source_ids": [
+              "news-f0247d2be6d2"
+            ]
+          },
+          {
+            "headline": "OpenAI: ChatGPT for Academic Researchers program ని 200,000 researchers వరకు విస్తరించడం",
+            "what_happened": "OpenAI వారి ప్రకటన (2026-11-16) ప్రకారం, ChatGPT for Academic Researchers program ను విస్తరించి, ప్రపంచవ్యాప్తంగా 200,000 researchers కి frontier models కి free access అందిస్తున్నారు. ఈ సమాచారం feed excerpt నుంచి వచ్చింది — మేము పూర్తి announcement చదవలేదు, కాబట్టి eligibility, ఏ models, ఏ నిబంధనలు అనే వివరాలు మాకు తెలియవు.",
+            "why_it_matters": "Researchers కి frontier model access అంటే RAG pipelines ని, retrieval quality evaluation ని academic settings లో పరీక్షించే అవకాశం ఎక్కువ మందికి లభిస్తుంది — ఉదాహరణకు, ఒక research group తమ domain corpus పై retrieval-augmented Q&A ని benchmark చేయవచ్చు. Analogy: ఒక ప్రయోగశాల పరికరాన్ని పాఠశాలలకి free గా ఇవ్వడం లాంటిది — పరికరం అందరికీ దొరుకుతుంది, కానీ దాన్నితో ఏ ప్రయోగాలు చేయగలరో వారి నైపుణ్యం, నిబంధనలపై ఆధారపడి ఉంటుంది. '200,000 researchers' అనే సంఖ్య, 'frontier models' అనే పదం OpenAI వారి claims — వీటిని మేము స్వతంత్రంగా ధృవీకరించలేదు.",
+            "takeaway": "పరిమితి: feed excerpt మాత్రమే ఆధారం — program యొక్క eligibility criteria, data usage terms, ఏ models చేర్చబడ్డాయో తెలియదు. ప్రయత్నించే ముందు: OpenAI యొక్క పూర్తి announcement page చదవండి, మీ research data వారి terms లో ఎలా వాడబడుతుందో (privacy, retention) తనిఖీ చేయండి, application process యొక్క అధికారిక వివరాలు చూడండి.",
+            "source_ids": [
+              "news-2d7a5d6b20ff"
+            ]
+          }
+        ],
+        "exercise": "రెండు నిమిషాల source-check వ్యాయామం: Anthropic post ని తెరవండి, 'dreaming' అనే పదాన్ని వారు ఎలా define చేశారో ఒక వాక్యంలో రాయండి. తర్వాత OpenAI page ని తెరిచి, ఈ మూడింటిలో ఏది అక్కడ స్పష్టంగా లేదో గుర్తించండి: (a) eligibility criteria, (b) data usage terms, (c) ఖచ్చితమైన model పేర్లు. ఏ item లేకపోతే, అదే మీరు ముందు తెలుసుకోవాల్సిన gap.",
+        "question": "Anthropic యొక్క Pokémon evaluation లో, ఎక్కువ memory files రాసిన model కంటే తక్కువ files రాసిన model ఎందుకు మెరుగైన ప్రగతి చూపింది?",
+        "answer": "ఎక్కువ రాసిన model (Sonnet 3.7) స్క్రీన్ లో ప్రతి టర్న్ చదవగలిగే విషయాలను కూడా నిల్వ చేయడం వల్ల ఆ సమాచారం వేగంగా outdated అయింది, memory వెతకడానికే ఎక్కువ సమయం గడిచింది. తక్కువ రాసిన model (Fable 5) strategies, plans, tested rules వంటి — వేరేవిధంగా తిరిగి పొందలేని సమాచారాన్ని మాత్రమే నిల్వ చేసింది. ఇది Anthropic వారి స్వంత observation; ఇది salience judgment ముఖ్యమని సూచిస్తుంది, నిర్ధారిత నియమం కాదు."
+      },
+      "usage": {
+        "prompt_tokens": 3824,
+        "completion_tokens": 9277,
+        "total_tokens": 13101,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": null,
+          "reasoning_tokens": 33,
+          "rejected_prediction_tokens": null
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-f0247d2be6d2",
+          "title": "The components of agent memory",
+          "url": "https://www.anthropic.com/research/components-of-agent-memory",
+          "publisher": "www.anthropic.com",
+          "published_at": "2026-11-06T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 189,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-2d7a5d6b20ff",
+          "title": "Broadening access to AI for scientists",
+          "url": "https://openai.com/index/expanding-chatgpt-for-academic-researchers",
+          "publisher": "OpenAI",
+          "published_at": "2026-11-16T17:00:00+00:00",
+          "evidence_type": "feed_excerpt",
+          "topic": "RAG"
+        }
+      ],
+      "id": "c54feafed3b29385"
     }
   ]
 }
