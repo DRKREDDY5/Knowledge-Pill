@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "task": "ai_headlines",
-  "checked_at": "2026-11-19T19:30:04.100486+00:00",
+  "checked_at": "2026-11-20T19:07:46.559257+00:00",
   "items": [
     {
       "id": "news-e9950a58c892",
@@ -11,11 +11,18 @@
       "published_at": "2026-11-09T00:00:00+00:00"
     },
     {
-      "id": "news-f0247d2be6d2",
-      "title": "The components of agent memory",
-      "url": "https://www.anthropic.com/research/components-of-agent-memory",
-      "publisher": "www.anthropic.com",
-      "published_at": "2026-11-06T00:00:00+00:00"
+      "id": "news-701a571706ec",
+      "title": "Introducing harness adapters: adapt your favorite model to your harness to improve performance and cost",
+      "url": "https://huggingface.co/blog/harness-adapters-at-scale",
+      "publisher": "Hugging Face",
+      "published_at": "2026-11-20T00:00:00+00:00"
+    },
+    {
+      "id": "news-888f64c03885",
+      "title": "A game you cannot win unless you have a quantum computer",
+      "url": "https://research.google/blog/a-game-you-cannot-win-unless-you-have-a-quantum-computer/",
+      "publisher": "Google Research",
+      "published_at": "2026-11-19T20:03:00+00:00"
     },
     {
       "id": "news-9342dbf934e4",
@@ -25,18 +32,39 @@
       "published_at": "2026-11-19T08:00:00+00:00"
     },
     {
+      "id": "news-a890a236270c",
+      "title": "Deploying Daybreak Red",
+      "url": "https://openai.com/business/learn/deploying-daybreak-red",
+      "publisher": "OpenAI",
+      "published_at": "2026-11-19T00:00:00+00:00"
+    },
+    {
+      "id": "news-17b7a2b39f09",
+      "title": "See PR scans in action",
+      "url": "https://openai.com/business/learn/pr-scans-demo",
+      "publisher": "OpenAI",
+      "published_at": "2026-11-19T00:00:00+00:00"
+    },
+    {
+      "id": "news-82fe289fe466",
+      "title": "Explore the Codex Security Plugin",
+      "url": "https://openai.com/business/learn/codex-security-plugin-demo",
+      "publisher": "OpenAI",
+      "published_at": "2026-11-19T00:00:00+00:00"
+    },
+    {
+      "id": "news-da3064513703",
+      "title": "Get started with Daybreak Blue",
+      "url": "https://openai.com/business/learn/daybreak-blue-onboarding-demo",
+      "publisher": "OpenAI",
+      "published_at": "2026-11-19T00:00:00+00:00"
+    },
+    {
       "id": "news-184d931227f2",
       "title": "The Silent Consensus",
       "url": "https://openai.com/index/the-silent-consensus",
       "publisher": "OpenAI",
       "published_at": "2026-11-18T10:00:00+00:00"
-    },
-    {
-      "id": "news-53d809d7420a",
-      "title": "How Sumitomo Life’s leaders helped teams adopt ChatGPT Enterprise",
-      "url": "https://openai.com/business/customer-stories/sumitomo-life",
-      "publisher": "OpenAI",
-      "published_at": "2026-11-18T08:00:00+00:00"
     },
     {
       "id": "news-58da586369f3",
@@ -46,46 +74,18 @@
       "published_at": "2026-11-18T08:00:00+00:00"
     },
     {
+      "id": "news-53d809d7420a",
+      "title": "How Sumitomo Life’s leaders helped teams adopt ChatGPT Enterprise",
+      "url": "https://openai.com/business/customer-stories/sumitomo-life",
+      "publisher": "OpenAI",
+      "published_at": "2026-11-18T08:00:00+00:00"
+    },
+    {
       "id": "news-67952d9a918d",
       "title": "Inside the Codex sandbox",
       "url": "https://openai.com/index/inside-the-codex-sandbox",
       "publisher": "OpenAI",
       "published_at": "2026-11-18T08:00:00+00:00"
-    },
-    {
-      "id": "news-99be0c0a7e07",
-      "title": "Managing frontier AI risk: From training to deployment",
-      "url": "https://openai.com/index/managing-frontier-ai-risk",
-      "publisher": "OpenAI",
-      "published_at": "2026-11-18T06:00:00+00:00"
-    },
-    {
-      "id": "news-ec56b5eff9af",
-      "title": "180B Parameters, 32GB of RAM: Pushing MoE Inference to the Limit with Transformers",
-      "url": "https://huggingface.co/blog/moe-expert-streaming",
-      "publisher": "Hugging Face",
-      "published_at": "2026-11-18T00:00:00+00:00"
-    },
-    {
-      "id": "news-5b89a2db7f60",
-      "title": "Rumble-2-Flash: an open 0.5B speech model for 40+ languages",
-      "url": "https://huggingface.co/blog/rumble-2-flash",
-      "publisher": "Hugging Face",
-      "published_at": "2026-11-18T00:00:00+00:00"
-    },
-    {
-      "id": "news-a1de396d3910",
-      "title": "Le Groupe Figaro and OpenAI partner to bring Le Figaro journalism to ChatGPT",
-      "url": "https://openai.com/index/le-groupe-figaro-and-openai-announce-partnership",
-      "publisher": "OpenAI",
-      "published_at": "2026-11-18T00:00:00+00:00"
-    },
-    {
-      "id": "news-68ddb817fe40",
-      "title": "Advancing chip design with OpenAI models",
-      "url": "https://openai.com/index/advancing-chip-design-with-our-models",
-      "publisher": "OpenAI",
-      "published_at": "2026-11-18T00:00:00+00:00"
     }
   ]
 }
