@@ -1,268 +1,8 @@
 {
   "schema_version": 1,
   "task": "daily_pills_collection",
-  "updated_at": "2026-11-20T19:09:12.679236+00:00",
+  "updated_at": "2026-11-21T18:02:01.561655+00:00",
   "packets": [
-    {
-      "date": "2026-11-05",
-      "timezone": "America/New_York",
-      "created_at": "2026-11-05T18:46:48.326107+00:00",
-      "topic": "RAG",
-      "language": "en",
-      "concept": "Writing a useful retrieval query",
-      "news_window": "recent",
-      "source_warnings": [],
-      "router_engine": "TF-IDF + logistic regression",
-      "schema_version": 1,
-      "task": "daily_pills",
-      "status": "draft",
-      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
-      "generation_method": "fireworks",
-      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
-      "knowledge": {
-        "title": "Writing a Useful Retrieval Query",
-        "summary": "RAG systems only answer as well as the passages they retrieve, and retrieval quality starts with the query you send. This pill teaches how to write retrieval queries that actually surface the right documents, using the original RAG and REALM papers as grounding.",
-        "story": "Imagine Priya, a librarian at a busy city archive. A visitor walks up and says, \"Tell me about the water problem.\" Priya stares blankly. Which water problem? The 1970s reservoir dispute? The lead-pipe crisis? The flooding last spring? She guesses, pulls three random folders, and the visitor leaves frustrated. The next visitor says, \"I need the 2018 city council minutes about the lead contamination testing in the east district.\" Priya walks straight to the right shelf. Same library, same archives, completely different outcome — the difference was entirely in how the request was phrased. A week later, Priya's manager adds a new rule: visitors can hand in a written slip, and a junior clerk rewrites vague slips into precise ones before they reach Priya. Now even the vague visitors get good folders back.",
-        "connection": "The archive is your document corpus. Priya is the retriever — in the RAG paper, a pre-trained neural retriever that searches a dense vector index of Wikipedia; in REALM, a latent knowledge retriever trained end-to-end through a retrieval step over millions of documents. The visitor's phrasing is your retrieval query. The junior clerk rewriting slips is query transformation: the preprocessing step (rewriting, expanding, or decomposing a user's raw question) that many RAG pipelines add before the retriever ever runs. The dense retrievers in both papers do not match keywords the way a Boolean search does; they match meaning in vector space, so a query that names the right concepts and entities lands near the right passages, while a vague one lands near everything and nothing.",
-        "explanation": "A useful retrieval query has three properties. First, it is self-contained: it resolves pronouns and context from the conversation, because the retriever sees only the query, not the chat history. \"What about the second option?\" retrieves nothing useful. Second, it is specific: it includes the entities, time ranges, and constraints that distinguish the target passages from near-neighbors. Third, it matches the corpus, not the answer: you are searching for documents that would contain the evidence, so query for the topic and terms the source documents would actually use, not for the final phrasing of an answer. The RAG paper shows why this matters downstream: its models generate more specific, factual text when conditioned on retrieved passages, and REALM shows retrieval can beat purely parametric models by a wide margin on open-domain QA — but both depend on the retriever finding the right documents in the first place.",
-        "application": "In a production RAG pipeline, put a query-rewriting step between the user and the retriever. Take the raw user message plus the last few turns, and prompt a small model to produce a standalone, entity-rich search query. For multi-part questions, decompose into one query per sub-question and retrieve per query. Log the rewritten queries alongside retrieved document IDs and user feedback so you can spot queries that consistently retrieve irrelevant chunks — those are your rewriting rules to fix.",
-        "exercise": "Two minutes: take this vague request — \"fix the timeout issue\" — and rewrite it as a retrieval query against your own team's documentation. Make it self-contained (which service? which client?), specific (which timeout, which version?), and corpus-shaped (what would the actual doc call this?). Write one sentence, then list the two or three terms you expect the target document to contain.",
-        "question": "Why should a retrieval query be rewritten to be self-contained before it is sent to the retriever?",
-        "answer": "Because the retriever only sees the query itself, not the surrounding conversation. Pronouns and ellipses like \"what about the second one?\" carry no searchable meaning on their own, so the query must resolve them into explicit entities and constraints for the vector search to land near the right passages.",
-        "limits": "The librarian analogy understates the hard part: dense retrievers match meaning, not intent, so a perfectly clear query can still retrieve plausible-but-wrong passages if the corpus lacks good coverage or the embedding model was trained on a different domain. Also, the papers describe retrievers trained jointly with the generator; in practice, your off-the-shelf retriever was not tuned for your corpus, so query quality is necessary but not sufficient. Treat the analogy as a starting point, and evaluate retrieval with real labeled examples.",
-        "source_ids": [
-          "paper-2005.11401",
-          "paper-2002.08909"
-        ]
-      },
-      "news": {
-        "title": "Recent AI Developments: Provable Inference, Engineering Agents, and a Sleep Framework",
-        "overview": "Three recent items from Anthropic, OpenAI, and Google Research, each summarized with what the work actually does, why it might matter to developers, and what to check before trying it.",
-        "items": [
-          {
-            "headline": "Anthropic releases FlashProve, an open-source prototype for cryptographically provable inference",
-            "what_happened": "Anthropic published research (dated November 2, 2026) on zkSNARK-based proofs of inference, released as a system called FlashProve under Apache 2.0. The idea: a model provider can prove that a given response was actually produced by a specific model, without revealing the model's weights. The publisher reports that for a 400B-parameter mixture-of-experts model (Llama 4 Maverick, 4-bit quantized), a single H100 GPU generates proofs at around 110 tokens/second, with roughly 19 MB proofs per 1,024-token request — but that this is about 70–95x the GPU time of running the model itself on vLLM. The release includes a prover, verifiers (one in C++, one formally verified in Lean), and Lean proofs of top-level security statements. The authors explicitly frame this as intermediate research progress, not a finished agenda.",
-            "why_it_matters": "Today, a user or evaluator cannot verify from output alone that responses came from the claimed model rather than a substituted or tampered one. Concrete use cases include third-party routing clients verifying they got the model they paid for, and auditors confirming which weights served a request. Analogy: it is like a tamper-evident seal plus a receipt for every AI response — you cannot forge it, and it does not reveal the recipe inside. Note this is my interpretation of the publisher's described applications; the benchmarks and speed figures are the publisher's claims.",
-            "takeaway": "The overhead is substantial — proving costs roughly two orders of magnitude more compute than plain inference per the publisher's own numbers — and the system hides weights but not model architecture. Before trying it, inspect the released technical report and Lean artifacts, confirm the benchmark conditions (quantization, prompt length) match your use case, and read the authors' own caveat that this is a prototype for others to improve on.",
-            "source_ids": [
-              "news-43862ef771df"
-            ]
-          },
-          {
-            "headline": "OpenAI describes ChatGPT and Codex in physical-world engineering workflows",
-            "what_happened": "OpenAI published a post (dated November 3, 2026) titled \"Accelerating engineering for the physical world,\" which the available feed excerpt says covers how ChatGPT and Codex help engineers with CAD, PCB design, simulation, and related workflows. The source available here is only a feed excerpt, so the specific capabilities, examples, and any benchmark claims in the full article could not be verified from this source pack.",
-            "why_it_matters": "If the described workflows hold up, the everyday use case is developers and engineers using coding agents to script CAD tools, generate simulation configurations, or automate repetitive design steps — similar to how coding agents already automate build and test pipelines. Analogy: an agent that can drive your engineering software the way a scripting-savvy intern drives Excel. That analogy is mine, not the publisher's, and the excerpt does not confirm the depth of tool integration.",
-            "takeaway": "Because only a feed excerpt was available, treat this as a pointer to the full article rather than a verified capability report. Before adopting anything, read the full post and check which CAD or simulation tools are actually supported, whether the workflows are demos or production features, and what the publisher claims versus shows.",
-            "source_ids": [
-              "news-25493a43cba5"
-            ]
-          },
-          {
-            "headline": "Google Research proposes a \"sleep framework\" for continual learning in LLMs",
-            "what_happened": "A Google Research blog post (dated October 27, 2026) introduces a continual-learning paradigm where a model alternates between an active phase (processing inputs into short-term memory) and an offline sleep phase that consolidates that information into expanded long-term parameters. Technically, it uses newly unlocked low-rank Mixture-of-Experts blocks, knowledge distillation with reinforcement learning to move short-term context into stable parameters, and a \"dreaming\" stage that generates and filters synthetic training samples. The publisher reports results including long-context retention up to 10M tokens on BABILong, reduced catastrophic forgetting in continual translation, and gains on math benchmarks versus baselines like SFT and GRPO.",
-            "why_it_matters": "Deployed LLMs are largely static and suffer catastrophic forgetting when naively fine-tuned. A developer-facing use case would be models that absorb new domain facts after deployment without a full retraining cycle. The sleep analogy is the authors' own framing, borrowed from neuroscience; the mechanism is ordinary (if novel) training machinery — MoE expansion, distillation, and RL — running on a fixed architecture, as the post itself clarifies.",
-            "takeaway": "All reported numbers are the publisher's own evaluations, and the framework requires the ability to modify model weights and architecture internals — not something available with hosted-API models. Before drawing conclusions, read the full technical details on how consolidation avoids overwriting old knowledge, and check whether the benchmarks (e.g., BABILong, SQuAD) reflect your domain.",
-            "source_ids": [
-              "news-b49ec3bd8394"
-            ]
-          }
-        ],
-        "exercise": "Two minutes: pick one of the three items and find its primary source. For FlashProve, locate the stated proof-generation overhead and the authors' own scope caveats. For the OpenAI post, check whether the full article (not the excerpt) names specific supported tools. For the sleep framework, find which benchmarks are publisher-run versus independent. Write down one claim and whether it is a publisher claim or independently verified.",
-        "question": "The FlashProve benchmarks report proof generation at ~110 tokens/second on one H100. Why is that figure alone not enough to judge practicality?",
-        "answer": "Because the publisher also states this is roughly 70–95x the GPU time of running the model directly on vLLM, and the figures depend on specific conditions (4-bit quantization, 1,024-token requests). Practicality depends on the overhead relative to plain inference, your latency and cost budget, and the benchmark conditions matching your workload — all of which require reading the technical report, not just the headline number."
-      },
-      "usage": {
-        "prompt_tokens": 5619,
-        "completion_tokens": 2437,
-        "total_tokens": 8056,
-        "prompt_tokens_details": {
-          "cached_tokens": 0
-        },
-        "completion_tokens_details": {
-          "accepted_prediction_tokens": null,
-          "reasoning_tokens": 55,
-          "rejected_prediction_tokens": null
-        }
-      },
-      "sources": [
-        {
-          "id": "paper-2005.11401",
-          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
-          "url": "https://arxiv.org/abs/2005.11401",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "paper-2002.08909",
-          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
-          "url": "https://arxiv.org/abs/2002.08909",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "news-43862ef771df",
-          "title": "Progress on provable inference for large language models",
-          "url": "https://www.anthropic.com/research/provable-inference",
-          "publisher": "www.anthropic.com",
-          "published_at": "2026-11-02T00:00:00+00:00",
-          "evidence_type": "article_excerpt",
-          "discussion_points": 235,
-          "discovery_channel": "Hacker News link to primary source",
-          "topic": "Agents"
-        },
-        {
-          "id": "news-25493a43cba5",
-          "title": "Accelerating engineering for the physical world",
-          "url": "https://openai.com/index/accelerating-engineering-for-the-physical-world",
-          "publisher": "OpenAI",
-          "published_at": "2026-11-03T12:00:00+00:00",
-          "evidence_type": "feed_excerpt",
-          "topic": "RAG"
-        },
-        {
-          "id": "news-b49ec3bd8394",
-          "title": "The sleep framework: A new way for LLMs to retain knowledge in continual learning",
-          "url": "https://research.google/blog/the-sleep-framework-a-new-way-for-llms-to-retain-knowledge-in-continual-learning/",
-          "publisher": "Google Research",
-          "published_at": "2026-10-27T17:35:00+00:00",
-          "evidence_type": "article_excerpt",
-          "topic": "RAG"
-        }
-      ],
-      "id": "baaef6db1baf4fd5"
-    },
-    {
-      "date": "2026-11-05",
-      "timezone": "America/New_York",
-      "created_at": "2026-11-05T18:46:48.326107+00:00",
-      "topic": "RAG",
-      "language": "te",
-      "concept": "Writing a useful retrieval query",
-      "news_window": "recent",
-      "source_warnings": [],
-      "router_engine": "TF-IDF + logistic regression",
-      "schema_version": 1,
-      "task": "daily_pills",
-      "status": "draft",
-      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
-      "generation_method": "fireworks",
-      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
-      "knowledge": {
-        "title": "ఉపయోగకరమైన retrieval query రాయడం: RAG లో మొదటి అడుగు",
-        "summary": "RAG (Retrieval-Augmented Generation) systems లో మోడల్ ఎలా సమాధానమిస్తుందో చాలావరకు మీరు ఏ query పంపారో దానిపై ఆధారపడి ఉంటుంది. ఈ pill లో ఒక కథ ద్వారా మంచి retrieval query ఎలా రాయాలో నేర్చుకుంటాం, తర్వాత దాన్ని RAG భాగాలకు అనుసంధానం చేస్తాం.",
-        "story": "ఊహించండి, లైబ్రరీలో ఒక అసిస్టెంట్ ఉన్నారు. మీరు వెళ్లి 'నాక్ కొంచెం సమాచారం కావాలి' అని అంటే, ఆయన ఏ పుస్తకం ఇవ్వాలో తెలియదు — ఏదో ఒక పుస్తకం తీసుకువస్తారు, బహుశా తప్పుగా ఉంటుంది. కానీ మీరు '2019-2022 మధ్య భారతీయ వరి ఎగుమతుల గురించి గణాంకాలు ఉన్న నివేదిక కావాలి' అని అంటే, ఆయన ఖచ్చితంగా సరైన పుస్తకం తీసుకువస్తారు. ఇప్పుడు మరో సన్నివేశం: మీరు ఒకేసారి ఐదు వేర్వేరు ప్రశ్నలు ఒకే వాక్యంలో అడిగితే, అసిస్టెంట్ ఒకే పుస్తకంతో గందరగోళంలో పడతారు. చివరగా, మీరు 'వరి' అని మాత్రమే అని అడిగితే — వరి ధరలు? వంట విధానం? చరిత్ర? — అసిస్టెంట్ తన ఊహతో ఏదో తీసుకువస్తారు. మూడు పాఠాలు ఇక్కడ దాగి ఉన్నాయి: స్పష్టత, ఒక్క అంశానికి పరిమితం, సందర్భం (context).",
-        "connection": "ఈ లైబ్రరీ అసిస్టెంట్ అనేది RAG system లోని retriever. RAG పేపర్ (Lewis et al.) ప్రకారం, సిస్టమ్ రెండు భాగాలను కలుపుతుంది: parametric memory (pre-trained seq2seq మోడల్) మరియు non-parametric memory (Wikipedia లాంటి corpus యొక్క dense vector index), దీన్ని pre-trained neural retriever తో access చేస్తారు. మీ query అనేది ఆ neural retriever కు ఇచ్చే ఇన్పుట్ — retriever దాన్ని dense vector గా మార్చి, index లో దగ్గరి passages వెతుకుతుంది. REALM పేపర్ ఇదే ఆలోచనను pre-training అంచుకు తీసుకెళ్తుంది: మోడల్ ప్రతి ప్రశ్నకు latent knowledge retriever తో కోట్ల documents నుంచి documents ను retrieve చేసి, వాటిపై attend చేస్తుంది. రెండు సందర్భాల్లోనూ — query నాణ్యత నేరుగా retrieval నాణ్యతను నిర్ణయిస్తుంది. లైబ్రరీ కథలోని మూడు పాఠాలు ఇలా మ్యాప్ అవుతాయి: (1) స్పష్టమైన query → retriever యొక్క query embedding కావలసిన documents కు దగ్గరగా ఉంటుంది; (2) ఒక్క అంశం → ఒక query ఒక information need ను మాత్రమే కలిగి ఉంటుంది, లేదంటే ఒక embedding లో బహుళ అర్థాలు కలిసిపోయి retrieval దెబ్బతింటుంది; (3) సందర్భం → కీలక పదాలు, కాలం, డొమైన్ వివరాలు query లో ఉంటే retriever కు ఫిల్టరింగ్ సులభమవుతుంది. అసలు పేపర్లు చెప్పే మరో ముఖ్యమైన పాయింట్: RAG మోడల్స్ parametric-only మోడల్స్ కంటే ఎక్కువ specific, factual అవుతాయి — కానీ అది సరైన passages retrieve అయితేనే. తప్పు query అంటే తప్పు passages, తప్పు passages అంటే తప్పు సమాధానం.",
-        "explanation": "ప్రాక్టికల్ గా, మంచి retrieval query రాయడం అంటే: యూజర్ అడిగిన ప్రశ్నను retriever అర్థం చేసుకోగల స్వతంత్ర, స్పష్టమైన వాక్యంగా మార్చడం. Multi-turn chat లో ఇది ముఖ్యం — 'అది ఎంత?' అనే follow-up ను 'టెస్లా మోడల్ 3 యొక్క 2024 బ్యాటరీ రేంజ్ ఎంత?' అని rewrite చేయాలి. ఇది query rewriting లేదా query reformulation అని పిలువబడుతుంది. అలాగే ఒకే యూజర్ ప్రశ్నలో బహుళ అంశాలు ఉంటే, వాటిని వేర్వేరు sub-queries గా విడగొట్టి, ప్రతి దానికి విడిగా retrieve చేసి, results ను కలపడం మెరుగైన పద్ధతి.",
-        "application": "మీరు కంపెనీ internal docs పై RAG chatbot నిర్మిస్తున్నారని ఊహించండి. యూజర్ 'ఆ బగ్ గురించి ఏం చేయాలి?' అని అడిగితే, మీ pipeline లో ఒక చిన్న LLM step ఆ ప్రశ్నను chat history తో కలిపి 'payment gateway timeout bug (issue #452) కు recommended fix steps' అనే standalone query గా rewrite చేస్తుంది. ఈ ఒక్క మార్పుతో retriever సరైన runbook page ను పట్టుకునే అవకాశం బాగా పెరుగుతుంది. ఇది చవకైన, ఎక్కువ ప్రభావం ఉన్న improvement — మోడల్ను మార్చకుండా, index ను rebuild చేయకుండా చేసేది.",
-        "exercise": "రెండు నిమిషాల వ్యాయామం: ఈ మూడు యూజర్ ప్రశ్నలను retrieval-friendly standalone queries గా rewrite చేయండి — (1) 'అది పని చేయదా?' (chat లో ముందు Slack integration గురించి మాట్లాడారు), (2) 'pricing మరియు security compliance మరియు SLA details కావాలి' (మూడు అంశాలు ఒకే ప్రశ్నలో), (3) 'docs' (చాలా వాగ్గా). ప్రతి దానికి స్పష్టమైన, సందర్భం పూర్తి చేసే, ఒక్కోసారి విడిపరచిన query లు రాయండి.",
-        "question": "Multi-turn conversation లో 'అది ఎంత ఖరీదు?' లాంటి follow-up ను retriever కు పంపే ముందు ఎందుకు rewrite చేయాలి, మరియు ఒక మంచి rewrite లో ఏ మూడు లక్షణాలు ఉండాలి?",
-        "answer": "Retriever కు కేవలం ప్రశ్న టెక్స్ట్ మాత్రమే వస్తుంది — 'అది' అనే సర్వనామానికి సంబంధించిన సందర్భం retriever కు తెలియదు, కాబట్టి embedding తప్పు దిశలో వెళ్తుంది. మంచి rewrite లో మూడు లక్షణాలు: (1) స్పష్టత — సర్వనామాలను అసలు పేర్లతో భర్తీ చేయడం, (2) ఒక్క అంశానికి పరిమితం — బహుళ అంశాలను sub-queries గా విడగొట్టడం, (3) సందర్భం — కాలం, డొమైన్, కీలక పదాలను చేర్చడం.",
-        "limits": "ఈ లైబ్రరీ అసిస్టెంట్ analogy కు పరిమితులున్నాయి: neural retriever అనేది కీవర్డ్ మ్యాచింగ్ చేసే మనిషి కాదు — అది semantic similarity పై పనిచేస్తుంది, కాబట్టి కొన్నిసార్లు వాగ్గా ఉన్న query కూడా ఆశ్చర్యకరంగా పనిచేస్తుంది, మరియు అతిగా వివరణాత్మక query కూడా noise ను పెంచుతుంది. అలాగే అసిస్టెంట్ మాదిరిగా retriever మీతో సర్దుబాటు చేసుకోలేడు — ఒకేసారిలో సరైన query ఇవ్వాలి. చివరగా, మంచి query అనేది పూర్తి పరిష్కారం కాదు: index నాణ్యత, chunking, reranking లాంటి అంశాలు కూడా ఫలితాన్ని నిర్ణయిస్తాయి.",
-        "source_ids": [
-          "paper-2005.11401",
-          "paper-2002.08909"
-        ]
-      },
-      "news": {
-        "title": "ఈ వారం AI వార్తలు: provable inference, physical-world engineering, sleep framework",
-        "overview": "ఈ వారం మూడు అంశాలు: Anthropic యొక్క zkSNARK ఆధారిత provable inference prototype, OpenAI యొక్క physical-world engineering workflows పై ఒక feed post, మరియు Google Research యొక్క continual learning కోసం 'sleep framework'. ప్రతి దానికి publisher చెప్పినది మరియు మన interpretation విడివిడిగా ఉంటాయి.",
-        "items": [
-          {
-            "headline": "Anthropic, FlashProve అనే open-source provable inference prototype విడుదల చేసింది",
-            "what_happened": "Anthropic బ్లాగ్ పోస్ట్ (2026 నవంబర్ 2) ప్రకారం, FlashProve అనే zkSNARK ఆధారిత సిస్టమ్ విడుదల చేశారు. ఇది మోడల్ provider తన సమాధానాలు నిర్దిష్ట మోడల్ weights తో నిజంగా generate చేశామని cryptographic proof ద్వారా నిరూపించడానికి వీలు కల్పిస్తుంది — weights ను గోప్యంగా ఉంచుతూనే. 400B-parameter mixture-of-experts మోడల్ (Llama 4 Maverick, 4-bit quantization) పై ఒక H100 GPU సెకనుకు సుమారు 110 tokens వేగంతో proofs generate చేస్తుందని, 1,024-token request కు proof size సుమారు 19 MB అని, ఇది vLLM లో inference కు కావాల్సిన GPU సమయంలో 70-95 రెట్లు అని వారు చెబుతున్నారు. వారి చెప్పేది ఏమిటంటే, ఇది పూర్తయిన research agenda కాదు, intermediate progress మాత్రమే.",
-            "why_it_matters": "ఈరోజు యూజర్ తన response నిజంగా అడిగిన మోడల్ నుంచి వచ్చిందో లేదో తనిఖీ చేసే మార్గం లేదు — routing service రహస్యంగా చవకైన మోడల్ను మార్చి పెట్టవచ్చు, attacker token stream ను tamper చేయవచ్చు. ఒక analogy: ఇది మీరు ఆన్‌లైన్‌లో వస్తువు కొనేటప్పుడు సరైన seller నుంచే వచ్చిందని ధృవీకరించే digital signature లాంటిది, కానీ మోడల్ weights ను చూపించకుండానే. Developers కు ఇది third-party routing వాడేటప్పుడు integrity assurance గా, evaluators కు తాము evaluate చేసే మోడల్ అదేనని నిర్ధారించుకోవడానికి పనికొస్తుంది.",
-            "takeaway": "పరిమితి: proof generation కు inference కంటే 70-95 రెట్లు GPU సమయం పడుతుందని publisher చెబుతున్నారు — ఇది ఇంకా prototype స్థాయిలోనే ఉంది, మరియు ఇది inference ను verify చేస్తుంది తప్ప hardware ఇతర పనులకు వాడకపోవడం లేదని నిరూపించదు. ప్రయత్నించే ముందు: Apache 2.0 లైసెన్స్‌తో విడుదలైన code, Lean proofs, technical report ను inspect చేయండి, మరియు మీ use case లో overhead భరించగలరా అని చూడండి.",
-            "source_ids": [
-              "news-43862ef771df"
-            ]
-          },
-          {
-            "headline": "OpenAI, physical-world engineering లో ChatGPT మరియు Codex వాడకంపై పోస్ట్ ప్రచురించింది",
-            "what_happened": "OpenAI బ్లాగ్ (2026 నవంబర్ 3) ప్రకారం, ChatGPT మరియు Codex లు CAD, PCB design, simulation లాంటి engineering workflows ను వేగవంతం చేయడం గురించి ఒక post విడుదల చేశారు. గమనిక: మా దగ్గర ఉన్నది feed excerpt మాత్రమే — పూర్తి ఆర్టికల్ చదవలేదు, కాబట్టి వివరాలు పరిమితం.",
-            "why_it_matters": "Hardware/physical product నిర్మించే teams కు, AI assistance ను design tools లోకి తీసుకురావడం అనేది documentation, simulation scripts, design iteration లాంటి పనులలో సమయం ఆదా చేసే అవకాశం. ఇది RAG కు సంబంధం ఉన్నట్టు topic router గుర్తించినా, excerpt లో retrieval ప్రస్తావన లేదు.",
-            "takeaway": "పరిమితి: ఇది publisher యొక్క ప్రకటన — స్వతంత్ర benchmark కాదు. ప్రయత్నించే ముందు పూర్తి post ను చదవండి: ఏ specific workflows, ఏ integrations, ఏ పరిమితులు పేర్కొన్నారో, మరియు ఇది మీ CAD/EDA toolchain కు వర్తిస్తుందా అని తనిఖీ చేయండి.",
-            "source_ids": [
-              "news-25493a43cba5"
-            ]
-          },
-          {
-            "headline": "Google Research, continual learning కోసం 'sleep framework' ప్రతిపాదించింది",
-            "what_happened": "Google Research బ్లాగ్ (2026 అక్టోబర్ 27) ప్రకారం, వారు LLM లకు wake/sleep phases ఉన్న continual learning paradigm ప్రతిపాదించారు. Wake phase లో మోడల్ inputs ను short-term memory లో ఉంచుతుంది; sleep phase లో ప్రక్రియ ఆగి, కొత్త MoE expert blocks ను unlock చేసి, knowledge distillation మరియు RL తో ఆ short-term సమాచారాన్ని long-term parameters లోకి consolidate చేస్తుంది. వారి నివేదికల ప్రకారం ఇది catastrophic forgetting ను తగ్గించి, 10M tokens వరకు long-context knowledge retention మరియు reasoning improvements చూపింది; నిర్దిష్ట benchmarks (BABILong, SQuAD, AIME 24/25) పై ఫలితాలు ఇచ్చారు.",
-            "why_it_matters": "Deployed LLM ల static knowledge cutoff తో ఆగిపోతాయి — ఇది ప్రతి developer ఎదుర్కొనే సమస్య. ఒక analogy: ఇది పగలు నేర్చుకున్న విషయాలను రాత్రి నిద్రలో దీర్ఘకాలిక జ్ఞాపకంగా మార్చుకునే మెదడు లాంటిది. RAG వాడే teams కు ఇది ప్రస్తుతం నేరుగా వాడే tool కాదు, కానీ retrieval అనేది non-parametric memory అయితే, ఇది parametric memory ను update చేసే వేరే దారి అని చూపుతుంది — రెండు విధానాల మధ్య trade-offs అర్థం చేసుకోవడానికి ఉపయోగకరం.",
-            "takeaway": "పరిమితి: ఇవి publisher యొక్క research ఫలితాలు — ఇంకా production లో అందుబాటులో లేని పద్ధతి, మరియు ఫలితాలు వారి ఎంచుకున్న benchmarks కు పరిమితం. ప్రయత్నించే ముందు: బ్లాగ్‌లోని పద్ధతి వివరాలు, ఏవి baselines గా వాడారో, మరియు ఏ peer-reviewed లేదా open artifact అందుబాటులో ఉందో తనిఖీ చేయండి.",
-            "source_ids": [
-              "news-b49ec3bd8394"
-            ]
-          }
-        ],
-        "exercise": "రెండు నిమిషాల source-check వ్యాయామం: మూడు వార్తా అంశాలలో ప్రతి దానికి — (1) ఇది publisher చెప్పిన claim కా, లేదా మన interpretation కా అని ఒక వాక్యంలో గుర్తించండి; (2) evidence_type చూడండి — ఏ అంశం పూర్తి ఆర్టికల్ ఆధారంగా రాయబడింది, ఏది feed excerpt మాత్రమే; (3) Anthropic అంశానికి, వారు చెప్పిన overhead సంఖ్య (70-95x) మరియు 'intermediate progress' అనే హెచ్చరికను కనుగొని, వీటిని మీ స్వంత పదాల్లో ఒక్కొక్కటి రాయండి.",
-        "question": "FlashProve లో zkSNARK proof యూజర్‌కు ఏ హామీ ఇస్తుంది, ఏ హామీ ఇవ్వదు?",
-        "answer": "ఇచ్చే హామీ: response నిర్దిష్టమైన, committed మోడల్ weights తో generate చేయబడిందని cryptographic గా ధృవీకరించడం — అదే సమయంలో weights గురించి సమాచారం బయటపెట్టకుండా ఉండటం. ఇవ్వని హామీలు: model architecture ను hide చేవడం లక్ష్యం కాదు, మరియు hardware ఇతర పనులు (ఉదా: పక్కన training) చేయకపోవడం నిరూపించదు — inference serve చేయబడింది అనేది మాత్రమే ధృవీకరించబడుతుంది."
-      },
-      "usage": {
-        "prompt_tokens": 5619,
-        "completion_tokens": 11025,
-        "total_tokens": 16644,
-        "prompt_tokens_details": {
-          "cached_tokens": 0
-        },
-        "completion_tokens_details": {
-          "accepted_prediction_tokens": null,
-          "reasoning_tokens": 27,
-          "rejected_prediction_tokens": null
-        }
-      },
-      "sources": [
-        {
-          "id": "paper-2005.11401",
-          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
-          "url": "https://arxiv.org/abs/2005.11401",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "paper-2002.08909",
-          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
-          "url": "https://arxiv.org/abs/2002.08909",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "news-43862ef771df",
-          "title": "Progress on provable inference for large language models",
-          "url": "https://www.anthropic.com/research/provable-inference",
-          "publisher": "www.anthropic.com",
-          "published_at": "2026-11-02T00:00:00+00:00",
-          "evidence_type": "article_excerpt",
-          "discussion_points": 235,
-          "discovery_channel": "Hacker News link to primary source",
-          "topic": "Agents"
-        },
-        {
-          "id": "news-25493a43cba5",
-          "title": "Accelerating engineering for the physical world",
-          "url": "https://openai.com/index/accelerating-engineering-for-the-physical-world",
-          "publisher": "OpenAI",
-          "published_at": "2026-11-03T12:00:00+00:00",
-          "evidence_type": "feed_excerpt",
-          "topic": "RAG"
-        },
-        {
-          "id": "news-b49ec3bd8394",
-          "title": "The sleep framework: A new way for LLMs to retain knowledge in continual learning",
-          "url": "https://research.google/blog/the-sleep-framework-a-new-way-for-llms-to-retain-knowledge-in-continual-learning/",
-          "publisher": "Google Research",
-          "published_at": "2026-10-27T17:35:00+00:00",
-          "evidence_type": "article_excerpt",
-          "topic": "RAG"
-        }
-      ],
-      "id": "668bc80da3c24758"
-    },
     {
       "date": "2026-11-06",
       "timezone": "America/New_York",
@@ -3751,6 +3491,276 @@
         }
       ],
       "id": "1f14fa44d153f177"
+    },
+    {
+      "date": "2026-11-21",
+      "timezone": "America/New_York",
+      "created_at": "2026-11-21T18:01:02.168664+00:00",
+      "topic": "RAG",
+      "language": "en",
+      "concept": "Writing a useful retrieval query",
+      "news_window": "recent",
+      "source_warnings": [
+        {
+          "publisher": "Google DeepMind",
+          "reason": "ParseError"
+        }
+      ],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "Writing a Useful Retrieval Query",
+        "summary": "RAG systems only answer as well as the documents they retrieve, and retrieval quality starts with the query you send. This pill teaches how to write retrieval queries that actually surface the right passages, using an everyday story, a mapping to the underlying mechanics, and a hands-on exercise.",
+        "story": "Maya runs a small hardware store with a basement archive of thousands of index cards, one per product manual, repair note, and supplier letter. Her new assistant, Dev, is eager but literal-minded. One morning Maya shouts from the counter, 'Dev, the thing!' Dev returns with an armful of random cards: a receipt, a brochure about ladders, a 2011 newsletter. Maya realizes the problem is not the archive — it is her request. The next day she tries again: 'Dev, find the cards about the pressure washer's winterization steps, especially anything mentioning antifreeze or pump oil.' Dev comes back with three cards, two of which are exactly right. When he brings back a card about garden hoses, Maya adds, 'skip anything about garden hoses.' By the end of the week, Maya has a habit: she names the topic, adds the specific terms she expects to appear in the right card, and states what to exclude. Dev, who never guesses and never reads her mind, starts fetching the right cards almost every time.",
+        "connection": "Maya is the developer writing the retrieval query; Dev is the retriever; the archive is your vector index or document store. A vague query retrieves vague passages, and the generator downstream can only be as good as what it is handed.",
+        "explanation": "In retrieval-augmented generation, a model combines its parametric memory (what it learned during training) with a non-parametric memory — an explicit, searchable index of documents accessed through a retriever. The RAG framework of Lewis et al. pairs a pre-trained seq2seq generator with a dense vector index of Wikipedia, and REALM (Guu et al.) similarly trains a latent knowledge retriever that selects documents the model attends over. In both cases, the retriever decides which passages enter the model's context. Dense retrievers embed your query and your documents into the same vector space and return nearest neighbors. That has a practical consequence: your query embedding must land near the embedding of the passages you want. Queries that are too short ('the thing'), too broad ('database performance'), or phrased in vocabulary absent from the documents retrieve weak neighbors. Useful queries tend to share traits: they name the concrete entities and terms the target document would actually contain, they include enough context to disambiguate ('Postgres connection pooling under load', not 'pooling'), and sometimes they state exclusions or constraints. A common pattern is query expansion: before searching, ask the generator to rewrite a user's messy question into a search-style query rich with likely document keywords, then retrieve with that rewritten query. Another is multi-query retrieval: generate two or three paraphrases and merge results. Because the retriever is a hard bottleneck — passages it misses are passages the generator never sees — spending effort on the query is often cheaper than swapping in a bigger model.",
+        "application": "In a support chatbot over your product docs, wrap the user's question in a rewriting step: 'Rewrite this as a search query using terminology likely to appear in technical documentation: {question}'. Log the rewritten queries and the retrieved chunk scores; when answers are wrong, check first whether the right chunk was retrieved at all. If it was not, fix the query or the chunking before blaming the model.",
+        "exercise": "Take one real user question your system might receive. Write three versions of the retrieval query for it: (1) the raw question, (2) a keyword-rich version using terms your documents actually use, and (3) a version with an explicit exclusion or constraint. If possible, run all three against your index and compare the top five results; otherwise, predict which version would match your target document's wording and why.",
+        "question": "Why does a vague retrieval query hurt a RAG system even when the generator model is very capable?",
+        "answer": "Because the retriever is a bottleneck: the generator only conditions on the passages retrieved. A vague query embeds far from the target documents, so the right passage never enters the context, and no amount of generator capability can recover information it was never shown.",
+        "limits": "The librarian analogy breaks down in one important way: Dev understands meaning, while dense retrievers match statistical similarity in an embedding space, so a 'good' query is one that is numerically close to your documents, not necessarily one a human would find clearest. Also, real systems often use hybrid retrieval (keyword plus vector), where the ideal query differs per method. The rewriting patterns here are practical heuristics, not guarantees — always validate against your own corpus.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "Recent AI infrastructure and research-access developments",
+        "overview": "Three recent items: Google expands its eighth-generation TPU lineup, OpenAI broadens free ChatGPT access for academic researchers, and Google Research details how Duplex evolved into Gemini-based phone calling.",
+        "items": [
+          {
+            "headline": "Google adds TPU 8tx and 8i Max to its eighth-generation lineup",
+            "what_happened": "Google announced two new TPU systems on November 9, 2026. TPU 8tx targets secure, confidential inference — keeping data and model weights protected even while in active use — and also supports small-scale training. TPU 8i Max pairs two TPU 8i chips on one package, doubling compute, SRAM, and HBM bandwidth for workloads with very large context windows, and fits twice the silicon per rack. Google also highlights software accessibility moves such as open-sourced TorchTPU so PyTorch code runs natively, plus TPU backends for vLLM and SGLang.",
+            "why_it_matters": "For developers, the practical relevance is that RAG-style serving — long contexts, low-latency retrieval-augmented generation — is memory-bandwidth hungry, which is exactly the bottleneck 8i Max claims to address. Analogy: if your RAG pipeline is a librarian fetching books, this is hardware aimed at widening the aisle between the shelves and the desk, not at making the librarian smarter. The PyTorch and vLLM support matters more than the chips for most teams, since it lowers migration cost.",
+            "takeaway": "These are vendor claims from a company selling the hardware; the benchmark numbers cited (InferenceX, AgentX) are Google's own reported results. Before trying either system, inspect actual pricing, regional availability, and independent benchmarks for your specific workload shape — and note that confidential-compliance claims should be verified against your regulator's requirements, not marketing copy.",
+            "source_ids": [
+              "news-e9950a58c892"
+            ]
+          },
+          {
+            "headline": "OpenAI expands free ChatGPT access for academic researchers",
+            "what_happened": "On November 16, 2026, OpenAI announced it is expanding its ChatGPT for Academic Researchers program to reach up to 200,000 researchers, with 50,000 new grants opening November 23 on a first-come, first-served basis (moving away from a lottery). Each grant covers the recipient plus up to two collaborators with ChatGPT Plus. OpenAI reports 20,000 researchers in 33 countries joined the July pilot, and says that by default it does not use program data for model training.",
+            "why_it_matters": "For academic developers and scientists, this is a low-cost way to experiment with frontier models for literature synthesis, data-cleaning scripts, or prototyping retrieval pipelines over their own papers. The pilot's self-reported estimate that work would have taken 'nearly twice as long' without AI is a participant survey, not a controlled measurement — treat it as anecdote.",
+            "takeaway": "The main limitation: eligibility, usage limits, and the data-handling defaults come from OpenAI's own announcement, and terms can change between rounds. Before applying, inspect the current program terms, what data protections apply to your field (especially biomedical work), and whether your institution's policies permit cloud AI tools for your data.",
+            "source_ids": [
+              "news-2d7a5d6b20ff"
+            ]
+          },
+          {
+            "headline": "Google Research traces Duplex's evolution into Gemini-based phone calling",
+            "what_happened": "A November 20, 2026 Google Research post describes how Duplex, launched in 2018 as a narrow, task-specific calling system with custom recurrent networks, evolved through a hybrid era (LaMDA plus deterministic state tracking in 2022) to a unified Gemini-based stack in Tasks in Gemini. Tasks are now defined by free-text prompts rather than fixed verticals, and the post describes design choices including AI disclosure on every call, merchant opt-out, and sub-second latency tuning for noisy phone audio.",
+            "why_it_matters": "For developers building voice agents, the architectural history is the useful part: the progression from rigid task-specific models to prompted, general agents mirrors decisions you face when scoping your own conversational systems — and the post is candid that web pre-training alone does not solve pragmatic grounding or phone-line latency. Analogy: it is a case study in when to constrain an agent narrowly versus when generalization pays off.",
+            "takeaway": "This is a company describing its own product's history and capabilities; the reliability of live calls in noisy, real-world conditions is asserted, not independently verified. Before building on similar patterns, inspect how the system handles failures and refusals — the post mentions disclosure and opt-out but gives little detail on error rates or contested bookings.",
+            "source_ids": [
+              "news-536d4386c711"
+            ]
+          }
+        ],
+        "exercise": "For each of the three items, spend two minutes locating the primary source and asking: what does the publisher claim, what evidence backs the claim (benchmark, survey, or product description), and who paid for the announcement? Note one claim you would want independently verified before making an engineering decision based on it.",
+        "question": "The OpenAI researcher-program item cites a survey-based time-saving estimate. Why should that figure be treated differently from, say, a controlled benchmark result?",
+        "answer": "It is a self-reported estimate from surveyed pilot participants about hypothetical work without AI, not a controlled comparison. It reflects perception and selection effects, so it is useful context but not reliable evidence of actual productivity gains — unlike a benchmark, it was not designed to isolate the tool's effect."
+      },
+      "usage": {
+        "prompt_tokens": 6914,
+        "completion_tokens": 2269,
+        "total_tokens": 9183,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": null,
+          "reasoning_tokens": 29,
+          "rejected_prediction_tokens": null
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-e9950a58c892",
+          "title": "Our newest TPUs: 8tx and 8i Max, built for the agentic era",
+          "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/tpu-8i-max-and-8tx/",
+          "publisher": "blog.google",
+          "published_at": "2026-11-09T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 29,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "Other"
+        },
+        {
+          "id": "news-2d7a5d6b20ff",
+          "title": "Broadening access to AI for scientists",
+          "url": "https://openai.com/index/expanding-chatgpt-for-academic-researchers",
+          "publisher": "OpenAI",
+          "published_at": "2026-11-16T17:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-536d4386c711",
+          "title": "How Google Duplex evolved to also call businesses for you in Gemini",
+          "url": "https://research.google/blog/how-google-duplex-evolved-to-also-call-businesses-for-you-in-gemini/",
+          "publisher": "Google Research",
+          "published_at": "2026-11-20T23:30:30+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "Other"
+        }
+      ],
+      "id": "81159ed9b50147b9"
+    },
+    {
+      "date": "2026-11-21",
+      "timezone": "America/New_York",
+      "created_at": "2026-11-21T18:01:02.168664+00:00",
+      "topic": "RAG",
+      "language": "te",
+      "concept": "Writing a useful retrieval query",
+      "news_window": "recent",
+      "source_warnings": [
+        {
+          "publisher": "Google DeepMind",
+          "reason": "ParseError"
+        }
+      ],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "RAG లో ఉపయోగకరమైన Retrieval Query రాయడం",
+        "summary": "RAG (Retrieval-Augmented Generation) systems లో, మీరు ఇచ్చే query మంచిదైతేనే మంచి documents retrieve అవుతాయి. ఈ pill లో, ఒక రోజువారీ కథ ద్వారా query design ఎలా పనిచేస్తుందో నేర్చుకుంటాము, దీని practical application మరియు analogy యొక్క పరిమితులను చూస్తాము.",
+        "story": "ఊహించుకోండి, మీరు పెద్ద library లో ఉన్నారు. మీకు 'తెలుగు సినిమా చరిత్ర' గురించి తెలుసుకోవాలి. మీరు librarian తో 'సినిమాలు చెప్పు' అని అంటే, ఆమె ఏ పుస్తకం ఇవ్వాలో తెలియదు. కానీ మీరు '1980-1990 మధ్య తెలుగు సినిమా దర్శకుల విశేషాలు' అని అడిగితే, ఆమె ఖచ్చితమైన పుస్తకం ఇవ్వగలదు. ఇక్కడ మీ query ఎంత specific గా ఉందో చూడండి — అదే RAG లో జరుగుతుంది.",
+        "connection": "ఈ కథలో, library = vector database, librarian = retriever, మీ ప్రశ్న = query embedding. మీరు అడిగే ప్రశ్న specific గా ఉంటే, retriever సరైన documents ను వెతికి ఇవ్వగలదు. మీ ప్రశ్న vague గా ఉంటే, retriever తప్పు లేదా సంబంధం లేని documents ను ఇవ్వవచ్చు, దీనివల్ల LLM తప్పు సమాధానం ఇవ్వవచ్చు.",
+        "explanation": "RAG లో, మనం ఇచ్చే query ముందుగా embedding గా మార్చబడుతుంది. ఈ embedding, vector database లో ఉన్న documents embeddings తో compare చేయబడుతుంది. సినిమా కథలో మాదిరిగే, query specific గా ఉంటే, దాని embedding సరైన documents embeddings కి దగ్గరగా ఉంటుంది. కాబట్టి, query లో keywords, context, మరియు మనం కోరుకుంటున్న information type ని స్పష్టంగా పేర్కొనడం చాలా ముఖ్యం.",
+        "application": "ఒక developer గా, మీరు customer support chatbot ని నిర్మిస్తున్నారు అనుకోండి. User 'ఇది పని చేయడం లేదు' అని రాస్తే, మీరు దానిని అలాగే retriever కి పంపకూడదు. బదులుగా, user యొక్క previous messages మరియు context ను ఉపయోగించి, 'password reset పని చేయడం లేదు, mobile app లో' అనే specific query ని రూపొందించాలి. దీనిని query rewriting లేదా query expansion అంటారు. ఇలా చేయడం వల్ల retriever సరైన help articles ను పొందగలదు.",
+        "exercise": "మీ సొంత ప్రాజెక్ట్ లో ఒక vague user question ను తీసుకోండి (ఉదా: 'ఇది ఎలా పని చేస్తుంది?'). దానిని మూడు వేర్వేరు specific queries గా rewrite చేయండి, ప్రతి ఒక్కటి వేరే information need ని target చేస్తూ. ఒక నిమిషం పడుతుంది, కానీ ఇది query design ఎంత ముఖ్యమో చూపిస్తుంది.",
+        "question": "RAG system లో vague query వల్ల ఏమి జరుగుతుంది?",
+        "answer": "Vague query వల్ల retriever సంబంధం లేని లేదా తక్కువ quality గల documents ను retrieve చేస్తుంది. దీని వల్ల LLM తప్పు లేదా అసంపూర్ణ సమాధానం ఇవ్వవచ్చు, ఎందుకంటే అది సరైన context పొందలేదు.",
+        "limits": "ఈ library analogy కి ఒక పరిమితి ఉంది: librarian మాటల అర్థాన్ని అర్థం చేసుకుంటారు, కానీ vector search పూర్తిగా semantic similarity మీద ఆధారపడి ఉంటుంది. కొన్నిసార్లు, specific గా అనిపించే query కూడా embedding space లో తప్పు documents కి దగ్గరగా ఉండవచ్చు. అంతేకాకుండా, ఈ analogy multi-step reasoning లేదా query decomposition వంటి advanced techniques ను పూర్తిగా వివరించలేదు.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "ఈ వారం AI లో ముఖ్యమైన అభివృద్ధులు",
+        "overview": "ఈ వారం, hardware, research access, మరియు voice agents లో మూడు ముఖ్యమైన అభివృద్ధులు జరిగాయి. ఒక్కో దానిని plain language లో వివరిస్తాము.",
+        "items": [
+          {
+            "headline": "Google కొత్త TPUs: 8tx మరియు 8i Max",
+            "what_happened": "Google తన eighth-generation TPU portfolio ని విస్తరించింది. TPU 8tx secure, confidential inference కోసం రూపొందించబడింది — డేటా memory లో ఉన్నప్పుడు కూడా hardware-level రక్షణ ఇస్తుంది. TPU 8i Max massive context windows కోసం — రెండు 8i chips ను ఒకే package లో కలిపి, double compute మరియు memory bandwidth ఇస్తుంది.",
+            "why_it_matters": "Regulated industries లో (banking, healthcare) పనిచేసే developers తమ sensitive data ను unlock చేయకుండానే AI models ను run చేయగలరు. Analogy గా: ఇది ఒక locked room లో పని చేసే assistant లాంటిది — పని అయిపోతుంది కానీ డేటా బయటకు రాదు. Long-context work చేసే agents కు 8i Max memory bottleneck ను తగ్గిస్తుంది.",
+            "takeaway": "ఇవి publisher చేసిన claims; స్వతంత్ర verification లేదు. Try చేసే ముందు pricing, regional availability, మరియు మీ workload కి ఈ specialized systems నిజంగానే అవసరమా అనేది inspect చేయండి. Benchmarks vendor-supplied కావడం గుర్తుంచుకోండి.",
+            "source_ids": [
+              "news-e9950a58c892"
+            ]
+          },
+          {
+            "headline": "OpenAI 200,000 researchers కి ఉచిత ChatGPT access",
+            "what_happened": "OpenAI ChatGPT for Academic Researchers program ని విస్తరిస్తోంది. November 23 నుండి applications తెరుచుతారు; 50,000 కొత్త grants first-come, first-served ప్రకారం ఇస్తారు. ఒక్కో grant లో recipient మరియు ఇద్దరు collaborators కి ChatGPT Plus ఉచితం. Pilot లో 20,000 researchers 33 countries నుండి చేరారు.",
+            "why_it_matters": "Academic researchers లేదా students గా, మీకు frontier models కి free access అందుతుంది — literature review, data analysis, లేదా grant writing లో సహాయం కోసం. ఇది RAG concept కి సంబంధించిన ఉదాహరణ: researchers తమ పరిశోధనలో AI ను ఒక retrieval assistant లా వాడవచ్చు.",
+            "takeaway": "ఇది OpenAI యొక్క program; వారి survey findings (ఉదా: పని సగం సమయంలో అయిపోతుంది అనే estimate) participant self-reports మాత్రమే. Apply చేసే ముందు eligibility requirements మరియు data usage policy (default గా training కి వాడరు అని వారు చెబుతున్నారు) ని మీరే చదవండి.",
+            "source_ids": [
+              "news-2d7a5d6b20ff"
+            ]
+          },
+          {
+            "headline": "Google Duplex ఇప్పుడు Gemini Tasks లో business calls చేస్తుంది",
+            "what_happened": "Google Research, Duplex technology ఎలా evolve అయిందో వివరిస్తూ ఒక blog post ప్రచురించింది. 2018 లో closed-domain models తో మొదలైన ఈ system, ఇప్పుడు Gemini models తో free-text task descriptions నుండి పనిచేస్తుంది. Tasks in Gemini App లో, ఇది restaurants లేదా salons కి మీ తరపున call చేసి reservations చేస్తుంది. ప్రతి call మొదలుఅయ్యేటప్పుడు AI agent అని స్పష్టంగా disclose చేస్తుంది.",
+            "why_it_matters": "ఇది agentic AI యొక్క practical ఉదాహరణ: online booking system లేని చిన్న businesses తో పని చేయడం. Developers కి, ఇది hybrid architecture (generative models + deterministic guardrails) ఎలా production లో వాడబడుతుందో చూపిస్తుంది — ముఖ్యంగా low-latency, noisy real-world environments లో.",
+            "takeaway": "ఇది Google యొక్క సొంత blog post; వారి claims (ఉదా: one trillion times business info shown) ని స్వతంత్రంగా verify చేయలేం. ఈ feature ప్రస్తుతం ఏ regions/languages లో available అనేది, మరియు merchant opt-out mechanisms ఎలా పనిచేస్తాయో try చేసే ముందు చూడండి.",
+            "source_ids": [
+              "news-536d4386c711"
+            ]
+          }
+        ],
+        "exercise": "ఈ మూడు news items లో, ఏది ఒక RAG system యొక్క infrastructure పై ప్రభావం చూపుతుంది? ఒక నిమిషం ఆలోచించి, మీ సమాధానాన్ని ఒక వాక్యంలో రాయండి. (సూచన: TPU 8i Max యొక్క memory bandwidth పెరుగుదల long-context retrieval కి ఎలా సహాయపడుతుందో ఆలోచించండి.)",
+        "question": "ఈ news items లో ఏది ఒక vendor యొక్క సొంత claims మాత్రమే, స్వతంత్ర verification లేనిది?",
+        "answer": "మూడూ vendor-published sources నుండి వచ్చాయి — Google blog, OpenAI, మరియు Google Research. అందువల్ల performance benchmarks, user numbers, మరియు survey findings అన్నీ publisher claims; వీటిని marketing గా చూడాలి, స్వతంత్రంగా verified facts గా కాదు."
+      },
+      "usage": {
+        "prompt_tokens": 6914,
+        "completion_tokens": 5851,
+        "total_tokens": 12765,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": null,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": null
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-e9950a58c892",
+          "title": "Our newest TPUs: 8tx and 8i Max, built for the agentic era",
+          "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/tpu-8i-max-and-8tx/",
+          "publisher": "blog.google",
+          "published_at": "2026-11-09T00:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "discussion_points": 29,
+          "discovery_channel": "Hacker News link to primary source",
+          "topic": "Other"
+        },
+        {
+          "id": "news-2d7a5d6b20ff",
+          "title": "Broadening access to AI for scientists",
+          "url": "https://openai.com/index/expanding-chatgpt-for-academic-researchers",
+          "publisher": "OpenAI",
+          "published_at": "2026-11-16T17:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-536d4386c711",
+          "title": "How Google Duplex evolved to also call businesses for you in Gemini",
+          "url": "https://research.google/blog/how-google-duplex-evolved-to-also-call-businesses-for-you-in-gemini/",
+          "publisher": "Google Research",
+          "published_at": "2026-11-20T23:30:30+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "Other"
+        }
+      ],
+      "id": "478742a75581781f"
     }
   ]
 }

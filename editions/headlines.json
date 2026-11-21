@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "task": "ai_headlines",
-  "checked_at": "2026-11-20T19:07:46.559257+00:00",
+  "checked_at": "2026-11-21T18:01:02.168664+00:00",
   "items": [
     {
       "id": "news-e9950a58c892",
@@ -11,10 +11,45 @@
       "published_at": "2026-11-09T00:00:00+00:00"
     },
     {
+      "id": "news-536d4386c711",
+      "title": "How Google Duplex evolved to also call businesses for you in Gemini",
+      "url": "https://research.google/blog/how-google-duplex-evolved-to-also-call-businesses-for-you-in-gemini/",
+      "publisher": "Google Research",
+      "published_at": "2026-11-20T23:30:30+00:00"
+    },
+    {
+      "id": "news-7ad44f990f0c",
+      "title": "Combatting adversarial distillation",
+      "url": "https://openai.com/index/combatting-adversarial-distillation",
+      "publisher": "OpenAI",
+      "published_at": "2026-11-20T10:00:00+00:00"
+    },
+    {
+      "id": "news-824c03b970f1",
+      "title": "Welcome Inkling 2 Mini, Cutting-edge Performance for your Local Setup",
+      "url": "https://huggingface.co/blog/inkling2mini",
+      "publisher": "Hugging Face",
+      "published_at": "2026-11-20T00:00:00+00:00"
+    },
+    {
       "id": "news-701a571706ec",
       "title": "Introducing harness adapters: adapt your favorite model to your harness to improve performance and cost",
       "url": "https://huggingface.co/blog/harness-adapters-at-scale",
       "publisher": "Hugging Face",
+      "published_at": "2026-11-20T00:00:00+00:00"
+    },
+    {
+      "id": "news-8145fefb47ff",
+      "title": "Hebbia sees improvements in financial research with GPT-6 Astra",
+      "url": "https://openai.com/business/customer-stories/hebbia",
+      "publisher": "OpenAI",
+      "published_at": "2026-11-20T00:00:00+00:00"
+    },
+    {
+      "id": "news-c1a2af93db54",
+      "title": "Can AI help scientists identify promising drug candidates?",
+      "url": "https://openai.com/index/introducing-medchembench",
+      "publisher": "OpenAI",
       "published_at": "2026-11-20T00:00:00+00:00"
     },
     {
@@ -32,9 +67,9 @@
       "published_at": "2026-11-19T08:00:00+00:00"
     },
     {
-      "id": "news-a890a236270c",
-      "title": "Deploying Daybreak Red",
-      "url": "https://openai.com/business/learn/deploying-daybreak-red",
+      "id": "news-82fe289fe466",
+      "title": "Explore the Codex Security Plugin",
+      "url": "https://openai.com/business/learn/codex-security-plugin-demo",
       "publisher": "OpenAI",
       "published_at": "2026-11-19T00:00:00+00:00"
     },
@@ -46,46 +81,11 @@
       "published_at": "2026-11-19T00:00:00+00:00"
     },
     {
-      "id": "news-82fe289fe466",
-      "title": "Explore the Codex Security Plugin",
-      "url": "https://openai.com/business/learn/codex-security-plugin-demo",
-      "publisher": "OpenAI",
-      "published_at": "2026-11-19T00:00:00+00:00"
-    },
-    {
       "id": "news-da3064513703",
       "title": "Get started with Daybreak Blue",
       "url": "https://openai.com/business/learn/daybreak-blue-onboarding-demo",
       "publisher": "OpenAI",
       "published_at": "2026-11-19T00:00:00+00:00"
-    },
-    {
-      "id": "news-184d931227f2",
-      "title": "The Silent Consensus",
-      "url": "https://openai.com/index/the-silent-consensus",
-      "publisher": "OpenAI",
-      "published_at": "2026-11-18T10:00:00+00:00"
-    },
-    {
-      "id": "news-58da586369f3",
-      "title": "Research acceleration: The jagged frontier",
-      "url": "https://openai.com/index/research-acceleration-jagged-frontier",
-      "publisher": "OpenAI",
-      "published_at": "2026-11-18T08:00:00+00:00"
-    },
-    {
-      "id": "news-53d809d7420a",
-      "title": "How Sumitomo Life’s leaders helped teams adopt ChatGPT Enterprise",
-      "url": "https://openai.com/business/customer-stories/sumitomo-life",
-      "publisher": "OpenAI",
-      "published_at": "2026-11-18T08:00:00+00:00"
-    },
-    {
-      "id": "news-67952d9a918d",
-      "title": "Inside the Codex sandbox",
-      "url": "https://openai.com/index/inside-the-codex-sandbox",
-      "publisher": "OpenAI",
-      "published_at": "2026-11-18T08:00:00+00:00"
     }
   ]
 }
