@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "task": "ai_headlines",
-  "checked_at": "2026-11-21T18:01:02.168664+00:00",
+  "checked_at": "2026-11-22T18:33:12.896344+00:00",
   "items": [
     {
       "id": "news-e9950a58c892",
@@ -9,6 +9,13 @@
       "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/tpu-8i-max-and-8tx/",
       "publisher": "blog.google",
       "published_at": "2026-11-09T00:00:00+00:00"
+    },
+    {
+      "id": "news-1a10f1676d46",
+      "title": "Perplexity and Intelligence",
+      "url": "https://openai.com/index/perplexity-and-intelligence",
+      "publisher": "OpenAI",
+      "published_at": "2026-11-22T00:00:00+00:00"
     },
     {
       "id": "news-536d4386c711",
@@ -67,9 +74,9 @@
       "published_at": "2026-11-19T08:00:00+00:00"
     },
     {
-      "id": "news-82fe289fe466",
-      "title": "Explore the Codex Security Plugin",
-      "url": "https://openai.com/business/learn/codex-security-plugin-demo",
+      "id": "news-a890a236270c",
+      "title": "Deploying Daybreak Red",
+      "url": "https://openai.com/business/learn/deploying-daybreak-red",
       "publisher": "OpenAI",
       "published_at": "2026-11-19T00:00:00+00:00"
     },
@@ -77,13 +84,6 @@
       "id": "news-17b7a2b39f09",
       "title": "See PR scans in action",
       "url": "https://openai.com/business/learn/pr-scans-demo",
-      "publisher": "OpenAI",
-      "published_at": "2026-11-19T00:00:00+00:00"
-    },
-    {
-      "id": "news-da3064513703",
-      "title": "Get started with Daybreak Blue",
-      "url": "https://openai.com/business/learn/daybreak-blue-onboarding-demo",
       "publisher": "OpenAI",
       "published_at": "2026-11-19T00:00:00+00:00"
     }
