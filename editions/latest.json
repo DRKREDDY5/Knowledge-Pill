@@ -1,269 +1,8 @@
 {
   "schema_version": 1,
   "task": "daily_pills_collection",
-  "updated_at": "2026-11-22T18:34:54.135529+00:00",
+  "updated_at": "2026-11-24T21:18:34.440881+00:00",
   "packets": [
-    {
-      "date": "2026-11-07",
-      "timezone": "America/New_York",
-      "created_at": "2026-11-07T16:52:27.778240+00:00",
-      "topic": "RAG",
-      "language": "en",
-      "concept": "Knowing when evidence is missing",
-      "news_window": "recent",
-      "source_warnings": [],
-      "router_engine": "TF-IDF + logistic regression",
-      "schema_version": 1,
-      "task": "daily_pills",
-      "status": "draft",
-      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
-      "generation_method": "fireworks",
-      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
-      "knowledge": {
-        "title": "Knowing When Evidence Is Missing: The RAG Skill Nobody Teaches",
-        "summary": "Retrieval-Augmented Generation (RAG) grounds a model's answers in retrieved documents, but the real skill is recognizing when retrieval came back empty or irrelevant — and saying so instead of guessing.",
-        "story": "Imagine a librarian named Priya. A visitor asks, 'What was the population of the fictional town of Marlowe in 1997?' Priya searches the catalog, checks three shelves, and finds nothing. A bad librarian would invent an answer to seem helpful. A good librarian says, 'I have no record of that town — are you sure of the name?' Now a second visitor asks about water restrictions in a city Priya's library covers. She finds a pamphlet from 2011. She hands it over but adds, 'This is from 2011; rules may have changed.' Priya's value isn't just finding documents — it's knowing the difference between 'found,' 'not found,' and 'found but possibly stale.'",
-        "connection": "In RAG, the retriever is Priya searching the shelves, the corpus is the library, and the generator is the librarian speaking to the visitor. The original RAG paper (Lewis et al.) frames this as combining parametric memory (what the seq2seq model learned in weights) with non-parametric memory (a dense vector index of documents accessed by a neural retriever). REALM does something similar, retrieving documents during pre-training, fine-tuning, and inference. Both papers motivate retrieval by noting that weights alone make provenance and knowledge updates hard — retrieval gives you citable, updatable evidence. But retrieval only helps if the system can tell when the evidence isn't there.",
-        "explanation": "A RAG pipeline has three failure modes that matter for evidence awareness. First, empty retrieval: the query has no good match in the index, so the retriever returns its 'least bad' documents anyway — vector search always returns k results, even when all of them are irrelevant. Second, partial evidence: retrieved passages cover part of the question, and the generator may paper over the gap with parametric knowledge, which is exactly the unattributed knowledge RAG was meant to avoid. Third, stale or conflicting evidence: documents retrieved successfully but outdated or contradictory. A well-designed system scores retrieval confidence (similarity thresholds, reranker scores), instructs the generator to abstain or flag uncertainty when evidence is weak, and surfaces provenance so users can check. The papers' emphasis on provenance and modularity is the architectural foundation; 'knowing when evidence is missing' is the policy you build on top of it.",
-        "application": "In a support-chatbot over your product docs, add an explicit evidence gate: if the top retrieved chunk scores below a similarity threshold, skip generation and return 'I couldn't find this in the docs' plus an escalation path. For answers that do generate, require citations to chunk IDs and log queries where the model cited low-scoring chunks — those logs are your shopping list for missing documentation.",
-        "exercise": "Take any RAG demo you have (or sketch one on paper). For ten sample questions, write down what the retriever returns and label each: strong match, weak match, or no match. For the weak and missing cases, write the sentence you'd want the system to say instead of answering. Time yourself: two minutes.",
-        "question": "Why does a vector retriever returning five documents not mean it found five relevant documents?",
-        "answer": "Vector search always returns the top-k nearest neighbors regardless of quality; if nothing in the index truly matches the query, the results are merely the least-distant items, and the system must use a threshold or confidence signal to detect that evidence is effectively missing.",
-        "limits": "The analogy breaks down because Priya can usually tell an empty shelf from a full one at a glance, while embedding similarity gives graded, noisy scores with no clean 'empty' signal — thresholds require tuning per domain and can still misclassify. Also, the cited papers describe retrieval improving QA benchmarks; they don't prescribe a specific abstention policy, so the gating techniques above are common engineering practice, not claims from those papers.",
-        "source_ids": [
-          "paper-2005.11401",
-          "paper-2002.08909"
-        ]
-      },
-      "news": {
-        "title": "Agent Memory and Offline Consolidation: What's New in RAG-Adjacent Research",
-        "overview": "Two research posts on agent memory and offline consolidation, plus one marketing item. Together they show the field borrowing from human memory: capture during activity, consolidate during rest.",
-        "items": [
-          {
-            "headline": "Anthropic describes how Claude organizes its own agent memory",
-            "what_happened": "An Anthropic research post (published November 6, 2026) explains how Claude agents persist knowledge between sessions using memory notes and 'dreaming' — using idle time to reflect on session logs, correct mistakes, and write new notes. In a Pokémon Red evaluation, a model that wrote nine focused files (strategy, plans, tested rules) progressed further than one that wrote 413 indiscriminate files that kept going stale. On a CL-Bench database task, newer models closed a learning loop: recording rules, marking which facts were confirmed versus unconfirmed, and writing corrections after wrong answers. Anthropic also reports that fixed rules like 'record only failures' reduced the memory benefit for stronger models, while simple guidance worked better.",
-            "why_it_matters": "This maps directly onto RAG's evidence problem: a memory note is a claim, and the difference between 'confirmed' and 'unconfirmed' is exactly the difference between grounded and ungrounded. If you build agents, the practical lesson is to store provenance with every saved fact — how it was learned, whether it was verified — and to let the agent judge salience rather than hard-coding what to save. Think of it as a developer's notebook: notes without a 'verified' checkbox are hypotheses, not documentation.",
-            "takeaway": "These are Anthropic's own evaluations and interpretations of its models' behavior, not independent benchmarks. Before applying this, read the full post's evaluation setup — the excerpt here is partial — and test salience-judging on your own workloads rather than assuming the Pokémon and CL-Bench results transfer.",
-            "source_ids": [
-              "news-f0247d2be6d2"
-            ]
-          },
-          {
-            "headline": "OpenAI customer story: Flipsnack and ChatGPT Ads",
-            "what_happened": "An OpenAI customer page (dated November 5, 2026) states, in a brief feed summary, that design-tool company Flipsnack ran ChatGPT Ads campaigns focused on product signups and grew registrations while lowering cost per signup. This is a vendor-published marketing item; the excerpt does not include campaign details, spend, or methodology.",
-            "why_it_matters": "For developers, the relevant angle is narrow: ad platforms are becoming another place where retrieval over product catalogs and landing pages determines what gets shown. If your product feed is the 'corpus,' its quality is your retrieval quality. Analogy: a store window — the platform can only display what you stock it with.",
-            "takeaway": "This is a feed excerpt, not a full case study, and it's published by the ad seller itself, so treat the numbers as claims, not verified results. Before drawing conclusions, look for the full case study, actual spend and conversion data, and independent coverage.",
-            "source_ids": [
-              "news-2d1d326185a6"
-            ]
-          },
-          {
-            "headline": "Google Research proposes a 'sleep framework' for continual learning in LLMs",
-            "what_happened": "A Google Research blog post (October 27, 2026) introduces a continual-learning framework with an active phase that stores information in short-term memory and an offline 'sleep' phase that consolidates it into model parameters. It uses Mixture-of-Experts memory blocks, knowledge distillation, and a 'dreaming' stage that generates and filters synthetic training samples. The authors report retention of long-context knowledge up to 10M tokens and gains on factual-knowledge and math benchmarks versus baselines like supervised fine-tuning and in-context learning, while aiming to avoid catastrophic forgetting.",
-            "why_it_matters": "For RAG builders, this points at a possible future division of labor: retrieval for fast, updatable, citable facts; consolidation for durable skills and heavily reused knowledge. The wake/sleep split is analogous to a developer coding by day and refactoring documentation by night — except here the 'night' is automated offline training. Today, most teams should still treat retrieval as the practical way to keep knowledge current.",
-            "takeaway": "The framework operates on fixed architectures with human-defined training rules — the neuroscience terms are inspiration, not mechanism — and the reported results come from Google's own benchmarks. The blog post is a research announcement, not a shipped product; inspect the paper's baselines, compute costs of the sleep phase, and whether code or models are available before considering it for anything real.",
-            "source_ids": [
-              "news-b49ec3bd8394"
-            ]
-          }
-        ],
-        "exercise": "Pick the Anthropic memory post and the Google sleep post. For each, spend one minute listing: (1) what the authors claim, (2) what evidence they show, (3) whether the evidence is self-reported. Note where your interpretation differs from the publisher's framing.",
-        "question": "Why should you treat the Flipsnack item differently from the two research posts?",
-        "answer": "It is a vendor-published marketing feed excerpt with no methodology or independent verification, while the research posts at least describe evaluations — though all three are self-reported and none is independent evidence of real-world performance."
-      },
-      "usage": {
-        "prompt_tokens": 5756,
-        "total_tokens": 7844,
-        "completion_tokens": 2088,
-        "prompt_tokens_details": {
-          "cached_tokens": 0
-        },
-        "completion_tokens_details": {
-          "reasoning_tokens": 45
-        },
-        "output_tokens_details": {
-          "reasoning_tokens": 45
-        }
-      },
-      "sources": [
-        {
-          "id": "paper-2005.11401",
-          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
-          "url": "https://arxiv.org/abs/2005.11401",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "paper-2002.08909",
-          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
-          "url": "https://arxiv.org/abs/2002.08909",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "news-f0247d2be6d2",
-          "title": "The components of agent memory",
-          "url": "https://www.anthropic.com/research/components-of-agent-memory",
-          "publisher": "www.anthropic.com",
-          "published_at": "2026-11-06T00:00:00+00:00",
-          "evidence_type": "article_excerpt",
-          "discussion_points": 105,
-          "discovery_channel": "Hacker News link to primary source",
-          "topic": "RAG"
-        },
-        {
-          "id": "news-2d1d326185a6",
-          "title": "Flipsnack grows product signups with conversion optimization",
-          "url": "https://openai.com/ads/customers/flipsnack",
-          "publisher": "OpenAI",
-          "published_at": "2026-11-05T00:45:15+00:00",
-          "evidence_type": "feed_excerpt",
-          "topic": "RAG"
-        },
-        {
-          "id": "news-b49ec3bd8394",
-          "title": "The sleep framework: A new way for LLMs to retain knowledge in continual learning",
-          "url": "https://research.google/blog/the-sleep-framework-a-new-way-for-llms-to-retain-knowledge-in-continual-learning/",
-          "publisher": "Google Research",
-          "published_at": "2026-10-27T17:35:00+00:00",
-          "evidence_type": "article_excerpt",
-          "topic": "RAG"
-        }
-      ],
-      "id": "3a6908ff995b3d62"
-    },
-    {
-      "date": "2026-11-07",
-      "timezone": "America/New_York",
-      "created_at": "2026-11-07T16:52:27.778240+00:00",
-      "topic": "RAG",
-      "language": "te",
-      "concept": "Knowing when evidence is missing",
-      "news_window": "recent",
-      "source_warnings": [],
-      "router_engine": "TF-IDF + logistic regression",
-      "schema_version": 1,
-      "task": "daily_pills",
-      "status": "draft",
-      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
-      "generation_method": "fireworks",
-      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
-      "knowledge": {
-        "title": "RAGలో సాక్ష్యం లేనప్పుడు గుర్తించడం",
-        "summary": "Retrieval-Augmented Generation (RAG) వ్యవస్థల్లో అత్యంత ముఖ్యమైన నైపుణ్యం ఏమిటంటే — మీరు వెతికిన సమాచారం నిజంగా ప్రశ్నకు సరిపోతుందో లేదో తెలుసుకోవడం. సాక్ష్యం లేనప్పుడు 'తెలియదు' అని చెప్పడం ఒక లోపం కాదు, ఒక ఫీచర్.",
-        "story": "ఊహించండి: మీరు ఒక లైబ్రరీ అసిస్టెంట్. ఒక రోజు వచనాలు వచ్చి అడుగుతారు — 'మా ఊరి పురాతన ఆలయ గోడపై చెక్కిన శిలాశాసనంలో ఏం రాసి ఉంది?' మీరు క్యాటలాగ్ చూస్తారు. ఒక పుస్తకం దొరుకుతుంది — అది ఆ ఊరి చరిత్ర గురించే అయినా, ఆ శాసనం గురించి అందులో ఏమీ లేదు. ఇప్పుడు మీకు రెండు మార్గాలు: ఒకటి — 'చరిత్ర పుస్తకం దొరికింది' అని ఆ పుస్తకంలోని ఏదో వాక్యం చదివి వినిపించడం. రెండు — 'ఈ పుస్తకంలో శాసనం గురించి ప్రస్తావన లేదు, కాబట్టి నా దగ్గర ఈ ప్రశ్నకు సమాధానం లేదు' అని చెప్పడం. మొదటి మార్గం వినిపించడానికి బాగుంటుంది, కానీ అది తప్పు సమాచారం ఇవ్వడమే. రెండోది నిజాయితీ. ఒక రోజు మీరు సరిగా చెప్పకపోతే, ఆ వ్యక్తి తప్పు సమాచారంతో ఒక నిర్ణయం తీసుకుంటారు. అందుకే మంచి అసిస్టెంట్ అంటే — దొరికిన పుస్తకం, అడిగిన ప్రశ్నకు సంబంధం లేకపోతే దాన్ని సాక్ష్యంగా పరిగణించకూడదు అని తెలుసుకోవడం.",
-        "connection": "ఈ కథలోని భాగాలు RAG భాగాలకు సరిపోతాయి: లైబ్రరీ క్యాటలాగ్ = dense vector index; పుస్తకం వెతకడం = neural retriever; దొరికిన పుస్తకం = retrieved passage; 'ప్రశ్నకు సంబంధం లేదా' అని తనిఖీ చేయడం = evidence relevance check; 'తెలియదు' అని చెప్పడం = abstention (సమాధానం ఇవ్వకపోవడం).",
-        "explanation": "RAG అంటే ఏమిటంటే — ప్రీ-ట్రైన్డ్ భాషా మోడల్ (parametric memory) తో ఒక బాహ్య సమాచార నిల్వ (non-parametric memory, ఉదా: Wikipedia యొక్క dense vector index) కలిపి, ప్రశ్న వచ్చినప్పుడు ముందుగా సంబంధిత పేరాలను retriever తో వెతికి, ఆ పేరాలను ఆధారంగా పెట్టుకుని సమాధానం ఉత్పత్తి చేయడం. Lewis తదితరుల RAG పేపర్ ఇలాంటి మోడల్స్ parametric-only seq2seq మోడల్స్ కంటే ఎక్కువ specific, diverse, factual అయిన అవుట్‌పుట్ ఇస్తాయని చూపింది. REALM పేపర్ మరింత ముందుకెళ్లి, ప్రీ-ట్రైనింగ్ సమయంలోనే ఒక knowledge retriever ని కలిపి, మిలియన్ల డాక్యుమెంట్లలో నుంచి retrieval step ద్వారా backpropagate చేసే పద్ధతిని ప్రవేశపెట్టింది. ఇది interpretability (ఏ డాక్యుమెంట్ ఆధారంగా సమాధానమో చూపగలగడం) మరియు modularity (ఇండెక్స్‌ని విడిగా అప్‌డేట్ చేయగలగడం) వంటి ప్రయోజనాలు ఇస్తుంది. కానీ ఇక్కడే ముఖ్యమైన అంశం వస్తుంది: retriever ఎప్పుడైనా ఏదో డాక్యుమెంట్ తిరిగి ఇస్తూనే ఉంటుంది — ఇండెక్స్‌లో నిజమైన సమాధానం లేకపోయినా. అందుకే 'దొరికింది' అనేది 'సరైనది దొరికింది' అని కాదు. వ్యవస్థకు — లేదా వ్యవస్థను వాడే డెవలపర్‌కు — తిరిగి వచ్చిన పేరాలు ప్రశ్నలోని నిర్దిష్ట విషయాన్ని నిజంగా కవర్ చేస్తున్నాయో లేదో తనిఖీ చేసే అదనపు అడుగు అవసరం. అది లేకపోతే, మోడల్ సంబంధం లేని పేరా ఆధారంగా confidence గా ఉన్న తప్పు సమాధానం ఇస్తుంది. సాక్ష్యం సరిపోకపోతే 'తెలియదు' అని చెప్పే విధానాన్నే abstention అంటారు — ఇది RAG వ్యవస్థల నమ్మకదారుత్వానికి కీలకం.",
-        "application": "ప్రాక్టికల్‌గా: మీ కంపెనీ internal docs పై ప్రశ్నలకు సమాధానం ఇచ్చే RAG చాట్‌బాట్ ని బిల్డ్ చేస్తున్నారనుకోండి. ఒక సాధారణ నియమం — సమాధానం ఇచ్చే ముందు, retrieved passages లో ప్రశ్నలోని కీలక entities (ఉత్పత్తి పేరు, పాలసీ వివరం, తేదీ) నిజంగా ఉన్నాయో లేదో తనిఖీ చేయండి. లేకపోతే 'ఈ డాక్యుమెంటేషన్‌లో ఈ వివరం కనబడలేదు' అని చెప్పి, వినియోగదారుడిని మానవ సహాయం వైపు పంపండి. ఇది తప్పు సమాచారం వల్ల వచ్చే support tickets ని తగ్గిస్తుంది.",
-        "exercise": "రెండు నిమిషాల వ్యాయామం: ఏదైనా ఒక ప్రశ్న తీసుకోండి (ఉదా: 'మా టీమ్ వార్షిక బడ్జెట్ ఎంత?'). ఇప్పుడు మీ దగ్గర ఉన్న ఏదో ఒక సంబంధిత-అనిపించే డాక్యుమెంట్ తీసుకోండి. అందులో ఆ ప్రశ్నకు నేరుగా సమాధానం ఉందా, లేదా అది కేవలం టాపిక్ మాత్రమే సరిపోతున్నాయా? ఒక వాక్యంలో రాయండి: 'ఈ డాక్యుమెంట్ ప్రశ్నకు సాక్ష్యం / సాక్ష్యం కాదు, ఎందుకంటే ___'. ఇదే తనిఖీని కోడ్‌లో ఆటోమేట్ చేయాలని ఊహించండి.",
-        "question": "Retriever ఒక డాక్యుమెంట్‌ని తిరిగి ఇచ్చినప్పుడు, అది ప్రశ్నకు సరైన సాక్ష్యం అని ఎందుకు ఊహించకూడదు?",
-        "answer": "Retriever సాధారణంగా ఎల్లప్పుడైనా ఇండెక్స్‌లో అత్యంత సారూప్యత (similarity) ఉన్న డాక్యుమెంట్‌ని తిరిగి ఇస్తుంది — ఇండెక్స్‌లో నిజమైన సమాధానం లేకపోయినా. టాపిక్ సారూప్యత తప్పక సమాధానం ఉండటానికి హామీ కాదు; కాబట్టి passages ప్రశ్నలోని నిర్దిష్ట వివరాలను కవర్ చేస్తున్నాయో విడిగా తనిఖీ చేయాలి, లేకపోతే 'తెలియదు' అని చెప్పడమే సరైన ప్రవర్తన.",
-        "limits": "ఈ ఉపమానం పరిమితులు: లైబ్రరీ అసిస్టెంట్‌కు భిన్నంగా, LLM లో మోడల్ దాని పారామిట్రిక్ జ్ఞానం (ట్రైనింగ్‌లో నేర్చుకున్నది) కూడా ఉంటుంది — కాబట్టి retrieved evidence లేకున్నా అది 'తెలియదు' అనకుండా parametric జ్ఞానంతో సమాధానం ఇవ్వవచ్చు, దీన్ని గుర్తించడం కష్టం. అలాగే 'relevance' అంచనా వేయడం కూడా ఒక మోడల్ చేసే అంచనా మాత్రమే — అది కూడా తప్పు చేయగలదు. ఈ పేపర్లు సమాచారాన్ని ఇచ్చిన వివరణలు; వాటి ఫలితాలు మీ విశిష్ట డేటాపై పునరావృతం కావాలని హామీ లేదు.",
-        "source_ids": [
-          "paper-2005.11401",
-          "paper-2002.08909"
-        ]
-      },
-      "news": {
-        "title": "ఈ వారం RAG సంబంధిత అభివృద్ధులు",
-        "overview": "గత రెండు వారాల్లో ఏజెంట్ మెమరీ మరియు continual learning మీద రెండు ప్రధాన ప్రచురణలు, ఒక చిన్న కస్టమర్ కేస్ ఫీడ్ ఐటమ్ వచ్చాయి. వీటిలో మొదటి రెండు మాత్రమే RAG కి నేరుగా సంబంధిత సాంకేతిక అంశాలు; మూడోది ఒక ఫీడ్ వాక్యం మాత్రమే.",
-        "items": [
-          {
-            "headline": "Anthropic: ఏజెంట్ మెమరీ భాగాలు — 'dreaming' తో మెమరీ వ్యవస్థీకరణ",
-            "what_happened": "Anthropic ఒక రీసెర్చ్ పోస్ట్‌లో ఏజెంట్ మెమరీ అంటే ఏమిటో వివరించింది: సెషన్ల మధ్య నిలిచిపోయే, తర్వాత చదవగలిగే context రూపంలో సేవ్ చేయబడిన జ్ఞానం. ఏజెంట్ idle సమయంలో లాగ్‌లను పునశ్చరణ చేసి తప్పులు సరిచేయడం, నోట్స్ రాయడం, కొత్త మెమరీ రిప్రజెంటేషన్లు నిర్మించడం — దీన్ని 'dreaming' అని పిలుస్తారు. CL-Bench 1.0 డేటాబేస్ టాస్క్‌లో వివిధ Claude మోడల్స్ మెమరీని ఎలా వాడాయో, Pokémon Red ఆటలో salience తీర్పు (ఏది గుర్తుంచుకోవాలి) ఎలా పనితీవును మెరుగుపరిచిందో వివరించారు — తక్కువ, ఎంపిక చేసిన మెమరీ ఫైళ్లతో ఆడిన మోడల్ ఎక్కువ ప్రగతి సాధించింది. బలీయమైన మోడల్స్‌కు సాలియన్స్ మీద స్వేచ్ఛ ఇవ్వడం, ముందుగా నిర్ణయించిన నియమాల కంటే మెరుగైన ఫలితాలు ఇచ్చింది.",
-            "why_it_matters": "RAG డెవలపర్‌కు ఇది ముఖ్యం ఎందుకంటే — మెమరీ అనేది భవిష్యత్తు సెషన్లలో ఏది అవసరమవుతుందో అనే అంచనా. ఇది RAG లో 'ఏ సాక్ష్యం నిల్వ చేయాలి, ఏది వదిలేయాలి' అనే ప్రశ్నతో నేరుగా ముడుపడి ఉంది. ఉపయోగ కేసు: మీ ఏజెంట్ ప్రతి ఇంటరాక్షన్‌ను నిల్వ చేయకుండా, ధృవీకరించిన నియమాలు మరియు పరీక్షించని ఊహల మధ్య తేడాను గుర్తించే చిన్న మెమరీ నోట్స్ వ్యవస్థను డిజైన్ చేయవచ్చు. ఉపమానం: ఇది ప్రతి చిన్న విషయాన్ని నోట్‌బుక్‌లో రాసే విద్యార్థి vs ముఖ్యమైన నియమాలను మాత్రమే సిలబస్ షీట్‌లో రాసే విద్యార్థి మధ్య తేడా లాంటిది.",
-            "takeaway": "పరిమితి: ఇది Anthropic వారి స్వంత మోడల్స్ మరియు వారి స్వీకరించిన మూల్యాంకనలపై ఆధారపడిన పోస్ట్ — ఇది ఒక ప్రామాణిక పద్ధతి అని కాదు, వారి అనుభవం. ప్రయత్నించే ముందు: మీ ఏజెంట్ మెమరీలో ఏమి నిల్వ అవుతుందో, పాత/తప్పు నోట్స్ ఎలా తొలగించబడతాయో, మరియు ఈ ప్రవర్తనను కొలిచే మూల్యాంకన పద్ధతి ఉందో తనిఖీ చేయండి.",
-            "source_ids": [
-              "news-f0247d2be6d2"
-            ]
-          },
-          {
-            "headline": "OpenAI: Flipsnack ChatGPT Ads తో సైనప్‌లు పెంచుకున్న కేస్",
-            "what_happened": "OpenAI కస్టమర్ పేజీలో ఒక సంక్షిప్త ఫీడ్ వాక్యం: Flipsnack అనే కంపెనీ ChatGPT Ads ప్రచారాలను ప్రొడక్ట్ ట్రయల్స్ పై కేంద్రీకరించి, రిజిస్ట్రేషన్లు పెంచుకుంటూ signup ఖరీదు తగ్గించింది. ఈ మూలం feed_excerpt మాత్రమే — పూర్తి కేస్ స్టడీ చదివినట్లు చెప్పలేం, కాబట్టి వివరాలు, సంఖ్యలు, పద్ధతులు అందుబాటులో లేవు. ఇది RAG సాంకేతికతకు సంబంధించిన అభివృద్ధి కాదు; ఇది ప్రకటన వేదికపై ప్రచురించిన విక్రయ కేస్ ప్రకటన.",
-            "why_it_matters": "డెవలపర్‌కు ఇది తక్కువ సాంకేతిక ప్రస్తావన — ప్రధాన పాఠం మూలాల విశ్లేషణపై: పబ్లిషర్ తన స్వంత ఉత్పత్తి ఫలితాలను ప్రచురించినప్పుడు అది మార్కెటింగ్ క్లెయిమ్, స్వతంత్ర ధృవీకరణ కాదు. ఇలాంటి కేస్ స్టడీలను చూసినప్పుడల్లా, కొలత పద్ధతి, baseline, ఖరీదు లెక్కల నిర్వచనాలు ఏమిటో అడగడమే మంచి అలవాటు.",
-            "takeaway": "పరిమితి: ఒకే కంపెనీ ఫలితం సాధారణీకరించదగిన ఆధారం కాదు, మరియు ఇది పూర్తి కథనం కాదు — ఫీడ్ సారాంశం మాత్రమే. ప్రయత్నించే ముందు: పూర్తి కేస్ స్టడీలో కొలిచిన మెట్రిక్స్, కాలవ్యవధి, మరియు ఇతర ఛానల్లతో పోలిక ఉందో చూడండి.",
-            "source_ids": [
-              "news-2d1d326185a6"
-            ]
-          },
-          {
-            "headline": "Google Research: continual learning కోసం 'sleep framework'",
-            "what_happened": "Google Research ఒక బ్లాగ్‌లో LLM ల కోసం ఒక sleep framework ప్రతిపాదించింది: మోడల్ active (wake) దశలో ఇన్‌పుట్‌లను ప్రాసెస్ చేసి తాత్కాలిక షార్ట్-టర్మ్ మెమరీలో నిల్వ చేస్తుంది; sleep దశలో కొత్త Mixture-of-Experts మెమరీ బ్లాక్‌లను అన్‌లాక్ చేసి, distillation మరియు RL ఆధారిత పద్ధతులతో ఆ తాత్కాలిక జ్ఞానాన్ని స్థిర పారామిట్రిక్ మెమరీలోకి మార్చుతుంది. ఇది catastrophic forgetting ని తగ్గించి కొత్త వాస్తవాలను నేర్చుకోవడానికి ఉద్దేశించారు; బ్లాగ్ 10M టోకెన్ల వరకు long-context నిల్వ మరియు గణిత/అనువాద బెంచ్‌మార్క్ ఫలితాలను పేర్కొంది.",
-            "why_it_matters": "RAG దృష్టికోణం నుంచి ఇది ఒక ప్రత్యామ్నాయ దిశ: బాహ్య ఇండెక్స్ నుంచి retrieval కి బదులుగా, కొత్త జ్ఞానాన్ని మోడల్ పారామిటర్లలోనే కుదించి నిల్వ చేయడానికి ప్రయత్నం. రోజువారీ ఉపయోగం: డిప్లాయ్ అయిన మోడల్ ని పూర్తి రీట్రైనింగ్ లేకుండా కొత్త డొమైన్ వాస్తవాలతో అప్‌డేట్ చేయాలనుకునే టీమ్‌లకు ఇది ఒక ఆలోచన దిశ. ఉపమానం: పగలు నేర్చుకున్న విషయాలను రాత్రి నిద్రలో మెదడు స్థిరపరచడం లాంటిది — కానీ ఇది కేవలం ఉపమానమే, నిజమైన యంత్రపరమైన ప్రక్రియ పూర్తిగా నిర్వచించిన ట్రైనింగ్ నియమాలతో నడుస్తుంది.",
-            "takeaway": "పరిమితి: ఇవి Google వారి స్వంత బెంచ్‌మార్క్ ఫలితాలు, స్వతంత్రంగా ధృవీకరించబడలేదు, మరియు ఇది ఒక రీసెర్చ్ పరికల్పన — సాధారణ ఉత్పత్తి ఫీచర్ కాదు. ప్రయత్నించే ముందు: మీ విశిష్ట డొమైన్‌లో forgetting నివారణ ఎలా కొలవబడిందో, sleep దశకు అవసరమైన కంప్యూట్ ఖరీదు, మరియు కోడ్/పద్ధతి బహిరంగంగా అందుబాటులో ఉందో తనిఖీ చేయండి.",
-            "source_ids": [
-              "news-b49ec3bd8394"
-            ]
-          }
-        ],
-        "exercise": "రెండు నిమిషాల మూల తనిఖీ వ్యాయామం: Anthropic పోస్ట్ మరియు Google బ్లాగ్ రెండింటిలోనూ 'dreaming' అనే పదం వాడబడింది. రెండు మూలాల్లో ఆ పదానికి ఇచ్చిన నిర్వచనాలు ఒకటేనా? ఒక్కొక్కటి ఒక వాక్యంలో రాయండి, మరియు ఏ మూలం పూర్తి కథనం vs సారాంశం మాత్రమే అని గుర్తించండి. ఇది పబ్లిషర్ క్లెయిమ్ vs మీ విశ్లేషణ మధ్య తేడాను గుర్తించే అలవాటును బలపరుస్తుంది.",
-        "question": "Flipsnack ఐటమ్‌ను సమాచారంగా చూపినప్పుడు, దాని ఫలితాలను ఎందుకు ధృవీకరించబడిన వాటిగా పరిగణించకూడదు?",
-        "answer": "ఎందుకంటే అది ప్రచురించిన కంపెనీ (OpenAI) తన స్వంత ఉత్పత్తి ఫలితాలను వివరించే మార్కెటింగ్ కేస్ ప్రకటన — attribution స్వతంత్ర ధృవీకరణ కాదు. అంతేకాకుండా అందుబాటులో ఉన్నది ఫీడ్ సారాంశం మాత్రమే; కొలత పద్ధతి, baseline లేదా పూర్తి వివరాలు తనిఖీ చేయలేం."
-      },
-      "usage": {
-        "prompt_tokens": 5756,
-        "completion_tokens": 13974,
-        "total_tokens": 19730,
-        "prompt_tokens_details": {
-          "cached_tokens": 0
-        },
-        "completion_tokens_details": {
-          "accepted_prediction_tokens": null,
-          "reasoning_tokens": 56,
-          "rejected_prediction_tokens": null
-        }
-      },
-      "sources": [
-        {
-          "id": "paper-2005.11401",
-          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
-          "url": "https://arxiv.org/abs/2005.11401",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "paper-2002.08909",
-          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
-          "url": "https://arxiv.org/abs/2002.08909",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "news-f0247d2be6d2",
-          "title": "The components of agent memory",
-          "url": "https://www.anthropic.com/research/components-of-agent-memory",
-          "publisher": "www.anthropic.com",
-          "published_at": "2026-11-06T00:00:00+00:00",
-          "evidence_type": "article_excerpt",
-          "discussion_points": 105,
-          "discovery_channel": "Hacker News link to primary source",
-          "topic": "RAG"
-        },
-        {
-          "id": "news-2d1d326185a6",
-          "title": "Flipsnack grows product signups with conversion optimization",
-          "url": "https://openai.com/ads/customers/flipsnack",
-          "publisher": "OpenAI",
-          "published_at": "2026-11-05T00:45:15+00:00",
-          "evidence_type": "feed_excerpt",
-          "topic": "RAG"
-        },
-        {
-          "id": "news-b49ec3bd8394",
-          "title": "The sleep framework: A new way for LLMs to retain knowledge in continual learning",
-          "url": "https://research.google/blog/the-sleep-framework-a-new-way-for-llms-to-retain-knowledge-in-continual-learning/",
-          "publisher": "Google Research",
-          "published_at": "2026-10-27T17:35:00+00:00",
-          "evidence_type": "article_excerpt",
-          "topic": "RAG"
-        }
-      ],
-      "id": "ad5d94dcdb798b9f"
-    },
     {
       "date": "2026-11-08",
       "timezone": "America/New_York",
@@ -3761,6 +3500,226 @@
         }
       ],
       "id": "3a7e704746f147d6"
+    },
+    {
+      "date": "2026-11-24",
+      "timezone": "America/New_York",
+      "created_at": "2026-11-24T21:17:12.092834+00:00",
+      "topic": "RAG",
+      "language": "en",
+      "concept": "Why retrieve before answering?",
+      "news_window": "recent",
+      "source_warnings": [],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "Why Retrieve Before Answering?",
+        "summary": "Large language models store facts implicitly in their parameters, which limits how precisely they can access knowledge, how easily that knowledge can be updated, and whether answers can be traced to sources. Retrieval-augmented generation (RAG) addresses this by pairing a pre-trained generator with a non-parametric memory — a dense vector index of documents queried by a neural retriever — so the model consults external evidence before generating. Research on RAG and REALM shows this combination outperforms parametric-only models on knowledge-intensive tasks like open-domain question answering, and produces more specific, factual language.",
+        "story": "Imagine Maya, a hospital librarian. Doctors often ask her questions at the desk. Maya has two colleagues. The first, Sam, has read enormous amounts and answers from memory. He is fast, but sometimes he confuses details, mixes up two similar studies, cannot say where he learned something, and his knowledge slowly goes out of date because he cannot re-read anything. The second colleague, Priya, also knows a lot, but before answering she walks to the archive, pulls the two most relevant files, skims them, and answers while pointing at the pages she used. When a treatment guideline changes, nobody re-educates Priya — the archive is simply updated, and her next answer reflects it. One day a doctor asks about a rare drug interaction. Sam gives a confident but vague reply. Priya retrieves the exact bulletin, quotes the relevant paragraph, and flags that her file is from last year. The doctor trusts Priya not because she is smarter, but because her answer is grounded in something everyone can inspect and refresh.",
+        "connection": "Sam is the parametric memory of a pre-trained language model: facts baked into network weights. The archive is the non-parametric memory: an explicit, external corpus. Priya's walk to the shelves is the retrieval step, and her habit of citing pages is provenance. Updating the archive instead of re-training Priya is why retrieval-based systems can refresh world knowledge without retraining the generator.",
+        "explanation": "The RAG paper (Lewis et al.) frames this precisely: pre-trained seq2seq models store factual knowledge in parameters, but their ability to access and precisely manipulate knowledge is limited, and providing provenance and updating world knowledge remain open problems. RAG combines a pre-trained seq2seq generator (parametric memory) with a dense vector index of Wikipedia accessed through a pre-trained neural retriever (non-parametric memory). Two formulations exist: one conditions on the same retrieved passages for the whole generated sequence, the other can consult different passages per token. Fine-tuned this way, RAG set state-of-the-art results on three open-domain QA tasks, beating both parametric-only seq2seq models and task-specific retrieve-and-extract architectures, and its generated text was more specific, diverse, and factual. REALM (Guu et al.) tackles the same problem from the pre-training side: instead of ever-larger networks to store more facts, it adds a latent knowledge retriever used during pre-training, fine-tuning, and inference, trained unsupervised via masked language modeling with backpropagation through a retrieval step over millions of documents. On open-domain QA benchmarks it outperformed prior methods by 4–16% absolute accuracy while offering interpretability and modularity. The shared lesson: retrieving relevant documents before answering lets the model reason over explicit evidence rather than relying solely on compressed parameters.",
+        "application": "In practice, you build a RAG pipeline by chunking your documents, embedding them into a vector index, retrieving the top matches for each user query, and passing those passages plus the question to the generator. This is the standard pattern for chatbots over internal documentation, support assistants over product manuals, and QA over legal or medical corpora — anywhere answers must reflect current, source-checkable content that changes independently of the model.",
+        "exercise": "Set a two-minute timer. Take one question you might ask an LLM at work (for example, 'What is our refund policy?'). Write down: (1) what could go wrong if the model answers purely from parameters, (2) which document you would want retrieved, and (3) how you would know the answer was grounded. If you can name all three in two minutes, you have internalized the retrieval-before-answering loop.",
+        "question": "In RAG, what plays the role of 'parametric memory' and what plays the role of 'non-parametric memory', and why does this split help with updating knowledge?",
+        "answer": "The pre-trained seq2seq generator is the parametric memory (facts stored in weights); the dense vector index of documents accessed by a neural retriever is the non-parametric memory. The split helps because knowledge updates only require changing or re-indexing the external corpus, not retraining the model, and answers can carry provenance back to retrieved passages.",
+        "limits": "The librarian analogy understates the difficulty of retrieval. Priya always knows which shelf to check; a dense retriever can miss relevant documents, and if retrieval fails, the generator may still answer from parameters with unearned confidence. Also, retrieved passages are not automatically correct — the model can still misread them, and the analogy says nothing about the two RAG formulations' differing per-token retrieval behavior, which matters in real systems.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "Recent developments worth a look",
+        "overview": "Two recent items from major research labs: an OpenAI science story about amateur astronomers using Codex and Astra to find exoplanet candidates, and a Google Research post on DeepCrossAttention, an architectural alternative to standard residual connections. Neither is a RAG paper, but both illustrate how explicit, inspectable mechanisms — retrieved evidence in one case, routed layer features in the other — can outperform opaque, blended approaches.",
+        "items": [
+          {
+            "headline": "Amateur astronomers use Codex and Astra to surface exoplanet candidates",
+            "what_happened": "An OpenAI article published November 24, 2026 describes two amateur astronomers who used AI tools to search public telescope data for exoplanets. Kevin Bond used Codex to build a search pipeline over observations of about 100,000 stars from the Kepler telescope, combining published methods for detecting recurring dips in starlight (transits) in light curves, with one AI agent scanning for signals and another running detailed checks. His search flagged more than 200 signals, including 10 from previously confirmed planets — a useful sanity check — and two strong candidates (KIC 5689121 with a 13.8-day dip cycle, and KIC 6691030 with a 4.8-day cycle). Ethan Byrd independently used Astra to design two searches over data from roughly 19 million stars, drawing on TESS and other public archives, producing 49 candidates in a first pass. Both have submitted candidates for independent professional follow-up: a SETI Institute astronomer's independent search reproduced Bond's two signals, and one of Byrd's candidates is awaiting analysis by TESS researchers. The article stresses that confirmation can take months or years, since dips can also come from eclipsing stars or instrument effects.",
+            "why_it_matters": "This is a concrete example of AI-assisted coding lowering the barrier to real scientific work: the hard part was not telescope access but writing and testing a search pipeline over public data. A useful analogy: the AI acted like a very fast lab assistant who never gets bored scanning graphs, while the humans still had to design the experiment and — crucially — send results to independent experts. For developers, the pattern is transferable: build a pipeline, validate it against known ground truth (the 10 confirmed planets), then seek independent verification.",
+            "takeaway": "These are unconfirmed candidates, not discoveries; the publisher is OpenAI, which employs one of the people involved, so treat the framing with that in mind. Before drawing lessons, inspect the verification chain: what independent checks were run, what could else explain the dips, and how long confirmation may take.",
+            "source_ids": [
+              "news-7758c04a6293"
+            ]
+          },
+          {
+            "headline": "Google Research proposes DeepCrossAttention to replace static residual connections",
+            "what_happened": "A Google Research blog post from November 23, 2026 presents DeepCrossAttention (DCA), an architecture that generalizes transformer residual connections. Standard residual connections add each layer's output to its input with equal weighting, which the authors say causes information dilution in deep networks as early-layer details get averaged out. DCA instead uses dynamic layer routing and depth-wise cross-attention so each layer can selectively weight and combine features from the history of preceding layers, per token. Reported results: on LM1B and C4 language modeling benchmarks, DCA matched standard transformer quality in up to five times fewer training steps; a perplexity under 14 on LM1B needed 42 layers for a standard transformer versus 30 with DCA (a 29% depth reduction); added parameters are under 0.2% of model size; and retrofitting DCA onto a pre-trained transformer and briefly continuing training reduced LM1B perplexity by 0.19 versus 0.02 for continued standard training. The post also surveys related work, including Moonshot AI's attention residuals and hyper-connection variants, and notes adoption in the Inkling 2 model by Thinking Machines.",
+            "why_it_matters": "If the reported efficiency gains hold in practice, the everyday use case is cheaper training and inference for language models — better quality per unit of compute, or smaller models for the same quality. The analogy from the post itself: standard residuals are a rigid additive pipeline, while DCA is dynamic routing, letting each layer pick which earlier features it needs rather than blending everything equally. There is a loose conceptual echo with retrieval: selectively fetching what is relevant instead of averaging everything.",
+            "takeaway": "These are the authors' own benchmark results from a blog post summarizing their ICML 2025 paper, not independent replications, and the post is truncated mid-sentence, so we are working from an excerpt. Before trying DCA, inspect the full paper for training budgets, baselines, memory-bandwidth costs (the post notes DCA increases memory bandwidth), and whether gains transfer beyond LM1B and C4 to production-scale models.",
+            "source_ids": [
+              "news-990f58ceeb05"
+            ]
+          }
+        ],
+        "exercise": "Set a two-minute timer. Pick one of the two items and list: (1) one claim made by the publisher, (2) one piece of evidence given for it, and (3) one thing you would need to check in the primary source before relying on the claim. Note for each whether the claim is a measured result or an interpretation.",
+        "question": "The OpenAI exoplanet story reports 'more than 200 signals' flagged by Bond's search. Why is the fact that 10 came from previously confirmed planets important, and why are the remaining candidates still not discoveries?",
+        "answer": "The 10 confirmed planets act as a validation set: they show the pipeline can detect known planet signals, giving confidence it works as intended. The remaining candidates are not discoveries because a dip in starlight can have other causes (eclipsing stars, instrument effects), and confirmation requires independent follow-up observations and peer review, which can take months or years."
+      },
+      "usage": {
+        "prompt_tokens": 5501,
+        "completion_tokens": 2448,
+        "total_tokens": 7949,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": null,
+          "reasoning_tokens": 51,
+          "rejected_prediction_tokens": null
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-7758c04a6293",
+          "title": "Searching for distant planets with Astra",
+          "url": "https://openai.com/index/searching-for-distant-planets-with-astra",
+          "publisher": "OpenAI",
+          "published_at": "2026-11-24T11:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-990f58ceeb05",
+          "title": "Supercharging transformer residual connections",
+          "url": "https://research.google/blog/supercharging-transformer-residual-connections/",
+          "publisher": "Google Research",
+          "published_at": "2026-11-23T17:21:12+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "Other"
+        }
+      ],
+      "id": "e198a7ef57fd865c"
+    },
+    {
+      "date": "2026-11-24",
+      "timezone": "America/New_York",
+      "created_at": "2026-11-24T21:17:12.092834+00:00",
+      "topic": "RAG",
+      "language": "te",
+      "concept": "Why retrieve before answering?",
+      "news_window": "recent",
+      "source_warnings": [],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "ముందు ఎందుకు retrieve చేయాలి? (RAG మూల ఆలోచన)",
+        "summary": "Large language models తమ parameters లో నిజాలను నిల్వ చేస్తాయి, కానీ ఆ జ్ఞానాన్ని ఖచ్చితంగా access చేయడం, నవీకరించడం, మూలం (provenance) చూపడం కష్టం. Retrieval-Augmented Generation (RAG) మోడల్ సమాధానం చెప్పే ముందు external corpus నుంచి సంబంధిత passages ను retrieve చేసి, వాటిపై ఆధారపడి generate చేస్తుంది. దీంతో knowledge-intensive tasks లో ఖచ్చితత్వం, specificity, interpretability పెరుగుతాయి.",
+        "story": "ఊహించండి: మీరు ఒక అనుభవజ్ఞుడైన లైబ్రేరియన్ అయిన రాము గారిని కలిశారు. వాళ్లు వేల పుస్తకాలు చదివి, చాలా విషయాలు తలలో గుర్తుంచుకున్నారు. ఒక రోజు మీరు '2019 లో మా ఊరి జనాభా ఎంత?' అని అడిగారు. రాము గారు గుర్తుతో ఒక సంఖ్య చెప్పారు — కానీ అది తప్పు. వాళ్లు చాలా సంవత్సరాల గణాంకాలు కలిపి గందరగోళం చెందారు. ఇప్పుడు రెండో రోజు: అదే ప్రశ్నకు వాళ్లు ముందు గ్రంథాలయ సూచిక (index) చూసి, సరైన జనగణన నివేదిక తీసుకుని, ఆ పేజీ చదివి, 'ఇదిగో, ఈ నివేదిక ప్రకారం ఇదే సంఖ్య' అని చెప్పారు — పేజీ నంబర్ తో సహా. మొదటి రోజు వాళ్లు జ్ఞాపకం మీద ఆధారపడ్డారు; రెండో రోజు ముందు వెతికి (retrieve చేసి), ఆపై సమాధానం చెప్పారు. రెండో విధానం ఖచ్చితం, ధృవీకరించదగినది, కొత్త నివేదికలు వచ్చినప్పుడు తలను కడగక్కా కేవలం కొత్త పుస్తకం షెల్ఫ్ లో పెట్టినంతయే.",
+        "connection": "ఈ కథలో రాము గారి తల = model యొక్క parametric memory (weights లో నిల్వైన జ్ఞానం). గ్రంథాలయం = external corpus (ఉదా: Wikipedia యొక్క dense vector index). సూచిక చూసి పుస్తకం వెతకడం = neural retriever తో document retrieval. ఆ పేజీ చదివి సమాధానం చెప్పడం = retrieved passages ను condition చేసి generation చేయడం. పేజీ నంబర్ చూపడం = provenance (మూలం) అందించడం.",
+        "explanation": "RAG పేపర్ (Lewis et al.) ప్రకారం, pre-trained seq2seq మోడల్ (parametric memory) + Wikipedia యొక్క dense vector index ను న్యూరల్ retriever తో access చేసే non-parametric memory ని కలిపి ఒక general-purpose fine-tuning recipe గా RAG ని ప్రతిపాదించారు. రెండు రకాలున్నాయి: మొత్తం generated sequence కి ఒకే retrieved passages వాడే రకం, మరియు token కి వేరు వేరు passages వాడగలిగే రకం. ఫలితంగా open-domain QA tasks లో parametric-only seq2seq మోడల్స్ మరియు task-specific retrieve-and-extract architectures ను అధిగమించి state-of-the-art నమోదు చేశారు; generation tasks లో కూడా ఎక్కువ specific, diverse, factual భాష వచ్చింది. REALM పేపర్ అదే దిశలో ముందుంది: pre-training సమయంలోనే latent knowledge retriever ని unsupervised గా (masked language modeling signal తో, retrieval step ద్వారా backpropagate చేస్తూ) నేర్పించవచ్చని చూపింది. దీని వల్ల జ్ఞానం modular, interpretable అవుతుంది — ఎప్పుడూ పెద్ద నెట్‌వర్క్ లోపల దాగి ఉండకుండా. Open-QA benchmarks లో REALM గత పద్ధతులన్నింటినీ 4–16% absolute accuracy తో అధిగమించింది. రెండు పేపర్ల మూల సందేశం ఒకటే: జ్ఞానాన్ని parameters లో మాత్రమే ఆశ్రయించకుండా, సమాధానానికి ముందు explicit documents ను retrieve చేయడం వల్ల ఖచ్చితత్వం, నవీకరణ సౌలభ్యం, మూలం చూపే సామర్థ్యం వస్తాయి.",
+        "application": "Developer గా మీరు కంపెనీ internal docs మీద ప్రశ్నలకు సమాధానం చెప్పే assistant ని నిర్మిస్తే: documents ను embeddings గా vector index లో నిల్వ చేసి, వినియోగదారు ప్రశ్న వచ్చినప్పుడు retriever తో top passages తీసుకుని, వాటిని LLM context లో ఇచ్చి సమాధానం generate చేయండి. సమాధానంతో పాటు source document links చూపిస్తే వినియోగదారులు ధృవీకరించగలరు; కొత్త docs వచ్చినప్పుడు index ని మాత్రమే update చేస్తే చాలు — model ని మళ్లీ train చేయాల్సిన అవసరం లేదు.",
+        "exercise": "రెండు నిమిషాల వ్యాయామం: మీ ప్రాజెక్ట్ లో ఒక LLM ని మీరు తెలిసిన ఒక విషయం గురించి అడిగి, దాని సమాధానంలో మూలం (source) ఉందో లేదో గమనించండి. తర్వాత అదే ప్రశ్నకు ఒక నమ్మకమైన document ను context గా ఇచ్చి మళ్లీ అడిగి, రెండు సమాధానాల మధ్య ఖచ్చితత్వం, specificity, ధృవీకరణ సామర్థ్యంలో తేడాను ఒక వాక్యంలో రాయండి.",
+        "question": "RAG లో parametric memory మరియు non-parametric memory అంటే ఏమిటి? సమాధానానికి ముందు retrieval చేయడం వల్ల వచ్చే రెండు ప్రధాన ప్రయోజనాలు ఏమిటి?",
+        "answer": "Parametric memory = pre-trained seq2seq మోడల్ యొక్క weights లో నిల్వైన జ్ఞానం; non-parametric memory = dense vector index (ఉదా: Wikipedia) రూపంలో ఉన్న external documents, వీటిని neural retriever తో access చేస్తారు. ప్రయోజనాలు: (1) మోడల్ తన జ్ఞాపకం మీద కాకుండా తాజా, ఖచ్చితమైన passages పై ఆధారపడి ఎక్కువ factual, specific సమాధానాలు ఇవ్వగలదు; (2) జ్ఞానం modular గా, interpretable గా ఉంటుంది — మూలం చూపవచ్చు, index ని update చేయడం ద్వారా జ్ఞానాన్ని నవీకరించవచ్చు.",
+        "limits": "ఈ analogy కి పరిమితులున్నాయి: లైబ్రేరియన్ లాగా కాకుండా, RAG మోడల్ retrieved passage ని తప్పుగా అర్థం చేసుకోవచ్చు లేదా retrieval తప్పైతే తప్పు మూలం మీద ఆధారపడవచ్చు. అలాగే లైబ్రేరీలో పుస్తకం కచ్చితంగా దొరుకుతుంది, కానీ vector search సెమాంటిక్ సారూప్యం మీద ఆధారపడుతుంది — సరైన document ఎప్పుడూ top results లో రాకపోవచ్చు. అంతేకాదు, కథలో రాము గారు పేజీని పూర్తిగా చదువుతారు; నిజమైన systems లో context window పరిమితి వల్ల passages మాత్రమే ఇవ్వబడతాయి.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "ఈ వారం AI వార్తలు",
+        "overview": "ఈ రోజుల్లో రెండు ముఖ్యమైన అభివృద్ధులు: amateur astronomers AI agents తో ఎక్సోప్లానెట్ అభ్యర్థులను కనుగొనడం, మరియు Google Research యొక్క transformer residual connections ను మెరుగుపరిచే కొత్త architecture.",
+        "items": [
+          {
+            "headline": "Amateur astronomers, Codex మరియు Astra తో దూర గ్రహాల వేట",
+            "what_happened": "OpenAI ప్రచురించిన కథనం ప్రకారం (2026 నవంబర్ 24), ఇద్దరు amateur astronomers — OpenAI engineer Kevin Bond మరియు start-up founder Ethan Byrd — AI tools తో public telescope data లో ఎక్సోప్లానెట్ సంకేతాలు వెతికారు. ఎక్సోప్లానెట్ ను కనుగొనే సాధారణ పద్ధతి transit: గ్రహం తన నక్షత్రం ముందు దాటినప్పుడు star brightness లో చిన్న, ఆవర్తన dip కనిపిస్తుంది. Bond, Codex తో ప్రచురిత పద్ధతులను పోల్చి, కలిపి, ఒక search program ని నిర్మించి Kepler టెలిస్కోప్ data (సుమారు 100,000 నక్షత్రాలు) పై నడిపారు — 200 కంటే ఎక్కువ signals వచ్చాయి; వాటిలో 10 ఇప్పటికే ధృవీకరించిన గ్రహాలవి, ఇది program కి confidence ఇచ్చింది. Byrd, Astra తో TESS సహా public archives లో సుమారు 19 మిలియన్ నక్షత్రాల data పై రెండు searches నడిపి 49 candidates పొందారు. Bond యొక్క రెండు signals (KIC 5689121, KIC 6691030) ను SETI Institute astronomer స్వతంత్రంగా కనుగొన్నారు; Byrd యొక్క ఒక strong candidate TESS పరిశోధకుల దగ్గర further analysis కోసం ఉంది.",
+            "why_it_matters": "ఇది AI agents ని విశేష ప్రభావం చూపే ప్రాంతం చూపిస్తుంది: భారీ public datasets లో పదే పదే జరిగే pattern-search — ఇది పాక్షికంగా coding problem. ఒక analogy తో చెప్పాలంటే: ఇది ఒక అద్భుతమైన కొత్త టెలిస్కోప్ కాదు; ఇది మీ ఇంటి వద్ద ఉన్న పాత ఫోటో ఆల్బమ్ లో మీరు మిస్ అయిన చిన్న వివరాలను వేగంగా వెతికి చూపే ఒక చతురుడు సహాయకుడు లాంటిది. Developer కి ఉపయోగకరమైన పాఠం: ఒక AI agent signals ను scan చేయగా, రెండో agent detailed checks నడిపే multi-agent pipeline ని Bond వాడారు — ఇదే నమూనాను మీ data-processing pipelines లో వాడవచ్చు. అలాగే ఇప్పటికే ధృవీకరించిన 10 గ్రహాల signals ను కనుగొనడం ద్వారా program ను validate చేయడం — ఇది మీ కొత్త tool ను known-correct cases తో test చేయాలన్న engineering సూత్రం.",
+            "takeaway": "ఇవి ఇంకా ధృవీకరించబడని candidates మాత్రమే — ఒక dip కి eclipsing binary నక్షత్రాలు లేదా టెలిస్కోప్ instrument temperature మార్పులు కూడా కారణం కావచ్చు; ధృవీకరణకు నెలలు లేదా సంవత్సరాలు పట్టవచ్చు. ప్రయత్నించే ముందు: ఇది publisher (OpenAI) చెప్పిన కథనమేనని, ఫలితాలు SETI Institute మరియు TESS పరిశోధకుల స్వతంత్ర మూల్యాంకనానికి ఇంకా వెళ్తున్నాయని గుర్తుంచుకోండి; peer-reviewed ధృవీకరణ లేదు. NASA Exoplanet Watch లాంటి citizen-science programs ద్వారా మీరు కూడా పాల్గొనవచ్చు.",
+            "source_ids": [
+              "news-7758c04a6293"
+            ]
+          },
+          {
+            "headline": "Google Research యొక్క DeepCrossAttention: residual connections ను dynamic గా మార్చడం",
+            "what_happened": "Google Research blog (2026 నవంబర్ 23) ప్రకారం, వారి ICML 2025 పేపర్ లో ప్రతిపాదించిన DeepCrossAttention (DCA) అనే architecture transformer ల residual connections ను మెరుగుపరుస్తుంది. సాధారణ residual connection ఒక layer యొక్క output ను input తో సమానంగా (equal weight తో) కూడుస్తుంది; లోతైన నెట్‌వర్క్ ల లో ఇది information dilution కి దారితీస్తుంది — మునుపటి layers లోని ఖచ్చితమైన details average అయిపోతాయి. DCA దీన్ని dynamic routing problem గా మార్చుతుంది: ప్రతి token కి, learnable weights మరియు depth-wise cross-attention (split Q/K/V) ద్వారా, ప్రతి layer మునుపటి layers మొత్తం history నుంచి ఏ features ముఖ్యమో ఎంచుకుంటుంది. Blog ప్రకారం LM1B, C4 benchmarks లో DCA standard transformers ను వరకు ఐదు రెట్లు తక్కువ training steps లో సమాన quality కి చేరుకుంది; LM1B లో perplexity <14 కోసం 42 layers బదులు 30 layers (29% తక్కువ depth) చాలింది. Parameters లో 0.2% కంటే తక్కువ మాత్రమే add అవుతాయి, మరియు DCA ను standard residual network లా initialize చేయగలిగినందున pre-trained మోడల్ ను retrofit చేసి కొద్దిగా training తో perplexity ని మెరుగుపరచవచ్చు.",
+            "why_it_matters": "ఇది మీరు రోజూ వాడే LLM ల లోపలి efficiency పై పరిశోధన. ఒక స్పష్టమైన analogy: సాధారణ residual stream ఒక 'Telephone' game లా — సమాచారం layer నుంచి layer కి వెళుతూ వికృతమవుతుంది; DCA మాత్రం ప్రతి layer కి 'పాత సందేశాల్లో నువ్వే ఎంచుకుని తీసుకో' అనే స్వేచ్ఛ ఇస్తుంది. Developer కి అర్థం: భవిష్యత్ లో అదే quality ని తక్కువ parameters/steps తో పొందగలిగితే training cost మరియు inference cost తగ్గవచ్చు. Blog లో Moonshot AI యొక్క attention residuals, hyper-connections లాంటి సంబంధిత పద్ధతుల గురించి కూడా చర్చించారు — dynamic residual routing ఒక active research దిశగా మారుతోంది.",
+            "takeaway": "ఇవి Google Research చెప్పిన benchmark ఫలితాలే; మీ నిర్దిష్ట workload, model size, hardware పై అవే లాభాలు వస్తాయని ధృవీకరణ లేదు. DCA memory bandwidth ని పెంచుతుందని blog స్వయంగా చెప్పింది — అంటే compute కాదు, memory వైపు trade-off ఉంది. ప్రయత్నించే ముందు: ICML 2025 పేపర్ ను చదివి, retrofit ఫలితం (LM1B లో 0.19 perplexity మెరుగు) చిన్నదేనని, మీ మోడల్ scale పై ఎలా ప్రవర్తిస్తుందో ముందు చిన్న experiments లో పరీక్షించండి.",
+            "source_ids": [
+              "news-990f58ceeb05"
+            ]
+          }
+        ],
+        "exercise": "రెండు నిమిషాల source-check వ్యాయామం: రెండు వార్తా అంశాలలో ఏది publisher యొక్క దావా (claim), ఏది స్వతంత్ర ధృవీకరణ — వేరు చేయండి. ఉదాహరణకు, ఎక్సోప్లానెట్ కథనంలో 'SETI Institute astronomer రెండు signals ను స్వతంత్రంగా కనుగొన్నారు' అనేది స్వతంత్ర ధృవీకరణ సమానం కాగా, 'candidates నిజమైన గ్రహాలే' అనేది ఇంకా ధృవీకరించబడని ఆశ. అలాగే Google blog లో benchmark ఫలితాలు publisher చేసిన కొలతలేనని గుర్తించండి. ప్రతి అంశానికి ఒక 'claim' మరియు ఒక 'verified/independent' అంశాన్ని రాయండి.",
+        "question": "ఎక్సోప్లానెట్ వేట కథనంలో Bond యొక్క search program కి confidence ఎలా వచ్చింది, మరియు ఆ ఫలితాల ధృవీకరణ ఇంకా ఏ దశలో ఉంది?",
+        "answer": "Program కనుగొన్న 200 కంటే ఎక్కువ signals లో 10 ఇప్పటికే ధృవీకరించబడిన గ్రహాలవి కావడంతో — అంటే program సరైన రకం signals ను పట్టుకోగలదని నిర్ధారణ — confidence వచ్చింది. ధృవీకరణ దశ: SETI Institute astronomer స్వతంత్రంగా అదే రెండు signals ను కనుగొన్నారు (ఇది encouraging initial check మాత్రమే); Byrd యొక్క ఒక candidate TESS పరిశోధకుల దగ్గర further analysis కోసం ఉంది. ఏ candidate నిజమైన గ్రహమో ధృవీకరించడానికి follow-up observations అవసరం — అది నెలలు లేదా సంవత్సరాలు పట్టవచ్చు."
+      },
+      "usage": {
+        "prompt_tokens": 5501,
+        "completion_tokens": 11137,
+        "total_tokens": 16638,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": null,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": null
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-7758c04a6293",
+          "title": "Searching for distant planets with Astra",
+          "url": "https://openai.com/index/searching-for-distant-planets-with-astra",
+          "publisher": "OpenAI",
+          "published_at": "2026-11-24T11:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-990f58ceeb05",
+          "title": "Supercharging transformer residual connections",
+          "url": "https://research.google/blog/supercharging-transformer-residual-connections/",
+          "publisher": "Google Research",
+          "published_at": "2026-11-23T17:21:12+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "Other"
+        }
+      ],
+      "id": "812f980addbc6468"
     }
   ]
 }
