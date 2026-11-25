@@ -1,8 +1,29 @@
 {
   "schema_version": 1,
   "task": "ai_headlines",
-  "checked_at": "2026-11-24T21:17:12.092834+00:00",
+  "checked_at": "2026-11-25T20:29:18.856211+00:00",
   "items": [
+    {
+      "id": "news-c232ab95006f",
+      "title": "Verifiable Social Reasoning for LLM Assistants",
+      "url": "https://research.google/blog/verifiable-social-reasoning-for-llm-assistants/",
+      "publisher": "Google Research",
+      "published_at": "2026-11-25T17:10:27+00:00"
+    },
+    {
+      "id": "news-df3be113c8ae",
+      "title": "Hill-climbing Inkling 2 Mini inference on one RTX PRO 6000",
+      "url": "https://huggingface.co/blog/inkling-2-mini-inference-hillclimb",
+      "publisher": "Hugging Face",
+      "published_at": "2026-11-25T00:00:00+00:00"
+    },
+    {
+      "id": "news-ac2f786b30f6",
+      "title": "GPT-6 models demonstrate intrinsic protein-design capabilities",
+      "url": "https://openai.com/index/gpt-6-models-demonstrate-intrinsic-protein-design-capabilities",
+      "publisher": "OpenAI",
+      "published_at": "2026-11-24T13:00:00+00:00"
+    },
     {
       "id": "news-7758c04a6293",
       "title": "Searching for distant planets with Astra",
@@ -25,6 +46,13 @@
       "published_at": "2026-11-24T00:00:00+00:00"
     },
     {
+      "id": "news-a3c9028eefd6",
+      "title": "Clay helps sales teams win with Codex and ChatGPT",
+      "url": "https://openai.com/business/customer-stories/clay-plugins-openai",
+      "publisher": "OpenAI",
+      "published_at": "2026-11-24T00:00:00+00:00"
+    },
+    {
       "id": "news-b0689cf87ab5",
       "title": "OpenAI and Cisco introduce Shirudo",
       "url": "https://openai.com/index/introducing-shirudo",
@@ -37,13 +65,6 @@
       "url": "https://research.google/blog/supercharging-transformer-residual-connections/",
       "publisher": "Google Research",
       "published_at": "2026-11-23T17:21:12+00:00"
-    },
-    {
-      "id": "news-3ffa5c39e01e",
-      "title": "Finding faster quantum algorithms with agents and formal verification",
-      "url": "https://deepmind.google/blog/finding-faster-quantum-algorithms-with-agents-and-formal-verification/",
-      "publisher": "Google DeepMind",
-      "published_at": "2026-11-23T16:59:40+00:00"
     },
     {
       "id": "news-10878202550b",
@@ -65,27 +86,6 @@
       "url": "https://huggingface.co/blog/agentic-evals",
       "publisher": "Hugging Face",
       "published_at": "2026-11-23T00:00:00+00:00"
-    },
-    {
-      "id": "news-1a10f1676d46",
-      "title": "Perplexity and Intelligence",
-      "url": "https://openai.com/index/perplexity-and-intelligence",
-      "publisher": "OpenAI",
-      "published_at": "2026-11-22T00:00:00+00:00"
-    },
-    {
-      "id": "news-536d4386c711",
-      "title": "How Google Duplex evolved to also call businesses for you in Gemini",
-      "url": "https://research.google/blog/how-google-duplex-evolved-to-also-call-businesses-for-you-in-gemini/",
-      "publisher": "Google Research",
-      "published_at": "2026-11-20T23:30:30+00:00"
-    },
-    {
-      "id": "news-7ad44f990f0c",
-      "title": "Combatting adversarial distillation",
-      "url": "https://openai.com/index/combatting-adversarial-distillation",
-      "publisher": "OpenAI",
-      "published_at": "2026-11-20T10:00:00+00:00"
     }
   ]
 }
