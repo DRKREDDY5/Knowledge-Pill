@@ -1,283 +1,8 @@
 {
   "schema_version": 1,
   "task": "daily_pills_collection",
-  "updated_at": "2026-11-25T20:31:11.975574+00:00",
+  "updated_at": "2026-11-26T20:14:55.081351+00:00",
   "packets": [
-    {
-      "date": "2026-11-10",
-      "timezone": "America/New_York",
-      "created_at": "2026-11-10T18:41:18.229822+00:00",
-      "topic": "RAG",
-      "language": "en",
-      "concept": "When retrieval finds the wrong evidence",
-      "news_window": "recent",
-      "source_warnings": [
-        {
-          "publisher": "Google DeepMind",
-          "reason": "ParseError"
-        }
-      ],
-      "router_engine": "TF-IDF + logistic regression",
-      "schema_version": 1,
-      "task": "daily_pills",
-      "status": "draft",
-      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
-      "generation_method": "fireworks",
-      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
-      "knowledge": {
-        "title": "When Retrieval Finds the Wrong Evidence",
-        "summary": "RAG models ground their answers in documents fetched from an external index, but the retriever can fetch the wrong passages. Understanding why that happens — and how the generator still depends on it — is key to debugging retrieval-augmented systems.",
-        "story": "Imagine a librarian named Priya who works at a huge library. A visitor asks a question at the desk. Priya doesn't read every book; instead, she has a fast trick: she matches keywords in the question against card-catalog summaries and pulls the three books that seem closest. She hands them to a colleague, Sam, who writes the final answer using only those three books. One day a visitor asks about 'jaguar speed.' Priya fetches books about the car brand, because the catalog summaries mention 'jaguar' and 'performance' often. Sam, trusting the librarian, confidently writes an answer about a sports car — never realizing the visitor meant the animal. The system didn't fail because Sam was a bad writer; it failed because the wrong evidence arrived at his desk, and he had no way to know other books existed.",
-        "connection": "In this story, Priya is the retriever — a neural model that searches a dense vector index of documents. Sam is the generator — a pre-trained seq2seq language model. The catalog summaries are the document embeddings, and the three pulled books are the retrieved passages conditioned on during generation. The visitor's ambiguous question is the query, and the car-versus-animal mix-up is a retrieval failure caused by semantic mismatch in the embedding space.",
-        "explanation": "Retrieval-augmented generation (RAG), introduced by Lewis et al., combines a parametric memory (a pre-trained seq2seq model's weights) with a non-parametric memory (a dense vector index of documents, here Wikipedia, accessed through a pre-trained neural retriever). The generator conditions its output on retrieved passages — either the same passages for the whole sequence, or different passages per token in the original formulation. REALM takes a related approach, training a latent knowledge retriever end-to-end by backpropagating through the retrieval step itself during pre-training. Both papers show why this architecture matters: knowledge stored only in model parameters is hard to update and hard to trace, while retrieved documents provide provenance and modularity. But the architecture also creates a specific failure mode: the generator only sees what the retriever fetches. If the retriever's similarity ranking surfaces plausible-but-wrong passages — because of ambiguous queries, stale index contents, or embedding similarity that doesn't track relevance — the generator will produce fluent, confident answers grounded in the wrong evidence. Fluency is not a signal of correctness here; a well-written answer built on the wrong passage looks identical to a well-written answer built on the right one.",
-        "application": "When debugging a RAG system, separate the two stages before blaming the model. Log the retrieved passages alongside every answer. If the answer is wrong but the correct passage was retrieved, the problem is generation or ranking — consider reranking or better prompting. If the correct passage was never retrieved, the problem is retrieval: inspect the query formulation, chunking strategy, and embedding model. This mirrors the provenance benefit the RAG paper highlights: because answers cite non-parametric memory, you can audit which evidence the model actually used, something a purely parametric model cannot offer.",
-        "exercise": "Set a two-minute timer. Take any RAG-powered feature you use (a chatbot with document search, a code assistant with repo search) and ask it one deliberately ambiguous question — a term with two meanings in your domain. Then ask yourself: if the answer is wrong, would I be able to tell from the output alone whether the retriever or the generator failed? Write down what log or citation you would need to check first.",
-        "question": "In a RAG system, the generator produces a fluent but factually wrong answer. What is the first thing you should inspect, and why?",
-        "answer": "The retrieved passages for that query. The generator can only condition on what the retriever fetched, so if the correct evidence never arrived, the failure is in retrieval (query, index, or embeddings), not in the generator.",
-        "limits": "The librarian analogy breaks down in an important way: Priya and Sam never talk. In real RAG systems, the retriever and generator can be jointly trained — REALM backpropagates through the retrieval step, and RAG formulations let the generator use different passages per token — so the two components are more coupled than a librarian handing books to a colleague. The analogy also understates the index itself: maintaining and updating a dense vector index over millions of documents is a real engineering cost the story hides.",
-        "source_ids": [
-          "paper-2005.11401",
-          "paper-2002.08909"
-        ]
-      },
-      "news": {
-        "title": "Agent memory, new TPUs, and drawing search: recent items",
-        "overview": "Three recent items relevant to retrieval and grounding: Anthropic on how agents organize memory, Google on new TPU systems for agentic workloads, and an OpenAI customer story on searching engineering drawings. Publisher claims are summarized as such; interpretation is separated below.",
-        "items": [
-          {
-            "headline": "Anthropic describes how Claude agents organize memory, including offline 'dreaming'",
-            "what_happened": "An Anthropic research post (published November 6, 2026) describes agent memory as knowledge retained between sessions as readable context, distinct from weight changes, in-context learning, and compaction. It describes 'dreaming' — using idle time to reflect on session logs, correct mistakes, and write memory notes — and reports evaluations on a memory benchmark (CL-Bench 1.0) and playing Pokémon Red. In the game test, the post says a model that wrote a small set of strategy-focused memory files progressed further than one that wrote hundreds of indiscriminate files that quickly went stale.",
-            "why_it_matters": "For developers building agents, this is a design lesson about what to persist: memory that duplicates what the environment already shows is redundant and costly to search, while tested rules and plans are valuable precisely because they exist nowhere else. Think of it like a developer's notes folder — a dashboard of current goal and next steps beats an archive of every terminal output. The post also reports that fixed rules like 'record only failures' reduced the memory benefit for stronger models, suggesting salience judgment is best left to the agent.",
-            "takeaway": "These are Anthropic's own evaluations on its own models; treat the model comparisons as vendor-reported, not independently verified. Before applying this, inspect what your agent actually re-reads between sessions — the claimed benefit depends on memory being retrieved and used, not just written.",
-            "source_ids": [
-              "news-f0247d2be6d2"
-            ]
-          },
-          {
-            "headline": "Google adds TPU 8tx and 8i Max for confidential inference and large context windows",
-            "what_happened": "A Google Cloud blog post (November 9, 2026) announces two additions to its eighth-generation TPU portfolio: TPU 8tx, which keeps data and model weights protected and isolated in hardware even during active processing, aimed at regulated workloads; and TPU 8i Max, which pairs two TPU 8i chips on one package to double compute, SRAM, and HBM bandwidth for large-context agentic workloads. The post also cites PyTorch support via TorchTPU and open-source serving tooling, and reports benchmark results from Google's own InferenceX and AgentX evaluations.",
-            "why_it_matters": "For teams running RAG or long-context agents, memory bandwidth is often the practical bottleneck when stuffing large retrieved contexts into a model — 8i Max targets exactly that. For teams in regulated industries handling sensitive documents in a retrieval pipeline, hardware-level confidential compute addresses the gap where data must be decrypted in memory during inference. Analogy: if your context window is a desk, 8i Max is a bigger desk with faster drawers, so the model isn't waiting on paperwork.",
-            "takeaway": "Performance figures (price-performance, latency, benchmark marks) come from Google's own blog and benchmarks, not third-party measurement. Before trying it, inspect actual pricing, regional availability, and whether your serving stack (vLLM, SGLang, PyTorch) is supported for your specific models.",
-            "source_ids": [
-              "news-e9950a58c892"
-            ]
-          },
-          {
-            "headline": "OpenAI customer story: Kuken Industries searches decades of engineering drawings",
-            "what_happened": "An OpenAI feed item (November 9, 2026) states that Kuken Industries uses the OpenAI API to search 70 years of cooling tower drawings, and that engineers now find the drawing needed for a repair in 4.5 minutes, down from nearly an hour. This item is a short feed excerpt, so the underlying article was not reviewed in full.",
-            "why_it_matters": "This is a retrieval problem in the wild: a large archive of technical documents where keyword search fails because drawings are described inconsistently. A semantic search layer over such an archive is a concrete RAG-style use case any team with legacy documentation can relate to — cutting a lookup from an hour to minutes changes maintenance workflows directly.",
-            "takeaway": "The figures come from a vendor's customer story, which is a marketing context; the excerpt gives no detail on indexing approach, accuracy rates, or failure cases. Before trying something similar, inspect your own corpus quality — scanned drawings may need OCR or captioning before any retrieval system works — and run a small evaluation set of real lookup tasks to measure your own baseline versus improvement.",
-            "source_ids": [
-              "news-2e34e84f0999"
-            ]
-          }
-        ],
-        "exercise": "Set a two-minute timer. Pick one of the three items and find the primary source. For each quantitative claim (e.g., '4.5 minutes down from an hour', benchmark scores), note whether the publisher provides methodology, who ran the evaluation, and what a skeptical reviewer would ask next.",
-        "question": "The Kuken claim of a 12x faster drawing lookup comes from which kind of source, and what should you check before trusting the number?",
-        "answer": "A vendor (OpenAI) customer story delivered as a short feed excerpt — a marketing context, not an independent evaluation. Check the underlying article for methodology, how retrieval accuracy was measured, and whether the baseline (the 'nearly an hour') reflects real current workflows."
-      },
-      "usage": {
-        "prompt_tokens": 6106,
-        "total_tokens": 8358,
-        "completion_tokens": 2252,
-        "prompt_tokens_details": {
-          "cached_tokens": 0
-        },
-        "completion_tokens_details": {
-          "reasoning_tokens": 45
-        },
-        "output_tokens_details": {
-          "reasoning_tokens": 45
-        }
-      },
-      "sources": [
-        {
-          "id": "paper-2005.11401",
-          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
-          "url": "https://arxiv.org/abs/2005.11401",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "paper-2002.08909",
-          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
-          "url": "https://arxiv.org/abs/2002.08909",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "news-f0247d2be6d2",
-          "title": "The components of agent memory",
-          "url": "https://www.anthropic.com/research/components-of-agent-memory",
-          "publisher": "www.anthropic.com",
-          "published_at": "2026-11-06T00:00:00+00:00",
-          "evidence_type": "article_excerpt",
-          "discussion_points": 188,
-          "discovery_channel": "Hacker News link to primary source",
-          "topic": "RAG"
-        },
-        {
-          "id": "news-e9950a58c892",
-          "title": "Our newest TPUs: 8tx and 8i Max, built for the agentic era",
-          "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/tpu-8i-max-and-8tx/",
-          "publisher": "blog.google",
-          "published_at": "2026-11-09T00:00:00+00:00",
-          "evidence_type": "article_excerpt",
-          "discussion_points": 28,
-          "discovery_channel": "Hacker News link to primary source",
-          "topic": "Other"
-        },
-        {
-          "id": "news-2e34e84f0999",
-          "title": "Kuken Industries searches 70 years of drawings in minutes",
-          "url": "https://openai.com/index/kuken",
-          "publisher": "OpenAI",
-          "published_at": "2026-11-09T08:00:00+00:00",
-          "evidence_type": "feed_excerpt",
-          "topic": "RAG"
-        }
-      ],
-      "id": "d4c1810b33d85a57"
-    },
-    {
-      "date": "2026-11-10",
-      "timezone": "America/New_York",
-      "created_at": "2026-11-10T18:41:18.229822+00:00",
-      "topic": "RAG",
-      "language": "te",
-      "concept": "When retrieval finds the wrong evidence",
-      "news_window": "recent",
-      "source_warnings": [
-        {
-          "publisher": "Google DeepMind",
-          "reason": "ParseError"
-        }
-      ],
-      "router_engine": "TF-IDF + logistic regression",
-      "schema_version": 1,
-      "task": "daily_pills",
-      "status": "draft",
-      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
-      "generation_method": "fireworks",
-      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
-      "knowledge": {
-        "title": "రిట్రీవల్ తప్పు సాక్ష్యాన్ని కనుగునప్పుడు: RAG లో retrieval వైఫల్యాలను అర్థం చేసుకోవడం",
-        "summary": "RAG (Retrieval-Augmented Generation) అంటే భాషా మోడల్ తన పరామితుల్లో నిల్వ ఉన్న జ్ఞానానికి అదనంగా, బాహ్య డాక్యుమెంట్ ఇండెక్స్ నుంచి సంబంధిత పేరాలను వెతికి తెచ్చుకుని, వాటి ఆధారంగా సమాధానం ఇవ్వడం. కానీ retriever ఎప్పుడైనా తప్పు లేదా సరిపోని డాక్యుమెంట్లను తెస్తే, మోడల్ ఆ తప్పు సాక్ష్యం మీద ఆధారపడి నమ్మకంగా కనిపించే తప్పు సమాధానం ఇవ్వవచ్చు. ఈ పాఠంలో retrieval వైఫల్యం ఎందుకు జరుగుతుందో, దాన్ని ఎలా గుర్తించాలో నేర్చుకుంటాం.",
-        "story": "ఊహించండి: మీరు ఒక పెద్ద లైబ్రరీలో సహాయకుడిని నియమించారు. అతనికి చాలా పుస్తకాలు చదివే జ్ఞానం ఉంది, కానీ ఖచ్చితమైన వివరాలు అడిగితే అతను గందరగోళం పడతాడు. అందుకోసం మీరు ఒక లైబ్రరీ సహాయకుడిని (retriever) పెట్టారు — మీరు ప్రశ్న అడిగితే, ఆ సహాయకుడు త్వరగా కొన్ని పుస్తక పేజీలు ఫోటోకాపీ చేసి ఇస్తాడు, మీ పండితుడు (జనరేటర్) వాటిని చదివి సమాధానం ఇస్తాడు. ఒకరోజు మీరు 'మా కంపెనీ వార్షిక నష్ట పరిమితి ఎంత?' అని అడిగారు. సహాయకుడు 'నష్ట' అనే పదం కనిపించిన పేజీలు తెచ్చాడు — కానీ అవి పొరుగు కంపెనీ పాత నివేదికలు. పండితుడు ఆ పేజీలను నమ్మి, ధైర్యంగా తప్పు సంఖ్య చెప్పాడు. సమాధానం సరిగా లేదు, కానీ అది పూర్తిగా సహాయకుడు తెచ్చిన తప్పు పేజీల వల్లే జరిగింది. పండితుడు తెలివైనవాడే — కానీ తప్పు సాక్ష్యం ముందు అతనికి ఏమీ చేయలేదు.",
-        "connection": "ఈ కథలోని మూడు పాత్రలు RAG ఆర్కిటెక్చర్‌కు సరిగ్గా సరిపోతాయి. మీ ప్రశ్న = user query. లైబ్రరీ సహాయకుడు = neural retriever, అతను డాక్యుమెంట్ల ఘన dense vector index నుంచి సంబంధిత పేరాలను వెతుకుతాడు. పండితుడు = pre-trained seq2seq జనరేటర్, అతను తన పరామితుల్లో ఉన్న జ్ఞానం (parametric memory) మరియు తెచ్చిన పేరాలు (non-parametric memory) రెండింటినీ కలిపి సమాధానం ఇస్తాడు. కథలో జరిగిన వైఫల్యం = retrieval failure: retriever సరైన డాక్యుమెంట్‌ను కాకుండా, ఉపరితలంగా పోలిక ఉన్న డాక్యుమెంట్‌ను ఎంచుకుంది.",
-        "explanation": "RAG పేపర్లు చెప్పే ముఖ్య ఆలోచన: పెద్ద మోడల్స్ జ్ఞానాన్ని పరామితుల్లో అప్రమేయంగా (implicitly) నిల్వ చేస్తాయి, దీనివల్ల జ్ఞానాన్ని ఖచ్చితంగా యాక్సెస్ చేయడం, నిర్ణయాలకు provenance (మూలం) చూపడం, కొత్త జ్ఞానాన్ని అప్‌డేట్ చేయడం కష్టమవుతుంది. REALM మరియు RAG పేపర్లు దీనికి పరిష్కారంగా explicit, modular జ్ఞాన నిల్వను — అంటే వేరుగా ఉండే డాక్యుమెంట్ ఇండెక్స్‌ను — ప్రతిపాదించాయి. దీని ప్రయోజనం: interpretability (ఏ డాక్యుమెంట్ ఆధారంగా సమాధానమో చూడగలగడం) మరియు ఇండెక్స్‌ను అప్‌డేట్ చేయడం ద్వారా జ్ఞానాన్ని తాజాకరించగలగడం. కానీ ఈ విభజన ఒక కొత్త బలహీన పాయింట్‌ను పరిచయం చేస్తుంది: మొత్తం సిస్టమ్ నాణ్యత retriever నాణ్యతపై ఆధారపడుతుంది. Retriever సాధారణంగా ప్రశ్న మరియు డాక్యుమెంట్ మధ్య semantic పోలికను లెక్కిస్తుంది — అది relevance అనుకునేది పదాల పోలిక లేదా vector దగ్గరత మాత్రమే. సరైన డాక్యుమెంట్ ఇండెక్స్‌లో లేకపోతే, లేదా ప్రశ్న అస్పష్టంగా ఉంటే, లేదా చాలా డాక్యుమెంట్లు ఉపరితలంగా పోలిక ఉంటే, retriever తప్పు ఎంపిక చేస్తుంది. జనరేటర్ సాధారణంగా తెచ్చిన సందర్భాన్ని నమ్మేస్తుంది కాబట్టి, తప్పు సాక్ష్యం తప్పు, కానీ నమ్మకంగా అనిపించే సమాధానానికి దారి తీస్తుంది.",
-        "application": "ప్రాక్టికల్‌గా: మీరు ఒక కంపెనీ డాక్యుమెంటేషన్ పై RAG చాట్‌బాట్ నిర్మిస్తున్నారనుకోండి. Retrieval వైఫల్యాలను పట్టుకోవడానికి మూడు ఆచరణాత్మక దశలు: (1) ప్రతి సమాధానానికి ఏ పేరాలు retrieve చేయబడ్డాయో లాగ్ చేయండి — RAG యొక్క provenance లాభాన్ని వాడుకోండి. (2) తప్పు సమాధానాలు వచ్చినప్పుడు మొదట జనరేటర్‌ను నిందించకుండా, retrieved పేరాలను చూడండి — సరైన సమాచారం అసలు తెచ్చారా లేదా? (3) తరచుగా వచ్చే ప్రశ్నల కోసం ఒక చిన్న evaluation set ని నిర్మించి, retrieval quality ని (సరైన డాక్యుమెంట్ top-k లో ఉందా) విడిగా కొలవండి — generation కి ముందే వైఫల్యాన్ని పట్టుకోండి.",
-        "exercise": "రెండు నిమిషాల వ్యాయామం: మీ సొంత పని లేదా ప్రాజెక్ట్ నుంచి ఒక సహజ ప్రశ్నను రాయండి (ఉదా: 'మా API rate limit ఎంత?'). ఇప్పుడు ఆ ప్రశ్నలోని కీలక పదాలు మాత్రం కలిగి, అర్థం వేరుగా ఉండే ఒక డాక్యుమెంట్‌ను ఊహించండి (ఉదా: వేరే సర్వీస్ rate limit గురించి పేజీ). ఒక సింపుల్ keyword search ఆ తప్పు డాక్యుమెంట్‌ను ఎందుకు ఎక్కువ స్కోర్ చేయగలదో ఒక వాక్యంలో రాయండి, మరియు semantic retriever కూడా ఇలాంటి తప్పు చేయగల ఒక సందర్భాన్నఁ గుర్తించండి. ఇది మీ retrieval evaluation set లో మొదటి test case కావచ్చు.",
-        "question": "RAG సిస్టమ్ తప్పు సమాధానం ఇచ్చినప్పుడు, జనరేటర్‌ను పరిశీలించే ముందు మొదట ఏమి తనిఖీ చేయాలి మరియు ఎందుకు?",
-        "answer": "Retriever తెచ్చిన డాక్యుమెంట్లను (retrieved passages) తనిఖీ చేయాలి. ఎందుకంటే జనరేటర్ తెచ్చిన సందర్భాన్ని ఆధారంగా తీసుకుంటుంది; retriever తప్పు లేదా సరిపోని డాక్యుమెంట్లు ఇచ్చి ఉంటే, ఎంత మంచి జనరేటర్ ఉన్నా సమాధానం తప్పవచ్చు. సరైన సమాచారం retrieve అయి ఉంటేనే జనరేటర్ వైఫల్యం అని అనుమానించడం సరైన క్రమం.",
-        "limits": "ఈ అనలాజీ పరిమితులు: లైబ్రరీ సహాయకుడు అర్థం చేసుకుని ఎంచుకుంటాడు, కానీ నిజమైన retriever కేవలం గణితపరమైన పోలిక (vector దగ్గరత లేదా స్కోరు) ఆధారంగా పనిచేస్తాడు — అతనికి 'తప్పు అని గ్రహించడం' ఉండదు. అలాగే కథలో పండితుడు అన్ని పేజీలు చదివి విశ్లేషిస్తాడు, కానీ నిజమైన మోడల్స్ సందర్భాన్ని పూర్తిగా విశ్లేషించకపోవచ్చు, కొన్ని RAG రూపాల్లో టోకెన్ వారీగా వేర్వేరు పేరాలను వాడవచ్చు. చివరగా, ఈ అనలాజీ retrieval వైఫల్యాన్ని వివరిస్తుంది గానీ, దాన్ని కొలవడానికి లేదా పరిష్కరించడానికి ఉపయోగపడే నిర్దిష్ట పద్ధతులను సూచించదు.",
-        "source_ids": [
-          "paper-2005.11401",
-          "paper-2002.08909"
-        ]
-      },
-      "news": {
-        "title": "ఇటీవలి అభివృద్ధులు: ఏజెంట్ మెమరీ, కొత్త TPUs, మరియు పాత డ్రాయింగ్ల శోధన",
-        "overview": "ఈ వారం మూడు వార్తలు: Anthropic ఏజెంట్ మెమరీ నిర్వహణపై పరిశోధన ప్రచురించింది, Google రెండు కొత్త TPU సిస్టమ్లను ప్రకటించింది, మరియు OpenAI ఒక కస్టమర్ కేస్ స్టడీని పంచింది. మొదటి రెండు ప్రాథమిక వనరుల నుంచి నేరుగా చదివిన సారాంశాలు; మూడోది కేవలం feed excerpt మాత్రమే, కాబట్టి వివరాలు పరిమితం.",
-        "items": [
-          {
-            "headline": "Anthropic: ఏజెంట్ మెమరీ కంపోనెంట్లు — 'dreaming' ద్వారా మెమరీ నిర్వహణ",
-            "what_happened": "Anthropic ఏజెంట్ మెమరీపై ఒక పరిశోధనా పోస్ట్ ప్రచురించింది (2026 నవంబర్ 6). ఇది ఏజెంట్లు సెషన్ల మధ్య నిల్వ చేసే జ్ఞానాన్ని — memory notes, salience tagging, మరియు idle సమయంలో లాగ్లను పునఃసంఘటితం చేసే 'dreaming' ప్రక్రియను — వివరిస్తుంది. వారి మూల్యాంకనాల్లో (CL-Bench 1.0 డేటాబేస్ టాస్క్, Pokémon Red ఆట), ఎక్కువ సామర్థ్యం ఉన్న మోడల్స్ చిన్న, ధృవీకరించిన నియమాలతో కూడిన మెమరీ ఫోల్డర్లను నిర్వహించి మెరుగైన ఫలితాలు సాధించాయి; అన్నీ రాయడం వల్ల పాత మోడల్ పనితీవు దెబ్బతింది. మెమరీ ఫోల్డర్ ఉన్నట్లు చెప్పడం చాలా మోడల్స్‌కు సహాయపడింది, కానీ 'వైఫల్యాలను మాత్రమే రాయండి' లాంటి కఠిన నియమాలు కొన్ని మోడల్స్‌లో ప్రయోజనాన్ని తగ్గించాయి.",
-            "why_it_matters": "మీరు దీర్ఘకాలిక ఏజెంట్లు లేదా సెషన్ల మధ్య స్థితిని నిలిపే అప్లికేషన్లు నిర్మిస్తే, ఇది నేరుగా పనికొస్తుంది: మెమరీ అంటే అన్నీ నిల్వ చేయడం కాదు, భవిష్యత్తులో అవసరమవుతుందని అంచనా వేసే సమాచారాన్ని మాత్రమే నిల్వ చేయడం. ఒక స్పష్టమైన అనలాజీ: ఇది మన రాత్రి నిద్రలో జ్ఞాపకాలు స్థిరపడే ప్రక్రియ లాంటిది — ఏజెంట్ ఖాళీ సమయంలో తన లాగ్లను పునఃపరిశీలించి సరైన నోట్స్ తయారు చేస్తుంది. RAG దృష్టితో చూస్తే, ఇది retrieval కి ముందు జరిగే దశ: ఏ సమాచారం ఇండెక్స్‌లో ఉండాలో నిర్ణయించడమే తర్వాతి retrieval నాణ్యతను నిర్ణయిస్తుంది.",
-            "takeaway": "ఇది పరిశోధనా పోస్ట్ మాత్రమే — ప్రకటించిన ఉత్పత్తి ఫీచర్ కాదు, ఫలితాలు నిర్దిష్ట మూల్యాంకనాలకు పరిమితం. ప్రయత్నించే ముందు: మీ ఏజెంట్ యొక్క వాస్తవ పనిలో ఏ రకమైన సమాచారం సెషన్ల మధ్య అవసరమవుతుందో, మరియు మెమరీ ఫైళ్లు ఎప్పటికప్పుడు పాతబడతాయో (Pokémon ఉదాహరణలో చూపినట్లు) తనిఖీ చేయండి.",
-            "source_ids": [
-              "news-f0247d2be6d2"
-            ]
-          },
-          {
-            "headline": "Google: ఎనిమిదో తరం TPUs విస్తరణ — 8tx మరియు 8i Max",
-            "what_happened": "Google Cloud బ్లాగ్ (2026 నవంబర్ 9) ప్రకారం, Google తన ఎనిమిదో తరం TPU పోర్ట్‌ఫోలియోకు రెండు కొత్త సిస్టమ్లను జోడించింది: TPU 8tx — సున్నితమైన డేటా కోసం hardware-level confidential inference అందించే సిస్టమ్, డేటా మరియు model weights ప్రాసెసింగ్ సమయంలో కూడా రక్షించబడతాయి; మరియు TPU 8i Max — రెండు 8i చిప్స్‌ను ఒకే ప్యాకేజీలో కలిపి, TPU 8i తో పోలిస్తే రెట్టింపు compute, SRAM మరియు HBM bandwidth అందించే, పెద్ద context windows కోసం రూపొందిన సిస్టమ్. బ్లాగ్ ప్రకారం ఇది ఒకే సంవత్సరంలో నాలుగు TPU సిస్టమ్లు ప్రవేశపెట్టిన మొదటిసారి. PyTorch మద్దతు మరియు open-source tooling విషయాలు కూడా పేర్కొనబడ్డాయి.",
-            "why_it_matters": "డెవలపర్ దృష్టితో: పెద్ద context windows అంటే మీ RAG పైప్‌లైన్‌లో ఎక్కువ retrieved డాక్యుమెంట్లను ఒకేసారి జనరేటర్‌కు ఇవ్వగలగడం — కానీ memory bandwidth బాటిల్‌నెక్ అవుతుంది, 8i Max ఆ సమస్యను టార్గెట్ చేస్తుంది. 8tx అయితే ఆరోగ్యం, ఆర్థిక వ్యవస్థ లాంటి నియంత్రిత రంగాల్లో ప్రైవేట్ డేటాపై fine-tuning మరియు ఏజెంట్ నడుపుకోవడానికి ఉపయోగపడుతుంది. ఇది ప్రకటన మాత్రమే — సార్వత్రిక విప్లవం కాదు; పనితీవు వాదనలు ప్రచురించిన సంస్థ యొక్క వాటివే.",
-            "takeaway": "ప్రయత్నించే ముందు: మీ వర్క్‌లోడ్ నిజంగా hardware-level confidentiality లేదా million-token context అవసరమవుతుందా చూడండి; బ్లాగ్‌లోని benchmark ఫలితాలు (InferenceX, AgentX) మరియు price-performance వాదనలు ప్రచురించిన వారివే కాబట్టి, మీ స్వంత వర్క్‌లోడ్‌తో ధృవీకరించండి. అందుబాటు, ధర మరియు regional availability వివరాలు Google Cloud డాక్యుమెంటేషన్‌లో చూడాలి.",
-            "source_ids": [
-              "news-e9950a58c892"
-            ]
-          },
-          {
-            "headline": "OpenAI కేస్ స్టడీ: Kuken Industries 70 ఏళ్ల డ్రాయింగ్ల శోధన",
-            "what_happened": "OpenAI వెబ్‌సైట్‌లోని ఒక ఫీడ్ వివరణ ప్రకారం, Kuken Industries అనే సంస్థ OpenAI API ఉపయోగించి 70 ఏళ్ల cooling tower డ్రాయింగ్లను శోధిస్తోంది; రిపేర్ కోసం కావలసిన డ్రాయింగ్‌ను కనుగొనడానికి పట్టే సమయం దాదాపు ఒక గంట నుంచి 4.5 నిమిషాలకు తగ్గిందట. ఈ సమాచారం కేవలం సంక్షిప్త ఫీడ్ వివరణ నుంచి వచ్చింది — పూర్తి కేస్ స్టడీ చదివినట్లు చెప్పలేము.",
-            "why_it_matters": "ఇది ఒక స్పష్టమైన retrieval వాడుక కేసు: పాత, నిర్మాణం లేని (unstructured) టెక్నికల్ ఆర్కైవ్‌లలో నిర్దిష్ట డాక్యుమెంట్‌ను వెతకడం — ఇది అనేక ఫ్యాక్టరీలు, ఇంజనీరింగ్ సంస్థలు ఎదుర్కొనే సమస్య. అనలాజీగా: ఇది మా కథలోని లైబ్రరీ సహాయకుడి వంటిదే, కానీ ఇక్కడ లక్ష్యం సమాధానం కాదు, సరైన డాక్యుమెంట్‌ను వేగంగా చేరవేసుకోవడం. ఇలాంటి పనితీవు వాదనలు (గంట నుంచి 4.5 నిమిషాలు) సంస్థ మరియు ప్రచురించిన వేదిక రెండింటివీ ఆసక్తి ఉన్నవి కాబట్టి, వాటిని స్వతంత్ర ధృవీకరణగా పరిగణించకూడదు.",
-            "takeaway": "ముఖ్యమైన పరిమితి: ఇది feed excerpt — పద్ధతి, డేటా సెట్ పరిమాణం, కొలిచే విధానం లేదా తప్పుల రేటు గురించి తెలియదు. ఇలాంటి సొల్యూషన్‌ను మీ ఆర్కైవ్‌లకు ప్రయత్నించే ముందు: మీ డాక్యుమెంట్ల ఫార్మాట్ (స్కాన్ చేసిన డ్రాయింగ్లకు OCR/విజువల్ అవసరం ఉండవచ్చు), సరైన డాక్యుమెంట్‌ను కనుగొనే ఖచ్చితత్వాన్ని కొలిచే పద్ధతి, మరియు తప్పు డ్రాయింగ్ చేరవేసుకుంటే దాని ఖరీదైన పరిణామాలను పరిశీలించండి.",
-            "source_ids": [
-              "news-2e34e84f0999"
-            ]
-          }
-        ],
-        "exercise": "రెండు నిమిషాల సోర్స్-చెక్ వ్యాయామం: మూడు వార్తా వనరుల్లో ఏది ప్రచురించిన సంస్థ యొక్క స్వంత ఉత్పత్తి లేదా పరిశోధనపై ఆధారపడిందో గుర్తించండి (చిట్కా: మూడూ అలాగే ఉన్నాయి). ఇప్పుడు ప్రతి దానికి ఒక్కొక్క ప్రశ్న రాయండి — Anthropic పోస్ట్ కోసం: మూల్యాంకనాలు ఏ పనులపై జరిగాయి? Google బ్లాగ్ కోసం: benchmark ఫలితాలు ఎవరు కొలిచారు? OpenAI కేస్ స్టడీ కోసం: 4.5 నిమిషాల సమయం ఎలా కొలవబడింది? ఈ ప్రశ్నలకు సమాధానాలు అందుబాటులో లేకపోతే, అదే మీరు మొదట తనిఖీ చేయాల్సిన ఖాళీలు.",
-        "question": "ఈ మూడు వార్తా అంశాల్లో ఏది పూర్తి వ్యాసం చదివిన ఆధారంతో కాకుండా, కేవలం సంక్షిప్త ఫీడ్ వివరణ ఆధారంగా రాయబడింది, మరియు దీని అర్థం ఏమిటి?",
-        "answer": "Kuken Industries కేస్ స్టడీ (news-2e34e84f0999) కేవలం feed excerpt ఆధారంగా రాయబడింది. దీని అర్థం: ఆ అంశంపై మేము పద్ధతి, కొలత విధానం లేదా పరిమితుల గురించి వివరాలు చెప్పలేము — ప్రకటించిన సంఖ్యలు (70 ఏళ్ల ఆర్కైవ్, 4.5 నిమిషాలు) ప్రచురించిన పక్షం చెప్పినవే, స్వతంత్రంగా ధృవీకరించినవి కావు. మిగతా రెండు అంశాలు ప్రాథమిక వనరుల వివరణాత్మక సారాంశాల ఆధారంగా రాయబడ్డాయి."
-      },
-      "usage": {
-        "prompt_tokens": 6106,
-        "completion_tokens": 15459,
-        "total_tokens": 21565,
-        "prompt_tokens_details": {
-          "cached_tokens": 0
-        },
-        "completion_tokens_details": {
-          "accepted_prediction_tokens": null,
-          "reasoning_tokens": 27,
-          "rejected_prediction_tokens": null
-        }
-      },
-      "sources": [
-        {
-          "id": "paper-2005.11401",
-          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
-          "url": "https://arxiv.org/abs/2005.11401",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "paper-2002.08909",
-          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
-          "url": "https://arxiv.org/abs/2002.08909",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "news-f0247d2be6d2",
-          "title": "The components of agent memory",
-          "url": "https://www.anthropic.com/research/components-of-agent-memory",
-          "publisher": "www.anthropic.com",
-          "published_at": "2026-11-06T00:00:00+00:00",
-          "evidence_type": "article_excerpt",
-          "discussion_points": 188,
-          "discovery_channel": "Hacker News link to primary source",
-          "topic": "RAG"
-        },
-        {
-          "id": "news-e9950a58c892",
-          "title": "Our newest TPUs: 8tx and 8i Max, built for the agentic era",
-          "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/tpu-8i-max-and-8tx/",
-          "publisher": "blog.google",
-          "published_at": "2026-11-09T00:00:00+00:00",
-          "evidence_type": "article_excerpt",
-          "discussion_points": 28,
-          "discovery_channel": "Hacker News link to primary source",
-          "topic": "Other"
-        },
-        {
-          "id": "news-2e34e84f0999",
-          "title": "Kuken Industries searches 70 years of drawings in minutes",
-          "url": "https://openai.com/index/kuken",
-          "publisher": "OpenAI",
-          "published_at": "2026-11-09T08:00:00+00:00",
-          "evidence_type": "feed_excerpt",
-          "topic": "RAG"
-        }
-      ],
-      "id": "6e1ab3eee9ba5c93"
-    },
     {
       "date": "2026-11-11",
       "timezone": "America/New_York",
@@ -3726,6 +3451,226 @@
         }
       ],
       "id": "7c68edd360381235"
+    },
+    {
+      "date": "2026-11-26",
+      "timezone": "America/New_York",
+      "created_at": "2026-11-26T20:13:11.271176+00:00",
+      "topic": "RAG",
+      "language": "en",
+      "concept": "When retrieval finds the wrong evidence",
+      "news_window": "recent",
+      "source_warnings": [],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "When Retrieval Finds the Wrong Evidence",
+        "summary": "RAG systems combine a model's parametric knowledge with documents fetched from an external index. The quality of the final answer depends heavily on whether the retriever surfaces the right evidence. This pill explains why retrieval can return plausible-but-wrong passages, how that propagates into answers, and what developers can do about it.",
+        "story": "Maya is a librarian in a busy city library. A visitor asks, \"What year did the city's tram line close?\" Maya doesn't know the answer herself, but she's fast at fetching books. She searches the catalog for \"tram line close\" and grabs three books: one about the tram line, one about a different city's trams, and one about bus route closures. She hands all three to the visitor's assistant, who writes a confident summary. The summary blends the wrong city's closure year with the right city's history. Maya never lied, and the assistant never hallucinated from thin air, but the answer is wrong because the fetched evidence was wrong. The next week Maya adds a rule: before handing over books, she checks that the city name matches the question, and she asks the visitor one clarifying question when the request is ambiguous. Wrong answers drop sharply.",
+        "connection": "Maya is the retriever: a component that searches an index (the library shelves) and returns candidate passages. The visitor's assistant is the generator: a language model that conditions its answer on whatever passages it receives. The catalog search is the similarity match, typically dense vector search. The wrong-city book is a near-neighbor in embedding space that is semantically close but factually off-target. Maya's new rule is a filtering or reranking step, and her clarifying question is query reformulation.",
+        "explanation": "The core idea of retrieval-augmented generation is to pair a pre-trained seq2seq model (parametric memory) with an explicit non-parametric memory, a dense vector index of documents accessed through a neural retriever. The RAG paper by Lewis et al. shows this improves factuality, specificity, and provenance on knowledge-intensive tasks like open-domain QA, and REALM shows that a retriever can even be trained during pre-training by backpropagating through the retrieval step itself. But the architecture's strength is also its failure mode: the generator treats retrieved passages as evidence. If the retriever returns passages that are lexically or semantically similar to the query yet about the wrong entity, time period, or jurisdiction, the generator will often weave them into a fluent, confident answer. Retrieval errors are especially dangerous because they look like grounding: the answer cites a source, so users trust it more. Common causes include ambiguous queries, chunking that strips context, stale indexes, and embedding spaces where unrelated entities sit close together. Mitigations include reranking retrieved candidates with a stronger model, requiring entity or metadata agreement between query and passage, retrieving more candidates and letting the generator weigh them (as RAG's per-token formulation does), and logging retrieved passages so wrong evidence is visible during debugging.",
+        "application": "In a support chatbot over internal documentation, add a verification layer: after retrieval, check that document titles, product names, and version numbers in the top passages match the entities detected in the user's question. If they don't, either rerank, re-query with a reformulated question, or have the bot say it isn't sure. Log every retrieved passage ID alongside each answer so that when a wrong answer surfaces, you can trace it to the exact passage that misled the generator.",
+        "exercise": "Take any RAG demo you have access to (or sketch one on paper). Ask it three questions: one clear, one ambiguous (missing a year or product name), and one using a synonym for a key entity. For each, inspect the top three retrieved passages before reading the answer. Note where a passage is topically similar but factually off-target, and write one filter rule that would have caught it. Time-box this to two minutes.",
+        "question": "Why is wrong retrieved evidence often more dangerous than the generator hallucinating from thin air?",
+        "answer": "Because the answer appears grounded: it is conditioned on real passages and may cite them, so users extend more trust to it. A fluent answer built on plausible-but-wrong evidence inherits that credibility while still being incorrect, making the error harder to detect than an unsupported guess.",
+        "limits": "The library analogy suggests the retriever can always learn a simple checking rule. In reality, dense retrievers are learned systems whose failure modes are subtle, and the RAG and REALM papers evaluate retrieval quality indirectly through downstream task accuracy, not through per-passage correctness. The analogy also understates the generator's role: models can sometimes ignore bad passages or use multiple retrieved documents to compensate, so wrong evidence does not guarantee a wrong answer.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "Recent Signals: AI-Assisted Science and Evaluating Assistant Reasoning",
+        "overview": "Two recent items are relevant to developers thinking about evidence quality: OpenAI's write-up on amateur astronomers using Codex and Astra for exoplanet searches, and Google Research's framework for evaluating how assistants reason from user-mediated, subjective accounts.",
+        "items": [
+          {
+            "headline": "Amateur astronomers use Codex and Astra to surface exoplanet candidates",
+            "what_happened": "An OpenAI article describes two independent amateur searches. Kevin Bond used Codex to build a pipeline over Kepler observations of roughly 100,000 stars, flagging over 200 signals including 10 from previously confirmed planets; a SETI Institute astronomer independently found two of the same signals. Ethan Byrd used Astra to design and run searches over data from about 19 million stars, producing 49 candidates, one of which was sent to TESS mission researchers for analysis. These are candidates, not confirmed planets; confirmation can take months or years.",
+            "why_it_matters": "This is a concrete example of the retrieval-and-evidence theme: the pipelines look for small, recurring dips in starlight (transits), and a dip can also come from eclipsing stars or instrument effects. Bond's decision to validate against known planets before trusting new candidates mirrors how developers should validate retrieval pipelines against known-good answers. For developers, the use case is agentic coding tools helping domain amateurs run real scientific analyses on public data.",
+            "takeaway": "Publisher claims describe candidate signals and independent partial checks, not confirmed discoveries. Before trying a similar workflow, inspect how the pipeline validated itself (Bond's recovery of known planets is the key signal) and remember that candidates await peer-reviewed confirmation.",
+            "source_ids": [
+              "news-7758c04a6293"
+            ]
+          },
+          {
+            "headline": "Google Research open-sources a framework for evaluating social reasoning from user-mediated narratives",
+            "what_happened": "Google Research published an evaluation framework using multi-agent simulations in which a target agent has a hidden motive, a simulated user recounts events subjectively, and the evaluated assistant must infer the motive, giving verifiable ground truth by construction. Across 12 LLMs, they found an assistant-observer gap (models reason worse through the user's subjective lens than as direct observers), sensitivity to user framing, a need for more narrative detail than humans require, and a tendency to anchor to the user's framing across conversation turns. The framework and a 20K-example dataset are open-sourced.",
+            "why_it_matters": "This is essentially a study in evidence quality: the assistant's only evidence is the user's biased retelling, and models often adopt that framing instead of reasoning from underlying facts, sometimes validating unfounded suspicion. For developers of advice or support bots, the analogy is a witness relying only on one interested party's testimony. The open dataset offers a ready-made benchmark for testing whether your assistant pushes back on one-sided framing.",
+            "takeaway": "The findings come from simulated scenarios with LLM-as-a-judge scoring, so real-world behavior may differ. Before applying it, inspect the framework's scenario categories and dataset on GitHub, and treat the results as evidence about user-mediated reasoning gaps rather than a verdict on any specific model.",
+            "source_ids": [
+              "news-c232ab95006f"
+            ]
+          }
+        ],
+        "exercise": "Pick one of the two items and spend two minutes finding the primary source (the OpenAI article or Google's paper/GitHub link). Identify one claim the publisher makes and one limitation the publisher itself states. Note whether the evidence is a confirmed result or a candidate awaiting further validation.",
+        "question": "What do the exoplanet pipelines and the social-reasoning framework have in common from a RAG perspective?",
+        "answer": "Both are about acting on imperfect evidence: the astronomy pipelines validate candidate signals against known ground truth before trusting new ones, and the social-reasoning framework shows that assistants given only subjective, user-mediated evidence can adopt biased framing rather than the underlying facts. In both cases, checking evidence quality before committing to an answer is the core safeguard."
+      },
+      "usage": {
+        "prompt_tokens": 5466,
+        "completion_tokens": 1893,
+        "total_tokens": 7359,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": null,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": null
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-7758c04a6293",
+          "title": "Searching for distant planets with Astra",
+          "url": "https://openai.com/index/searching-for-distant-planets-with-astra",
+          "publisher": "OpenAI",
+          "published_at": "2026-11-24T11:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-c232ab95006f",
+          "title": "Verifiable Social Reasoning for LLM Assistants",
+          "url": "https://research.google/blog/verifiable-social-reasoning-for-llm-assistants/",
+          "publisher": "Google Research",
+          "published_at": "2026-11-25T17:10:27+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "Other"
+        }
+      ],
+      "id": "fd1080e1669166d4"
+    },
+    {
+      "date": "2026-11-26",
+      "timezone": "America/New_York",
+      "created_at": "2026-11-26T20:13:11.271176+00:00",
+      "topic": "RAG",
+      "language": "te",
+      "concept": "When retrieval finds the wrong evidence",
+      "news_window": "recent",
+      "source_warnings": [],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "రిట్రీవల్ తప్పు ఆధారాలను కనుగునప్పుడు",
+        "summary": "RAG సిస్టమ్‌లు మోడల్ పారామీటర్లలో నిల్వ ఉన్న సమాచారాన్ని బదులుగా బాహ్య డాక్యుమెంట్ ఇండెక్స్ నుండి తీసుకోవడం ద్వారా మెరుగుపరుస్తాయి. కానీ retriever తప్పు లేదా సంబంధం లేని passages ను తీసుకువస్తే, మోడల్ ఆ తప్పు ఆధారాల ఆధారంగా నమ్మకంగా కనిపించే కానీ సరికాని సమాధానాలు ఇస్తుంది. ఈ పాఠంలో retrieval ఎందుకు విఫలమవుతుందో, దాన్ని ఎలా గుర్తించాలో నేర్చుకుంటారు.",
+        "story": "ఊహించండి: లక్ష్మి ఒక పెద్ద లైబ్రరీలో పనిచేసే సహాయకురాలు. ఒక రోజు ఓ పాఠకుడు వచ్చి 'మా ఊరి చిన్న చెరువు ఎప్పుడు తవ్వబడింది?' అని అడిగాడు. లక్ష్మి వేగంగా కేటలాగ్ వెతికి 'చెరువు' అనే పదం ఉన్న ఒక పుస్తకాన్ని తీసుకువచ్చింది — అది మరో జిల్లాలోని పెద్ద చెరువు గురించి చరిత్ర పుస్తకం. ఆమె ఆ పుస్తకంలోని వాక్యాన్ని చదివి వివరణ ఇచ్చింది. ఆమె ప్రక్రియ సరైనదే: వెతికింది, ఆధారం చదివింది, సమాధానం చెప్పింది. కానీ మొదటి అడుగులోనే — సరైన పుస్తకాన్ని ఎంచుకోవడంలో — పొరపాటు జరిగింది. తర్వాతి అన్ని అడుగులు సరుగ్గా జరిగినా, చివరి సమాధానం తప్పే. పాఠకుడికి మాత్రం 'పుస్తకం ఆధారంతో' చెప్పిన సమాధానం అంటే అది నిజమేనని అనిపించింది.",
+        "connection": "ఈ కథలోని ప్రతి భాగం RAG పైప్‌లైన్‌లో ఒక భాగానికి అనుగుణంగా ఉంటుంది. పాఠకుడి ప్రశ్న = user query. లక్ష్మి వెతకడం = retriever (ఇక్కడ dense vector index నుండి సంబంధిత passages తీస్తుంది). పుస్తకంలోని వాక్యం = retrieved passage (non-parametric memory). లక్ష్మి చదివి సమాధానం చెప్పడం = generator (seq2seq మోడల్, అంటే parametric memory). తప్పు పుస్తకం ఎంపిక = retrieval failure. ఆధారం చూపిన సమాధానం నమ్మకంగా అనిపించడం = provenance ఇచ్చినా అది సరైన ఆధారమేనని కాదు అనే ముఖ్యమైన అంశం.",
+        "explanation": "RAG అంటే retrieval-augmented generation: ప్రీ-ట్రైన్డ్ seq2seq మోడల్ (parametric memory) తో ఒక డాక్యుమెంట్ ఇండెక్స్ (non-parametric memory) ను కలిపి, ప్రశ్నకు సంబంధిత passages ను neural retriever తో తీసుకుని generation చేయడం. Lewis తదితరుల 2005.11401 పేపర్ ప్రకారం, పెద్ద మోడల్స్ వాస్తవాలను పారామీటర్లలో నిల్వ చేస్తాయి కానీ ఆ సమాచారాన్ని ఖచ్చితంగా యాక్సెస్ చేయడం, provenance ఇవ్వడం, విశ్వ సమాచారాన్ని అప్‌డేట్ చేయడం వంటివి పరిమితం — అందుకే బాహ్య మెమరీ అవసరం. REALM (2002.08909) కూడా ఇదే ఆలోచనను pre-training సమయంలోనే latent knowledge retriever తో ఉపయోగిస్తుంది, interpretability మరియు modularity లాభాలను పేర్కొంటుంది. కానీ ఈ ఆర్కిటెక్చర్ యొక్క బలహీన లింక్ retriever: అది సాధారణంగా query మరియు document embeddings మధ్య సారూప్యతపై ఆధారపడుతుంది. సారూప్యత అంటే సరైన సమాధానం కాదు — పదాలు పోలిన తప్పు డాక్యుమెంట్, సరైన డాక్యుమెంట్ కంటే ఎక్కువ స్కోర్ పొందవచ్చు. Generator తర్వాత ఆ తప్పు context ను నిజమైన సత్యంగా పరిగణించి, స్పష్టమైన, ఆధారం చూపే సమాధానం ఇస్తుంది. అంటే తప్పు ఎక్కడో గుర్తించడం కష్టమవుతుంది: సమాధానం సజావుగా, స్పష్టంగా ఉంటుంది కానీ మూలం తప్పు.",
+        "application": "ప్రాక్టికల్‌గా: మీ కంపెనీ డాక్యుమెంటేషన్ పై RAG చాట్‌బాట్ నిర్మిస్తున్నారనుకోండి. 'చెల్లింపు విఫలమైతే ఏమి చేయాలి?' అనే ప్రశ్నకు retriever 'చెల్లింపు' అనే పదం ఉన్న పాత, వాడుకలో లేని పాలసీ పేజీని తీసుకురావచ్చు. దీన్ని అరికట్టడానికి: (1) retrieved passages ను యూజర్‌కు చూపి, సమాధానం ఆ passage లో నిజంగా ఉందో తనిఖీ చేయమనండి; (2) ఒకే ప్రశ్నను వేర్వేరు పదాలతో అడిగి retriever స్థిరంగా ఉంటుందో పరీక్షించండి; (3) తెలిసిన సమాధానాలు ఉన్న ప్రశ్నల సెట్‌తో retrieval accuracy ని విడిగా కొలవండి — generation ను మాత్రం చూడకుండా, ఏ passages వచ్చాయో మాత్రమే. ఇది సమాధానం తప్పైతే దోషం retriever లోనా generator లోనా అని వేరు చేయడానికి సహాయపడుతుంది.",
+        "exercise": "రెండు నిమిషాల వ్యాయామం: ఏదైనా RAG డెమో లేదా మీ సొంత పైప్‌లైన్ తీసుకోండి. ఒక ప్రశ్నను రెండు విధాలుగా అడగండి (ఉదా: 'refund policy ఏమిటి?' మరియు 'డబ్బు తిరిగి ఎలా వస్తుంది?'). ప్రతిసారి మోడల్ సమాధానం ముందు వచ్చే top-3 retrieved passages ను మాత్రమే చూడండి. రెండు కేసుల్లో ఒకే passage వచ్చిందా? అది నిజంగా సమాధానం కలిగి ఉందా, లేదా కేవలం పదాలు పోలిందా? మీ పరిశీలనలను రెండు వాక్యాల్లో రాయండి.",
+        "question": "RAG సమాధానం తప్పైనప్పుడు, దోషం retriever లోనో generator లోనో అని ఎలా వేరు చేయగలరు?",
+        "answer": "Generation ను పూర్తిగా వదిలేసి, ఆ ప్రశ్నకు retriever తీసుకువచ్చిన passages ను మాత్రమే పరిశీలించండి. సరైన సమాచారం ఉన్న passage రాకపోతే దోషం retriever లోది; సరైన passage వచ్చినా సమాధానం తప్పైతే దోషం generator లోది.",
+        "limits": "ఈ ఉపమానం పరిమితులు: లక్ష్మి ఒకే పుస్తకం తీసుకువస్తుంది, కానీ RAG మోడల్స్ ఒకే generation లో బహుళ passages ను కలిపి చూడవచ్చు — కొన్ని ఫార్ములేషన్లలో token వారీగా కూడా వేర్వేరు passages ఉపయోగించవచ్చు. అలాగే లైబ్రరీ కేటలాగ్ స్థిరంగా ఉంటుంది, కానీ dense retrievers training ద్వారా నేర్చుకున్న సారూప్యతను వాడతాయి, అది పూర్తిగా పారదర్శకం కాదు. చివరగా, ఆధారం (citation) చూపడం అంటే ఆ ఆధారం సరైనదని కాదు — ఇది కథలో సులభంగా మరచిపోగల అంశం.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "ఈ వారం సంక్షిప్త సమాచారం",
+        "overview": "ఈ వారం రెండు అంశాలు: OpenAI బ్లాగ్‌లో ఔత్సాహిక ఖగోళ శాస్త్రవేత్తలు AI టూల్స్‌తో ఎక్సోప్లానెట్ అభ్యర్థులను కనుగొన్న కథనం, మరియు Google Research యొక్క సోషల్ రీజనింగ్ మూల్యాంకన ఫ్రేమ్‌వర్క్. రెండూ ప్రచురణకర్త వివరణలపై ఆధారపడి సంక్రమించబడ్డాయి; స్వతంత్ర ధృవీకరణ లేదు.",
+        "items": [
+          {
+            "headline": "ఔత్సాహిక శాస్త్రవేత్తలు Codex, Astra తో ఎక్సోప్లానెట్ అభ్యర్థులను గుర్తించారు",
+            "what_happened": "OpenAI బ్లాగ్ ప్రకారం (నవంబర్ 24, 2026), ఇద్దరు ఔత్సాహిక ఖగోళ శాస్త్రవేత్తలు ప్రజా టెలిస్కోప్ డేటాలో గ్రహాల సంకేతాల కోసం వెతికారు. Kevin Bond Codex తో Kepler టెలిస్కోప్ డేటాలో సుమారు 100,000 నక్షత్రాలను స్కాన్ చేసి, ప్రకాశంలో ఆవర్తన తగ్గుదలలు (transit dips) కనుగొనే ప్రోగ్రామ్‌ను నిర్మించారు — 200 కంటే ఎక్కువ సిగ్నల్స్ ఫ్లాగ్ అయ్యాయి, వాటిలో 10 ఇప్పటికే ధృవీకరించిన గ్రహాలవి. Ethan Byrd Astra తో TESS సహా ప్రజా ఆర్కైవ్స్ నుండి సుమారు 19 మిలియన్ నక్షత్రాల డేటాపై రెండు శోధనలు రూపొందించి 49 అభ్యర్థులను కనుగొన్నారు. SETI Institute శాస్త్రవేత్త ఒకరు Bond యొక్క రెండు సిగ్నల్స్‌ను స్వతంత్రంగా కనుగొన్నారు; Byrd యొక్క ఒక బలీయమైన అభ్యర్థి TESS బృందం వద్ద విశ్లేషణ కోసం ఉంది. ఇవి ఇంకా ధృవీకరించబడని అభ్యర్థులే — ధృవీకరణకు నెలలు లేదా సంవత్సరాలు పడవచ్చు.",
+            "why_it_matters": "డెవలపర్లకు ఇది ముఖ్యమైన పాఠం: Bond తన పైప్‌లైన్ విశ్వసనీయతను తనిఖీంచడానికి ఇప్పటికే తెలిసిన 10 ధృవీకరించిన గ్రహాలను మళ్లీ పట్టుకున్నాడు — ఇది ఏ డిటెక్షన్ సిస్టమ్‌కైనా వర్తించే ధృవీకరణ పద్ధతి. ఉపమానంగా చెప్పాలంటే: మీ spam ఫిల్టర్ నిజమైన spam ను పట్టుకుంటుందో ముందు తెలిసిన ఉదాహరణలతో పరీక్షించడం లాంటిది. అలాగే సిస్టమ్ తప్పు సిగ్నల్స్ కూడా ఇస్తుందని తెలుసుకోవడం — నక్షత్రాలు ఒకదానికొకటి ముందు దాటడం లేదా టెలిస్కోప్ ఉష్ణోగ్రత మార్పులు కూడా ఇలాంటి dips కలిగిస్తాయి — ఏ AI డిటెక్షన్ సిస్టమ్‌లోనైనా false positives అనివార్యం అనే అంశాన్ని గుర్తు చేస్తుంది.",
+            "takeaway": "ఇది ధృవీకరించిన గ్రహాల ఆవిష్కరణ కాదు — పరిశోధన కోసం అభ్యర్థుల జాబితా మాత్రమే. ప్రయత్నించే ముందు: ఈ ఫలితాలు OpenAI ప్రచురించిన కథనం నుండి వచ్చాయని, స్వతంత్ర సమీక్ష ఇంకా ప్రారంభ దశలోనే ఉందని, మరియు పూర్తి పైప్‌లైన్ వివరాలు లేదా కోడ్ బహిరంగంగా అందుబాటులో ఉందో కథనంలో తనిఖీ చేయండి.",
+            "source_ids": [
+              "news-7758c04a6293"
+            ]
+          },
+          {
+            "headline": "Google Research: యూజర్ కథనాలపై ఆధారపడినప్పుడు LLM సోషల్ రీజనింగ్ బలహీనపడుతుంది",
+            "what_happened": "Google Research బ్లాగ్ (నవంబర్ 25, 2026) ప్రకారం, వారు మల్టీ-ఏజెంట్ సోషల్ సిమ్యులేషన్ల ఆధారిత మూల్యాంకన ఫ్రేమ్‌వర్క్‌ను ప్రవేశపెట్టారు. ఒక ఏజెంట్‌కు దాగిన ఉద్దేశం (hidden motive) ఇచ్చి సిమ్యులేషన్ నడిపి, తర్వాత యూజర్ పాత్ర ఆ సంఘటనలను పాక్షికంగా, పక్షపాతంతో అసిస్టెంట్‌కు చెప్పి, అసిస్టెంట్ ఆ ఉద్దేశాన్ని ఊహించాల్సి ఉంటుంది — దీనివల్ల ధృవీకరించదగిన ground truth లభిస్తుంది. 12 LLM లను పరీక్షించగా, ముఖ్య ఫలితాలు: సంఘటనలను నేరుగా చూసినప్పుడు కంటే యూజర్ కథనం ద్వారా తెలుసుకున్నప్పుడు ఖచ్చితత్వం గణనీయంగా తగ్గుతుంది; మోడల్స్ యూజర్ ఫ్రేమింగ్‌కు లోబడతాయి (ఆధారం లేని అనుమానాలను కూడా కొన్నిసార్లు ధృవీకరిస్తాయి); మరియు పొడవాటి సంభాషణలు ఎప్పుడూ మెరుగుదల తీసుకురావు. ఫ్రేమ్‌వర్క్ మరియు 20K కంటే ఎక్కువ ఉదాహరణల డేటాసెట్ ఓపెన్-సోర్స్ చేయబడ్డాయి.",
+            "why_it_matters": "ఇది RAG కు నేరుగా సంబంధించిన పాఠం: అసిస్టెంట్ చూసిన 'ఆధారం' వాస్తవానికి ఒక వ్యక్తి యొక్క పక్షపాతపూరిత కథనం మాత్రమే కావచ్చు. డెవలపర్ కోణంలో — మీ చాట్‌బాట్ యూజర్ ఇచ్చిన సమాచారం లేదా retrieved context పై ఎక్కువ ఆధారపడితే, ఆ context లోని ఒకపక్ష వైఖరిని అది పునరుత్పత్తి చేసే ప్రమాదం ఉంది. ఉపమానం: స్నేహితురాలి ఒకే వైపు కథ విన్న వ్యక్తి ఆ పక్షానే నిలిచిపోవడం లాంటిది — మోడల్ కూడా అలా చేస్తుందని ఈ ఫ్రేమ్‌వర్క్ కొలుస్తోంది.",
+            "takeaway": "ఇది ఏదైనా ఉత్పత్తి కాదు — పరిశోధనా ఫ్రేమ్‌వర్క్ మరియు బెంచ్‌మార్క్. ఫలితాలు సిమ్యులేటెడ్ వాతావరణం మరియు LLM-as-a-judge ఆధారితం, కాబట్టి వాస్తవ సంభాషణలకు ఎంతవరకు వర్తిస్తాయో అనేది ఓపెన్ ప్రశ్న. ప్రయత్నించే ముందు ఓపెన్-సోర్స్ డేటాసెట్ నిర్మాణం, సిమ్యులేషన్ విధానం, మరియు judge మోడల్ యొక్క పరిమితులను పేపర్/GitHub లో తనిఖీ చేయండి.",
+            "source_ids": [
+              "news-c232ab95006f"
+            ]
+          }
+        ],
+        "exercise": "రెండు నిమిషాల సోర్స్-చెక్: రెండు కథనాలను తెరిచి, ప్రతిదానికీ ఈ మూడు ప్రశ్నలకు సమాధానం రాయండి — (1) ఫలితాలు ధృవీకరించబడ్డాయా లేదా అభ్యర్థులు/పరిశోధనా ఫలితాలేనా? (2) స్వతంత్ర ధృవీకరణ ఎంతవరకు జరిగింది? (3) కోడ్ లేదా డేటాసెట్ అందుబాటులో ఉందా? తర్వాత మీ సమాధానాలను పై వివరణలతో పోల్చండి.",
+        "question": "Bond తన ఎక్సోప్లానెట్ శోధన పైప్‌లైన్ విశ్వసనీయతను తనిఖీంచడానికి ఏమి చేశారు, అది ఎందుకు ముఖ్యం?",
+        "answer": "ఇప్పటికే ధృవీకరించబడిన 10 గ్రహాల సిగ్నల్స్‌ను తన శోధన మళ్లీ పట్టుకున్నదో చూశారు. ఇది ముఖ్యం ఎందుకంటే తెలిసిన సత్యాలతో డిటెక్షన్ సిస్టమ్‌ను పరీక్షించడం వల్ల అది సరైన రకం సిగ్నల్స్‌ను పట్టుకుంటోందో లేదో ముందుగానే ధృవీకరించవచ్చు — ఇది ఏ డిటెక్షన్ లేదా retrieval సిస్టమ్‌కు వర్తించే పద్ధతి."
+      },
+      "usage": {
+        "prompt_tokens": 5466,
+        "completion_tokens": 12814,
+        "total_tokens": 18280,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": null,
+          "reasoning_tokens": 34,
+          "rejected_prediction_tokens": null
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-7758c04a6293",
+          "title": "Searching for distant planets with Astra",
+          "url": "https://openai.com/index/searching-for-distant-planets-with-astra",
+          "publisher": "OpenAI",
+          "published_at": "2026-11-24T11:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-c232ab95006f",
+          "title": "Verifiable Social Reasoning for LLM Assistants",
+          "url": "https://research.google/blog/verifiable-social-reasoning-for-llm-assistants/",
+          "publisher": "Google Research",
+          "published_at": "2026-11-25T17:10:27+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "Other"
+        }
+      ],
+      "id": "4e7bf0bb655c7b51"
     }
   ]
 }
