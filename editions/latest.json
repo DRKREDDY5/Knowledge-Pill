@@ -1,238 +1,8 @@
 {
   "schema_version": 1,
   "task": "daily_pills_collection",
-  "updated_at": "2026-11-26T20:14:55.081351+00:00",
+  "updated_at": "2026-11-27T20:00:30.905569+00:00",
   "packets": [
-    {
-      "date": "2026-11-11",
-      "timezone": "America/New_York",
-      "created_at": "2026-11-11T18:43:19.981655+00:00",
-      "topic": "RAG",
-      "language": "en",
-      "concept": "Why citations need checking",
-      "news_window": "recent",
-      "source_warnings": [],
-      "router_engine": "TF-IDF + logistic regression",
-      "schema_version": 1,
-      "task": "daily_pills",
-      "status": "draft",
-      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
-      "generation_method": "fireworks",
-      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
-      "knowledge": {
-        "title": "Why citations need checking: RAG provenance is a pointer, not proof",
-        "summary": "Retrieval-Augmented Generation grounds model answers in retrieved documents, which improves factuality and enables provenance. But a citation only shows which source the model used — it does not guarantee the source says what the answer claims. Developers must treat citations as pointers to verify, not as verification itself.",
-        "story": "Imagine a new library assistant named Priya. Instead of memorizing every book, she keeps a card catalog and, when asked a question, fetches a few relevant books, skims them, and writes an answer with a note: 'See shelf B4, third book.' Visitors love her answers because they can check her sources. One day a visitor follows the note, opens the third book on shelf B4, and finds that the book supports only half of Priya's claim — she blended a detail from memory with a detail from the book, and both citations now look authoritative. The pointer was real; the match between pointer and statement was not. Priya's system works because fetching is cheap and checking is possible, but it fails quietly whenever nobody actually walks to shelf B4.",
-        "connection": "Priya's card catalog is the non-parametric memory in RAG: an external index of documents the model can consult. Her skim-and-answer habit is the generator conditioning on retrieved passages. The note 'see shelf B4' is provenance — the citation attached to the output. The visitor's discovery is the gap this lesson is about: retrieval makes answers checkable, but only a human or verifier who follows the citation confirms the answer.",
-        "explanation": "The RAG paper (Lewis et al.) motivates retrieval by noting that purely parametric models struggle to precisely manipulate knowledge, and that providing provenance for decisions and updating world knowledge remain open problems. RAG combines a pre-trained seq2seq model (parametric memory) with a dense vector index (non-parametric memory) accessed by a neural retriever, and was found to generate more specific, diverse, and factual language than a parametric-only baseline. REALM takes a similar approach, augmenting pre-training with a latent knowledge retriever and reporting interpretability and modularity benefits alongside accuracy gains on open-domain QA. Interpretability here means you can inspect which documents the model attended over — a genuine improvement. But neither paper claims that retrieved documents guarantee per-sentence correctness. The generator still blends parametric knowledge with retrieved text, can misread a passage, or cite a passage that only partially supports the claim. Two RAG formulations even differ in whether the same passages condition the whole sequence or different passages are used per token, which affects how cleanly a citation maps to a specific statement. So a citation is evidence of the model's input, not of the output's accuracy.",
-        "application": "In a production RAG system (a support bot answering from your docs), expose citations in the UI and log the retrieved chunk IDs alongside each generated sentence. Build a spot-check habit: sample answers weekly and compare each claim against the cited chunk. For high-stakes flows, add an automated verification step — a second model pass or rule-based check that confirms the cited chunk entails the claim, and flags mismatches. Also log retriever scores so you can distinguish 'retrieved nothing relevant' from 'retrieved relevant text but generated wrongly'.",
-        "exercise": "Set a two-minute timer. Take any AI answer with a citation you have handy (or write one yourself). Break the answer into individual claims, then check each claim against the cited source only. Note which claims the source fully supports, partially supports, or does not mention. This one-minute habit is exactly the verification loop most RAG systems skip.",
-        "question": "If a RAG system cites a document for its answer, what does that citation actually prove — and what does it not prove?",
-        "answer": "It proves which source the model retrieved and conditioned on (provenance). It does not prove the answer is accurate: the model may have misread the passage, mixed in parametric knowledge, or cited text that only partially supports the claim. Someone must still compare the claim to the source.",
-        "limits": "The analogy understates the mechanics: real retrievers use dense vector similarity, not shelf locations, and generators may attend to many passages at once, so attribution can be fuzzier than 'book three on shelf B4'. Also, the papers describe benchmark results on QA and generation tasks; their findings about factuality gains do not transfer automatically to your domain, and 'interpretability' in REALM means inspectable retrieval, not human-readable explanations of every generated token.",
-        "source_ids": [
-          "paper-2005.11401",
-          "paper-2002.08909"
-        ]
-      },
-      "news": {
-        "title": "Recent developments: agent memory design and new TPU systems",
-        "overview": "Two recent items relevant to RAG and retrieval-heavy systems: Anthropic's research post on how agents organize memory, and Google's announcement of two additional eighth-generation TPU systems. Both are publisher accounts; treat performance and behavioral claims as claims, not independent findings.",
-        "items": [
-          {
-            "headline": "Anthropic describes how Claude agents organize and use memory, including offline 'dreaming'",
-            "what_happened": "An Anthropic research post (published November 6, 2026) explains agent memory as knowledge Claude gains from experience and retains between sessions as readable context, distinct from weight changes, in-context learning, and compaction. It describes 'dreaming': using idle time to reflect on session logs, fix mistakes, and write memory notes, inspired by how the brain consolidates memories during rest. Evaluations include a CL-Bench database task, where later models reportedly wrote validated rules with justifications, and a Pokémon Red test where a model writing a small set of strategic notes (nine files) progressed further than one writing hundreds of low-level files that quickly went stale. The post also reports that telling models memory exists helped, while rigid rules like 'record only failures' could reduce the benefit.",
-            "why_it_matters": "For developers building RAG or agent systems, this is a design pattern for what to persist between sessions: prefer durable, tested rules and plans over raw state that goes stale — much like preferring curated, verified knowledge sources over dumping everything into your index. The Pokémon contrast is a useful analogy for corpus curation: a bloated, redundant memory (or index) costs retrieval time and serves outdated facts. Note this is the publisher describing its own models and evaluations; the model-by-model comparisons are Anthropic's own results.",
-            "takeaway": "The post is an excerpt, not a full paper with external review, and the benchmark numbers come from the publisher. Before applying 'dreaming' or memory-note patterns, inspect the actual evaluations, what baselines were used, and whether your workload resembles long-horizon tasks with persistent state at all.",
-            "source_ids": [
-              "news-f0247d2be6d2"
-            ]
-          },
-          {
-            "headline": "Google announces TPU 8tx and 8i Max, extending its eighth-generation accelerator line",
-            "what_happened": "A Google blog post (published November 9, 2026) announces two additions to its eighth-generation TPU portfolio. TPU 8tx targets secure and confidential inference: it keeps data and model weights protected and isolated in hardware even while in active use, and is also positioned for small-scale training and private fine-tuning. TPU 8i Max targets large-context workloads: it packages two TPU 8i chips on one package, reportedly doubling compute, SRAM, and HBM bandwidth versus TPU 8i, aimed at agentic workloads with massive context windows. Google also highlights software accessibility efforts, including open-sourced TorchTPU so PyTorch code runs natively, TPU backends for inference engines like vLLM and SGLang, and claimed state-of-the-art price-performance on its InferenceX and AgentX benchmarks.",
-            "why_it_matters": "If you run retrieval-heavy or long-context RAG services, memory bandwidth and confidential compute map directly to your constraints: 8i Max targets the case where many agents reason over large contexts and memory bandwidth becomes the bottleneck, while 8tx targets regulated workloads where retrieved private documents must stay protected during processing. Think of 8i Max as widening the pipe between the processor and its notes so it can read a huge reference binder without stalling. The benchmark and price-performance figures are Google's own claims about its own hardware and software stack.",
-            "takeaway": "A vendor announcement is not an independent evaluation. Before considering these systems, inspect the benchmark methodology behind the InferenceX and AgentX claims, actual pricing and availability, and whether your models and serving stack (e.g., vLLM or PyTorch workloads) run well on TPU in practice — the post itself notes the AI-generated summaries on the page are experimental.",
-            "source_ids": [
-              "news-e9950a58c892"
-            ]
-          }
-        ],
-        "exercise": "Set a two-minute timer. Open the Anthropic post and the Google post. For each, find one quantitative claim (e.g., a benchmark score or a '2x' figure) and check whether the source text explains how it was measured. Note what methodology detail is missing — that gap is exactly what you would need before repeating the claim to your team.",
-        "question": "Both news items come from the companies describing their own work. What is one concrete thing you should verify before acting on either?",
-        "answer": "The measurement methodology behind the headline claims: for Anthropic, how the memory evaluations and model comparisons were run (and on what baselines); for Google, how the price-performance benchmark results were produced, plus real pricing and availability. Publisher claims are starting points for inspection, not evidence in themselves."
-      },
-      "usage": {
-        "prompt_tokens": 5904,
-        "total_tokens": 7978,
-        "completion_tokens": 2074,
-        "prompt_tokens_details": {
-          "cached_tokens": 0
-        },
-        "completion_tokens_details": {
-          "reasoning_tokens": 24
-        },
-        "output_tokens_details": {
-          "reasoning_tokens": 24
-        }
-      },
-      "sources": [
-        {
-          "id": "paper-2005.11401",
-          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
-          "url": "https://arxiv.org/abs/2005.11401",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "paper-2002.08909",
-          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
-          "url": "https://arxiv.org/abs/2002.08909",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "news-f0247d2be6d2",
-          "title": "The components of agent memory",
-          "url": "https://www.anthropic.com/research/components-of-agent-memory",
-          "publisher": "www.anthropic.com",
-          "published_at": "2026-11-06T00:00:00+00:00",
-          "evidence_type": "article_excerpt",
-          "discussion_points": 189,
-          "discovery_channel": "Hacker News link to primary source",
-          "topic": "RAG"
-        },
-        {
-          "id": "news-e9950a58c892",
-          "title": "Our newest TPUs: 8tx and 8i Max, built for the agentic era",
-          "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/tpu-8i-max-and-8tx/",
-          "publisher": "blog.google",
-          "published_at": "2026-11-09T00:00:00+00:00",
-          "evidence_type": "article_excerpt",
-          "discussion_points": 28,
-          "discovery_channel": "Hacker News link to primary source",
-          "topic": "Other"
-        }
-      ],
-      "id": "2a140cabfc6e86f7"
-    },
-    {
-      "date": "2026-11-11",
-      "timezone": "America/New_York",
-      "created_at": "2026-11-11T18:43:19.981655+00:00",
-      "topic": "RAG",
-      "language": "te",
-      "concept": "Why citations need checking",
-      "news_window": "recent",
-      "source_warnings": [],
-      "router_engine": "TF-IDF + logistic regression",
-      "schema_version": 1,
-      "task": "daily_pills",
-      "status": "draft",
-      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
-      "generation_method": "fireworks",
-      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
-      "knowledge": {
-        "title": "RAG లో citations ఎందుకు తనిఖీ చేయాలి",
-        "summary": "Retrieval-Augmented Generation (RAG) మోడల్స్ సమాధానాలను బయటి documents ఆధారంగా ఇస్తాయి, కాబట్టి provenance (మూలం) చూపించగలవు. కానీ citation ఉండటం అంటేనే సమాధానం సరైనదని కాదు — retrieval తప్పు document ని తీసుకురావచ్చు, లేదా మోడల్ document లో లేని విషయాన్ని కల్పించవచ్చు. అందుకే citations ని ఎప్పుడూ మానవుడు ధృవీకరించాలి.",
-        "story": "ఊహించండి: లక్ష్మి అనే junior developer ఒక పెద్ద library లో పనిచేస్తోంది. కస్టమర్ ఒక సంకీర్ణమైన ప్రశ్న అడిగితే, ఆమె వేగంగా కొన్ని పుస్తకాలు తీసుకువస్తుంది, వాటి పేజీలను చదివి, సమాధానం రాసి, చివర్లో 'ఇది ఈ పుస్తకంలో ఉంది' అని reference ఇస్తుంది. ఒకరోజు ఆమె తొందరపడి సరైన shelf కాకుండా మరో shelf నుంచి పుస్తకం తీసింది — అయినా ఆమెకు ఓ సమాధానం వచ్చింది, reference కూడా ఇచ్చింది. మరోసారి సరైన పుస్తకం తీసినా, సారాంశం రాసేటప్పుడు తన సొంత ఊహలు కలపేసింది. Reference ఉన్నంత మాత్రాన సమాధానం నమ్మదగినది కాదు — ఆ reference నిజంగా ఆ వాదనకు ఆధారమవుతుందో చూడాలి.",
-        "connection": "ఈ కథలో లక్ష్మి = RAG మోడల్. Library shelves = non-parametric memory (vector index లోని documents). త్వరగా పుస్తకాలు తీసుకురావడం = retriever పని. సమాధానం రాయడం = generator (seq2seq మోడల్). Reference ఇవ్వడం = citation/provenance. తప్పు shelf = తప్పు retrieval; సొంత ఊహలు కలపడం = hallucination.",
-        "explanation": "RAG యొక్క మూల ఆలోచన: పెద్ద language models వాటి parameters లో వాస్తవాలను నిల్వ చేస్తాయి, కానీ ఆ జ్ఞానాన్ని ఖచ్చితంగా access చేయడం, అప్‌డేట్ చేయడం, provenance చూపించడం కష్టం. RAG దీనికి పరిష్కారం — parametric memory (pre-trained seq2seq మోడల్) తో పాటు non-parametric memory (Wikipedia లాంటి corpus యొక్క dense vector index) ని neural retriever తో కలుపుతుంది. REALM కూడా ఇదే దిశలో వెళ్తుంది: knowledge ని modular, interpretable పద్ధతిలో నిల్వ చేయడానికి latent knowledge retriever ని pre-training లోనే చేరుస్తుంది, దీనివల్ల interpretability, modularity లాంటి ప్రయోజనాలు వస్తాయి. కానీ ఇక్కడే జాగ్రత్త: retriever 'సంబంధం ఉన్నట్లు' కనిపించే documents ని తీసుకుంటుంది — అవి ఖచ్చితంగా సరైనవని హామీ లేదు. Generator ఆ documents ఆధారంగా రాసినా, అది తప్పుగా paraphrase చేయవచ్చు లేదా document లో లేని వివరాలు చేర్చవచ్చు. అందుకే citation అనేది 'నేను ఇక్కడి నుంచి చూశాను' అనే సూచన మాత్రమే — ధృవీకరణ కాదు.",
-        "application": "మీరు internal docs పై Q&A chatbot ని నిర్మిస్తున్నారని అనుకోండి. RAG వల్ల మోడల్ సమాధానంతో పాటు source document చూపిస్తుంది — ఇది debugging కి, విశ్వాసానికి మంచిది. కానీ production లో: (1) సమాధానం మరియు citation రెండింటినీ లాగ్ చేయండి, (2) కొన్ని నమూనా సమాధానాలను మానవుడు citation తో పోల్చి ధృవీకరించే evaluation step పెట్టండి, (3) retrieval quality ని విడిగా కొలవండి — తప్పు document retrieve అయితే జనరేషన్ ఎంత మంచిదైనా తప్పే. ఇది మోడల్ ను నమ్మకూడదని కాదు; citation అనేది verification కి ఒక starting point అని అర్థం.",
-        "exercise": "రెండు నిమిషాల వ్యాయామం: మీకు అందుబాటులో ఉన్న ఏదైనా AI chatbot ని తెరవండి (లేదా మీ RAG ప్రోటోటైప్). ఒక వాస్తవాధార ప్రశ్న అడిగి, వచ్చిన సమాధానంలో citation ఉందో చూడండి. ఉంటే, ఆ citation లోని వాదన నిజంగా ఆ మూలాన్ని సపోర్ట్ చేస్తుందో లేదో ఒక్క వాక్యంలో రాయండి: 'సపోర్ట్ చేస్తుంది / పాక్షికంగా / సపోర్ట్ చేయదు.' ఇదే తనిఖీ ప్రక్రియను మీ evaluation pipeline లో automate చేయాలని ఆలోచించండి.",
-        "question": "RAG మోడల్ citation ఇచ్చినా, దాన్ని ఎందుకు ధృవీకరించాలి? రెండు కారణాలు చెప్పండి.",
-        "answer": "1) Retriever తప్పు లేదా సంబంధం తక్కువ ఉన్న document ని తీసుకురావచ్చు — citation అనేది సరైన retrieval కి హామీ కాదు. 2) Generator document లో లేని విషయాలను కల్పించవచ్చు లేదా తప్పుగా paraphrase చేయవచ్చు — కాబట్టి వాదన నిజంగా ఆ మూలం ఆధారమవుతుందో చూడాలి.",
-        "limits": "ఈ ఉపమానం పరిమితులు: లక్ష్మి లాగా మోడల్ 'తొందరపడి' లేదా 'అలసట' పడదు — దోషాలు యాదృచ్ఛికంగా కాకుండా retrieval scoring, training data లక్షణాలపై ఆధారపడతాయి. అలాగే కథలో లక్ష్మి ఏ పుస్తకం తీసిందో చెబుతుంది, కానీ కొన్ని RAG వ్యవస్థాల్లో per-token వేర్వేరు passages వాడవచ్చు, దీనివల్ల citation మరింత సంకీర్ణమవుతుంది. చివరగా, citation ఇవ్వడం అనేది provenance కి మెరుగైన దారి మాత్రమే — పూర్తి ధృవీకరణకు ప్రత్యామ్నాయం కాదు.",
-        "source_ids": [
-          "paper-2005.11401",
-          "paper-2002.08909"
-        ]
-      },
-      "news": {
-        "title": "ఈ వారం AI వార్తలు: agent memory, కొత్త TPUs",
-        "overview": "గత రెండు వారాల్లో ప్రచురించబడిన రెండు అంశాలు: Anthropic యొక్క agent memory పరిశోధన, Google యొక్క కొత్త TPU systems. రెండూ RAG/memory అంశానికి సంబంధించినవే — సమాచారాన్ని ఎలా నిల్వ చేసి, తిరిగి పొంది, ధృవీకరించాలనే ప్రశ్నే కేంద్రం.",
-        "items": [
-          {
-            "headline": "Anthropic: AI agents కోసం memory components పై పరిశోధన",
-            "what_happened": "Anthropic బ్లాగ్ పోస్ట్ (2026 నవంబర్ 6) agent memory గురించి వివరిస్తుంది: Claude లాంటి agents sessions మధ్య memory notes ని నిల్వ చేయగలవు. 'Dreaming' అనే ప్రక్రియలో idle సమయంలో logs ని పునఃసంఘటితం చేసి తప్పులను సరిదిద్దవచ్చు. వారి evaluations లో (CL-Bench database task, Pokémon Red ఆట) సలience అనగా ఏమి నిల్వ చేయాలో ఎంచుకునే సామర్థ్యం ముఖ్యమని తేలింది — చిన్న, ధృవీకరించబడిన rules నిల్వ చేసే మోడల్స్ ప్రతిదీ రాసే మోడల్స్ కంటే మెరుగ్గా పనిచేశాయి.",
-            "why_it_matters": "ఇది RAG యొక్క 'citations తనిఖీ' అనే ఆలోచనకు దగ్గరగా ఉంది: Anthropic పోస్ట్ ప్రకారం, బలమైన మోడల్స్ తమ memory లో ఏ వాస్తవం ధృవీకరించబడిందో, ఏది ఇంకా నిర్ధారణ అవసరమో mark చేయడం నేర్చుకున్నాయి. Developer కోసం అర్థం: మీ agent కి memory ఇస్తే, 'ధృవీకరించబడినది vs ఊహ' అనే వ్యత్యాసాన్ని memory లోనే స్పష్టంగా రాయించండి. ఉపమానం: ఇది స్టడీ notes లో 'ఖరాయించిన fact' vs 'అనుమానం' అని వేరు రాయడం లాంటిది — పరీక్ష వేళ ఏది నమ్మాలో తెలుస్తుంది.",
-            "takeaway": "ఇది publisher యొక్క సొంత evaluations ఆధారంగా వచ్చిన పరిశోధన పోస్ట్ — స్వతంత్ర benchmark కాదు. ప్రయత్నించే ముందు: మీ agent యొక్క memory notes లో confirmed/unconfirmed గుర్తింపు ఉందో, memory పెరిగే కొద్దీ retrieval నెమ్మదిస్తుందో (Pokémon ఉదాహరణలో చూపినట్టు) పరిశీలించండి.",
-            "source_ids": [
-              "news-f0247d2be6d2"
-            ]
-          },
-          {
-            "headline": "Google: కొత్త TPUs — 8tx (confidential inference), 8i Max (పెద్ద context windows)",
-            "what_happened": "Google Cloud బ్లాగ్ (2026 నవంబర్ 9) ఎనిమిదో తరం TPU portfolio కి రెండు systems చేర్చింది: TPU 8tx — hardware-level సెక్యూరిటీతో confidential inference కోసం (data processing అయినప్పుడు కూడా encrypted గా ఉంచడం), మరియు TPU 8i Max — రెండు 8i chips ని ఒక package లో కలిపి memory bandwidth, compute రెట్టింపు చేసి million-token context windows కోసం. Google ప్రకారం ఇది ఒకే సంవత్సరంలో నాలుగు TPU systems పరిచయించిన మొదటిసారి.",
-            "why_it_matters": "Developer కోసం రెండు ప్రాయోజక ఉపయోగాలు: (1) ఆరోగ్యం/finance లాంటి regulated రంగాల్లో, మీ private data పై RAG లేదా agents నడిపేటప్పుడు 8tx లాంటి confidential compute options ఉపయోగపడతాయి. (2) 8i Max లాంటి memory-bandwidth-focused hardware పెద్ద context windows అవసరమయ్యే long-document retrieval workloads కి సరిపోతుంది. ఉపమానం: ఇది ఒకే వంటగదిలో వేర్వేరు పనుల కోసం వేర్వేరు ప్రత్యేక పాత్రలు కేటాయించడం లాంటిది — అన్ని వంటలకు ఒకే పాత్ర సరిపోదు.",
-            "takeaway": "ఇవి Google యొక్క తన hardware, తన benchmarks (InferenceX, AgentX) పై చేసిన performance claims — స్వతంత్ర ధృవీకరణ లేదు. ప్రయత్నించే ముందు: మీ workload కి నిజంగా confidential compute లేదా massive context అవసరమా అని, pricing, region availability, మరియు మీ framework (PyTorch/vLLM) support వివరాలు Google Cloud docs లో సరిచూడండి.",
-            "source_ids": [
-              "news-e9950a58c892"
-            ]
-          }
-        ],
-        "exercise": "రెండు నిమిషాల source-check వ్యాయామం: రెండు వార్తా అంశాలకు మూల links ని తెరవండి. ఒక్కో దానికి మూడు ప్రశ్నలు అడగండి: (1) ఈ claim ఎవరు చేసారు — publisher సొంత ఉత్పత్తి/పరిశోధనా? (2) ఫలితాలు ఏ benchmarks పై కొలవబడ్డాయి, వాటిని ఎవరు నడిపారు? (3) నా ప్రాజెక్ట్ కి ఇది ఇప్పుడు పనికొస్తుందా, లేదా ఇంకా పరిపక్వం కావాలా? ప్రతి సమాధానాన్ని ఒక వాక్యంలో రాయండి — ఇదే citation-checking అలవాటు.",
-        "question": "Anthropic పోస్ట్ ప్రకారం, agent memory లో ధృవీకరించబడిన facts ని unconfirmed ఊహల నుంచి వేరు చేయడం ఎందుకు ముఖ్యం?",
-        "answer": "ఎందుకంటే memory అనేది భవిష్యత్ session ల కోసం ఒక prediction — agent రాసిన rule ని తర్వాత తనిఖీ లేకుండా నమ్ముతుంది. ధృవీకరించబడిన rules ని గుర్తించడం వల్ల తప్పులు పునరావృతం కాకుండా, memory నమ్మదగిన learning loop గా పనిచేస్తుంది; అన్నీ రాసే మోడల్స్ (Sonnet 3.7 లాగా) పాత సమాచారంలో చిక్కుకుంటాయి."
-      },
-      "usage": {
-        "prompt_tokens": 5904,
-        "total_tokens": 14658,
-        "completion_tokens": 8754,
-        "prompt_tokens_details": {
-          "cached_tokens": 0
-        },
-        "completion_tokens_details": {
-          "reasoning_tokens": 31
-        },
-        "output_tokens_details": {
-          "reasoning_tokens": 31
-        }
-      },
-      "sources": [
-        {
-          "id": "paper-2005.11401",
-          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
-          "url": "https://arxiv.org/abs/2005.11401",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "paper-2002.08909",
-          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
-          "url": "https://arxiv.org/abs/2002.08909",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "news-f0247d2be6d2",
-          "title": "The components of agent memory",
-          "url": "https://www.anthropic.com/research/components-of-agent-memory",
-          "publisher": "www.anthropic.com",
-          "published_at": "2026-11-06T00:00:00+00:00",
-          "evidence_type": "article_excerpt",
-          "discussion_points": 189,
-          "discovery_channel": "Hacker News link to primary source",
-          "topic": "RAG"
-        },
-        {
-          "id": "news-e9950a58c892",
-          "title": "Our newest TPUs: 8tx and 8i Max, built for the agentic era",
-          "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/tpu-8i-max-and-8tx/",
-          "publisher": "blog.google",
-          "published_at": "2026-11-09T00:00:00+00:00",
-          "evidence_type": "article_excerpt",
-          "discussion_points": 28,
-          "discovery_channel": "Hacker News link to primary source",
-          "topic": "Other"
-        }
-      ],
-      "id": "6d4ca096437c01a0"
-    },
     {
       "date": "2026-11-12",
       "timezone": "America/New_York",
@@ -3671,6 +3441,236 @@
         }
       ],
       "id": "4e7bf0bb655c7b51"
+    },
+    {
+      "date": "2026-11-27",
+      "timezone": "America/New_York",
+      "created_at": "2026-11-27T19:59:30.766743+00:00",
+      "topic": "RAG",
+      "language": "en",
+      "concept": "Why citations need checking",
+      "news_window": "recent",
+      "source_warnings": [
+        {
+          "publisher": "Google DeepMind",
+          "reason": "ParseError"
+        }
+      ],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "Why citations need checking: what RAG actually guarantees",
+        "summary": "Retrieval-Augmented Generation (RAG) grounds a model's answers in external documents, which improves factuality and gives you provenance you can inspect. But a retrieved citation is a pointer, not a proof: the model can still misread the source, cite a passage that doesn't support the claim, or lean on its parametric memory instead. Checking citations is a necessary verification step, not a formality.",
+        "story": "Imagine a new hire, Priya, answering customer questions at a bank. Her manager gives her a filing cabinet full of policy documents and says: 'Always cite the page you used.' Priya does. When a customer asks about overdraft fees, she pulls a folder, glances at a page, and answers confidently, citing page 12. A colleague audits her: the answer was wrong. Page 12 covered business accounts, not personal ones. Priya had retrieved the right folder and cited a real page, but she read it too quickly and pattern-matched to something similar she remembered from training. Later, another audit finds the opposite failure: Priya answers correctly from memory and slaps on a plausible-looking page number as decoration. The citation system worked exactly as designed — it pointed at documents — but nothing in the design guaranteed she understood what she cited, or that she actually used it.",
+        "connection": "Priya's filing cabinet is the non-parametric memory in RAG: an external, explicit knowledge store (in the original RAG paper, a dense vector index of Wikipedia) searched by a neural retriever. Priya herself is the parametric memory: a pre-trained seq2seq model whose weights encode facts implicitly. The manager's rule — cite your page — is provenance: the ability to trace an answer back to sources. The audits are you, the developer, checking whether the citation actually supports the answer.",
+        "explanation": "The RAG paper (Lewis et al., 2020) motivates the approach by noting that models with knowledge stored only in parameters struggle to access and precisely manipulate facts, and that providing provenance and updating world knowledge were open problems. RAG combines a pre-trained seq2seq generator with a retriever over a dense document index, and found that generation became more specific, diverse, and factual than a parametric-only baseline. REALM (Guu et al., 2020) takes a related angle: instead of cramming more facts into ever-larger networks, it adds a latent knowledge retriever used during pre-training, fine-tuning, and inference, and reports interpretability and modularity as qualitative benefits alongside accuracy gains on open-domain QA. Notice what both papers claim and what they don't. They claim better grounding, more factual generation, and interpretable, modular knowledge. They do not claim that every generated sentence is entailed by the retrieved passage. Retrieval narrows the search space and gives you something to check; it does not perform the check. The generator can still blend parametric knowledge with retrieved text, over-generalize from a partial passage, or produce a citation that is topically adjacent but evidentially weak. That's why citation checking — human spot-audits or automated entailment checks comparing claim to cited span — remains part of a responsible RAG pipeline.",
+        "application": "In a production RAG system (say, an internal docs assistant), treat citations as a verification interface: log the retrieved chunk IDs and scores with every answer, sample answers for human review against the cited chunk, and consider an automated second pass where a smaller model verifies that the cited text entails the claim. If answers frequently disagree with their citations, tune retrieval (chunking, embeddings, top-k) before blaming the generator.",
+        "exercise": "Set a two-minute timer. Take any RAG demo answer with a citation and ask three questions: (1) Does the cited passage explicitly state the claim, or merely relate to it? (2) Could the answer have been produced from the model's general knowledge alone? (3) What one follow-up retrieval would strengthen or refute the claim? Write one sentence per question.",
+        "question": "In RAG, what does a citation actually guarantee, and what does it not?",
+        "answer": "It guarantees that a specific external passage was retrieved and made available to the generator, giving you provenance to inspect. It does not guarantee the passage entails the answer, that the model read it correctly, or that the model didn't rely on parametric memory instead — so citations need independent checking.",
+        "limits": "The filing-cabinet analogy understates the coupling in real RAG: the retriever and generator are trained together (or at least interact through the prompt), so 'Priya' partly shapes which folders she gets. It also overstates the fixability — a human auditor reads with full comprehension, while automated citation checkers have their own error rates. Finally, both papers report results on benchmarks and specific tasks; their findings don't transfer automatically to your domain or corpus.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "Recent developments: AI-assisted exoplanet hunting and evaluating social reasoning in assistants",
+        "overview": "Two recent items from major labs: OpenAI describes amateur astronomers using Codex and Astra to surface exoplanet candidates now under professional review, and Google Research open-sources a framework for evaluating how well LLM assistants reason about social situations relayed through a user's subjective account. Both are useful lenses on verification: in one case, candidate signals explicitly await independent confirmation; in the other, the research quantifies how much a model's judgment can be skewed by whose story it hears.",
+        "items": [
+          {
+            "headline": "Amateur astronomers use Codex and Astra to find exoplanet candidates in public telescope data",
+            "what_happened": "An OpenAI article (published November 24, 2026) describes two independent hobbyist searches. Kevin Bond used Codex to build a pipeline that scanned Kepler observations of roughly 100,000 stars, combining published transit-detection methods and running one agent to scan light curves and another to vet flagged candidates; the search surfaced over 200 signals, including 10 from previously confirmed planets, which served as a sanity check. Two standout candidates — stars with regular brightness dips every 13.8 and 4.8 days — were independently reproduced by a SETI Institute astronomer. Separately, Ethan Byrd used Astra to design and run two searches over data from about 19 million stars, drawing on TESS and other public archives, yielding 49 candidates, one of which is queued for further analysis by TESS researchers. Per the article, none of these are confirmed planets; confirmation requires ruling out alternatives like eclipsing binary stars or instrumental effects, and can take months or years.",
+            "why_it_matters": "For developers, this is a concrete picture of agentic coding on a real scientific workload: comparing published algorithms, composing a multi-agent pipeline, and validating it against known ground truth (the recovered confirmed planets) before trusting new outputs. The useful analogy: the pipeline is like a linter for starlight — it flags suspicious patterns cheaply so expensive human and telescope time is spent only on the flagged few. It also shows citizen-science participation is now partly a coding problem, not just a telescope problem.",
+            "takeaway": "A flagged candidate is a hypothesis, not a discovery — the article itself stresses that a dip in brightness has multiple possible causes and requires follow-up. Before trying anything similar, inspect whether the tooling you use was validated against known positives (as Bond's was), and treat publisher enthusiasm separately from the scientific status of the results, which remains unconfirmed pending peer review.",
+            "source_ids": [
+              "news-7758c04a6293"
+            ]
+          },
+          {
+            "headline": "Google Research open-sources a framework for testing LLM social reasoning through user-mediated narratives",
+            "what_happened": "A Google Research blog post (November 25, 2026) introduces an evaluation framework built on multi-agent simulations: a simulated character is given a hidden motive, interacts with other agents including one representing the user, and the evaluated assistant must infer that motive from the user's partial, possibly biased retelling. Because the hidden motive is set by the framework, the benchmark has verifiable ground truth by construction. Testing 12 LLMs, the authors report an 'assistant-observer gap' (models do better watching events directly than hearing them from the user), sensitivity to user framing (models often adopt an unfounded suspicion rather than reason from the underlying facts), a need for more narrative detail than humans require, and multi-turn conversations that can anchor models to the user's framing rather than correct it. The framework and a dataset of over 20,000 examples are open-sourced, built on the Concordia library.",
+            "why_it_matters": "If you build assistants that give advice based on what users tell them — support bots, coaching tools, HR helpers — this research suggests a failure mode worth testing: the model may amplify a one-sided narrative instead of offering balance, for example by endorsing harsh judgments of a colleague who was actually being helpful. The analogy: it's like evaluating a doctor who only ever hears one side of a dispute; the benchmark measures how well the 'doctor' avoids simply agreeing with the patient's framing.",
+            "takeaway": "These findings come from the authors' own simulations and an LLM-as-a-judge scoring step, so they measure behavior in a synthetic setup, not your product's conversations. Before drawing conclusions for your system, inspect the open-sourced framework and dataset, note that the blog describes research rather than a shipped product, and consider whether your own evals capture user-mediated bias at all.",
+            "source_ids": [
+              "news-c232ab95006f"
+            ]
+          }
+        ],
+        "exercise": "Set a two-minute timer. Pick one of the two items and list: (1) one claim made by the publisher, (2) one thing it explicitly does not claim or has not yet confirmed (e.g., unconfirmed exoplanets, synthetic-only evaluation), and (3) one question you'd need answered before applying it to your own work.",
+        "question": "Both items involve AI outputs that need verification. What kind of verification does each require, and why isn't the AI's own confidence enough?",
+        "answer": "The exoplanet candidates need independent astronomical follow-up — repeated observations and alternative explanations ruled out — because a detected dip has many possible causes. The social-reasoning findings need scrutiny of the benchmark itself — simulation design and LLM-judge scoring — because a synthetic setup with verifiable ground truth still differs from real conversations. In both cases, the producing system's confidence says nothing about correctness; only independent checks against ground truth do."
+      },
+      "usage": {
+        "prompt_tokens": 5480,
+        "completion_tokens": 2282,
+        "total_tokens": 7762,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": null,
+          "reasoning_tokens": 31,
+          "rejected_prediction_tokens": null
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-7758c04a6293",
+          "title": "Searching for distant planets with Astra",
+          "url": "https://openai.com/index/searching-for-distant-planets-with-astra",
+          "publisher": "OpenAI",
+          "published_at": "2026-11-24T11:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-c232ab95006f",
+          "title": "Verifiable Social Reasoning for LLM Assistants",
+          "url": "https://research.google/blog/verifiable-social-reasoning-for-llm-assistants/",
+          "publisher": "Google Research",
+          "published_at": "2026-11-25T17:10:27+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "Other"
+        }
+      ],
+      "id": "593c91aaaccf4046"
+    },
+    {
+      "date": "2026-11-27",
+      "timezone": "America/New_York",
+      "created_at": "2026-11-27T19:59:30.766743+00:00",
+      "topic": "RAG",
+      "language": "te",
+      "concept": "Why citations need checking",
+      "news_window": "recent",
+      "source_warnings": [
+        {
+          "publisher": "Google DeepMind",
+          "reason": "ParseError"
+        }
+      ],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "RAG లో citations ఎందుకు తనిఖీ చేయాలి",
+        "summary": "RAG (Retrieval-Augmented Generation) మోడల్స్ సమాధానాలను బయటి documents నుంచి తీసుకుని ఇస్తాయి, కానీ retrieval జరిగిందనేది సమాధానం సరైనదని అంటే కాదు. Citations అనేవి ప్రారంభం మాత్రమే — వాటిని మనం చూసి ధృవీకరించాలి.",
+        "story": "ఒక ఊరిలో లైబ్రరీ అసిస్టెంట్ ఉన్నారు. ఎవరైనా ప్రశ్న అడిగితే, ఆమె వేగంగా ఒక పుస్తకం తీసుకువచ్చి, పేజీ చూపి, 'ఇదిగో, ఇందులో ఉంది' అంటారు. ఒక రోజు ఒక విద్యార్థి ఆమె ఇచ్చిన పేజీని జాగ్రత్తగా చదివాడు — ఆ పేజీలో అడిగిన ప్రశ్నకు సంబంధం లేని సమాచారమే ఉంది. పుస్తకం నిజమైనదే, పేజీ కూడా నిజమే; కానీ ఆ పేజీ ఆ ప్రశ్నకు సరైన సాక్ష్యం కాదు. అసిస్టెంట్ చెప్పిన వివరణ ఆమె స్వంత అంచనా — పుస్తకం చెప్పింది కాదు.",
+        "connection": "ఈ కథలో లైబ్రరీ అసిస్టెంట్ = retriever, పుస్తకం = document index, పేజీ = retrieved passage, ఆమె చేసిన వివరణ = generator యొక్క output. Citation చూపడం అంటే పేజీ చూపడం; కానీ ఆ పేజీలో నిజంగా ఆ claim ఉందో లేదో చూడటం వేరే పని.",
+        "explanation": "RAG మోడల్స్ రెండు రకాల memory కలిపి పనిచేస్తాయి: మోడల్ parameters లో దాచిన parametric memory, మరియు dense vector index లాంటి non-parametric memory. Lewis et al. వారి RAG పనిలో pre-trained seq2seq మోడల్‌ను neural retriever తో Wikipedia యొక్క dense index కి కలిపారు; ఇది open-domain QA లో మెరుగైన ఫలితాలు ఇచ్చింది, generation కూడా ఎక్కువ factual అయింది. REALM కూడా latent knowledge retriever తో pre-training చేసి, interpretability మరియు modularity లాంటి ప్రయోజనాలను చూపింది. కానీ గమనించండి: ఈ papers చెప్పేది retrieval వల్ల ఫలితాలు మెరుగయ్యాయని, provenance అందించడం సాధ్యమవుతుందని — మరింత ఖచ్చితంగా knowledge ని access చేయడం ఇప్పటికీ open research problem అని. అంటే retrieved passage చూపినా, మోడల్ ఆ passage లో లేని విషయాన్ని కూడా కలిపి చెప్పవచ్చు, లేదా తప్పు passage ని ఎంచుకోవచ్చు. అందుకే citation అనేది ధృవీకరణ కాదు — ధృవీకరించడానికి ఒక అవకాశం మాత్రమే.",
+        "application": "మీరు RAG-based chatbot నిర్మిస్తుంటే, ప్రతి సమాధానంతో source passages చూపించడం మాత్రమే చాలదు. Evaluation pipeline లో 'citation faithfulness' చెక్ చేయండి: మోడల్ ఇచ్చిన claim ని దాని cited passage తో సరిపోల్చడం (manual sampling లేదా automated checks ద్వారా). అలాగే retrieval quality ని విడిగా కొలవండి — సరైన passage retrieve అవుతున్నదా లేదా అని. ఇది generation మరియు retrieval లోపాలను వేరు చేసి చూపుతుంది.",
+        "exercise": "రెండు నిమిషాల వ్యాయామం: ఏదైనా AI chatbot ఇచ్చిన ఒక citation తో కూడిన సమాధానాన్ని తీసుకోండి (లేదా ఒక Wikipedia వాక్యం + దాని గురించి మోడల్ చేసిన summary). Claim లోని ప్రతి భాగాన్ని source లో ఉన్న వాక్యంతో జత చేయండి. ఏదైనా ఒక భాగానికి source లో ఆధారం కనపడకపోతే, అది 'unverified' — దాన్ని గమనించండి. ఇది మీ RAG evaluation లో చేయాల్సిన పనికి పునాది.",
+        "question": "RAG మోడల్ ఒక passage ని cite చేసినప్పుడు, ఆ citation ఏ పని చేస్తుంది, ఏ పని చేయదు?",
+        "answer": "చేసే పని: సమాధానం ఎక్కడ నుంచి వచ్చిందో తనిఖీ చేయడానికి ఒక అవకాశం (provenance) ఇస్తుంది. చేయని పని: ఆ passage లో ఆ claim నిజంగా ఉందని లేదా మోడల్ దాన్ని ఖచ్చితంగా వివరించిందని హామీ ఇవ్వదు — అది మనం విడిగా ధృవీకరించాల్సిందే.",
+        "limits": "ఈ analogy లో లైబ్రరీ అసిస్టెంట్ ఉద్దేశపూర్వకంగా తప్పు చెప్పగలదు అనే భావన లేదు, కానీ నిజమైన మోడల్స్ hallucinate చేయవచ్చు. అలాగే కథలో పుస్తకం ఒక్కటే; వాస్తవంలో retriever లక్షల వేల documents మధ్య శోధిస్తుంది, మరియు కొన్ని RAG formulations లో ప్రతి token కి వేరు passages వాడవచ్చు — అది కథలో పూర్తిగా పట్టుకోబడదు.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "ఈ వారం: AI సహాయంతో exoplanet శోధన, LLM ల social reasoning పరీక్ష",
+        "overview": "ఈ వారం రెండు అంశాలు: OpenAI వారి Astra/Codex టూల్స్ తో amateur astronomers చేసిన exoplanet శోధన, మరియు Google Research వారి LLM assistants కోసం verifiable social reasoning evaluation framework. రెండూ ఒకే పాఠం గుర్తు చేయిస్తాయి: AI ఇచ్చిన ఫలితాలను independent verification తో ధృవీకరించడం ఎంత ముఖ్యమో.",
+        "items": [
+          {
+            "headline": "Amateur astronomers, Codex మరియు Astra తో exoplanet candidates కనుగొన్నారు",
+            "what_happened": "OpenAI ప్రచురించిన కథనం ప్రకారం (2026 నవంబర్ 24), ఇద్దరు amateur astronomers స్వతంత్రంగా పనిచేసి public telescope data ల exoplanet candidates కనుగొన్నారు. Kevin Bond Codex తో Kepler టెలిస్కోప్ data (~100,000 stars) పై search pipeline నిర్మించారు — ఒక AI agent light curves స్కాన్ చేయగా, మరొకటి flagged candidates పై detailed checks చేసింది. Ethan Byrd Astra తో TESS సహా public archives (~19 million stars) పై రెండు searches రూపొందించారు. Bond యొక్క search 200+ signals ని flag చేసింది — వాటిలో 10 ఇప్పటికే confirmed planets, ఇది pipeline పనిచేస్తుందనే confidence ఇచ్చింది. SETI Institute ఖగోళ శాస్త్రవేత్త స్వతంత్ర search లో Bond యొక్క రెండు signals ని ధృవీకరించారు; Byrd యొక్క ఒక strong candidate TESS పరిశోధకుల దగ్గర further analysis కోసం ఉంది.",
+            "why_it_matters": "ఇది developers కు ఒక స్పష్టమైన pattern చూపిస్తుంది: AI agents తో domain-specific pipelines నిర్మించి, వాటి ఫలితాలను known ground truth (confirmed planets) తో validate చేయడం. మీ పనిలో కూడా — ఉదాహరణకు log anomaly detection — AI కనిపెట్టిన 'candidates' ను ముందుగా తెలిసిన సందర్భాలతో సరిపోల్చడం ఒక మంచి sanity check. Analogy: ఇది RAG ల citation checking లాంటిది — AI చూపిన దాన్ని నమ్మే ముందు independent ఆధారం కావాలి.",
+            "takeaway": "ఇవి ఇంకా confirmed exoplanets కావు — ధృవీకరణకు నెలలు లేదా సంవత్సరాలు పడవచ్చు. ప్రయత్నించే ముందు: ఈ ఫలితాలు publisher (OpenAI) చెప్పినవేనని, independent peer-reviewed confirmation ఇంకా రాలేదని గుర్తుంచుకోండి; pipeline యొక్క false positive rate మరియు known planets ని ఎంత బాగా recover చేసిందో చూడండి.",
+            "source_ids": [
+              "news-7758c04a6293"
+            ]
+          },
+          {
+            "headline": "Google Research: LLM assistants యొక్క social reasoning కు verifiable evaluation framework",
+            "what_happened": "Google Research (2026 నవంబర్ 25) multi-agent social simulations ఆధారంగా ఒక evaluation framework ప్రవేశపెట్టింది. ఒక simulated 'target' agent కి hidden motive ఇవ్వబడుతుంది; user persona ఆ సంభాషణలను పాక్షికంగా, పక్షపాతంతో assistant కు చెప్పగా, assistant ఆ hidden motive ని అంచనా వేయాలి — దీన్ని ground truth గా వాడుతారు. 12 LLM లపై పరీక్షిస్తే: 'fly on the wall' గా నేరుగా events చూపినప్పుడు కంటే user ద్వారా విన్నప్పుడు ఖచ్చితత్వం తగ్గింది; models user framing కి sensitive అయ్యాయి, కొన్నిసార్లు user యొక్క ఆధారం లేని అనుమానాలను validate చేశాయి; మరియు ఎక్కువ narrative detail తో మెరుగయ్యాయి. Framework మరియు 20K+ examples dataset open-source చేశారు.",
+            "why_it_matters": "రోజూ users assistants ను advice కోసం వారి సొంత కథనాలతో సంప్రదిస్తారు — ఇది ఒక concrete evaluation gap ని కొలవడానికి మార్గం చూపిస్తుంది. Developer గా, మీ assistant 'user-mediated reality' లో పనిచేస్తుందని గుర్తుంచుకోవడం ముఖ్యం: input అనేది వాస్తవం కాదు, user యొక్క వివరణ. Analogy: RAG ల retrieved passage లాగే, user యొక్క narrative కూడా ఒక source — దానిని విమర్శనాత్మకంగా అంచనా వేయాలి.",
+            "takeaway": "ఇది benchmark framework మాత్రమే — ఇది ఏ మోడల్ 'socially intelligent' అని నిర్ధారించదు, simulations real-world nuance ని పూర్తిగా ప్రతిబింబించవు. ప్రయత్నించే ముందు: LLM-as-a-judge ఆధారిత scoring యొక్క పరిమితులు, dataset యొక్క scenario రకాలు, మరియు మీ use case కి దాని relevance ని inspect చేయండి.",
+            "source_ids": [
+              "news-c232ab95006f"
+            ]
+          }
+        ],
+        "exercise": "రెండు నిమిషాల source-check: OpenAI కథనంలో Bond యొక్క pipeline confidence ఎలా పొందిందో (10 confirmed planets ని కనుగొనడం) మరియు Google framework లో 'assistant-observer gap' ఏమి కొలిచేదో గుర్తించండి. రెండూ verification ని ఎలా రూపొందించాయి అని ఒక వాక్యంలో రాయండి.",
+        "question": "ఈ రెండు వార్తల్లో 'verification' ఎలా జరిగింది, ఇంకా ఏది జరగలేదు?",
+        "answer": "Bond విషయంలో: SETI Institute ఖగోళ శాస్త్రవేత్త స్వతంత్ర search లో రెండు signals ని మళ్లీ కనుగొన్నారు — కానీ exoplanets గా confirmation ఇంకా లేదు. Google విషయంలో: hidden motive ద్వారా ground truth ని by construction verifiable చేశారు — కానీ అది simulation లోని truth, real-world social reasoning యొక్క పూర్తి రుజువు కాదు."
+      },
+      "usage": {
+        "prompt_tokens": 5480,
+        "completion_tokens": 7557,
+        "total_tokens": 13037,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": null,
+          "reasoning_tokens": 28,
+          "rejected_prediction_tokens": null
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-7758c04a6293",
+          "title": "Searching for distant planets with Astra",
+          "url": "https://openai.com/index/searching-for-distant-planets-with-astra",
+          "publisher": "OpenAI",
+          "published_at": "2026-11-24T11:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-c232ab95006f",
+          "title": "Verifiable Social Reasoning for LLM Assistants",
+          "url": "https://research.google/blog/verifiable-social-reasoning-for-llm-assistants/",
+          "publisher": "Google Research",
+          "published_at": "2026-11-25T17:10:27+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "Other"
+        }
+      ],
+      "id": "94b3f032361e319e"
     }
   ]
 }
