@@ -1,236 +1,8 @@
 {
   "schema_version": 1,
   "task": "daily_pills_collection",
-  "updated_at": "2026-11-27T20:00:30.905569+00:00",
+  "updated_at": "2026-11-28T18:59:25.185649+00:00",
   "packets": [
-    {
-      "date": "2026-11-12",
-      "timezone": "America/New_York",
-      "created_at": "2026-11-12T18:58:20.188376+00:00",
-      "topic": "RAG",
-      "language": "en",
-      "concept": "Retrieval versus model memory",
-      "news_window": "recent",
-      "source_warnings": [],
-      "router_engine": "TF-IDF + logistic regression",
-      "schema_version": 1,
-      "task": "daily_pills",
-      "status": "draft",
-      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
-      "generation_method": "fireworks",
-      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
-      "knowledge": {
-        "title": "Retrieval versus Model Memory",
-        "summary": "Large language models store facts implicitly in their parameters, but that storage is hard to update, hard to verify, and limited in precision. Retrieval-augmented generation (RAG) pairs the model with an external, explicit knowledge source — a searchable index of documents — so the model can look things up at generation time instead of relying only on what it memorized during training. This lesson explains the difference between parametric memory (weights) and non-parametric memory (a retrievable index), why the combination works, and where each approach breaks down.",
-        "story": "Imagine a hospital pharmacist named Priya. She trained for years, so a lot of drug knowledge lives in her head: common dosages, well-known interactions, standard protocols. When a routine prescription comes in, she answers from memory — fast and usually right. One day a doctor asks about a newly approved drug combination. Priya has a vague feeling but no certainty. She could guess from her training, or she could walk to the formulary shelf, look up the current interaction sheet, and answer with the document in hand. Priya's head is like a model's parameters: vast, fast, but frozen at graduation day and impossible to audit. The formulary shelf is like a retrieval index: always current, citable, and updatable by simply replacing a page — but useless without the skill to know what to look up and how to read it. Priya's best work happens when she treats her memory as a starting point and the shelf as the source of truth for anything specific, recent, or high-stakes.",
-        "connection": "Priya's trained memory maps to parametric memory: facts baked into model weights during pre-training, as described in the RAG and REALM papers. The formulary shelf maps to non-parametric memory: a dense vector index of documents (in the original papers, Wikipedia) accessed through a trained neural retriever. The act of Priya consulting the shelf mid-answer is the retrieval step; blending what she read with her own phrasing is the generation step. Her judgment about when to consult the shelf mirrors the model's learned access mechanism, which in REALM is trained end-to-end by backpropagating through the retrieval step itself.",
-        "explanation": "The 2020 RAG paper (Lewis et al.) showed that combining a pre-trained seq2seq generator with a pre-trained neural retriever over a document index set state-of-the-art results on open-domain QA, outperforming both parametric-only seq2seq models and task-specific retrieve-and-extract pipelines. It also found that RAG models produced more specific, diverse, and factual generation. Two formulations were compared: one retrieving the same passages for the whole output, and one that can consult different passages per token. REALM (Guu et al.) took a complementary angle: it showed how to train the retriever itself in an unsupervised way, using masked language modeling as the signal, and reported 4–16% absolute accuracy gains on Open-QA benchmarks plus interpretability and modularity benefits. The core insight from both: knowledge in weights scales poorly (you need ever-bigger networks for more facts), while an index is modular — you can update it, inspect which documents were used, and trace answers back to sources.",
-        "application": "In practice, RAG is the standard pattern for question answering over private or fast-changing data: connect an embedding-based vector index of your docs, wiki, or support tickets to an LLM, retrieve the top matching passages for each query, and condition generation on them. This gives you provenance (cite the source passage), updatability (re-index when documents change, no retraining), and access control (filter the index per user). It also lets a smaller model answer domain-specific questions it was never trained on.",
-        "exercise": "Two minutes: pick a question you recently asked an LLM. Classify it — would a well-trained model plausibly know this from its training data (stable, public, general knowledge), or does it require retrieval (recent, private, niche, or verifiable)? Write down what document or index would need to exist for the retrieval path to answer it correctly. If you cannot name that document, the retrieval system would fail too — the index is only as good as what's in it.",
-        "question": "In RAG systems, what is the difference between parametric and non-parametric memory, and why does combining them help on knowledge-intensive tasks?",
-        "answer": "Parametric memory is knowledge stored implicitly in the model's weights during training; non-parametric memory is an explicit, external corpus (like a dense vector index of documents) accessed through a retriever at inference time. Combining them helps because the model keeps its general language and reasoning ability from the weights while gaining precise, updatable, and attributable access to specific facts — the RAG paper showed this beats parametric-only models on open-domain QA and yields more factual generation, and REALM showed the retriever itself can be trained end-to-end for further gains.",
-        "limits": "The pharmacist analogy understates the hard parts. Priya knows when she doesn't know; models often confidently answer from weights even when retrieval would help, and retrieval quality depends heavily on embedding choice, chunking, and index freshness. The papers' results are on Wikipedia-scale benchmarks with specific architectures — they don't guarantee similar gains on your domain, and retrieval can inject wrong or outdated passages that the model then repeats with fluency. Also, 'non-parametric' doesn't mean objective: the index is a curated corpus with its own gaps and biases.",
-        "source_ids": [
-          "paper-2005.11401",
-          "paper-2002.08909"
-        ]
-      },
-      "news": {
-        "title": "Recent Developments Touching Retrieval and Agent Memory",
-        "overview": "Two recent items relevant to how models access and organize knowledge: Anthropic's research post on the components of agent memory, and Google's expansion of its eighth-generation TPU lineup.",
-        "items": [
-          {
-            "headline": "Anthropic describes how Claude agents organize memory, including 'dreaming' during idle time",
-            "what_happened": "An Anthropic research post (published November 6, 2026) explains the company's approach to agent memory: knowledge Claude gains from experience and retains between sessions as readable context, distinct from weight changes, in-context learning, and compaction. It describes 'dreaming' — using idle time between interactions to reflect on session logs, fix mistakes, and produce memory notes — drawing an analogy to how the hippocampus replays experiences during sleep. On a Continual Learning Bench database task, the post reports that newer Claude models progressively closed a learning loop: writing rules, marking which facts were confirmed, and recording corrections. In a Pokémon Red evaluation, a model writing a small, curated set of memory files (nine files versus 413 for an older model) progressed further in the game, because it stored strategy and tested rules rather than redundant on-screen state. The post also reports that telling models a memory folder exists helped, while a fixed rule to 'record only failures' reduced the memory benefit for stronger models.",
-            "why_it_matters": "For developers building agents, this is a concrete design space: what to persist between sessions, how to judge salience, and when to consolidate. The Pokémon example is a useful labelled analogy for RAG-adjacent design — memory that duplicates what can be re-read cheaply (like on-screen state, or easily re-retrieved documents) wastes effort, while memory capturing derived knowledge (tested rules, plans) is valuable. It suggests that for your own agents, curating what enters the memory store matters more than storing everything.",
-            "takeaway": "This is a publisher's research post describing Anthropic's own evaluations and model comparisons; the benchmark numbers and model behaviors are their claims, not independently verified. Before applying it, inspect what 'memory' means in your stack — the post explicitly excludes weight changes and compaction — and note that the finding that fixed memory rules can hurt stronger models may not transfer to smaller or different models.",
-            "source_ids": [
-              "news-f0247d2be6d2"
-            ]
-          },
-          {
-            "headline": "Google expands eighth-generation TPU lineup with 8tx and 8i Max",
-            "what_happened": "A Google Cloud blog post (November 9, 2026) announces two additions to its eighth-generation TPU portfolio: TPU 8tx, aimed at secure and confidential inference with hardware-level protection for data and model weights while in active use, plus support for private fine-tuning and distillation on one system; and TPU 8i Max, which pairs two TPU 8i chips on one package to double compute, SRAM, and HBM bandwidth, targeting large-context agentic workloads where memory bandwidth is the bottleneck. Google frames this as the first time it has introduced four TPU systems in one year, and highlights software accessibility work including open-sourced TorchTPU for native PyTorch support, TPU backends for vLLM and SGLang, and reported state-of-the-art price-performance on what it calls the InferenceX and AgentX benchmarks.",
-            "why_it_matters": "For developers, the relevance is practical: if you serve models with very long contexts or run multi-step agents, memory bandwidth — not raw compute — is often the limiting factor, and hardware that scales memory with compute addresses that directly. A useful analogy: retrieval-augmented systems need fast access to a large external 'shelf'; 8i Max is positioned as widening the pipe to that shelf. The confidential-compute angle matters if you're building RAG over sensitive corporate documents, since data normally must be decrypted in memory during processing.",
-            "takeaway": "All performance and benchmark claims here come from Google itself and are not independently verified; 'state-of-the-art price-performance' on vendor-named benchmarks should be treated as marketing until reproduced. Before trying either system, inspect actual availability and pricing for your region and workload, whether your serving stack (vLLM, SGLang, PyTorch/XLA) is genuinely supported without rewrites, and what the confidential-compute guarantees cover end to end.",
-            "source_ids": [
-              "news-e9950a58c892"
-            ]
-          }
-        ],
-        "exercise": "Two minutes: open the Anthropic post and the Google post. For each, identify one claim that is a vendor's own evaluation result (for example, benchmark scores or model comparisons) versus one claim that is a design recommendation you could test yourself. Note which of the two you'd trust more without further evidence, and why.",
-        "question": "Why should you treat vendor-published benchmark results, such as those in these two posts, differently from design principles you can verify in your own system?",
-        "answer": "Vendor benchmarks are self-reported, run on the vendor's chosen hardware, software stack, and workloads, and are not independently verified — they're useful signals but marketing-adjacent. Design principles like 'store derived knowledge, not redundant state' can be tested directly against your own workload, so they carry more actionable weight even though they also come from an interested party. Check what was actually measured before adopting either."
-      },
-      "usage": {
-        "prompt_tokens": 5905,
-        "completion_tokens": 2338,
-        "total_tokens": 8243,
-        "prompt_tokens_details": {
-          "cached_tokens": 0
-        },
-        "completion_tokens_details": {
-          "accepted_prediction_tokens": null,
-          "reasoning_tokens": 0,
-          "rejected_prediction_tokens": null
-        }
-      },
-      "sources": [
-        {
-          "id": "paper-2005.11401",
-          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
-          "url": "https://arxiv.org/abs/2005.11401",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "paper-2002.08909",
-          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
-          "url": "https://arxiv.org/abs/2002.08909",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "news-f0247d2be6d2",
-          "title": "The components of agent memory",
-          "url": "https://www.anthropic.com/research/components-of-agent-memory",
-          "publisher": "www.anthropic.com",
-          "published_at": "2026-11-06T00:00:00+00:00",
-          "evidence_type": "article_excerpt",
-          "discussion_points": 189,
-          "discovery_channel": "Hacker News link to primary source",
-          "topic": "RAG"
-        },
-        {
-          "id": "news-e9950a58c892",
-          "title": "Our newest TPUs: 8tx and 8i Max, built for the agentic era",
-          "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/tpu-8i-max-and-8tx/",
-          "publisher": "blog.google",
-          "published_at": "2026-11-09T00:00:00+00:00",
-          "evidence_type": "article_excerpt",
-          "discussion_points": 28,
-          "discovery_channel": "Hacker News link to primary source",
-          "topic": "Other"
-        }
-      ],
-      "id": "0d30c1783af1257d"
-    },
-    {
-      "date": "2026-11-12",
-      "timezone": "America/New_York",
-      "created_at": "2026-11-12T18:58:20.188376+00:00",
-      "topic": "RAG",
-      "language": "te",
-      "concept": "Retrieval versus model memory",
-      "news_window": "recent",
-      "source_warnings": [],
-      "router_engine": "TF-IDF + logistic regression",
-      "schema_version": 1,
-      "task": "daily_pills",
-      "status": "draft",
-      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
-      "generation_method": "fireworks",
-      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
-      "knowledge": {
-        "title": "Retrieval vs Model Memory: మోడల్ జ్ఞాపకాలు vs పుస్తకాలు",
-        "summary": "పెద్ద language models తమ parameters లో విషయాలను అంతర్గతంగా నేర్చుకుంటాయి, కానీ ఖచ్చితమైన వాస్తవాలను యాక్సెస్ చేయడం, ఆధారాలు (provenance) చూపడం, కొత్త సమాచారాన్ని అప్‌డేట్ చేయడం వంటివి కష్టం. RAG (Retrieval-Augmented Generation) ఈ సమస్యకు రెండు రకాల మెమరీని కలిపి పరిష్కారం ఇస్తుంది: మోడల్ లోపలి parametric memory, మరియు బయటి document index అనే non-parametric memory.",
-        "story": "ఒక ఊరిలో ఇద్దరు సలహాదారులు ఉన్నారు. మొదటి వ్యక్తి లక్ష్మయ్య చాలా ఏళ్ల అనుభవం ఉన్న ముసలాయన — ఏదైనా అడిగితే వెంటనే జవాబు చెబుతాడు, ఎందుకంటే అన్నీ తన తలలోనే నేర్చుకున్నాడు. కానీ అతని జ్ఞాపకాలు కొన్నిసార్లు తప్పుగా ఉంటాయి, ఎప్పుడు నేర్చుకున్నాడో చెప్పలేడు, కొత్త పన్నుల ధరలు వంటి మారుతున్న సమాచారం అతని తలలో పాతదే మిగులుతుంది. రెండో వ్యక్తి సుమతి దగ్గర ఒక బాగా వర్గీకరించిన ఫైలింగ్ క్యాబినెట్ ఉంది. ఎవరైనా ప్రశ్న అడిగితే, ఆమె ముందు సరైన ఫైల్‌ను వెతుకుతుంది, దాన్ని చదివి, అది చూపిస్తూ జవాబు ఇస్తుంది. ఆమె జవాబులకు మూలం కూడా చూపగలదు, ఫైల్‌లో కొత్త పేజీ చేర్పించినా వెంటనే అది వాడుకోగలదు. కానీ ఫైల్ దొరకకపోతే ఆమె ఏమీ చెప్పలేక పోతుంది, వెతకడానికి కొంచెం సమయం పడుతుంది. మంచి సలహా సేవ రెండింటి కలయికే: లక్ష్మయ్య సామాన్య అవగాహనతో ప్రశ్నను అర్థం చేసుకోవడం, సుమతి ఫైల్‌ల నుంచి ఖచ్చితమైన వివరాలు తీసుకోవడం.",
-        "connection": "ఈ కథలో లక్ష్మయ్య = model యొక్క parametric memory (training లో parameters లో దాచిన జ్ఞానం). సుమతి ఫైలింగ్ క్యాబినెట్ = non-parametric memory, అంటే dense vector index రూపంలో ఉన్న documents. ప్రశ్న వచ్చినప్పుడు సరైన ఫైల్ వెతకడం = neural retriever తో retrieval. ఫైల్ చదివి జవాబు రాయడం = retrieved passages ఆధారంగా generation.",
-        "explanation": "RAG పేపర్ (Lewis et al.) ప్రకారం, పెద్ద pre-trained models parameters లో వాస్తవాలను నిల్వ చేస్తాయి కానీ knowledge-intensive tasks లో ఖచ్చితత్వం తక్కువగా ఉంటుంది; provenance ఇవ్వడం, జ్ఞానాన్ని అప్‌డేట్ చేయడం open problems. RAG దీనికి pre-trained seq2seq model (parametric) + Wikipedia dense vector index (non-parametric) + pre-trained neural retriever కలుపుతుంది. రెండు రకాలు: మొత్తం generation కి ఒకే retrieved passages వాడేది, మరియు token వారీ వేరు వేరు passages ఎంచుకునేది. REALM పేపర్ మరింత లోతుగా — pre-training సమయంలోనే latent knowledge retriever ని unsupervised గా (masked language modeling signal తో, millions of documents ల ద్వారా backpropagate చేస్తూ) నేర్పుతుంది. Open-domain QA లో ఇది గత methods కంటే 4-16% absolute accuracy తో మెరుగ్గా పనిచేసింది, interpretability మరియు modularity వంటి ప్రయోజనాలతో. RAG models generation లో కూడా ఎక్కువ specific, diverse, factual భాష ఉత్పత్తి చేశాయి.",
-        "application": "ప్రాక్టికల్‌గా: మీ company డాక్యుమెంటేషన్ లేదా support tickets మీద chatbot ని నిర్మిస్తే, మోడల్‌ను fine-tune చేయకుండా documents ను embeddings గా index చేసి, ప్రశ్న వచ్చినప్పుడు top matching passages ను retrieve చేసి prompt లో చేర్చవచ్చు. దీని వల్ల డాక్యుమెంటేషన్ అప్‌డేట్ చేస్తే జవాబులు వెంటనే మారతాయి, జవాబులకు మూల డాక్యుమెంట్ links చూపగలరు, మోడల్ తన తలలో లేని విషయం ఊహించే అవకాశం తగ్గుతుంది.",
-        "exercise": "రెండు నిమిషాలు: మీ రోజువారీ పనిలో ఒక ప్రశ్నను తీసుకోండి (ఉదా: 'మా API rate limit ఎంత?'). ఇప్పుడు రెండు కాలమ్‌లు రాయండి — ఎడమవైపు: ఈ సమాచారం మీ తలలో (లేదా మోడల్ parameters లో) ఉంటే ఏ ప్రమాదం ఉంది? కుడివైపు: దీన్ని retrieval తో ఎక్కడ నుంచి వెతకాలి? ఒక సందర్భంలో retrieval విఫైలే అయితే (ఫైల్ దొరకకపోతే) ఏమవుతుందో కూడా ఒక వాక్యంలో రాయండి.",
-        "question": "RAG లో parametric memory మరియు non-parametric memory అంటే ఏమిటి, retrieval ఎప్పుడు సహాయపడుతుంది?",
-        "answer": "Parametric memory అంటే training లో మోడల్ parameters లో అంతర్గతంగా నిల్వైన జ్ఞానం (కథలో లక్ష్మయ్య). Non-parametric memory అంటే బయటి document index — ఉదాహరణకు dense vector index రూపంలో ఉన్న Wikipedia (సుమతి క్యాబినెట్). ఖచ్చితమైన, తాజా, మూలం చూపగలిగే వాస్తవాలు కావాల్సినప్పుడు — ముఖ్యంగా knowledge-intensive tasks లో — retrieval సహాయపడుతుంది, ఎందుకంటే మోడల్ తన parameters లో దాచిన సమాచారం పాతదా లేదా అస్పష్టమా అనే సమస్యను దాటి, నేరుగా documents ఆధారంగా జవాబు ఇవ్వగలదు.",
-        "limits": "ఈ analogy పరిమితి: సుమతి ఫైల్‌ను పూర్తిగా చదివి అర్థం చేసుకుంటుంది, కానీ vector retriever అంత ఖచ్చితంగా ఉండదు — సంబంధం లేని లేదా అసంపూర్ణ passages కూడా వచ్చే అవకాశం ఉంటుంది, retrieval విఫైలే అయితే మోడల్ తప్పుగా లేదా ఊహించి జవాబివ్వచ్చు. అలాగే నిజమైన RAG లో retriever మరియు generator ఒకదానికొకటి అనుసంధానమై (differentiable access mechanism) కలిసి నేర్చుకోగలవు — ఇది సాధారణ ఫైలింగ్ వ్యవస్థ కంటే చాలా క్లిష్టతరం. కథలో జవాబులు ఎప్పుడూ సరైన ఫైల్ నుంచే వస్తాయని అనిపిస్తుంది, కానీ వాస్తవంలో retrieval జరిగినందుకే జవాబు ఖచ్చితంగా ఉంటుందని హామీ లేదు.",
-        "source_ids": [
-          "paper-2005.11401",
-          "paper-2002.08909"
-        ]
-      },
-      "news": {
-        "title": "ఈ వారం RAG & AI ఇన్‌ఫ్రా సంబంధిత అభివృద్ధులు",
-        "overview": "ఈ రోజు కాదు కానీ గత రెండు వారాల్లో ప్రచురించబడిన రెండు అంశాలు: Anthropic వారి agent memory పరిశోధన, మరియు Google వారి కొత్త TPU systems. రెండూ మన concept అయిన retrieval vs model memory కి సంబంధించిన నేపథ్యాన్ని అందిస్తాయి.",
-        "items": [
-          {
-            "headline": "Anthropic: AI agents కోసం memory components — 'dreaming' ద్వారా జ్ఞాపకాల సంస్కరణ",
-            "what_happened": "Anthropic వారి బ్లాగ్ పోస్ట్ (నవంబర్ 6, 2026) ప్రకారం, వారు agent memory ను మానవ మెదడు విభజనతో పోల్చారు: agents పనిని logs/transcripts లో capture చేస్తాయి, idle సమయంలో (Letta మరియు UC Berkeley ప్రతిపాదించిన sleep-time compute ఆలోచనతో) ఆ logs ను పునఃసంఘటితం చేసి memory notes రాస్తాయి — దీన్ని వారు 'dreaming' అంటారు. వారి evaluations లో, CL-Bench 1.0 database task లో Claude Opus 5 మొదటిసారి 'learning loop' మూసివేసింది — validated rules, ఎలా తెలుసుకున్నారో, మునుపటి తప్పుల నుంచి నేర్చుకున్న warnings తో. Pokémon Red పరీక్షలో, Sonnet 3.7 అన్నీ రాస్తూ 413 files సృష్టించి ఒక badge మాత్రమే సాధించగా, Fable 5 ఎక్కువగా స్క్రీన్‌పై కనిపించే విషయాలను రాకుండా, strategy మరియు tested rules మాత్రమే రాసి ఒకే చిన్న memory folder తో నాలుగు badges సాధించింది. బలీన models కి సల్యూట్ (salience) ని స్వయంగా తీర్మానించే స్వేచ్ఛ ఇవ్వడం, స్థిర నియమాల కంటే మెరుగైన ఫలితాలిచ్చింది.",
-            "why_it_matters": "ఇది retrieval vs model memory concept కి నేరుగా సంబంధం: agent యొక్క memory directory ఒక చిన్న non-parametric store లాగా పనిచేస్తుంది — sessions మధ్య persist అయ్యే, retrieve చేయదగిన సమాచారం. Developer కోసం ఉపయోగకరమైన పాఠం: ఏదైనా రాయడం కాదు, తర్వాత అవసరమవ్వని, ఇతరత్రా తెలియని విషయాలను (rules, plans, validated facts) మాత్రమే నిల్వ చేయడం ముఖ్యం — లేదంటే retrieval అనుభవం కంటే భారంగా మారుతుంది. Analogy: మీ నోట్స్ యాప్‌లో ప్రతి చిన్న విషయాన్నీ సేవ్ చేస్తే వెతకడమే కష్టమవుతుంది; సారాంశం మరియు నిర్ధారించిన నియమాలు మాత్రమే సేవ్ చేస్తే ఉపయోగం ఎక్కువ.",
-            "takeaway": "పరిమితి: ఇది Anthropic వారి స్వంత evaluations ఆధారంగా వారి వివరణ — ఇది peer-reviewed ఫలితం కాదు, మరియు ఫలితాలు నిర్దిష్ట tasks (CL-Bench, Pokémon) కి పరిమితం. మీరు ప్రయత్నించే ముందు: మీ agent కి ఏ రకమైన సమాచారం నిజంగా sessions మధ్య అవసరమవుతుందో, memory రాయడం/చదవడం వల్ల latency లేదా పాత సమాచారం వల్ల కలిగే ఖర్చు ఏమిటో తనిఖీ చేయండి. పోస్ట్ పూర్తి పద్ధతులు (methodology) చదవకుండా benchmark సంఖ్యలను నేరుగా పోల్చకండి.",
-            "source_ids": [
-              "news-f0247d2be6d2"
-            ]
-          },
-          {
-            "headline": "Google: కొత్త TPU 8tx మరియు 8i Max — agentic workloads కోసం",
-            "what_happened": "Google Cloud బ్లాగ్ (నవంబర్ 9, 2026) ప్రకారం, వారు ఎనిమిదో తరం TPU portfolio కి రెండు systems చేర్చారు: TPU 8tx — hardware-level confidential compute కోసం; సాధారణంగా data storage/network లో encrypt చేసి memory లో unlock చేసే దానికి భిన్నంగా, ఇది processing లో ఉన్నప్పుడు కూడా sensitive data మరియు model weights ను protected గా ఉంచుతుంది, అలాగే TPU 8t కంటే 2x వరకు తక్కువ latency అందిస్తుంది. TPU 8i Max — memory wall సమస్య కోసం: రెండు TPU 8i chips ను ఒక package లో కలిపి, TPU 8i కంటే రెట్టింపు compute, SRAM, HBM bandwidth ఇస్తుంది; massive context windows మరియు ర్యాక్‌లో ఎక్కువ compute density లక్ష్యంగా. Google ప్రకారం ఇది ఒకే సంవత్సరంలో నాలుగు TPU systems పరిచయం చేసిన మొదటిసారి. వారు TorchTPU open-sourcing, vLLM/SGLang backends, మరియు InferenceX/AgentX benchmarks లో state-of-the-art price-performance claims కూడా చేశారు.",
-            "why_it_matters": "Developer దృష్టిలో: RAG మరియు agentic systems లో retrieval అంటే పెద్ద indexes నుంచి వేగంగా డేటా తీసుకోవడమే — memory bandwidth ఇక్కడ bottleneck అవుతుంది. 8i Max ఈ memory wall ను పరిష్కరించడానికి ప్రయత్నిస్తుంది కాబట్టి, పెద్ద context windows లేదా పెద్ద vector indexes తో పనిచేసే teams కి ప్రస్తావన పడే అంశం. 8tx అయితే regulated industries లో private data మీద fine-tuning లేదా secure agent execution కావాల్సిన వారికి ఉపయోగపడుతుంది. Analogy: లైబ్రరీలో పుస్తకం వెతకడం retrieval అయితే, లైబ్రరీ గోడల మధ్య నడిచే వేగం memory bandwidth లాంటిది — పుస్తకాలు ఎన్ని ఉన్నా, నడక నెమ్మదిగా ఉంటే అన్వేషణ ఆలస్యమవుతుంది.",
-            "takeaway": "పరిమితి: ఇవి Google వారి స్వంత claims — performance సంఖ్యలు (2x latency, 80% price-performance వంటివి) vendor ప్రచురించినవే, స్వతంత్రంగా ధృవీకరించబడలేదు, మరియు benchmarks ఎలా నడిపారో పోస్ట్ వివరించలేదు. ప్రయత్నించే ముందు: మీ workload కి ఈ specializations నిజంగా అవసరమా (confidential compute లేదా million-token context) అని, availability/pricing, మరియు మీ స్వంత models తో నిజమైన latency/cost measurements తనిఖీ చేయండి. ఇది ఒక vendor ప్రకటన మినహా ఏ విశ్వవ్యాప్త పరివర్తన కాదు.",
-            "source_ids": [
-              "news-e9950a58c892"
-            ]
-          }
-        ],
-        "exercise": "రెండు నిమిషాల source-check: రెండు కథనాలలో ఒకదాన్ని తీసుకోండి. ఒక వాక్యంలో రాయండి — ఆ కథనంలో ఏ భాగం publisher చేసిన claim (ఉదా: performance సంఖ్యలు, benchmark ఫలితాలు), ఏ భాగం మీ స్వంత వివరణ? తర్వాత ఒక ప్రశ్న అడగండి: ఈ claim ని ధృవీకరించడానికి మీరు ఏ డేటా లేదా methodology చూడాలి? (సూచన: benchmark పద్ధతులు, స్వతంత్ర పునరావృతి, ఖర్చు వివరాలు.)",
-        "question": "Anthropic యొక్క 'dreaming' ఆలోచన RAG లోని non-parametric memory తో ఎలా సంబంధం కలిగి ఉంది, మరియు రెండు కథనాలలో ఏ claims ని జాగ్రత్తగా చూడాలి?",
-        "answer": "'Dreaming' లో agent తన logs నుంచి memory notes అనే ఒక external, persistent store ను నిర్మిస్తుంది — ఇది model parameters వెలుపల ఉండే, తర్వాతి sessions లో retrieve చేయదగిన సమాచారం కాబట్టి non-parametric memory భావననే పోల్చవచ్చు. కానీ జాగ్రత్తగా చూడాల్సినవి: Anthropic ఫలితాలు వారి స్వంత evaluations పై ఆధారపడినవి (peer-review లేదు), Google యొక్క performance సంఖ్యలు vendor claims మాత్రమే — రెండు సందర్భాల్లోనూ benchmark methodology, ఖర్చు, మరియు మీ స్వంత workload కి సరిపోయేదా అనేది ముందు తనిఖీ చేయాలి."
-      },
-      "usage": {
-        "prompt_tokens": 5905,
-        "completion_tokens": 10914,
-        "total_tokens": 16819,
-        "prompt_tokens_details": {
-          "cached_tokens": 0
-        },
-        "completion_tokens_details": {
-          "accepted_prediction_tokens": null,
-          "reasoning_tokens": 31,
-          "rejected_prediction_tokens": null
-        }
-      },
-      "sources": [
-        {
-          "id": "paper-2005.11401",
-          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
-          "url": "https://arxiv.org/abs/2005.11401",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "paper-2002.08909",
-          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
-          "url": "https://arxiv.org/abs/2002.08909",
-          "publisher": "arXiv",
-          "published_at": null,
-          "evidence_type": "paper_abstract"
-        },
-        {
-          "id": "news-f0247d2be6d2",
-          "title": "The components of agent memory",
-          "url": "https://www.anthropic.com/research/components-of-agent-memory",
-          "publisher": "www.anthropic.com",
-          "published_at": "2026-11-06T00:00:00+00:00",
-          "evidence_type": "article_excerpt",
-          "discussion_points": 189,
-          "discovery_channel": "Hacker News link to primary source",
-          "topic": "RAG"
-        },
-        {
-          "id": "news-e9950a58c892",
-          "title": "Our newest TPUs: 8tx and 8i Max, built for the agentic era",
-          "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/tpu-8i-max-and-8tx/",
-          "publisher": "blog.google",
-          "published_at": "2026-11-09T00:00:00+00:00",
-          "evidence_type": "article_excerpt",
-          "discussion_points": 28,
-          "discovery_channel": "Hacker News link to primary source",
-          "topic": "Other"
-        }
-      ],
-      "id": "a502ebccd86fcd7e"
-    },
     {
       "date": "2026-11-13",
       "timezone": "America/New_York",
@@ -3671,6 +3443,226 @@
         }
       ],
       "id": "94b3f032361e319e"
+    },
+    {
+      "date": "2026-11-28",
+      "timezone": "America/New_York",
+      "created_at": "2026-11-28T18:58:25.839495+00:00",
+      "topic": "RAG",
+      "language": "en",
+      "concept": "Retrieval versus model memory",
+      "news_window": "recent",
+      "source_warnings": [],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "Retrieval versus Model Memory: Why Looking Things Up Beats Memorizing Everything",
+        "summary": "Large language models store facts implicitly in their parameters, but this internal memory has limits: it is hard to update, hard to trace, and imprecise on knowledge-heavy tasks. Retrieval-augmented generation (RAG) pairs the model with an external, searchable memory — a dense vector index of documents — so the model can look up relevant passages at generation time. Research on RAG and REALM shows this combination outperforms parametric-only models on open-domain question answering and produces more specific, factual text, while also offering provenance and easier knowledge updates.",
+        "story": "Imagine two students preparing for an open-book history exam. Maya spends months memorizing every date, treaty, and name. Her classmate Leo memorizes the broad themes but keeps a meticulously organized binder of primary sources, indexed by topic, that he can flip through during the exam. When a question asks about an obscure 1920s trade agreement, Maya hesitates — the fact is somewhere in her head, but she blurs the year or confuses it with a similar treaty. Leo opens his binder, finds the exact page in seconds, and answers precisely, citing the source. When a correction is issued — say, a date was wrong in the textbook — Leo simply replaces one page in his binder. Maya has to unlearn and re-memorize, risking that the old wrong date still surfaces under pressure. Over a long exam, Leo's answers are also more specific and verifiable, because he can point to the document he used.",
+        "connection": "Maya is a parametric language model: facts are compressed into weights during training. Leo is a retrieval-augmented model: his 'binder' is a non-parametric memory — a dense vector index of documents — and his 'flipping through pages' is a neural retriever that fetches relevant passages at inference time. The wrong textbook date is stale parametric knowledge; replacing a binder page is updating the index without retraining. Citing the page is provenance.",
+        "explanation": "The RAG paper (Lewis et al.) describes models that combine a pre-trained seq2seq model (parametric memory) with a dense vector index of Wikipedia accessed by a pre-trained neural retriever (non-parametric memory). Two variants are explored: one that conditions on the same retrieved passages for the whole generated sequence, and one that can consult different passages per token. On knowledge-intensive tasks, parametric-only models lag because accessing and precisely manipulating stored facts is difficult, and updating world knowledge or providing provenance remain open problems. RAG models set state-of-the-art results on three open-domain QA tasks and generate more specific, diverse, and factual language than a parametric-only baseline. The REALM paper takes a complementary angle: it augments language model pre-training itself with a latent knowledge retriever, trained unsupervised via masked language modeling with backpropagation through the retrieval step over millions of documents. REALM outperforms prior methods on open-domain QA benchmarks by 4–16% absolute accuracy, with interpretability and modularity as qualitative benefits. Both papers make the same core point: explicit, searchable memory complements — rather than replaces — what the model learns in its weights.",
+        "application": "In practice, RAG is the standard pattern for building assistants that answer questions over changing or private data: index your documentation, support tickets, or codebase into a vector store, retrieve the most relevant chunks for each user query, and condition the model's answer on them. Because knowledge lives in the index, updating a product doc instantly changes what the assistant can say — no fine-tuning — and you can show users the source passages behind an answer, which matters for trust and debugging.",
+        "exercise": "Take a question you recently asked an AI assistant where you were unsure of the answer's accuracy (for example, a library version or an API detail). Spend two minutes writing down: (1) what could go wrong if the model answered purely from memorized training data, and (2) what document or page you would want retrieved into the context to make the answer trustworthy. This maps the 'Maya vs. Leo' distinction onto your own workflow.",
+        "question": "In RAG systems, what plays the role of the 'binder' in the student analogy, and why is it easier to update than the model's weights?",
+        "answer": "The binder is the non-parametric memory — a dense vector index of documents. It is easier to update because you can add, remove, or re-embed individual documents in the index without retraining the model, whereas correcting parametric knowledge requires a new training pass and offers no guarantee the old, wrong information won't still surface.",
+        "limits": "The analogy understates the engineering effort. Leo's binder is perfectly organized; real vector indexes return approximate nearest neighbors, and retrieval quality depends heavily on chunking, embedding choice, and index freshness. Also, retrieval does not guarantee correct use — the model can still misread or ignore a retrieved passage, so 'it cited a source' is not the same as 'the source supports the claim.' Finally, the benchmark wins in these papers are on knowledge-intensive QA and generation tasks; retrieval adds latency and complexity that may not pay off for tasks needing little factual grounding.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "Recent AI Developments: Citizen-Science Exoplanet Searches and Evaluating Social Reasoning in Assistants",
+        "overview": "Two recent items from the past two weeks: OpenAI describes how two amateur astronomers used Codex and Astra to surface exoplanet candidates in public telescope data, and Google Research introduces an open-source framework for evaluating how well LLM assistants reason about social situations relayed through a user's subjective account. Both connect to the retrieval theme: one shows AI-assisted search over large scientific archives, the other shows how an assistant's knowledge is mediated by what the user chooses to share.",
+        "items": [
+          {
+            "headline": "Amateur astronomers use Codex and Astra to find exoplanet candidates in public telescope data",
+            "what_happened": "An OpenAI article (published November 24, 2026) reports that two independent amateur astronomers used AI tools to search archival telescope data for exoplanets. Kevin Bond used Codex to build a search pipeline over observations of about 100,000 stars from the Kepler telescope, combining published methods for detecting recurring dips in stellar brightness; his search flagged more than 200 signals, including 10 from previously confirmed planets, and two standout candidates. Ethan Byrd used Astra to design and run two searches — one broad, one focused on habitable zones — over data from about 19 million stars observed by TESS and other public archives, producing 49 initial candidates. Both have submitted results for independent verification: a SETI Institute astronomer's independent search found the same two Kepler signals, and one of Byrd's candidates is awaiting further analysis by TESS researchers. The article is careful to note that confirming any of these as planets could take months or years, since dips can also be caused by eclipsing stars or instrumental effects.",
+            "why_it_matters": "This is a concrete example of AI-assisted search over large scientific archives — a retrieval problem in spirit. The everyday developer use case is the pattern, not the astronomy: an individual with coding assistance can assemble a pipeline that compares published methods, runs multi-stage screening (one agent scans, another verifies), and validates against known ground truth (the 10 recovered confirmed planets) before claiming anything new. Analogy: it is like a RAG pipeline for starlight — the archive is the index, the transit-detection methods are the retriever, and known planets are the evaluation set. Note that this is the publisher's account of its own tools; the scientific results are candidates, not confirmed planets.",
+            "takeaway": "The key limitation is verification: a dip in brightness is a question, not a discovery, and confirmation requires independent observation. Before trying a similar pipeline, inspect whether the search recovers known positives (as Bond's did), what the false-positive sources are, and whether an independent expert has reviewed the candidates.",
+            "source_ids": [
+              "news-7758c04a6293"
+            ]
+          },
+          {
+            "headline": "Google Research open-sources a framework for evaluating social reasoning in LLM assistants",
+            "what_happened": "A Google Research blog post (published November 25, 2026) introduces an evaluation framework built on multi-agent social simulations. A simulated 'target' agent is given a hidden motive and interacts with other agents, including one representing the user; the user then recounts events — partially and possibly with bias — to the evaluated assistant, which must infer the hidden motive. Because the motive is set by the framework, verifiable ground truth exists by construction. Testing 12 LLMs, the authors report an 'assistant-observer gap' (models do worse hearing events through the user than seeing them directly), sensitivity to user framing (models often adopt a user's unfounded suspicions), a need for more narrative detail than humans require, and multi-turn conversations that can anchor models to the user's framing rather than improve accuracy. The framework and a dataset of over 20,000 generated examples are open-sourced.",
+            "why_it_matters": "For developers building advice-giving or support assistants, this formalizes a real failure mode: your assistant only knows what the user tells it, and users omit context or frame events subjectively. The everyday use case is designing assistants that ask clarifying questions or hedge instead of validating one-sided narratives — for example, not piling on a colleague the user describes harshly. Analogy: it is the inverse of retrieval quality — instead of retrieving biased documents, the model receives a biased 'document' from the user, and this benchmark measures how well it copes.",
+            "takeaway": "The limitation is that results come from simulated scenarios with LLM-as-a-judge scoring, so they measure behavior in a constructed setting, not real conversations. Before relying on the framework, inspect the scenario categories, how the ground-truth motives are defined, and whether the judged evaluations match your product's actual user population.",
+            "source_ids": [
+              "news-c232ab95006f"
+            ]
+          }
+        ],
+        "exercise": "Pick one of the two items and spend two minutes finding the primary source (the OpenAI article or the Google Research blog post). Identify one claim that is the publisher describing its own work — such as the promise of the framework or the tools' usefulness — and one claim that is independently grounded, such as the SETI Institute astronomer's independent search or the open-sourced dataset. Write down which claims you would want to see verified by third parties.",
+        "question": "Both news items involve an AI system reasoning over incomplete or mediated information. How does each item illustrate the gap between what a model 'knows' and what evidence it actually has access to?",
+        "answer": "The exoplanet searches show models working over large archives where the evidence exists but must be retrieved and verified — candidates remain unconfirmed until independent observation. The social-reasoning framework shows the opposite problem: the assistant's only evidence is the user's subjective, possibly biased retelling, and models measurably do worse than when they see events directly. In both cases, model capability is bounded by the quality and completeness of the information actually supplied, not just by the model's parameters."
+      },
+      "usage": {
+        "prompt_tokens": 5467,
+        "completion_tokens": 2396,
+        "total_tokens": 7863,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": null,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": null
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-7758c04a6293",
+          "title": "Searching for distant planets with Astra",
+          "url": "https://openai.com/index/searching-for-distant-planets-with-astra",
+          "publisher": "OpenAI",
+          "published_at": "2026-11-24T11:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-c232ab95006f",
+          "title": "Verifiable Social Reasoning for LLM Assistants",
+          "url": "https://research.google/blog/verifiable-social-reasoning-for-llm-assistants/",
+          "publisher": "Google Research",
+          "published_at": "2026-11-25T17:10:27+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "Other"
+        }
+      ],
+      "id": "3068051ee3a9bb5c"
+    },
+    {
+      "date": "2026-11-28",
+      "timezone": "America/New_York",
+      "created_at": "2026-11-28T18:58:25.839495+00:00",
+      "topic": "RAG",
+      "language": "te",
+      "concept": "Retrieval versus model memory",
+      "news_window": "recent",
+      "source_warnings": [],
+      "router_engine": "TF-IDF + logistic regression",
+      "schema_version": 1,
+      "task": "daily_pills",
+      "status": "draft",
+      "writer_model": "accounts/fireworks/models/glm-5p3-flash",
+      "generation_method": "fireworks",
+      "duration_note": "5–10 minutes per pill is a target including the exercise; actual reading time varies.",
+      "knowledge": {
+        "title": "Retrieval vs Model Memory: మోడల్ గుర్తులు vs వెతకడం",
+        "summary": "Language models తమ parameters లో విషయాలను గుర్తుంచుకుంటాయి, కానీ ఆ గుర్తులు ఖచ్చితంగా లేకపోవచ్చు, అప్‌డేట్ చేయడం కష్టం. RAG వంటి పద్ధతులు external index నుంచి documents ని retrieve చేసి, ఆ సమాచారం ఆధారంగా generate చేస్తాయి — దీంతో ఖచ్చితత్వం, provenance, అప్‌డేటింగ్ సులభమవుతాయి.",
+        "story": "ఊహించండి: లక్ష్మీ అనే ఒక పెద్ద లైబ్రరీ అసిస్టెంట్. ఆమెకు చాలా పుస్తకాలు చదివిన అనుభవం ఉంది, చాలా విషయాలు తలలో గుర్తుండిపోతాయి. ఒక రోజు ఒక విద్యార్థి వచ్చి ఒక చిన్న విషయం అడిగాడు — లక్ష్మీ దానికి దగ్గరగా ఉన్న సమాధానం చెప్పింది, కానీ ఒక వివరం తప్పు. ఆమె గుర్తు పాతది; పుస్తకం కొత్త ఎడిషన్‌లో మారిపోయింది. ఇక్కడే ఆమె సహచుడు రాము వేరే పద్ధతి పాటిస్తాడు: అడిగిన ప్రతి ప్రశ్నకు అతను లైబ్రరీ కేటలాగ్‌లో వెతికి, సరైన పుస్తకం తీసి, అదే పేజీ చూపిస్తాడు. అతని తలలో తక్కువ విషయాలు గుర్తుండి ఉన్నా, అతని సమాధానాలు ఎప్పుడూ తాజాగా, ఆధారంతో సహా ఉంటాయి. కొత్త పుస్తకం వచ్చినా కేటలాగ్‌లో చేర్చడం సులభం — తలలో వేసుకోవాల్సిన పని లేదు.",
+        "connection": "ఈ కథలో లక్ష్మీ అంటే parametric memory మాత్రమే ఉన్న language model — విషయాలు training లో weights లోకి ఇమిడిపోతాయి. రాము అంటే retrieval వాడే model: అతని 'కేటలాగ్' అంటే dense vector index, 'పుస్తకం తీయడం' అంటే retriever ద్వారా documents ని వెలికితీయడం. కథలోని 'పేజీ చూపిస్తాడు' అనేది provenance — సమాధానం ఎక్కడి నుంచి వచ్చిందో చూపగలగడం.",
+        "explanation": "REALM పేపర్ చెప్పేది: pre-training లో విజ్ఞానం neural network parameters లో implicit గా దాగి ఉంటుంది, ఎక్కువ facts కావాలంటే నెట్‌వర్క్‌లు పెద్దవవుతూనే ఉండాలి. దీనికి బదులుగా వారు latent knowledge retriever ను pre-training లోనే చేర్చి, Wikipedia వంటి corpus నుంచి documents retrieve చేసుకునేలా చేశారు — దీంతో knowledge modular గా, interpretable గా మారుతుంది. RAG పేపర్ ఇదే ఆలోచనను generation కి విస్తరిస్తుంది: pre-trained seq2seq model (parametric memory) + Wikipedia యొక్క dense vector index (non-parametric memory) + pre-trained neural retriever కలిపి ఉపయోగిస్తారు. రెండు formulations చూపిస్తారు — ఒకటి మొత్తం సమాధానం అంతటికీ ఒకే retrieved passages, మరొకటి token వారీగా వేరు వేరు passages వాడవచ్చు. Knowledge-intensive tasks లో ఇవి parametric-only models ను అధిగమించాయి, generation కూడా ఎక్కువ specific, factual గా మారింది. ముఖ్యమైన లబ్ధాలు: ఖచ్చితమైన knowledge access, provenance ఇవ్వగలగడం, కొత్త సమాచారంతో index ను అప్‌డేట్ చేయడం సులభం కావడం.",
+        "application": "మీరు ఒక కంపెనీ docs assistant ని నిర్మిస్తున్నారనుకోండి. Model ని fine-tune చేస్తే ప్రతి docs మార్పుకు మళ్ళీ training కావాలి. RAG approach లో: docs ని chunks గా విభజించి, embeddings తో vector index ని నిర్మించి, ప్రశ్న వచ్చినప్పుడు retriever సంబంధిత chunks ని తీసి model కు context గా ఇవ్వండి. Docs మారితే index ను మాత్రమే re-index చేస్తే చాలు; సమాధానంతో source document చూపించవచ్చు. ఇదే సూత్రం — గుర్తులపై కాకుండా వెతికిన ఆధారాలపై సమాధానం.",
+        "exercise": "రెండు నిమిషాలు: ఒక చిన్న ప్రశ్న తీసుకోండి (ఉదా: 'మా API rate limit ఎంత?'). ముందుగా మీ గుర్తుల ఆధారంగా సమాధానం రాయండి. తర్వాత అధికారిక doc చూసి సమాధానం రాయండి. రెండింటిలో తేడా ఉందా? ఏ సమాధానానికి provenance (source) చూపగలిగారు? ఇదే తేడా parametric memory vs retrieval మధ్య ఉంటుంది.",
+        "question": "RAG లో parametric memory మరియు non-parametric memory అంటే ఏమిటి, ఎందుకు రెండూ కలిపి వాడతారు?",
+        "answer": "Parametric memory అంటే pre-trained seq2seq model యొక్క weights లో దాగిన విజ్ఞానం; non-parametric memory అంటే dense vector index (ఉదా: Wikipedia) నుంచి neural retriever ద్వారా retrieve చేసే documents. రెండూ కలిపి వాడితే model యొక్క సాధారణ భాషా నైపుణ్యం + index యొక్క ఖచ్చిత, అప్‌డేట్ చేయగల, provenance ఇచ్చే విజ్ఞానం — రెండింటి లాభం వస్తుంది.",
+        "limits": "ఈ analogy పరిమితి: లైబ్రరీలో రాము సరైన పుస్తకం ఎప్పుడూ కనుగొంటాడని అనిపిస్తుంది, కానీ నిజమైన retrievers తప్పుగా లేదా అసంబద్ధమైన passages ని తీసుకురావచ్చు — retrieval ఖచ్చితత్వం అనేది గ్యారెంటీ కాదు. అలాగే కథలో పుస్తకం చదవడం అంటే నిజంగా అర్థం చేసుకోవడం లాగా ఉంటుంది; కానీ model retrieved text ని తప్పుగా అర్థం చేసుకుని hallucinate చేయవచ్చు. అలాగే RAG పేపర్ ఫలితాలు ఆ ప్రత్యేక benchmarks పై ఆధారపడి ఉన్నాయి; మీ use case లో అవి నేరుగా అనువంటివి కాలవచ్చు.",
+        "source_ids": [
+          "paper-2005.11401",
+          "paper-2002.08909"
+        ]
+      },
+      "news": {
+        "title": "ఈ వారం RAG & AI సంబంధిత వార్తలు",
+        "overview": "ఈ వారం రెండు అంశాలు: OpenAI బ్లాగ్‌లో amateur astronomers AI tools తో exoplanet searches నడిపిన కథనం, మరియు Google Research యొక్క LLM social reasoning evaluation framework. రెండూ మా concept తో నేరుగా సంబంధం లేకపోవచ్చు — వాటిని అదే విధంగా చూడండి.",
+        "items": [
+          {
+            "headline": "OpenAI: amateur astronomers Codex, Astra తో exoplanet candidates వెతికారు",
+            "what_happened": "OpenAI బ్లాగ్ పోస్ట్ (Nov 24, 2026) ప్రకారం, ఇద్దరు amateur astronomers — OpenAI engineer Kevin Bond మరియు Primitive founder Ethan Byrd — AI tools ఉపయోగించి public telescope data లో exoplanet signals వెతికారు. Bond Codex తో Kepler data (~100,000 stars) పై search pipeline నిర్మించారు; Byrd Astra తో TESS సహా archives (~19 million stars) పై searches నడిపారు. Bond యొక్క search 200+ signals ను flag చేసింది, వాటిలో 10 ఇప్పటికే confirmed planets — ఇది pipeline పనిచేస్తుందన్న confidence ఇచ్చింది. SETI Institute astronomer ఒకరు Bond యొక్క రెండు signals ను independently కనుగొన్నారు; Byrd ఒక candidate ను TESS researchers కు పంపారు, అది further analysis లో ఉంది. ఇది publisher యొక్క ప్రకటన; స్వతంత్ర ధృవీకరణ నాకు లేదు.",
+            "why_it_matters": "Developer కోసం ఉపయోగకరమైన అంశం: Bond తన pipeline ను ధృవీకరించడానికి known planets ను test cases గా వాడారు — ఇది ఏదైనా search/retrieval system నిర్మించేటప్పుడు పాటించే పద్ధతి. Analogy గా: ఇది RAG లో retrieval quality ని కొలవడం లాంటిది — మీ retriever తెలిసిన సమాధానాలను (known planets) కనుగొంటుందో ముందు చూసి, ఆ తర్వాతే కొత్త ఫలితాలను నమ్మడం.",
+            "takeaway": "పరిమితి: ఈ candidates ఇంకా planets కావు — confirmation కి నెలలు లేదా సంవత్సరాలు పడవచ్చు, మరియు dips కి ఇతర కారణాలు (binary stars, instrument effects) ఉండవచ్చు. ప్రయత్నించే ముందు: పోస్ట్‌లోని validation steps (known planets detection, SETI యొక్క independent check) ఎలా జరిగాయో, మరియు మీ స్వంత pipeline లో false positives ఎలా filter చేస్తారో చూడండి.",
+            "source_ids": [
+              "news-7758c04a6293"
+            ]
+          },
+          {
+            "headline": "Google Research: LLM assistants కోసం verifiable social reasoning framework",
+            "what_happened": "Google Research బ్లాగ్ (Nov 25, 2026) ప్రకారం, వారు multi-agent social simulations ఆధారిత evaluation framework ను open-source చేశారు. ఒక target agent కి hidden motive ఇస్తారు; simulated user ఆ సంభాషణలను తన subjective కోణం నుంచి evaluated assistant కు చెబుతాడు; assistant ఆ hidden motive ను predict చేయాలి — దీంతో ground truth by construction verifiable అవుతుంది. 12 LLMs పై పరీక్షించగా, models user యొక్క subjective framing ని తరచుగా adopt చేస్తాయని, మనుషులకంటే ఎక్కువ detail అవసరమవుతుందని, పొడవైన conversations ఎప్పుడూ accuracy మెరుగుపరచవని తేలింది. 20K+ examples తో dataset కూడా release చేశారు. ఇది publisher యొక్క ప్రకటన; ఫలితాల స్వతంత్ర పునఃపరిశీలన నాకు లేదు.",
+            "why_it_matters": "RAG కు దగ్గరి పాఠం: assistant కు అందించే context (ఇక్కడ user యొక్క narrative) పక్షపాతపూరితమైతే, model ఆ framing ని అనుసరించి తప్పు ముగింపులకు వెళ్తుంది. మీ RAG system లో retrieved documents లేదా user query framing ఒకపక్షపాతంగా ఉంటే, model ఆ పక్షపాతాన్ని amplify చేయవచ్చు — context quality అనేది model quality అంతే ముఖ్యం.",
+            "takeaway": "పరిమితి: ఇది evaluation framework — మీ production assistant ను నేరుగా మెరుగుపరిచే tool కాదు, మరియు simulations real-world conversations యొక్క సరళీకృత రూపాలే. ప్రయత్నించే ముందు: open-source framework మరియు dataset యొక్క GitHub repo చూసి, scenario generation ఎలా జరుగుతుందో, LLM-as-a-judge scoring ఎంత విశ్వసనీయమో, మరియు మీ use case కి ఈ categories relevant గా ఉన్నాయో తనిఖీ చేయండి.",
+            "source_ids": [
+              "news-c232ab95006f"
+            ]
+          }
+        ],
+        "exercise": "రెండు నిమిషాల source-check: రెండు వార్తా అంశాలలో ఏది publisher యొక్క నేరుగా ప్రకటన (ఉదా: framework release, search results), ఏది మీ interpretation (ఉదా: RAG తో పోలిక) ఓటా గుర్తించండి. తర్వాత ఒక అంశాన్ని ఎంచుకుని, దాని validation ఎలా జరిగిందో (independent check లేదా benchmark) ఒక వాక్యంలో రాయండి.",
+        "question": "Google యొక్క social reasoning framework ఫలితాలు RAG system design కు ఏ సూత్రాన్ని గుర్తు చేస్తాయి?",
+        "answer": "Context యొక్క నాణ్యత మరియు తటస్థత చాలా ముఖ్యం: model కు ఇచ్చే సమాచారం (user narrative లేదా retrieved documents) పక్షపాతపూరితమైతే, model దానిని అనుసరించి తప్పుగా సమాధానం ఇవ్వవచ్చు — కాబట్టి context ని జాగ్రత్తగా curate, validate చేయాలి."
+      },
+      "usage": {
+        "prompt_tokens": 5467,
+        "completion_tokens": 8177,
+        "total_tokens": 13644,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": null,
+          "reasoning_tokens": 20,
+          "rejected_prediction_tokens": null
+        }
+      },
+      "sources": [
+        {
+          "id": "paper-2005.11401",
+          "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+          "url": "https://arxiv.org/abs/2005.11401",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "paper-2002.08909",
+          "title": "REALM: Retrieval-Augmented Language Model Pre-Training",
+          "url": "https://arxiv.org/abs/2002.08909",
+          "publisher": "arXiv",
+          "published_at": null,
+          "evidence_type": "paper_abstract"
+        },
+        {
+          "id": "news-7758c04a6293",
+          "title": "Searching for distant planets with Astra",
+          "url": "https://openai.com/index/searching-for-distant-planets-with-astra",
+          "publisher": "OpenAI",
+          "published_at": "2026-11-24T11:00:00+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "RAG"
+        },
+        {
+          "id": "news-c232ab95006f",
+          "title": "Verifiable Social Reasoning for LLM Assistants",
+          "url": "https://research.google/blog/verifiable-social-reasoning-for-llm-assistants/",
+          "publisher": "Google Research",
+          "published_at": "2026-11-25T17:10:27+00:00",
+          "evidence_type": "article_excerpt",
+          "topic": "Other"
+        }
+      ],
+      "id": "598ccdfb699ba1a1"
     }
   ]
 }
